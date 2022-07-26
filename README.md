@@ -1,7 +1,5 @@
 ## Overview
 
-**This repository is used for early access to the next major release of FSP. Please understand that the next major release is under active development. This means you should expect issues and possible compatibility breaks in between versions. You can get the latest stable FSP release [here](https://github.com/renesas/fsp-rza).**
-
 Flexible Software Package (FSP) for Renesas RZ/A MPU Series
 
 FSP is the next generation Arm® MPU software package from Renesas, that enables HMI devices and IoT connectivity through production ready peripheral drivers, FreeRTOS, and portable middleware stacks.
@@ -12,7 +10,7 @@ FSP uses an open software ecosystem and provides flexibility in using your prefe
 
 ### Current Release
 
-[FSP v1.0.0-rc.0](https://github.com/renesas/staging_rza-fsp/releases/tag/v1.0.0-rc.0)
+[FSP v1.0.0](https://github.com/renesas/rza-fsp/releases/tag/v1.0.0)
 
 ### Supported RZ/A MPU Kits
 
@@ -42,7 +40,7 @@ If you have already installed a previous FSP release that included e² studio th
 
 ### Related Links
 
-FSP Releases :  https://github.com/renesas/staging_rza-fsp/releases
+FSP Releases :  https://github.com/renesas/rza-fsp/releases
 
 Documentation : https://renesas.github.io/rza-fsp
 
