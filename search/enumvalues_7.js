@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['rspi_5fdelay_5fcount_5f1',['RSPI_DELAY_COUNT_1',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775acf6c2af3c3fd7da891cd64c6ac082ed7',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f2',['RSPI_DELAY_COUNT_2',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a113a034f110841c3f8fb0c726238c7ea',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f3',['RSPI_DELAY_COUNT_3',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a278ef944fd2a6485be24ddc58e154e00',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f4',['RSPI_DELAY_COUNT_4',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a97aed5f01b2294bc3fd7a64645f67a69',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f5',['RSPI_DELAY_COUNT_5',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a76dd1b81a9f64fcccfd74406bf67d712',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f6',['RSPI_DELAY_COUNT_6',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a7e2364c6d0f338da53c4eb5e96c6e0fe',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f7',['RSPI_DELAY_COUNT_7',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775ad0ac09d0f4cbd2e59603fbfaf8195cc8',1,'r_rspi.h']]],
+  ['rspi_5fdelay_5fcount_5f8',['RSPI_DELAY_COUNT_8',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a5ac1f6ea1b0b10b12ff8e91ec32f9ce9',1,'r_rspi.h']]],
+  ['rspi_5fmosi_5fidle_5fvalue_5ffixing_5fdisable',['RSPI_MOSI_IDLE_VALUE_FIXING_DISABLE',['../group___r_s_p_i.html#ggae3deb1d097bc300a5ed42849ebb200c6a671c871f2ed8584714caf4c0d562da4e',1,'r_rspi.h']]],
+  ['rspi_5fmosi_5fidle_5fvalue_5ffixing_5fhigh',['RSPI_MOSI_IDLE_VALUE_FIXING_HIGH',['../group___r_s_p_i.html#ggae3deb1d097bc300a5ed42849ebb200c6a334fbae8188c8d89825231b5126c432d',1,'r_rspi.h']]],
+  ['rspi_5fmosi_5fidle_5fvalue_5ffixing_5flow',['RSPI_MOSI_IDLE_VALUE_FIXING_LOW',['../group___r_s_p_i.html#ggae3deb1d097bc300a5ed42849ebb200c6a2a42bca9fb7a5f485d0c21c70d83c6bc',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f1',['RSPI_RX_TRIGGER_1',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caa6e2d61b897292531bcf0a4dd66e7ce74',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f16',['RSPI_RX_TRIGGER_16',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caad83aa485a255af67211f9455b77dcdd5',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f2',['RSPI_RX_TRIGGER_2',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caa0075abb73fd4b57739d3dc2ce736e8f7',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f24',['RSPI_RX_TRIGGER_24',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caaf2e133c6790fa395dcb1cbe1be0b90b0',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f32',['RSPI_RX_TRIGGER_32',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caacd53b2a36ff3174ca39d448d47626dbf',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f4',['RSPI_RX_TRIGGER_4',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caa5514129ce285974d810db5f22e2518d1',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f5',['RSPI_RX_TRIGGER_5',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caaf0c6136c76672af71b2a3a586013f395',1,'r_rspi.h']]],
+  ['rspi_5frx_5ftrigger_5f8',['RSPI_RX_TRIGGER_8',['../group___r_s_p_i.html#gga431fc619396f9d5cf2f1c495c2ed59caa036ea6f9fcfa956509de0e99167c61e7',1,'r_rspi.h']]],
+  ['rspi_5fsslp_5fhigh',['RSPI_SSLP_HIGH',['../group___r_s_p_i.html#gga2342f44b16c4072b5e9302c4f05b4f94af642f0a0ebd5e10f1e0f749f2a7b6861',1,'r_rspi.h']]],
+  ['rspi_5fsslp_5flow',['RSPI_SSLP_LOW',['../group___r_s_p_i.html#gga2342f44b16c4072b5e9302c4f05b4f94a33e3a44f24010fc5a3f737b1fc451ed7',1,'r_rspi.h']]],
+  ['rspi_5ftx_5ftrigger_5f0',['RSPI_TX_TRIGGER_0',['../group___r_s_p_i.html#gga8e48fdc14874a5cba28661ae549203abacfc42fd65ae0d7a0f60aed988a4fa1e8',1,'r_rspi.h']]],
+  ['rspi_5ftx_5ftrigger_5f4',['RSPI_TX_TRIGGER_4',['../group___r_s_p_i.html#gga8e48fdc14874a5cba28661ae549203aba9d9724c3300e18d9ed1985559558d0bf',1,'r_rspi.h']]],
+  ['rspi_5ftx_5ftrigger_5f6',['RSPI_TX_TRIGGER_6',['../group___r_s_p_i.html#gga8e48fdc14874a5cba28661ae549203aba39b767be6e7e52887162d6a45ef4ec1c',1,'r_rspi.h']]],
+  ['rspi_5ftx_5ftrigger_5f7',['RSPI_TX_TRIGGER_7',['../group___r_s_p_i.html#gga8e48fdc14874a5cba28661ae549203aba922c57b7e36774c42a3eb3efc1e91f75',1,'r_rspi.h']]]
+];
