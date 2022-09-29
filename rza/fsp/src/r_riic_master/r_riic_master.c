@@ -1058,7 +1058,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
 
             /* Wait for the value to reflect at the peripheral.
              * See 'Caution:1' under Table "Interrupt sources" of the user's manual. */
-            while (1UL == p_ctrl->p_reg->ICIER_b.TIE)
+            while (0UL != p_ctrl->p_reg->ICIER_b.TIE)
             {
                 /* Do nothing */
             }
@@ -1143,7 +1143,7 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
     p_ctrl->p_reg->ICIER_b.TEIE = 0UL;
 
     /* Wait for the value to reflect at the peripheral. */
-    while (1UL == p_ctrl->p_reg->ICIER_b.TEIE)
+    while (0UL != p_ctrl->p_reg->ICIER_b.TEIE)
     {
         /* Do nothing */
     }
@@ -1431,7 +1431,7 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
 
         /* Wait for the value to reflect at the peripheral.
          * See 'Note' under table "Interrupt sources" of the user's manual. */
-        while (0UL == p_ctrl->p_reg->ICIER_b.TIE)
+        while (0UL != p_ctrl->p_reg->ICIER_b.TIE)
         {
             /* Do nothing */
         }

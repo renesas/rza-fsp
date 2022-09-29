@@ -106,7 +106,7 @@ static QueueHandle_t g_hcdc_mbx_hdl     USB_BUFFER_PLACE_IN_SECTION;
 static QueueHandle_t g_hhid_mbx_hdl     USB_BUFFER_PLACE_IN_SECTION;
 static QueueHandle_t g_pmsc_mbx_hdl     USB_BUFFER_PLACE_IN_SECTION;
 
-static QueueHandle_t g_pipe0_hdl[USB_NUM_USBIP][USB_MAXDEVADDR] USB_BUFFER_PLACE_IN_SECTION;     /* USB Transfer MBX for PIPE0 wait que */
+static QueueHandle_t g_pipe0_hdl[USB_NUM_USBIP][USB_MAXDEVADDR + 1] USB_BUFFER_PLACE_IN_SECTION; /* USB Transfer MBX for PIPE0 wait que */
 static QueueHandle_t g_pipe_hdl[USB_NUM_USBIP][USB_MAXPIPE_NUM + 1] USB_BUFFER_PLACE_IN_SECTION; /* USB Transfer MBX for PIPE1-9 wait que */
 
 /** Declare an array of mailbox handlers. **/

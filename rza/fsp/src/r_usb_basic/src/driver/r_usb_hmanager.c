@@ -29,6 +29,7 @@
 #include "../hw/inc/r_usb_bitdefine.h"
 #include "../hw/inc/r_usb_reg_access.h"
 #include "r_usb_hhci.h"
+#include "r_usb_hhci_local.h"
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 
@@ -81,7 +82,7 @@ static uint16_t usb_hstd_chk_device_class(usb_utr_t * ptr, usb_hcdreg_t * driver
 static void     usb_hstd_enumeration_err(uint16_t Rnum);
 
  #if (BSP_CFG_RTOS == 2)
-static uint16_t usb_hstd_cmd_submit(usb_utr_t * ptr);
+static usb_er_t usb_hstd_cmd_submit(usb_utr_t * ptr);
 
  #else                                 /* (BSP_CFG_RTOS == 2) */
 static uint16_t usb_hstd_cmd_submit(usb_utr_t * ptr, usb_cb_t complete);
@@ -379,9 +380,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                         }
                     }
 
-  #ifdef USB_HOST_COMPLIANCE_MODE
                     enume_mode = USB_COMPLETEPIPESET;
-  #endif
                     break;
                 }
 
@@ -1339,7 +1338,7 @@ void usb_hstd_mgr_suspend (usb_utr_t * ptr, uint16_t info)
     uint16_t devaddr;
     uint16_t devsel;
     uint16_t j;
-    uint16_t ret;
+    usb_er_t ret;
 
     devaddr = p_usb_shstd_mgr_msg[ptr->ip]->keyword;
     devsel  = (uint16_t) (devaddr << USB_DEVADDRBIT);
@@ -1839,9 +1838,9 @@ static uint16_t usb_hstd_chk_remote (usb_utr_t * ptr)
  * Return value    : uint16_t                 : USB_OK
  ******************************************************************************/
  #if (BSP_CFG_RTOS == 2)
-static uint16_t usb_hstd_cmd_submit (usb_utr_t * ptr)
+static usb_er_t usb_hstd_cmd_submit (usb_utr_t * ptr)
 {
-    uint16_t retval;
+    usb_er_t retval;
 
     g_usb_hstd_class_ctrl[ptr->ip].p_tranadr = (void *) g_usb_hstd_class_data[ptr->ip];
     g_usb_hstd_class_ctrl[ptr->ip].complete  = &class_trans_result;
@@ -1853,7 +1852,11 @@ static uint16_t usb_hstd_cmd_submit (usb_utr_t * ptr)
     g_usb_hstd_class_ctrl[ptr->ip].ip  = ptr->ip;
     g_usb_hstd_class_ctrl[ptr->ip].ipp = ptr->ipp;
 
-    retval = (uint16_t) usb_hstd_transfer_start_req(&g_usb_hstd_class_ctrl[ptr->ip]);
+  #if USB_IP_EHCI_OHCI == 1
+    retval = usb_hstd_transfer_start(&g_usb_hstd_class_ctrl[ptr->ip]);
+  #else                                /* USB_IP_EHCI_OHCI == 1 */
+    retval = usb_hstd_transfer_start_req(&g_usb_hstd_class_ctrl[ptr->ip]);
+  #endif /* USB_IP_EHCI_OHCI == 1 */
 
     if (USB_QOVR == retval)
     {
@@ -1863,13 +1866,12 @@ static uint16_t usb_hstd_cmd_submit (usb_utr_t * ptr)
         do
         {
             usb_cpu_delay_xms((uint16_t) 2);
-            retval = (uint16_t) usb_hstd_transfer_start_req(&g_usb_hstd_class_ctrl[ptr->ip]);
+  #if USB_IP_EHCI_OHCI == 1
+            retval = usb_hstd_transfer_start(&g_usb_hstd_class_ctrl[ptr->ip]);
+  #else                                /* USB_IP_EHCI_OHCI == 1 */
+            retval = usb_hstd_transfer_start_req(&g_usb_hstd_class_ctrl[ptr->ip]);
+  #endif /* USB_IP_EHCI_OHCI == 1 */
         } while (USB_QOVR == retval);
-    }
-
-    if (USB_OK == retval)
-    {
-        retval = class_trans_wait_tmo(ptr, (uint16_t) USB_VALUE_3000);
     }
 
     return retval;
@@ -1913,7 +1915,7 @@ static uint16_t usb_hstd_cmd_submit (usb_utr_t * ptr, usb_cb_t complete)
  * Return value    : uint16_t                 : error info
  ******************************************************************************/
  #if (BSP_CFG_RTOS == 2)
-uint16_t usb_hstd_set_feature (usb_utr_t * ptr, uint16_t addr, uint16_t epnum)
+usb_er_t usb_hstd_set_feature (usb_utr_t * ptr, uint16_t addr, uint16_t epnum)
  #else                                 /* (BSP_CFG_RTOS == 2) */
 uint16_t usb_hstd_set_feature (usb_utr_t * ptr, uint16_t addr, uint16_t epnum, usb_cb_t complete)
  #endif /* (BSP_CFG_RTOS == 2) */
@@ -1959,7 +1961,7 @@ uint16_t usb_hstd_set_feature (usb_utr_t * ptr, uint16_t addr, uint16_t epnum, u
  * Return value    : uint16_t                 : error info
  ******************************************************************************/
  #if (BSP_CFG_RTOS == 2)
-uint16_t usb_hstd_get_config_desc (usb_utr_t * ptr, uint16_t addr, uint16_t length)
+usb_er_t usb_hstd_get_config_desc (usb_utr_t * ptr, uint16_t addr, uint16_t length)
  #else                                 /* (BSP_CFG_RTOS == 2) */
 uint16_t usb_hstd_get_config_desc (usb_utr_t * ptr, uint16_t addr, uint16_t length, usb_cb_t complete)
  #endif /* (BSP_CFG_RTOS == 2) */
@@ -2048,7 +2050,7 @@ uint16_t usb_hstd_std_req_check (uint16_t errcheck)
  * Return value    : uint16_t                 : error info
  ******************************************************************************/
  #if (BSP_CFG_RTOS == 2)
-uint16_t usb_hstd_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16_t string)
+usb_er_t usb_hstd_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16_t string)
  #else                                 /* (BSP_CFG_RTOS == 2) */
 uint16_t usb_hstd_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16_t string, usb_cb_t complete)
  #endif /* (BSP_CFG_RTOS == 2) */
@@ -2304,7 +2306,7 @@ void usb_hstd_mgr_task (void * stacd)
 
                         /* Set device speed */
  #if USB_IP_EHCI_OHCI == 1
-                        usb_hstd_set_rootport((uint16_t) USB_DEVICE_0, rootport);
+                        usb_hstd_set_rootport((uint16_t) (devaddr + 1), rootport);
  #else                                 /* USB_IP_EHCI_OHCI == 1 */
                         usb_hstd_set_dev_addr(ptr, (uint16_t) USB_DEVICE_0, g_usb_hstd_device_speed[ptr->ip]);
  #endif /* USB_IP_EHCI_OHCI == 1 */

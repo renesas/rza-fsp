@@ -47,7 +47,7 @@
 #include "iodefines/rspi_iodefine.h"
 #include "iodefines/scifa_iodefine.h"
 #include "iodefines/scig_iodefine.h"
-#include "iodefines/sd_mmc_iodefine.h"
+#include "iodefines/sdhi_iodefine.h"
 #include "iodefines/spibsc_iodefine.h"
 #include "iodefines/ssi_iodefine.h"
 #include "iodefines/sysc_iodefine.h"

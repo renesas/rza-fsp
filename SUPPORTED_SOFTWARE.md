@@ -1,6 +1,8 @@
 ## Software Modules Packaged with FSP
 
 ### FSP Top Level Modules
+  * Analog
+    * [ADC Driver on r_adc_c](https://renesas.github.io/fsp/group___a_d_c.html)
   * Connectivity
     * [I2C Master Driver on r_riic_master](https://renesas.github.io/fsp/group___r_i_i_c___m_a_s_t_e_r.html)
     * [I2S Driver on r_ssi](https://renesas.github.io/fsp/group___s_s_i.html)
@@ -14,6 +16,8 @@
     * [External IRQ Driver on r_intc_irq](https://renesas.github.io/fsp/group___i_n_t_c___i_r_q.html)
     * [External IRQ Driver on r_intc_nmi](https://renesas.github.io/fsp/group___i_n_t_c___n_m_i.html)
     * [External IRQ Driver on r_intc_tint](https://renesas.github.io/fsp/group___i_n_t_c___t_i_n_t.html)
+  * Monitoring
+    * [Watchdog (r_wdt)](https://renesas.github.io/fsp/group___w_d_t.html)
   * Networking
     * [FreeRTOS+TCP](https://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/TCP_IP_Configuration.html)
     * [Gigabit Ethernet (r_gether)](https://renesas.github.io/fsp/group___g_e_t_h_e_r.html)

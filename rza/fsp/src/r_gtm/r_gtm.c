@@ -428,6 +428,11 @@ fsp_err_t R_GTM_Close (timer_ctrl_t * const p_ctrl)
 
     p_instance_ctrl->open = 0U;
 
+    /* Remove power to the channel. */
+    R_BSP_MODULE_STOP(FSP_IP_GTM, p_instance_ctrl->p_cfg->channel);
+    R_BSP_MODULE_RSTON(FSP_IP_GTM, p_instance_ctrl->p_cfg->channel);
+    R_BSP_MODULE_CLKOFF(FSP_IP_GTM, p_instance_ctrl->p_cfg->channel);
+
     return FSP_SUCCESS;
 }
 

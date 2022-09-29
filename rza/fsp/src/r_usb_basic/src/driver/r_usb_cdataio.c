@@ -99,7 +99,9 @@ static const uint8_t g_usb_pipe_host[] =
     USB_CFG_HHID_INT_IN,   USB_CFG_HHID_INT_OUT, /* HHID: Address 2 using Hub */
     USB_CFG_HHID_INT_IN2,  USB_NULL,             /* HHID: Address 3 using Hub */
     USB_CFG_HHID_INT_IN3,  USB_NULL,             /* HHID: Address 4 using Hub */
+    USB_CFG_HHID_INT_IN4,  USB_NULL,             /* HHID: Address 4 using Hub */
  #else                                           /* defined(USB_CFG_HHID_USE) */
+    USB_NULL,              USB_NULL,
     USB_NULL,              USB_NULL,
     USB_NULL,              USB_NULL,
     USB_NULL,              USB_NULL,

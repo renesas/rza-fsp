@@ -402,12 +402,11 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
         p_driver->ifclass  = (uint16_t) USB_IFCLS_NOT; /* Interface Class : NO class */
     }
 
+    R_USB_CstdSetTaskPri(USB_HCI_TSK, USB_PRI_1);
     R_USB_CstdSetTaskPri(USB_MGR_TSK, USB_PRI_2);
 
     /* EHCI/OHCI init */
     r_usb_hstd_hci_init(ptr, &cb);
-
-    R_USB_CstdSetTaskPri(USB_HCI_TSK, USB_PRI_1);
 
     /* HUB Open */
  #if USB_CFG_HUB == USB_CFG_ENABLE

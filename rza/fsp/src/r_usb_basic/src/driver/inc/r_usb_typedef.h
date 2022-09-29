@@ -257,7 +257,8 @@ typedef enum e_usb_class_internal
     USB_CLASS_INTERNAL_HMSC,           ///< HMSC Class
     USB_CLASS_INTERNAL_PMSC,           ///< PMSC Class
     USB_CLASS_INTERNAL_REQUEST,        ///< PMSC Class
-    USB_CLASS_INTERNAL_END             ///< USB Class
+    USB_CLASS_INTERNAL_END,            ///< USB Class
+    USB_CLASS_INTERNAL_HUB
 } usb_class_internal_t;
 
 #endif /* R_USB_TYPEDEF_H */

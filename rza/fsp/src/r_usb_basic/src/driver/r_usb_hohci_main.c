@@ -103,8 +103,6 @@ static uint8_t usb_hstd_ohci_get_root_device_speed(st_usb_ohci_hcd_device_data_p
 static void    usb_hstd_ohci_process_paused_ed(usb_utr_t * ptr, st_usb_ohci_hcd_endpoint_descriptor_p_t ed);
 static void    usb_hstd_ohci_remove_ed(usb_utr_t * ptr, st_usb_ohci_hcd_endpoint_p_t endpoint, boolean_t free_ed);
 
-void usb_disconnect_done_queue(usb_utr_t * ptr, uint16_t devadr);
-
 BSP_ALIGN_VARIABLE(4) static st_usb_ohci_hcd_device_data_p_t usb_hstd_ohci_device_data USB_BUFFER_PLACE_IN_SECTION; /* __CC_ARM */
 
 /***********************************************************************************************************************
@@ -127,6 +125,8 @@ uint32_t usb_hstd_ohci_init (usb_utr_t * ptr)
     return USB_OK;
 }                                      /* End of function usb_hstd_ohci_init() */
 
+ #if (USB_UT_MODE == 0)
+
 /***********************************************************************************************************************
  * Function     : Deinitialize OHCI
  * Declaration  : void usb_hstd_ohci_deinit( void )
@@ -138,6 +138,8 @@ void usb_hstd_ohci_deinit (usb_utr_t * ptr)
 {
     usb_hstd_ohci_hw_reset(ptr);       /* H/W reset */
 } /* End of function usb_hstd_ohci_deinit() */
+
+ #endif
 
 /***********************************************************************************************************************
  * Function     : OHCI Detect interrupt

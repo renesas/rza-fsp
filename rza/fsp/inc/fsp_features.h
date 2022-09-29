@@ -52,19 +52,23 @@
 typedef enum e_fsp_ip
 {
     FSP_IP_GTM   = 0,                  ///< General Timer
-    FSP_IP_GPT   = 1,                  ///< General PWM Timer
-    FSP_IP_POEG  = 2,                  ///< Port Output Enable for GPT
     FSP_IP_PORT  = 3,                  ///< I/O Ports
     FSP_IP_IA55  = 4,                  ///< IA55 (Interrupt controller)
     FSP_IP_SCIF  = 5,                  ///< Serial Communications Interface with FIFO
     FSP_IP_RIIC  = 6,                  ///< I2C Bus Interface
     FSP_IP_RSPI  = 7,                  ///< Renesas Serial Peripheral Interface
-    FSP_IP_MHU   = 8,                  ///< Message Handling Unit
     FSP_IP_DMAC  = 9,                  ///< Direct Memory Access Controller
     FSP_IP_SSI   = 10,                 ///< Serial Sound Interface
     FSP_IP_CANFD = 11,                 ///< CANFD Interface (RS-CANFD)
     FSP_IP_ETHER = 12,                 ///< Ethernet MAC Controller
     FSP_IP_EDMAC = 12,                 ///< Ethernet DMA Controller
+    FSP_IP_CRU   = 13,                 ///< Camera Data Receiving Unit
+    FSP_IP_LCDC  = 14,                 ///< LCD Controller
+    FSP_IP_USB   = 15,                 ///< USB 2.0
+    FSP_IP_ADC   = 16,                 ///< A/D Converter
+    FSP_IP_WDT   = 17,                 ///< Watchdog Timer
+    FSP_IP_SDHI  = 18,                 ///< SD/MMC Host Interface
+    FSP_IP_ISU   = 19,                 ///< Image Scaling Unit
 } fsp_ip_t;
 
 typedef void (* fsp_vector_t)(IRQn_Type const irq);

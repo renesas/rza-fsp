@@ -49,12 +49,12 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  ***********************************************************************************************************************/
-st_usb_pipe_t g_usb_hstd_pipe[USB_MAXPIPE + 1U];      /* pipe information */
+st_usb_pipe_t g_usb_hstd_pipe[USB_MAXPIPE + 1U];           /* pipe information */
 
 /***********************************************************************************************************************
  * Static variables and functions
  ***********************************************************************************************************************/
-static uint16_t gs_usb_hstd_dev_addr[USB_MAXDEVADDR]; /* DEVADD table */
+static uint16_t gs_usb_hstd_dev_addr[USB_MAXDEVADDR + 1U]; /* DEVADD table */
 
 /***********************************************************************************************************************
  * Description     : Get End point number from pipe number
@@ -342,7 +342,7 @@ void usb_hstd_a_or_detach_cb (usb_utr_t * p_utr)
     else                               /* Decide USB Line state (DETACH) */
     {
         connect_inf = USB_DETACH;
-        usb_hstd_set_rootport(USB_DEVICEADDR, 0x0000);
+        usb_hstd_set_rootport(USB_DEVICEADDR, p_utr->ip);
         USB_PRINTF0("*** Device address 1 clear.\n");
     }
 
@@ -426,10 +426,7 @@ void usb_hstd_over_current_cb (void * p_utr)
 void usb_hstd_transfer_end_cb (usb_utr_t * ptr, void * p_utr, uint32_t actual_size, uint16_t status)
 {
     st_usb_utr_t * p_mess;
-    uint16_t       devadr = 0;
-    uint16_t       data2  = 0;
-
-    FSP_PARAMETER_NOT_USED(ptr);
+    uint16_t       data2 = 0;
 
     p_mess = (st_usb_utr_t *) p_utr;
 
@@ -442,7 +439,7 @@ void usb_hstd_transfer_end_cb (usb_utr_t * ptr, void * p_utr, uint32_t actual_si
     p_mess->result = status;
 
     /* Callback */
-    p_mess->complete(p_mess, devadr, data2);
+    p_mess->complete(p_mess, ptr->keyword, data2);
 }                                      /* End of function usb_hstd_transfer_end_cb() */
 
 #endif                                 /* USB_IP_EHCI_OHCI == 1 */

@@ -476,9 +476,9 @@ void usb_hstd_mgr_task(void * stacd);
 extern void (* g_usb_hstd_enumaration_process[])(usb_utr_t *, uint16_t, uint16_t);
 
  #if (BSP_CFG_RTOS == 2)
-uint16_t usb_hstd_get_string_desc(usb_utr_t * ptr, uint16_t addr, uint16_t string);
-uint16_t usb_hstd_set_feature(usb_utr_t * ptr, uint16_t addr, uint16_t epnum);
-uint16_t usb_hstd_get_config_desc(usb_utr_t * ptr, uint16_t addr, uint16_t length);
+usb_er_t usb_hstd_get_string_desc(usb_utr_t * ptr, uint16_t addr, uint16_t string);
+usb_er_t usb_hstd_set_feature(usb_utr_t * ptr, uint16_t addr, uint16_t epnum);
+usb_er_t usb_hstd_get_config_desc(usb_utr_t * ptr, uint16_t addr, uint16_t length);
 
  #else                                 /* #if (BSP_CFG_RTOS == 2) */
 uint16_t usb_hstd_get_string_desc(usb_utr_t * ptr, uint16_t addr, uint16_t string, usb_cb_t complete);
@@ -507,7 +507,7 @@ void     usb_hhub_close(usb_utr_t * ptr, uint16_t hubaddr, uint16_t data2);
 void     usb_hhub_registration(usb_utr_t * ptr, usb_hcdreg_t * callback);
 uint16_t usb_hhub_get_hub_information(usb_utr_t * ptr, uint16_t hubaddr, usb_cb_t complete);
 uint16_t usb_hhub_get_port_information(usb_utr_t * ptr, uint16_t hubaddr, uint16_t port, usb_cb_t complete);
-void     usb_hhub_task(usb_vp_int_t stacd);
+void     usb_hhub_task(void);
 uint16_t usb_hhub_get_string_descriptor1(usb_utr_t * ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete);
 uint16_t usb_hhub_get_string_descriptor1check(uint16_t errcheck);
 uint16_t usb_hhub_get_string_descriptor2(usb_utr_t * ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete);
@@ -657,7 +657,7 @@ extern void usb_hcdc_driver_start(usb_utr_t * ptr);
 #endif                                 /* defined(USB_CFG_HCDC_USE) */
 
 #if defined(USB_CFG_HHID_USE)
-extern void usb_hhid_read_complete(usb_utr_t * mess, uint16_t data1, uint16_t data2);
+extern void usb_hhid_read_complete(usb_utr_t * mess, uint16_t devadr, uint16_t data2);
 extern void usb_hhid_write_complete(usb_utr_t * mess, uint16_t data1, uint16_t data2);
 extern void usb_hhid_registration(usb_utr_t * ptr);
 extern void usb_hhid_task(usb_vp_int_t stacd);

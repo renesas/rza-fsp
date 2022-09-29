@@ -41,70 +41,74 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
-#define BSP_FEATURE_CANFD_NUM_CHANNELS              (2U)
+#define BSP_FEATURE_ADC_VALID_CHANNEL_MASK           (0xF)
+#define BSP_FEATURE_ADC_NUM_CHANNELS                 (2U)
 
-#define BSP_FEATURE_CPG_HAS_ICLK                    (1U)
-#define BSP_FEATURE_CPG_HAS_SD0CLK                  (1U)
-#define BSP_FEATURE_CPG_HAS_SD1CLK                  (1U)
-#define BSP_FEATURE_CPG_HAS_P0CLK                   (1U)
-#define BSP_FEATURE_CPG_HAS_P1CLK                   (1U)
-#define BSP_FEATURE_CPG_HAS_P2CLK                   (1U)
-#define BSP_FEATURE_CPG_HAS_I2CLK                   (1U)
-#define BSP_FEATURE_CPG_HAS_M3CLK                   (1U)
-#define BSP_FEATURE_CPG_HAS_HPCLK                   (1U)
+#define BSP_FEATURE_CANFD_NUM_CHANNELS               (2U)
 
-#define BSP_FEATURE_CRU_MAX_CHANNELS                (1U)
+#define BSP_FEATURE_CPG_HAS_ICLK                     (1U)
+#define BSP_FEATURE_CPG_HAS_SD0CLK                   (1U)
+#define BSP_FEATURE_CPG_HAS_SD1CLK                   (1U)
+#define BSP_FEATURE_CPG_HAS_P0CLK                    (1U)
+#define BSP_FEATURE_CPG_HAS_P1CLK                    (1U)
+#define BSP_FEATURE_CPG_HAS_P2CLK                    (1U)
+#define BSP_FEATURE_CPG_HAS_I2CLK                    (1U)
+#define BSP_FEATURE_CPG_HAS_M3CLK                    (1U)
+#define BSP_FEATURE_CPG_HAS_HPCLK                    (1U)
 
-#define BSP_FEATURE_DMAC_MAX_CHANNEL                (16U)
+#define BSP_FEATURE_CRU_MAX_CHANNELS                 (1U)
 
-#define BSP_FEATURE_GTM_MAX_CHANNELS                (3U)
-#define BSP_FEATURE_GTM_VALID_CHANNEL_MASK          (0x7)
+#define BSP_FEATURE_DMAC_MAX_CHANNEL                 (16U)
 
-#define BSP_FEATURE_IIC_VALID_CHANNEL_MASK          (0x0F)
+#define BSP_FEATURE_GTM_MAX_CHANNELS                 (3U)
+#define BSP_FEATURE_GTM_VALID_CHANNEL_MASK           (0x7)
 
-#define BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK     (0xFFU)
-#define BSP_FEATURE_INTC_TINT_VALID_CHANNEL_MASK    (0xFFFFFFFFU)
+#define BSP_FEATURE_IIC_VALID_CHANNEL_MASK           (0x0F)
 
-#define BSP_FEATURE_IOPORT_HAS_ETHERNET             (1U)
-#define BSP_FEATURE_IOPORT_HAS_SD                   (1U)
-#define BSP_FEATURE_IOPORT_HAS_QSPI                 (1U)
-#define BSP_FEATURE_IOPORT_HAS_OCTA                 (1U)
+#define BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK      (0xFFU)
+#define BSP_FEATURE_INTC_TINT_VALID_CHANNEL_MASK     (0xFFFFFFFFU)
 
-#define BSP_FEATURE_IRDA_MAX_CHANNELS               (1U)
+#define BSP_FEATURE_IOPORT_HAS_ETHERNET              (1U)
+#define BSP_FEATURE_IOPORT_HAS_SD                    (1U)
+#define BSP_FEATURE_IOPORT_HAS_QSPI                  (1U)
+#define BSP_FEATURE_IOPORT_HAS_OCTA                  (1U)
 
-#define BSP_FEATURE_ISU_MAX_CHANNELS                (1U)
+#define BSP_FEATURE_IRDA_MAX_CHANNELS                (1U)
 
-#define BSP_FEATURE_LCDC_MAX_CHANNELS               (1U)
+#define BSP_FEATURE_ISU_MAX_CHANNELS                 (1U)
 
-#define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK         (0x01FF)
-#define BSP_FEATURE_MTU3_MAX_CHANNELS               (9U)
-#define BSP_FEATURE_MTU3_UVW_MAX_CHANNELS           (3U)
+#define BSP_FEATURE_LCDC_MAX_CHANNELS                (1U)
 
-#define BSP_FEATURE_RIIC_MAX_CHANNELS               (4U)
+#define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK          (0x01FF)
+#define BSP_FEATURE_MTU3_MAX_CHANNELS                (9U)
+#define BSP_FEATURE_MTU3_UVW_MAX_CHANNELS            (3U)
 
-#define BSP_FEATURE_RSPI_VALID_CHANNELS_MASK        (0x7)
-#define BSP_FEATURE_RSPI_CLOCK                      (FSP_PRIV_CLOCK_P0CLK)
-#define BSP_FEATURE_RSPI_MAX_CHANNELS               (3U)
+#define BSP_FEATURE_RIIC_MAX_CHANNELS                (4U)
 
-#define BSP_FEATURE_SDHI_MAX_CHANNELS               (2U)
+#define BSP_FEATURE_RSPI_VALID_CHANNELS_MASK         (0x7)
+#define BSP_FEATURE_RSPI_CLOCK                       (FSP_PRIV_CLOCK_P0CLK)
+#define BSP_FEATURE_RSPI_MAX_CHANNELS                (3U)
 
-#define BSP_FEATURE_SCI_MAX_CHANNELS                (2U)
+#define BSP_FEATURE_SDHI_MAX_CHANNELS                (2U)
+#define BSP_FEATURE_SDHI_MIN_CLOCK_DIVISION_SHIFT    (0U)
 
-#define BSP_FEATURE_SCIF_CHANNELS                   (0x1FU)
-#define BSP_FEATURE_SCIF_CHANNELS_HAS_RTSCTS        (0x07U)
-#define BSP_FEATURE_SCIF_CLOCK                      (FSP_PRIV_CLOCK_P0CLK)
-#define BSP_FEATURE_SCIF_MAX_CHANNELS               (5U)
+#define BSP_FEATURE_SCI_MAX_CHANNELS                 (2U)
 
-#define BSP_FEATURE_SSI_FIFO_NUM_STAGES             (32U)
-#define BSP_FEATURE_SSI_VALID_CHANNEL_MASK          (0x0FU)
-#define BSP_FEATURE_SSI_MAX_CHANNELS                (4U)
+#define BSP_FEATURE_SCIF_CHANNELS                    (0x1FU)
+#define BSP_FEATURE_SCIF_CHANNELS_HAS_RTSCTS         (0x07U)
+#define BSP_FEATURE_SCIF_CLOCK                       (FSP_PRIV_CLOCK_P0CLK)
+#define BSP_FEATURE_SCIF_MAX_CHANNELS                (5U)
 
-#define BSP_FEATURE_TSU_MAX_CHANNELS                (1U)
+#define BSP_FEATURE_SSI_FIFO_NUM_STAGES              (32U)
+#define BSP_FEATURE_SSI_VALID_CHANNEL_MASK           (0x0FU)
+#define BSP_FEATURE_SSI_MAX_CHANNELS                 (4U)
 
-#define BSP_FEATURE_GETHER_MAX_CHANNELS             (2U)
+#define BSP_FEATURE_TSU_MAX_CHANNELS                 (1U)
 
-#define BSP_FEATURE_WDT_MAX_CHANNELS                (1U)
+#define BSP_FEATURE_GETHER_MAX_CHANNELS              (2U)
 
-#define BSP_FEATURE_TZ_HAS_TRUSTZONE                (0U)
+#define BSP_FEATURE_WDT_MAX_CHANNELS                 (1U)
+
+#define BSP_FEATURE_TZ_HAS_TRUSTZONE                 (0U)
 
 #endif                                 /* BSP_FEATURE_H */

@@ -176,5 +176,6 @@ st_usb_hci_device_t * usb_hstd_hci_alloc_dev_info(void);
 uint32_t              usb_hstd_hci_get_pollrate(st_usb_hci_tr_req_t * tr_req);
 void                  usb_hstd_hci_lock_resouce(void);
 void                  usb_hstd_hci_unlock_resouce(void);
+void                  usb_disconnect_done_queue(usb_utr_t * ptr, uint16_t devadr);
 
 #endif                                 /* R_USB_HHCILOCAL_H */

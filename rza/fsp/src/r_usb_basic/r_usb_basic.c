@@ -67,11 +67,16 @@
  #include "r_dmac.h"
 #endif
 
+#if USB_IP_EHCI_OHCI == 1
+ #include "r_usb_hhci_local.h"
+#endif
+
 /******************************************************************************
  * Macro definitions
  ******************************************************************************/
 #define USB_VALUE_100    (100)
 #define USB_VALUE_7FH    (0x7F)
+#define USB_VALUE_80H    (0x80)
 #define USB_VALUE_FFH    (0xFF)
 
 /******************************************************************************
@@ -619,7 +624,6 @@ fsp_err_t R_USB_Close (usb_ctrl_t * const p_api_ctrl)
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
     usb_info_t          info;
-    uint8_t             ip;
     uint8_t             dev_addr;
     usb_instance_ctrl_t ctrl;
     usb_utr_t           utr;
@@ -678,6 +682,17 @@ fsp_err_t R_USB_Close (usb_ctrl_t * const p_api_ctrl)
     }
 #endif                                 /* USB_CFG_PARAM_CHECKING_ENABLE */
 
+#if USB_IP_EHCI_OHCI == 1
+ #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+    utr.ip  = p_ctrl->module_number;
+    utr.ipp = usb_hstd_get_usb_ip_adr(utr.ip);
+
+    /* EHCI/OHCI module stop */
+    usb_hstd_ehci_deinit(&utr);
+    usb_hstd_ohci_deinit(&utr);
+ #endif                                /* #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+#endif                                 /* #if USB_IP_EHCI_OHCI == 1 */
+
     ret_code = usb_module_stop(p_ctrl->module_number);
     if (FSP_SUCCESS == ret_code)
     {
@@ -686,23 +701,29 @@ fsp_err_t R_USB_Close (usb_ctrl_t * const p_api_ctrl)
         if (USB_MODE_HOST == g_usb_usbmode[p_ctrl->module_number])
         {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-            utr.ip  = p_ctrl->module_number;
-            utr.ipp = usb_hstd_get_usb_ip_adr(utr.ip);
-
             usb_hstd_driver_release(&utr, class_code);
 
-            /* WAIT_LOOP */
-            for (ip = 0; ip < USB_NUM_USBIP; ip++)
+            for (dev_addr = 1; dev_addr < (USB_MAXDEVADDR + 1); dev_addr++)
             {
-                for (dev_addr = 1; dev_addr < (USB_MAXDEVADDR + 1); dev_addr++)
+                ctrl.module_number  = p_ctrl->module_number;
+                ctrl.device_address = dev_addr;
+                ctrl.type           = (usb_class_t) (p_ctrl->type + USB_VALUE_80H);
+
+                R_USB_InfoGet(&ctrl, &info, ctrl.device_address);
+                if (USB_NULL != info.speed)
                 {
-                    ctrl.module_number  = ip;
-                    ctrl.device_address = dev_addr;
-                    ctrl.type           = p_ctrl->type;
-                    R_USB_InfoGet(&ctrl, &info, ctrl.device_address);
-                    if ((USB_NULL != info.speed) && (ctrl.type == info.class_type))
+                    if ((USB_CLASS_HHID == ctrl.type) && (USB_CLASS_PHID == info.class_type))
                     {
-                        usb_hstd_clr_pipe_table(ip, dev_addr);
+                        usb_hstd_clr_pipe_table(ctrl.module_number, dev_addr);
+                        R_USB_HstdClearPipe(dev_addr);
+                    }
+                    else if ((USB_CLASS_HUB == info.class_type))
+                    {
+                        R_USB_HstdClearPipe(dev_addr);
+                    }
+                    else
+                    {
+                        /* None */
                     }
                 }
             }
@@ -1407,6 +1428,12 @@ fsp_err_t R_USB_InfoGet (usb_ctrl_t * const p_api_ctrl, usb_info_t * p_info, uin
             case USB_IFCLS_VEN:
             {
                 p_info->class_type = (uint8_t) USB_CLASS_PVND;
+                break;
+            }
+
+            case USB_IFCLS_HUB:
+            {
+                p_info->class_type = (uint8_t) USB_CLASS_HUB;
                 break;
             }
 

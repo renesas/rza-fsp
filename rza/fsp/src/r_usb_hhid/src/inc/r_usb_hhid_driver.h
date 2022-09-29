@@ -45,7 +45,7 @@ FSP_HEADER
 #define USB_HID_SET_DT_TYPE(v)    ((v) << 8)
 
 #define USB_HHID_CLSDATASIZE             (512)
-#define USB_MAX_DEVICE                   (3) /* 1-3 */
+#define USB_MAX_DEVICE                   (4) /* 1-4 */
 
 #if (BSP_CFG_RTOS)
 
@@ -97,15 +97,15 @@ typedef enum
 /******************************************************************************
  * Exported global variables
  ******************************************************************************/
-extern uint16_t  g_usb_hhid_protocol[USB_NUM_USBIP][USB_MAXDEVADDR];        /* HID Device protocol(Mouse/Keyboard) */
-extern uint16_t  g_usb_hhid_num_endpoint[USB_NUM_USBIP][USB_MAXDEVADDR];    /* Num Endpoints */
-extern uint16_t  g_usb_hhid_outpipe_support[USB_NUM_USBIP][USB_MAXDEVADDR]; /* OUT pipe support */
-extern uint16_t  g_usb_hhid_devaddr[];                                      /* Device Address */
-extern uint16_t  g_usb_hhid_speed[];                                        /* Device speed */
-extern uint16_t  g_usb_hhid_enum_seq[];                                     /* Enumeration Sequence */
-extern uint8_t * g_p_usb_hhid_interface_table[];                            /* Interface Descriptor Table */
-extern uint8_t * g_p_usb_hhid_device_table[];                               /* Device Descriptor Table */
-extern uint8_t * g_p_usb_hhid_config_table[];                               /* Configuration Descriptor Table */
+extern uint16_t  g_usb_hhid_protocol[USB_NUM_USBIP][USB_MAXDEVADDR + 1U];        /* HID Device protocol(Mouse/Keyboard) */
+extern uint16_t  g_usb_hhid_num_endpoint[USB_NUM_USBIP][USB_MAXDEVADDR + 1U];    /* Num Endpoints */
+extern uint16_t  g_usb_hhid_outpipe_support[USB_NUM_USBIP][USB_MAXDEVADDR + 1U]; /* OUT pipe support */
+extern uint16_t  g_usb_hhid_devaddr[];                                           /* Device Address */
+extern uint16_t  g_usb_hhid_speed[];                                             /* Device speed */
+extern uint16_t  g_usb_hhid_enum_seq[];                                          /* Enumeration Sequence */
+extern uint8_t * g_p_usb_hhid_interface_table[];                                 /* Interface Descriptor Table */
+extern uint8_t * g_p_usb_hhid_device_table[];                                    /* Device Descriptor Table */
+extern uint8_t * g_p_usb_hhid_config_table[];                                    /* Configuration Descriptor Table */
 
 /*****************************************************************************
  * Public Functions

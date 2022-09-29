@@ -31,7 +31,7 @@
     .cfi_startproc
 R_MMU_GetTranslationTableBaseAddress:
 
-    MRS x1, TTBR0_EL3
+    MRS x0, TTBR0_EL3
 
     RET
     .cfi_endproc

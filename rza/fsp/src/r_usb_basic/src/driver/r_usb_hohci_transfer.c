@@ -794,6 +794,7 @@ void usb_hstd_ohci_complete_transfer_request (usb_utr_t * ptr, st_usb_ohci_reque
 
     p_tr_req->bit.enable = FALSE;
 
+    ptr->keyword = p_tr_req->bit.devadrs;
     g_usb_hstd_hci_callback.tr_end_cb(ptr, p_tr_req->utr_p, p_tr_req->actual_size, status);
 }
 

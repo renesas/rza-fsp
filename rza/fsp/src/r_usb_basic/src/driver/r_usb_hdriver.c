@@ -451,7 +451,6 @@ void usb_hstd_mgr_snd_mbx (usb_utr_t * ptr, uint16_t msginfo, uint16_t dat, uint
 {
     usb_mh_t        p_blf;
     usb_er_t        err;
-    usb_er_t        err2;
     usb_mgrinfo_t * mp;
 
     /* Get memory pool blk */
@@ -478,12 +477,9 @@ void usb_hstd_mgr_snd_mbx (usb_utr_t * ptr, uint16_t msginfo, uint16_t dat, uint
         if (USB_OK != err)
         {
             USB_PRINTF1("### hMgrSndMbx snd_msg error (%ld)\n", err);
-            err2 = USB_REL_BLK(USB_MGR_MPL, (usb_mh_t) mp);
-            if (USB_OK != err2)
-            {
-                USB_PRINTF1("### hMgrSndMbx rel_blk error (%ld)\n", err2);
-            }
         }
+
+        USB_REL_BLK(USB_MGR_MPL, p_blf);
     }
     else
     {

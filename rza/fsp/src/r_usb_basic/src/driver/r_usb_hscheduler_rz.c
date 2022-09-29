@@ -32,6 +32,7 @@
  * Includes   <System Includes> , "Project Includes"
  ***********************************************************************************************************************/
 
+#include "r_usb_basic.h"
 #include "r_usb_basic_local.h"
 #if (BSP_CFG_RTOS == 2)
  #include "r_usb_cstd_rtos.h"

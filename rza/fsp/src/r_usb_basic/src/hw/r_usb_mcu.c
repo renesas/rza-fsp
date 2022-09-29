@@ -327,17 +327,42 @@ fsp_err_t usb_module_start (uint8_t ip_type)
 #if defined(BSP_MCU_GROUP_RZA3UL)
 fsp_err_t usb_module_stop (uint8_t ip_type)
 {
-    FSP_PARAMETER_NOT_USED(ip_type);
+    fsp_err_t result = FSP_ERR_USB_PARAMETER;
 
-    if (R_MSTP->PERI_COM_b.MHUSB2F == 1)
+    if (1 == ip_type)
     {
-        return FSP_ERR_USB_PARAMETER;
+        /* USB1 Ch */
+        if (R_MSTP->PERI_COM_b.MHUSB21 == 1)
+        {
+            /* None */
+        }
+        else
+        {
+            R_BSP_MODULE_STOP(FSP_IP_USB1, 0);
+            result = FSP_SUCCESS;
+        }
+    }
+    else
+    {
+        /* USB0 Ch */
+        if ((R_MSTP->PERI_COM_b.MHUSB2H == 1) && (R_MSTP->PERI_COM_b.MHUSB2F == 1))
+        {
+            /* None */
+        }
+        else
+        {
+            R_BSP_MODULE_STOP(FSP_IP_USB0, 0);
+            result = FSP_SUCCESS;
+        }
     }
 
-    /* Disable power for USBA */
-    R_MSTP->PERI_COM_b.MHUSB2F = 1;
+    if ((R_MSTP->PERI_COM_b.MHUSB2H == 1) && (R_MSTP->PERI_COM_b.MHUSB2F == 1) && (R_MSTP->PERI_COM_b.MHUSB21 == 1))
+    {
+        R_BSP_MODULE_CLKOFF(FSP_IP_USBPHY, 0);
+        R_BSP_MODULE_STOP(FSP_IP_USBPHY, 0);
+    }
 
-    return FSP_SUCCESS;
+    return result;
 }
 
 #else                                  /* BSP_MCU_GROUP_RZT2M == 1 */

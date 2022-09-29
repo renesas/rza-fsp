@@ -1638,6 +1638,11 @@ uint8_t usb_hstd_get_pipe_no (uint16_t ip_no, uint16_t address, uint16_t usb_cla
                             break;
                         }
 
+                        case 5:        /* Hub downport device4 */
+                        {
+                            pipe_no = USB_CFG_HHID_INT_IN4;
+                        }
+
                         default:
                         {
                             break;

@@ -69,9 +69,9 @@ const uint16_t g_usb_hhid_devicetpl[] =
     USB_NOVENDOR, USB_NOPRODUCT                                                    /* Vendor ID, Product ID */
 };
 
-uint16_t  g_usb_hhid_protocol[USB_NUM_USBIP][USB_MAXDEVADDR];                      /* HID Device protocol(Mouse/Keyboard) */
-uint16_t  g_usb_hhid_num_endpoint[USB_NUM_USBIP][USB_MAXDEVADDR];                  /* Num Endpoints */
-uint16_t  g_usb_hhid_outpipe_support[USB_NUM_USBIP][USB_MAXDEVADDR];               /* OUT pipe support */
+uint16_t  g_usb_hhid_protocol[USB_NUM_USBIP][USB_MAXDEVADDR + 1U];                 /* HID Device protocol(Mouse/Keyboard) */
+uint16_t  g_usb_hhid_num_endpoint[USB_NUM_USBIP][USB_MAXDEVADDR + 1U];             /* Num Endpoints */
+uint16_t  g_usb_hhid_outpipe_support[USB_NUM_USBIP][USB_MAXDEVADDR + 1U];          /* OUT pipe support */
 uint8_t   g_usb_hhid_string_data[USB_NUM_USBIP][USB_HHID_CLSDATASIZE] USB_BUFFER_PLACE_IN_SECTION;
 uint16_t  g_usb_hhid_devaddr[USB_NUM_USBIP];                                       /* Device Address */
 uint16_t  g_usb_hhid_enum_seq[USB_NUM_USBIP];                                      /* Enumeration Sequence */
@@ -118,9 +118,10 @@ static void usb_hhid_check_result (usb_utr_t * ptr, uint16_t unused, uint16_t st
         if (USB_OK != err)
         {
             /* error */
-            USB_REL_BLK(USB_HHID_MPL, (usb_mh_t) p_blf);
             USB_PRINTF0("### usb_open_hstd function snd_msg error\n");
         }
+
+        USB_REL_BLK(USB_HHID_MPL, p_blf);
     }
     else
     {
@@ -636,6 +637,7 @@ void usb_hid_detach (usb_utr_t * ptr, uint16_t devadr, uint16_t data2)
     FSP_PARAMETER_NOT_USED(data2);
 
     usb_hstd_clr_pipe_table(ptr->ip, devadr);
+    R_USB_HstdClearPipe(devadr);
     ctrl.module_number  = ptr->ip;           /* Module number setting */
     ctrl.device_address = (uint8_t) devadr;
     ctrl.type           = USB_CLASS_HHID;
@@ -680,17 +682,20 @@ void usb_hid_resume_complete (usb_utr_t * ptr, uint16_t devadr, uint16_t data2)
  *                 : uint16_t     data2   : Not used
  * Return value    : none
  ******************************************************************************/
-void usb_hhid_read_complete (usb_utr_t * mess, uint16_t data1, uint16_t data2)
+void usb_hhid_read_complete (usb_utr_t * mess, uint16_t devadr, uint16_t data2)
 {
     usb_instance_ctrl_t ctrl;
-    FSP_PARAMETER_NOT_USED(data1);
     FSP_PARAMETER_NOT_USED(data2);
 
-    ctrl.module_number  = mess->ip;                  /* Module number setting */
-    ctrl.pipe           = (uint8_t) (mess->keyword); /* Pipe number setting */
+    ctrl.module_number = mess->ip;                  /* Module number setting */
+    ctrl.pipe          = (uint8_t) (mess->keyword); /* Pipe number setting */
+#if USB_IP_EHCI_OHCI == 0
     ctrl.device_address = (uint8_t) g_usb_hstd_device_addr[mess->ip];
-    ctrl.type           = USB_CLASS_HHID;            /* hid Data class  */
-    ctrl.data_size      = mess->read_req_len - mess->tranlen;
+#else /* #if USB_IP_EHCI_OHCI == 0 */
+    ctrl.device_address = (uint8_t) (devadr);
+#endif                                 /* #if USB_IP_EHCI_OHCI == 0 */
+    ctrl.type      = USB_CLASS_HHID;   /* hid Data class  */
+    ctrl.data_size = mess->read_req_len - mess->tranlen;
 
     switch (mess->status)
     {
@@ -803,16 +808,21 @@ void usb_hhid_registration (usb_utr_t * ptr)
         usb_hstd_driver_registration(ptr, &driver);             /* Host HID class driver registration. */
     }
 
+ #if (BSP_CFG_RTOS == 2)
+    R_USB_CstdSetTaskPri(USB_HHID_TSK, USB_PRI_4);
+    R_USB_CstdSetTaskPri(USB_HUB_TSK, USB_PRI_3);
+ #endif                                           /* #if (BSP_CFG_RTOS == 2) */
+
  #if (BSP_CFG_RTOS == 0)
-    usb_cstd_set_task_pri(USB_HUB_TSK, USB_PRI_3);              /* Hub Task Priority set */
- #endif /* (BSP_CFG_RTOS == 0) */
-    usb_hhub_registration(ptr, (usb_hcdreg_t *) USB_NULL);      /* Hub registration. */
-#else                                                           /* USB_CFG_HUB == USB_CFG_ENABLE */
-    usb_hstd_driver_registration(ptr, &driver);                 /* Host HID class driver registration. */
+    R_USB_CstdSetTaskPri(USB_HUB_TSK, USB_PRI_3); /* Hub Task Priority set */
+ #endif                                           /* (BSP_CFG_RTOS == 0) */
+    usb_hhub_registration(ptr, &driver);          /* Hub registration. */
+#else                                             /* USB_CFG_HUB == USB_CFG_ENABLE */
+    usb_hstd_driver_registration(ptr, &driver);   /* Host HID class driver registration. */
  #if (BSP_CFG_RTOS == 2)
     R_USB_CstdSetTaskPri(USB_HHID_TSK, USB_PRI_3);
- #endif /* #if (BSP_CFG_RTOS == 2) */
-#endif  /* USB_CFG_HUB == USB_CFG_ENABLE */
+ #endif                                           /* #if (BSP_CFG_RTOS == 2) */
+#endif                                            /* USB_CFG_HUB == USB_CFG_ENABLE */
 }
 
 /******************************************************************************
@@ -833,7 +843,7 @@ void usb_hhid_driver_start (usb_utr_t * ptr)
     if (0 == (init & (1 << ptr->ip)))
     {
         /* WAIT_LOOP */
-        for (i = 0; i < (USB_MAXDEVADDR); i++)
+        for (i = 0; i < (USB_MAXDEVADDR + 1U); i++)
         {
             g_usb_hhid_protocol[ptr->ip][i]        = 0;
             g_usb_hhid_num_endpoint[ptr->ip][i]    = 0;
@@ -936,9 +946,9 @@ void usb_hhid_class_check (usb_utr_t * ptr, uint16_t ** table)
     g_usb_hhid_num_endpoint[ptr->ip][g_usb_hhid_devaddr[ptr->ip]] =
         g_p_usb_hhid_interface_table[ptr->ip][USB_IF_B_NUMENDPOINTS];    /* Num Endpoints */
 
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if USB_IP_EHCI_OHCI == 1
     R_USB_HstdSetPipe(table);
-#endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
+#endif /* #if USB_IP_EHCI_OHCI == 1 */
 
     /* Enumeration Sequence String Descriptor #0 receive request */
     g_usb_hhid_enum_seq[ptr->ip] = (uint16_t) USB_HHID_ENUM_STR_DT0_REQ;

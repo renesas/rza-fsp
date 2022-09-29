@@ -127,6 +127,7 @@ static st_usb_hci_manage_info_t usb_hci_manage_info;
 static uint16_t                 usb_hci_tmp_addr;
 
 uint16_t g_usb_msg_check;
+uint16_t g_usb_port_status[USB_NUM_USBIP][2];
 
 /* save register */
 uint32_t usb_hcrh_port_status1;
@@ -134,7 +135,8 @@ uint32_t usb_hcrh_descriptor_a;
 uint32_t usb_hcrh_descriptor_b;
 uint32_t usb_portsc1;
 
-BSP_ALIGN_VARIABLE(4) static st_usb_hci_device_t usb_hci_device_info[USB_HCI_DEVICE_NUM] USB_BUFFER_PLACE_IN_SECTION;
+BSP_ALIGN_VARIABLE(4) static st_usb_hci_device_t usb_hci_device_info[USB_HCI_DEVICE_NUM +
+                                                                     1] USB_BUFFER_PLACE_IN_SECTION;
 BSP_ALIGN_VARIABLE(4) st_usb_hci_tr_req_t g_usb_hstd_hci_transfer_request[USB_HCI_TRREQ_NUM] USB_BUFFER_PLACE_IN_SECTION;
 BSP_ALIGN_VARIABLE(4) static uint32_t usb_hci_setup_buffer[USB_HCI_TRREQ_NUM][USB_HCI_SETUP_DATA_SIZE /
                                                                               sizeof(uint32_t)]
@@ -154,9 +156,9 @@ void r_usb_hstd_hci_task (void)
     usb_er_t                 err;
     st_usb_hci_task_info_t * p_task_info;
     uint32_t                 message;
-    uint32_t                 data1;
-    uint32_t                 data2;
-    uint32_t                 data3;
+    uint32_t                 data1 = 0;
+    uint32_t                 data2 = 0;
+    uint32_t                 data3 = 0;
 
     /* receive message */
 
@@ -196,6 +198,19 @@ void r_usb_hstd_hci_task (void)
         {
             case USB_HCI_MESS_EHCI_PORT_CHANGE_DETECT:
             {
+                /* Check PORTSC1_b.CurrentConnectStatus */
+                if ((0 == g_usb_port_status[ptr->ip][0]) && (0 == g_usb_port_status[ptr->ip][1]))
+                {
+                    if (USB_IP1 == ptr->ip)
+                    {
+                        ptr->ipp1->USBINTR_b.PortChangeDetectEnable = 0; /* Port Change Detect Disable  */
+                    }
+                    else
+                    {
+                        ptr->ipp->USBINTR_b.PortChangeDetectEnable = 0;  /* Port change detect Disable  */
+                    }
+                }
+
                 USB_HCI_PRINTF0("USB_HCI_MESS_EHCI_PORT_CHANGE_DETECT \n");
                 usb_hstd_ehci_int_port_change(ptr);
                 break;
@@ -1638,7 +1653,7 @@ void usb_hub_diconnect_delay (void)
     uint16_t                 i              = 0;
     static volatile uint16_t usb_delay_flag = 0;
 
-    while (i < USB_MAXDEVADDR)
+    while (i < USB_MAXDEVADDR + 1U)
     {
         if (USB_IFCLS_HUB == g_usb_hstd_device_drv[0][i].ifclass)
         {

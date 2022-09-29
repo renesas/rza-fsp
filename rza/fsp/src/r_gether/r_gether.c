@@ -131,16 +131,6 @@
 
 #define GETHER_ADDRESS_UPPER_BITS_MASK                   (0xFFFFFFFF00000000ULL)
 #define GETHER_ADDRESS_4BYTE_MASK                        (0xFFFFFFFFFFFFFFFCULL)
-#define GETHER_SHIFT_UPPER_BITS                          (32UL)
-#define GETHER_SHIFT_SYS_AOF1_ETHER0_MASK                (0xFFFF3333U)
-#define GETHER_SHIFT_SYS_AOF1_ETHER0_SHIFT               (0U)
-#define GETHER_SHIFT_SYS_AOF1_ETHER1_MASK                (0x3333FFFFU)
-#define GETHER_SHIFT_SYS_AOF1_ETHER1_SHIFT               (16U)
-#define GETHER_SHIFT_SYS_AOF1_OFS_MASK                   (3U)
-#define GETHER_SHIFT_SYS_AOF1_OFS00                      (2U)
-#define GETHER_SHIFT_SYS_AOF1_OFS01                      (6U)
-#define GETHER_SHIFT_SYS_AOF1_OFS10                      (10U)
-#define GETHER_SHIFT_SYS_AOF1_OFS11                      (14U)
 
 #define GETHER_MASK_10BITS                               (0x3FFU)
 #define GETHER_MASK_12BITS                               (0xFFFU)
@@ -387,31 +377,6 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
         FSP_ERROR_RETURN(0, FSP_ERR_INVALID_ARGUMENT);
     }
 
-    /* set SYS_AOF1 */
-    if (sizeof(address_size_t) > sizeof(uint32_t))
-    {
-        uint32_t address_offset = (uint32_t) ((address_size_t) g_gether_basic_descriptors >> GETHER_SHIFT_UPPER_BITS);
-        uint32_t sys_aof1       = R_SYSC->SYS_AOF1;
-        address_offset &= GETHER_SHIFT_SYS_AOF1_OFS_MASK;
-        address_offset  = (address_offset << GETHER_SHIFT_SYS_AOF1_OFS00) |
-                          (address_offset << GETHER_SHIFT_SYS_AOF1_OFS01) |
-                          (address_offset << GETHER_SHIFT_SYS_AOF1_OFS10) |
-                          (address_offset << GETHER_SHIFT_SYS_AOF1_OFS11);
-
-        if (ioprt_ch == IOPORT_ETHERNET_CHANNEL_0)
-        {
-            sys_aof1 &= GETHER_SHIFT_SYS_AOF1_ETHER0_MASK;
-            sys_aof1 |= address_offset << GETHER_SHIFT_SYS_AOF1_ETHER0_SHIFT;
-        }
-        else                           /* ( ioprt_ch == IOPORT_ETHERNET_CHANNEL_1 ) */
-        {
-            sys_aof1 &= GETHER_SHIFT_SYS_AOF1_ETHER1_MASK;
-            sys_aof1 |= address_offset << GETHER_SHIFT_SYS_AOF1_ETHER1_SHIFT;
-        }
-
-        R_SYSC->SYS_AOF1 = sys_aof1;
-    }
-
     /* Initialize configuration of Ethernet module. */
     p_instance_ctrl->p_gether_cfg = p_cfg;
 
@@ -554,7 +519,7 @@ fsp_err_t R_GETHER_BufferRelease (ether_ctrl_t * const p_ctrl)
                         FSP_ERR_ETHER_ERROR_MAGIC_PACKET_MODE);
 
     /* Move to next descriptor */
-    p_instance_ctrl->p_rx_descriptor->ds  = p_instance_ctrl->p_gether_cfg->ether_buffer_size & GETHER_MASK_10BITS;
+    p_instance_ctrl->p_rx_descriptor->ds  = p_instance_ctrl->p_gether_cfg->ether_buffer_size & GETHER_MASK_12BITS;
     p_instance_ctrl->p_rx_descriptor->ti  = 0;
     p_instance_ctrl->p_rx_descriptor->ei  = 0;
     p_instance_ctrl->p_rx_descriptor->ps  = 0;
@@ -575,9 +540,10 @@ fsp_err_t R_GETHER_BufferRelease (ether_ctrl_t * const p_ctrl)
         (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINK))
     {
         /* Move to next descriptor */
-        p_instance_ctrl->p_rx_descriptor =
-            (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
-                      (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+        uint64_t pa = (uint64_t)
+                      (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
+                                (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+        R_MMU_PAtoVA(&g_mmu_ctrl, pa, (void *) &p_instance_ctrl->p_rx_descriptor);
     }
 
     {
@@ -726,14 +692,11 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
             p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
             /* Initialize the transmit and receive descriptor */
-            memset(p_instance_ctrl->p_gether_cfg->p_rx_descriptors,
-                   0x00,
+            memset(p_instance_ctrl->p_gether_cfg->p_rx_descriptors, 0x00,
                    sizeof(gether_instance_rx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_rx_descriptors + 1));
-            memset(p_instance_ctrl->p_gether_cfg->p_tx_descriptors,
-                   0x00,
+            memset(p_instance_ctrl->p_gether_cfg->p_tx_descriptors, 0x00,
                    sizeof(gether_instance_tx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_tx_descriptors + 1));
-            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel],
-                   0x00,
+            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel], 0x00,
                    sizeof(g_gether_basic_descriptors[0]));
 
             /* Initialize the Ethernet buffer */
@@ -790,8 +753,13 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
                               (1 << R_ETHER_CSR2_RICMP4_Pos);
 
             /* Set the base address of descriptors */
-            p_reg_ether->DBAT =
-                (uint32_t) (address_size_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel];
+            {
+                uint64_t pa = 0;
+                R_MMU_VAtoPA(&g_mmu_ctrl,
+                             (uint64_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel],
+                             &pa);
+                p_reg_ether->DBAT = (uint32_t) (address_size_t) pa;
+            }
 
             /* Set RX */
             p_reg_ether->RCR = GETHER_RCR_DEFAULT_VALUE;
@@ -1193,9 +1161,11 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
                  (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
             /* Move to next descriptor */
-            p_instance_ctrl->p_rx_descriptor =
-                (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
-                          (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+            uint64_t pa = (uint64_t)
+                          (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor &
+                                     GETHER_ADDRESS_UPPER_BITS_MASK) |
+                                    (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+            R_MMU_PAtoVA(&g_mmu_ctrl, pa, (void *) &p_instance_ctrl->p_rx_descriptor);
         }
         else
         {
@@ -1525,6 +1495,7 @@ static void gether_reset_mac (R_ETHER0_Type * const p_reg)
 static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
+    uint64_t pa     = 0;
     uint32_t tx_num = p_instance_ctrl->p_gether_cfg->num_tx_descriptors;
     ether_instance_extend_t * p_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
@@ -1548,9 +1519,9 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
         p_instance_ctrl->p_rx_descriptor[i].msc = 0;
         p_instance_ctrl->p_rx_descriptor[i].ds  = p_instance_ctrl->p_gether_cfg->ether_buffer_size &
                                                   GETHER_MASK_12BITS;
-        p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t) p_instance_ctrl->p_gether_cfg->
-                                                   pp_ether_buffers[tx_num + i];
-        p_instance_ctrl->p_rx_descriptor[i].dt = GETHER_DESCRIPTOR_TYPE_FEMPTY;
+        R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) p_instance_ctrl->p_gether_cfg->pp_ether_buffers[tx_num + i], &pa);
+        p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t) pa;
+        p_instance_ctrl->p_rx_descriptor[i].dt   = GETHER_DESCRIPTOR_TYPE_FEMPTY;
 
         /* Clean cache after writing descriptor */
         R_BSP_CACHE_CleanRange((address_size_t) (&p_instance_ctrl->p_rx_descriptor[i]),
@@ -1562,15 +1533,15 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
             (p_instance_ctrl->p_gether_cfg->ether_buffer_size + 3) & GETHER_ADDRESS_4BYTE_MASK);
     }
 
-    p_instance_ctrl->p_rx_descriptor[i].die  = 0;
-    p_instance_ctrl->p_rx_descriptor[i].ti   = 0;
-    p_instance_ctrl->p_rx_descriptor[i].ei   = 0;
-    p_instance_ctrl->p_rx_descriptor[i].ps   = 0;
-    p_instance_ctrl->p_rx_descriptor[i].msc  = 0;
-    p_instance_ctrl->p_rx_descriptor[i].ds   = 0;
-    p_instance_ctrl->p_rx_descriptor[i].dptr =
-        (uint32_t) (address_size_t) &(p_instance_ctrl->p_rx_descriptor[0]);
-    p_instance_ctrl->p_rx_descriptor[i].dt = GETHER_DESCRIPTOR_TYPE_LINKFIX;
+    p_instance_ctrl->p_rx_descriptor[i].die = 0;
+    p_instance_ctrl->p_rx_descriptor[i].ti  = 0;
+    p_instance_ctrl->p_rx_descriptor[i].ei  = 0;
+    p_instance_ctrl->p_rx_descriptor[i].ps  = 0;
+    p_instance_ctrl->p_rx_descriptor[i].msc = 0;
+    p_instance_ctrl->p_rx_descriptor[i].ds  = 0;
+    R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_ctrl->p_rx_descriptor[0]), &pa);
+    p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t) pa;
+    p_instance_ctrl->p_rx_descriptor[i].dt   = GETHER_DESCRIPTOR_TYPE_LINKFIX;
 
     /* Clean cache after writing descriptor */
     R_BSP_CACHE_CleanRange((address_size_t) (&p_instance_ctrl->p_rx_descriptor[i]),
@@ -1587,6 +1558,7 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
 static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
+    uint64_t pa = 0;
     ether_instance_extend_t * p_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
     /* Initialize the descriptors */
@@ -1601,12 +1573,14 @@ static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ct
     /* Initialize Base descriptors */
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_TX_OFFSET].dt =
         GETHER_DESCRIPTOR_TYPE_LINKFIX;
+    R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_extend->p_tx_descriptor[0]), &pa);
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_TX_OFFSET].dptr =
-        (uint32_t) (address_size_t) &(p_instance_extend->p_tx_descriptor[0]);
+        (uint32_t) (address_size_t) pa;
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_RX_OFFSET].dt =
         GETHER_DESCRIPTOR_TYPE_LINKFIX;
+    R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_extend->p_rx_descriptor[0]), &pa);
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_RX_OFFSET].dptr =
-        (uint32_t) (address_size_t) &(p_instance_extend->p_rx_descriptor[0]);
+        (uint32_t) (address_size_t) pa;
 
     /* Clean cache after writing descriptor */
     R_BSP_CACHE_CleanRange((address_size_t) &g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel]
@@ -1619,24 +1593,25 @@ static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ct
     /* Initialize TX descriptors */
     for (i = 0; i < (p_instance_ctrl->p_gether_cfg->num_tx_descriptors); i++)
     {
-        p_instance_ctrl->p_tx_descriptor[i].die  = GETHER_DECRIPTOR_INT_TX;
-        p_instance_ctrl->p_tx_descriptor[i].tag  = 0;
-        p_instance_ctrl->p_tx_descriptor[i].msr  = 0;
-        p_instance_ctrl->p_tx_descriptor[i].ds   = 0;
-        p_instance_ctrl->p_tx_descriptor[i].dptr =
-            (uint32_t) (address_size_t) p_instance_ctrl->p_gether_cfg->pp_ether_buffers[i];
-        p_instance_ctrl->p_tx_descriptor[i].dt = GETHER_DESCRIPTOR_TYPE_FEMPTY;
+        p_instance_ctrl->p_tx_descriptor[i].die = GETHER_DECRIPTOR_INT_TX;
+        p_instance_ctrl->p_tx_descriptor[i].tag = 0;
+        p_instance_ctrl->p_tx_descriptor[i].msr = 0;
+        p_instance_ctrl->p_tx_descriptor[i].ds  = 0;
+        R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) p_instance_ctrl->p_gether_cfg->pp_ether_buffers[i], &pa);
+        p_instance_ctrl->p_tx_descriptor[i].dptr = (uint32_t) (address_size_t) pa;
+        p_instance_ctrl->p_tx_descriptor[i].dt   = GETHER_DESCRIPTOR_TYPE_FEMPTY;
 
         /* Clean cache after writing descriptor */
         R_BSP_CACHE_CleanRange((address_size_t) &(p_instance_ctrl->p_tx_descriptor[i]),
                                sizeof(gether_instance_tx_descriptor_t));
     }
 
-    p_instance_ctrl->p_tx_descriptor[i + 0].die  = GETHER_DECRIPTOR_INT_TX;
-    p_instance_ctrl->p_tx_descriptor[i + 0].tag  = 0;
-    p_instance_ctrl->p_tx_descriptor[i + 0].msr  = 0;
-    p_instance_ctrl->p_tx_descriptor[i + 0].ds   = 0;
-    p_instance_ctrl->p_tx_descriptor[i + 0].dptr = (uint32_t) (address_size_t) &(p_instance_ctrl->p_tx_descriptor[0]);
+    p_instance_ctrl->p_tx_descriptor[i + 0].die = GETHER_DECRIPTOR_INT_TX;
+    p_instance_ctrl->p_tx_descriptor[i + 0].tag = 0;
+    p_instance_ctrl->p_tx_descriptor[i + 0].msr = 0;
+    p_instance_ctrl->p_tx_descriptor[i + 0].ds  = 0;
+    R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_ctrl->p_tx_descriptor[0]), &pa);
+    p_instance_ctrl->p_tx_descriptor[i + 0].dptr = (uint32_t) (address_size_t) pa;
     p_instance_ctrl->p_tx_descriptor[i + 0].dt   = GETHER_DESCRIPTOR_TYPE_LINKFIX;
 
     /* Clean cache after writing descriptor */

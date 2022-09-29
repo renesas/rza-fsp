@@ -57,6 +57,9 @@ FSP_HEADER
 
 /** @} (end addtogroup BSP_MCU) */
 
+#define BSP_MSTP_REG_FSP_IP_ADC(channel)        (R_MSTP->MCPU2)
+#define BSP_MSTP_BIT_FSP_IP_ADC(channel)        (1U << R_MSTP_MCPU2_MPADC_Pos)
+
 #define BSP_MSTP_REG_FSP_IP_CANFD(channel)      (R_MSTP->MCPU2)
 #define BSP_MSTP_BIT_FSP_IP_CANFD(channel)      (1U << R_MSTP_MCPU2_MPCANFD_Pos)
 
@@ -93,6 +96,9 @@ FSP_HEADER
 #define BSP_MSTP_REG_FSP_IP_SCIF(channel)       (R_MSTP->MCPU2)
 #define BSP_MSTP_BIT_FSP_IP_SCIF(channel)       (1U << (R_MSTP_MCPU2_MHSCIF0_Pos + (channel)))
 
+#define BSP_MSTP_REG_FSP_IP_SDHI(channel)       (R_MSTP->PERI_COM)
+#define BSP_MSTP_BIT_FSP_IP_SDHI(channel)       (1U << (R_MSTP_PERI_COM_MXSDHI0_Pos + (channel)))
+
 #define BSP_MSTP_REG_FSP_IP_SSI(channel)        (R_MSTP->MCPU1)
 #define BSP_MSTP_BIT_FSP_IP_SSI(channel)        (1U << (R_MSTP_MCPU1_MHSSIF0_Pos + (channel)))
 
@@ -104,6 +110,9 @@ FSP_HEADER
 
 #define BSP_MSTP_REG_FSP_IP_USBPHY(channel)     (R_MSTP->PERI_COM)
 #define BSP_MSTP_BIT_FSP_IP_USBPHY(channel)     (1U << (R_MSTP_PERI_COM_MPUSBT_Pos))
+
+#define BSP_MSTP_REG_FSP_IP_WDT(channel)        (R_MSTP->REG0)
+#define BSP_MSTP_BIT_FSP_IP_WDT(channel)        (1U << (R_MSTP_REG0_MPWDT0_Pos))
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

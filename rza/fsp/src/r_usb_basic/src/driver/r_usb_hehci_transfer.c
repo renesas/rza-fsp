@@ -395,6 +395,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
     /* =============== */
     /*  Callback Func  */
     /* =============== */
+    ptr->keyword = p_tr_req->bit.devadrs;
     g_usb_hstd_hci_callback.tr_end_cb(ptr, p_tr_req->utr_p, p_tr_req->actual_size, status);
 }                                      /* End of function usb_hstd_ehci_transfer_end_qh() */
 

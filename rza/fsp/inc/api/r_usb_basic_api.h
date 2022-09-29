@@ -236,7 +236,8 @@ typedef enum e_usb_class
     USB_CLASS_HMSC,                    ///< HMSC Class
     USB_CLASS_PMSC,                    ///< PMSC Class
     USB_CLASS_REQUEST,                 ///< USB Class Request
-    USB_CLASS_END                      ///< USB Class End Code
+    USB_CLASS_END,                     ///< USB Class End Code
+    USB_CLASS_HUB
 } usb_class_t;
 
 /** USB battery charging type */

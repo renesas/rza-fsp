@@ -102,13 +102,13 @@ FSP_HEADER
 /** @} (end addtogroup BSP_MCU) */
 
 #define BSP_CLKON_REG_FSP_IP_ADC(channel)         (R_CPG->CPG_CLKON_ADC)
-#define BSP_CLKON_BIT_FSP_IP_ADC(channel)         (3U << (R_CPG_CPG_CLKON_ADC_CLK0_ON_Pos * 2))
+#define BSP_CLKON_BIT_FSP_IP_ADC(channel)         (3U << (R_CPG_CPG_CLKON_ADC_CLK0_ON_Pos))
 #define BSP_CLKMON_REG_FSP_IP_ADC(channel)        (R_CPG->CPG_CLKMON_ADC)
-#define BSP_CLKMON_BIT_FSP_IP_ADC(channel)        (3U << (R_CPG_CPG_CLKMON_ADC_CLK0_MON_Pos * 2))
+#define BSP_CLKMON_BIT_FSP_IP_ADC(channel)        (3U << (R_CPG_CPG_CLKMON_ADC_CLK0_MON_Pos))
 #define BSP_RST_REG_FSP_IP_ADC(channel)           (R_CPG->CPG_RST_ADC)
-#define BSP_RST_BIT_FSP_IP_ADC(channel)           (3U << (R_CPG_CPG_RST_ADC_UNIT0_RSTB_Pos * 2))
+#define BSP_RST_BIT_FSP_IP_ADC(channel)           (3U << (R_CPG_CPG_RST_ADC_UNIT0_RSTB_Pos))
 #define BSP_RSTMON_REG_FSP_IP_ADC(channel)        (R_CPG->CPG_RSTMON_ADC)
-#define BSP_RSTMON_BIT_FSP_IP_ADC(channel)        (3U << (R_CPG_CPG_RSTMON_ADC_RST0_MON_Pos * 2))
+#define BSP_RSTMON_BIT_FSP_IP_ADC(channel)        (3U << (R_CPG_CPG_RSTMON_ADC_RST0_MON_Pos))
 
 #define BSP_CLKON_REG_FSP_IP_CANFD(channel)       (R_CPG->CPG_CLKON_CANFD)
 #define BSP_CLKON_BIT_FSP_IP_CANFD(channel)       (1U << (R_CPG_CPG_CLKON_CANFD_CLK0_ON_Pos + (channel)))

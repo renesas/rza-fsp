@@ -108,8 +108,9 @@ static void usb_hstd_ehci_print_periodic_scheduling_score(void);
 
  #endif
 
-static uint8_t gs_usb_ehci_root_device_address[USB_EHCI_MAXROOTPORTS];
-static uint8_t gs_usb_ehci_periodic_scheduling_score[USB_EHCI_PFL_SIZE * 8];
+static uint8_t  gs_usb_ehci_root_device_address[USB_EHCI_MAXROOTPORTS];
+static uint8_t  gs_usb_ehci_periodic_scheduling_score[USB_EHCI_PFL_SIZE * 8];
+extern uint16_t g_usb_port_status[USB_NUM_USBIP][2];
 
 /***********************************************************************************************************************
  * Function     : Initialize EHCI
@@ -458,6 +459,8 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     return USB_OK;
 }                                      /* End of function usb_hstd_ehci_init() */
 
+ #if (USB_UT_MODE == 0)
+
 /***********************************************************************************************************************
  * Function     : Deinitialize EHCI
  * Declaration  : void usb_hstd_ehci_deinit( void )
@@ -469,6 +472,8 @@ void usb_hstd_ehci_deinit (usb_utr_t * ptr)
 {
     usb_hstd_ehci_hw_reset(ptr);       /* Stop & Reset eHC */
 } /* End of function usb_hstd_ehci_deinit() */
+
+ #endif
 
 /***********************************************************************************************************************
  * Function     : EHCI Port Reset
@@ -1732,6 +1737,14 @@ void usb_hstd_ehci_int_transfer_end (usb_utr_t * ptr)
                                 /* None */
                             }
                         }
+                        else           /* No transfer request flag */
+                        {
+                            if (TRUE == p_tr_req->bit.enable)
+                            {
+                                /* clear usage flag in g_usb_hstd_hci_transfer_request */
+                                p_tr_req->bit.enable = FALSE;
+                            }
+                        }
                     }
                 }
             }
@@ -1871,7 +1884,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
                 }
             }
 
-            if ((0 == ptr->ipp->PORTSC1_b.CurrentConnectStatus) && (0 == ptr->ipp->PORTSC1_b.PortOwner))
+            if ((0 == g_usb_port_status[ptr->ip][0]) && (0 == g_usb_port_status[ptr->ip][1]))
             {
                 if (USB_HCI_NODEVICE != gs_usb_ehci_root_device_address[ptr->ip])
                 {
@@ -1942,7 +1955,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
                 }
             }
 
-            if ((0 == ptr->ipp1->PORTSC1_b.CurrentConnectStatus) && (0 == ptr->ipp1->PORTSC1_b.PortOwner))
+            if ((0 == g_usb_port_status[ptr->ip][0]) && (0 == g_usb_port_status[ptr->ip][1]))
             {
                 if (USB_HCI_NODEVICE != gs_usb_ehci_root_device_address[ptr->ip])
                 {
@@ -2150,6 +2163,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
  #if defined(BSP_MCU_GROUP_RZA3UL)
             if ((1 == ptr->ipp->USBSTS_b.PortChangeDetect) && (1 == ptr->ipp->USBINTR_b.PortChangeDetectEnable))
             {
+                g_usb_port_status[ptr->ip][0] = ptr->ipp->PORTSC1_b.CurrentConnectStatus;
+                g_usb_port_status[ptr->ip][1] = ptr->ipp->PORTSC1_b.PortOwner;
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_PORT_CHANGE_DETECT, 0, 0, 0);
 
                 /* ptr->ipp.USBSTS.BIT.PortChangeDetect = 1; */
@@ -2269,6 +2284,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
  #if defined(BSP_MCU_GROUP_RZA3UL)
             if ((1 == ptr->ipp1->USBSTS_b.PortChangeDetect) && (1 == ptr->ipp1->USBINTR_b.PortChangeDetectEnable))
             {
+                g_usb_port_status[ptr->ip][0] = ptr->ipp1->PORTSC1_b.CurrentConnectStatus;
+                g_usb_port_status[ptr->ip][1] = ptr->ipp1->PORTSC1_b.PortOwner;
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_PORT_CHANGE_DETECT, 0, 0, 0);
 
                 /* ptr->ipp1.USBSTS.BIT.PortChangeDetect = 1; */

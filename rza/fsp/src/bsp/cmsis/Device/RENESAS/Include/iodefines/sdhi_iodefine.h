@@ -19,9 +19,9 @@
  **********************************************************************************************************************/
 
 /**********************************************************************************************************************
- * File Name    : sd_mmc_iodefine.h
+ * File Name    : sdhi_iodefine.h
  * Version      : 1.00
- * Description  : IO define file for sd_mmc.
+ * Description  : IO define file for sdhi.
  *********************************************************************************************************************/
 
 /* =========================================================================================================================== */
@@ -32,8 +32,8 @@
 /* ================                            Device Specific Peripheral Section                             ================ */
 /* =========================================================================================================================== */
 
-#ifndef SD_MMC_IODEFINE_H
-#define SD_MMC_IODEFINE_H
+#ifndef SDHI_IODEFINE_H
+#define SDHI_IODEFINE_H
 
 typedef struct
 {
@@ -63,33 +63,46 @@ typedef struct
     __IM uint8_t RESERVED[8];
     union
     {
-        __IOM uint32_t SD_ARG;
+        __IOM uint64_t SD_ARG;
         struct
         {
-            __IOM uint16_t L;
-            __IOM uint16_t H;
+            __IOM uint32_t L;
+            __IOM uint32_t H;
+        } SD_ARG_long;
+        struct
+        {
+            __IOM uint16_t LL;
+            __IOM uint16_t LH;
+            __IOM uint16_t HL;
+            __IOM uint16_t HH;
         } SD_ARG_hword;
         struct
         {
-            __IOM uint32_t CF : 32;
+            __IOM uint64_t CF : 32;
+            uint64_t          : 32;
         } SD_ARG_b;
     };
-    __IM uint8_t RESERVED1[4];
     union
     {
-        __IOM uint32_t SD_ARG1;
+        __IOM uint64_t SD_ARG1;
         struct
         {
-            __IOM uint16_t L;
-            __IOM uint16_t H;
+            __IOM uint32_t L;
+            __IOM uint32_t H;
+        } SD_ARG1_long;
+        struct
+        {
+            __IOM uint16_t LL;
+            __IOM uint16_t LH;
+            __IOM uint16_t HL;
+            __IOM uint16_t HH;
         } SD_ARG1_hword;
         struct
         {
-            __IOM uint32_t CF : 16;
-            uint32_t          : 16;
+            __IOM uint64_t CF : 16;
+            uint64_t          : 48;
         } SD_ARG1_b;
     };
-    __IM uint8_t RESERVED2[4];
     union
     {
         __IOM uint64_t SD_STOP;
@@ -243,19 +256,25 @@ typedef struct
     };
     union
     {
-        __IM uint32_t SD_RSP5;
+        __IM uint64_t SD_RSP5;
         struct
         {
-            __IM uint16_t L;
-            __IM uint16_t H;
+            __IM uint32_t L;
+            __IM uint32_t H;
+        } SD_RSP5_long;
+        struct
+        {
+            __IM uint16_t LL;
+            __IM uint16_t LH;
+            __IM uint16_t HL;
+            __IM uint16_t HH;
         } SD_RSP5_hword;
         struct
         {
-            __IM uint32_t R : 16;
-            uint32_t        : 16;
+            __IM uint64_t R : 16;
+            uint64_t        : 48;
         } SD_RSP5_b;
     };
-    __IM uint8_t RESERVED3[4];
     union
     {
         __IM uint64_t SD_RSP76;
@@ -486,7 +505,7 @@ typedef struct
             uint64_t                : 48;
         } SD_OPTION_b;
     };
-    __IM uint8_t RESERVED4[8];
+    __IM uint8_t RESERVED1[8];
     union
     {
         __IM uint64_t SD_ERR_STS1;
@@ -562,7 +581,7 @@ typedef struct
             __IOM uint64_t BUF : 64;
         } SD_BUF0_b;
     };
-    __IM uint8_t RESERVED5[8];
+    __IM uint8_t RESERVED2[8];
     union
     {
         __IOM uint64_t SDIO_MODE;
@@ -637,7 +656,7 @@ typedef struct
             uint64_t                : 48;
         } SDIO_INFO1_MASK_b;
     };
-    __IM uint8_t RESERVED6[632];
+    __IM uint8_t RESERVED3[632];
     union
     {
         __IOM uint64_t CC_EXT_MODE;
@@ -660,7 +679,7 @@ typedef struct
             uint64_t               : 62;
         } CC_EXT_MODE_b;
     };
-    __IM uint8_t RESERVED7[24];
+    __IM uint8_t RESERVED4[24];
     union
     {
         __IOM uint64_t SOFT_RST;
@@ -723,9 +742,9 @@ typedef struct
         {
             __IOM uint64_t WMODE    : 1;
             __IOM uint64_t ENDIAN   : 1;
-            uint64_t                : 14;
+            uint64_t                : 6;
             __IOM uint64_t BUSWIDTH : 1;
-            uint64_t                : 47;
+            uint64_t                : 55;
         } HOST_MODE_b;
     };
     union
@@ -746,12 +765,12 @@ typedef struct
         struct
         {
             __IOM uint64_t DDR     : 1;
-            uint64_t               : 15;
+            uint64_t               : 7;
             __IOM uint64_t NOCHKCR : 1;
-            uint64_t               : 47;
+            uint64_t               : 55;
         } SDIF_MODE_b;
     };
-    __IM uint8_t RESERVED8[40];
+    __IM uint8_t RESERVED5[40];
     union
     {
         __IOM uint64_t SD_STATUS;
@@ -774,7 +793,7 @@ typedef struct
             uint64_t              : 62;
         } SD_STATUS_b;
     };
-    __IM uint8_t RESERVED9[1104];
+    __IM uint8_t RESERVED6[1104];
     union
     {
         __IOM uint64_t DM_CM_DTRAN_MODE;
@@ -843,7 +862,7 @@ typedef struct
             uint64_t                : 54;
         } DM_CM_RST_b;
     };
-    __IM uint8_t RESERVED10[8];
+    __IM uint8_t RESERVED7[8];
     union
     {
         __IOM uint64_t DM_CM_INFO1;
@@ -942,7 +961,7 @@ typedef struct
             uint64_t                      : 46;
         } DM_CM_INFO2_MASK_b;
     };
-    __IM uint8_t RESERVED11[32];
+    __IM uint8_t RESERVED8[32];
     union
     {
         __IOM uint64_t DM_DTRAN_ADDR;
@@ -965,7 +984,7 @@ typedef struct
             uint64_t             : 32;
         } DM_DTRAN_ADDR_b;
     };
-    __IM uint8_t RESERVED12[1912];
+    __IM uint8_t RESERVED9[1912];
     union
     {
         __IOM uint64_t SCC_DTCNTL;
@@ -1088,20 +1107,21 @@ typedef struct
             uint64_t              : 48;
         } SCC_TMPPORT_b;
     };
-} R_SD_MMC_0_Type;
+} R_SDHI0_Type;
+
 
 /* =========================================================================================================================== */
 /* ================                          Device Specific Peripheral Address Map                           ================ */
 /* =========================================================================================================================== */
 
-#define R_SD_MMC_0_BASE    0x11C00000
-#define R_SD_MMC_1_BASE    0x11C10000
+#define R_SDHI0_BASE    0x11C00000
+#define R_SDHI1_BASE    0x11C10000
 
 /* =========================================================================================================================== */
 /* ================                                  Peripheral declaration                                   ================ */
 /* =========================================================================================================================== */
 
-#define R_SD_MMC_0    ((R_SD_MMC_0_Type *) R_SD_MMC_0_BASE)
-#define R_SD_MMC_1    ((R_SD_MMC_0_Type *) R_SD_MMC_1_BASE)
+#define R_SDHI0    ((R_SDHI0_Type *) R_SDHI0_BASE)
+#define R_SDHI1    ((R_SDHI0_Type *) R_SDHI1_BASE)
 
 #endif
