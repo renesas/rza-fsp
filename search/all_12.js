@@ -33,6 +33,7 @@ var searchData=
   ['uart_5fstop_5fbits_5ft',['uart_stop_bits_t',['../group___u_a_r_t___a_p_i.html#ga6da57a73bbdbf830b845d4116f8341d7',1,'r_uart_api.h']]],
   ['underrun_5fipl',['underrun_ipl',['../group___l_c_d_c.html#ad9362c1d012556c55884ec1b733a47f3',1,'lcdc_extended_cfg_t']]],
   ['underrun_5firq',['underrun_irq',['../group___l_c_d_c.html#ab52440319af6cfb89c6425e952d7cc84',1,'lcdc_extended_cfg_t']]],
+  ['unit',['unit',['../group___a_d_c___a_p_i.html#a3756c0cebdc1c304d48db67a5bcd16a6',1,'adc_callback_args_t::unit()'],['../group___a_d_c___a_p_i.html#a5da30f972881cd9d64f3a7add1ccd522',1,'adc_cfg_t::unit()']]],
   ['usb_20_28r_5fusb_5fbasic_29',['USB (r_usb_basic)',['../group___u_s_b.html',1,'']]],
   ['usb_20interface',['USB Interface',['../group___u_s_b___a_p_i.html',1,'']]],
   ['usb_5fapi_5ft',['usb_api_t',['../group___u_s_b___a_p_i.html#structusb__api__t',1,'']]],

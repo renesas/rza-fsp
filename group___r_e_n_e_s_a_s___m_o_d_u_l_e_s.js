@@ -1,5 +1,6 @@
 var group___r_e_n_e_s_a_s___m_o_d_u_l_e_s =
 [
+    [ "ADC (r_adc_c)", "group___a_d_c.html", "group___a_d_c" ],
     [ "Camera Data Receiving Unit (r_cru)", "group___c_r_u.html", "group___c_r_u" ],
     [ "Direct Memory Access Controller (r_dmac)", "group___d_m_a_c.html", "group___d_m_a_c" ],
     [ "Ethernet (r_gether)", "group___g_e_t_h_e_r.html", "group___g_e_t_h_e_r" ],
@@ -17,6 +18,7 @@ var group___r_e_n_e_s_a_s___m_o_d_u_l_e_s =
     [ "Serial Sound Interface (r_ssi)", "group___s_s_i.html", "group___s_s_i" ],
     [ "USB (r_usb_basic)", "group___u_s_b.html", "group___u_s_b" ],
     [ "USB Host Human Interface Device Class Driver (r_usb_hhid)", "group___u_s_b___h_h_i_d.html", "group___u_s_b___h_h_i_d" ],
+    [ "Watchdog (r_wdt)", "group___w_d_t.html", "group___w_d_t" ],
     [ "FreeRTOS Plus TCP (rm_freertos_plus_tcp)", "group___f_r_e_e_r_t_o_s___p_l_u_s___t_c_p.html", null ],
     [ "FreeRTOS Port (rm_freertos_port)", "group___r_m___f_r_e_e_r_t_o_s___p_o_r_t.html", null ]
 ];

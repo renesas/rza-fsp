@@ -1,15 +1,19 @@
 var searchData=
 [
-  ['ether_5fevent_5ft',['ether_event_t',['../group___e_t_h_e_r___a_p_i.html#gad029483e98651bf40e3e3439ed6d1973',1,'r_ether_api.h']]],
-  ['ether_5fflow_5fcontrol_5ft',['ether_flow_control_t',['../group___e_t_h_e_r___a_p_i.html#gaebbb8ab534ca83d1769d4d0b71e1943f',1,'r_ether_api.h']]],
-  ['ether_5fmulticast_5ft',['ether_multicast_t',['../group___e_t_h_e_r___a_p_i.html#gae306f2239ef51705ac7e2dc962837947',1,'r_ether_api.h']]],
-  ['ether_5fphy_5fflow_5fcontrol_5ft',['ether_phy_flow_control_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#ga113895595732b38ac87e4efecacb87de',1,'r_ether_phy_api.h']]],
-  ['ether_5fphy_5flink_5fspeed_5ft',['ether_phy_link_speed_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#gaf227c12b47e90edc8ec5729bfccf9bfb',1,'r_ether_phy_api.h']]],
-  ['ether_5fphy_5fmii_5ftype_5ft',['ether_phy_mii_type_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#gaafbecb98180b1f07abe8449332b5a122',1,'r_ether_phy_api.h']]],
-  ['ether_5fphy_5fvoltage_5ft',['ether_phy_voltage_t',['../group___g_e_t_h_e_r___p_h_y.html#ga1a273cc6e824fe12881c4dca26f82e24',1,'r_gether_phy.h']]],
-  ['ether_5fpromiscuous_5ft',['ether_promiscuous_t',['../group___e_t_h_e_r___a_p_i.html#ga3d443f5aaeafc8b8fa20eda633cbede1',1,'r_ether_api.h']]],
-  ['ether_5fwake_5fon_5flan_5ft',['ether_wake_on_lan_t',['../group___e_t_h_e_r___a_p_i.html#ga9bc17e8981b3bb4f3d42d31c1f11bcd7',1,'r_ether_api.h']]],
-  ['ether_5fzerocopy_5ft',['ether_zerocopy_t',['../group___e_t_h_e_r___a_p_i.html#gad3c9ba84cbe05cc1ff9b37d25318dd07',1,'r_ether_api.h']]],
-  ['external_5firq_5fpclk_5fdiv_5ft',['external_irq_pclk_div_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga692e093fc800ee08e3f84fae648372d8',1,'r_external_irq_api.h']]],
-  ['external_5firq_5ftrigger_5ft',['external_irq_trigger_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga2d1960d763da14da209e16fbb972d57c',1,'r_external_irq_api.h']]]
+  ['display_5fcolor_5fkeying_5ft',['display_color_keying_t',['../group___d_i_s_p_l_a_y___a_p_i.html#ga79899f7bd76e6206e3d6ac2b5cf387a8',1,'r_display_api.h']]],
+  ['display_5fevent_5ft',['display_event_t',['../group___d_i_s_p_l_a_y___a_p_i.html#gad57d6b7a15167958412454bc06bd95a8',1,'r_display_api.h']]],
+  ['display_5fframe_5flayer_5ft',['display_frame_layer_t',['../group___d_i_s_p_l_a_y___a_p_i.html#ga364ba16397d9d24efb92170246c024ab',1,'r_display_api.h']]],
+  ['display_5fin_5fformat_5ft',['display_in_format_t',['../group___d_i_s_p_l_a_y___a_p_i.html#ga698e66952a47ad6829bb8abe3da8ab9d',1,'r_display_api.h']]],
+  ['display_5fout_5fformat_5ft',['display_out_format_t',['../group___d_i_s_p_l_a_y___a_p_i.html#ga46afda95d8d074b04384009ff27cd6d6',1,'r_display_api.h']]],
+  ['display_5fsignal_5fpolarity_5ft',['display_signal_polarity_t',['../group___d_i_s_p_l_a_y___a_p_i.html#gaabf1f4dc9c3c0b20c02fad203e143417',1,'r_display_api.h']]],
+  ['display_5fstate_5ft',['display_state_t',['../group___d_i_s_p_l_a_y___a_p_i.html#ga04db5dee2c7091830c3e4f899e934f97',1,'r_display_api.h']]],
+  ['display_5fsync_5fedge_5ft',['display_sync_edge_t',['../group___d_i_s_p_l_a_y___a_p_i.html#gad42f0f62fa80ea5432d2c19bde0e4675',1,'r_display_api.h']]],
+  ['dmac_5fack_5fmode_5ft',['dmac_ack_mode_t',['../group___d_m_a_c.html#ga2fb65e50e49c0ffc2943c8c5085c0c0f',1,'r_dmac.h']]],
+  ['dmac_5fchannel_5fscheduling_5ft',['dmac_channel_scheduling_t',['../group___d_m_a_c.html#ga81ff959e77bb3e4e37a7e4e68d23a02b',1,'r_dmac.h']]],
+  ['dmac_5fcontinuous_5fsetting_5ft',['dmac_continuous_setting_t',['../group___d_m_a_c.html#ga8bd6045e0c047687bd870a11063bb01d',1,'r_dmac.h']]],
+  ['dmac_5fdetection_5ft',['dmac_detection_t',['../group___d_m_a_c.html#ga3527028a6bd65a3b22f4a14be6b9829e',1,'r_dmac.h']]],
+  ['dmac_5fevent_5ft',['dmac_event_t',['../group___d_m_a_c.html#ga18702f75ef373da38e9655e5600c2e23',1,'r_dmac.h']]],
+  ['dmac_5fmode_5fselect_5ft',['dmac_mode_select_t',['../group___d_m_a_c.html#ga873499bc88e96b4626d26f6591372cc7',1,'r_dmac.h']]],
+  ['dmac_5frequest_5fdirection_5ft',['dmac_request_direction_t',['../group___d_m_a_c.html#gaf701953caca92cce67e0426664b10c50',1,'r_dmac.h']]],
+  ['dmac_5ftransfer_5fsize_5ft',['dmac_transfer_size_t',['../group___d_m_a_c.html#ga31ff96cf7f6259b2ce7d7f4b61f2fd68',1,'r_dmac.h']]]
 ];

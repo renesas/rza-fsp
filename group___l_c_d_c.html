@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.0.0</span>
+   &#160;<span id="projectnumber">Release v1.1.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -292,7 +292,7 @@ Disabled</li>
 <tr>
 <td>Input &gt; Graphics Layer 1 &gt; Framebuffer &gt; Framebuffer name</td><td>This property must be a valid C symbol</td><td>fb_background </td><td>Specify the name for the framebuffer for Layer 1. </td></tr>
 <tr>
-<td>Input &gt; Graphics Layer 1 &gt; Framebuffer &gt; Number of buffers</td><td>Value must be an integer between 1 and 8</td><td>1 </td><td>Specify the number of buffers to create. </td></tr>
+<td>Input &gt; Graphics Layer 1 &gt; Framebuffer &gt; Number of buffers</td><td>Value must be an integer between 0 and 8</td><td>1 </td><td>Specify the number of buffers to create.When user select 0,the buffer set in user application can be used. </td></tr>
 <tr>
 <td>Input &gt; Graphics Layer 1 &gt; Framebuffer &gt; Section for framebuffer allocation</td><td>Manual Entry</td><td>UNCACHED_BSS </td><td>Specify the section in which to allocate the framebuffer. When Arm Compiler 6 is used to place this memory in on-chip SRAM, the section name must be .bss or start with .bss. to avoid consuming unnecessary ROM space. </td></tr>
 <tr>
@@ -348,7 +348,7 @@ Disabled</li>
 <tr>
 <td>Input &gt; Graphics Layer 2 &gt; Framebuffer &gt; Framebuffer name</td><td>This property must be a valid C symbol</td><td>fb_foreground </td><td>Specify the name for the framebuffer for Layer 2. </td></tr>
 <tr>
-<td>Input &gt; Graphics Layer 2 &gt; Framebuffer &gt; Number of buffers</td><td>Value must be an integer between 1 and 8</td><td>1 </td><td>Specify the number of buffers to create. </td></tr>
+<td>Input &gt; Graphics Layer 2 &gt; Framebuffer &gt; Number of buffers</td><td>Value must be an integer between 0 and 8</td><td>1 </td><td>Specify the number of buffers to create.When user select 0,the buffer set in user application can be used. </td></tr>
 <tr>
 <td>Input &gt; Graphics Layer 2 &gt; Framebuffer &gt; Section for framebuffer allocation</td><td>Manual Entry</td><td>UNCACHED_BSS </td><td>Specify the section in which to allocate the framebuffer. When Arm Compiler 6 is used to place this memory in on-chip SRAM, the section name must be .bss or start with .bss. to avoid consuming unnecessary ROM space. </td></tr>
 <tr>
@@ -824,7 +824,7 @@ Under run interrupt vector. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.0.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

@@ -182,6 +182,7 @@ var searchData=
   ['bsp_5fwarm_5fstart_5fpost_5fclock',['BSP_WARM_START_POST_CLOCK',['../group___b_s_p___m_c_u.html#gga6fe6dc3c0813eeae8665430a31c005b4a0ac1a271ef413302af1558941563f3e7',1,'bsp_common.h']]],
   ['bsp_5fwarm_5fstart_5freset',['BSP_WARM_START_RESET',['../group___b_s_p___m_c_u.html#gga6fe6dc3c0813eeae8665430a31c005b4a682d5dad980652c1acbc5b04531f6da2',1,'bsp_common.h']]],
   ['buffer_5fcfg',['buffer_cfg',['../group___c_a_m_e_r_a___a_p_i.html#a4744d71a3ea41c9fddb8df8321317b85',1,'cru_cfg_t']]],
+  ['buffer_5fmode',['buffer_mode',['../group___a_d_c.html#a8ccf8c0714c173bc9e9d536df5df56f9',1,'adc_c_extended_cfg_t']]],
   ['bufferchange',['bufferChange',['../group___d_i_s_p_l_a_y___a_p_i.html#a85f2ecab6965b0dcd8920d2699ae32dc',1,'display_api_t']]],
   ['bufferrelease',['bufferRelease',['../group___e_t_h_e_r___a_p_i.html#aa38e7f82e66fd26fd8d51b11f46ae6e6',1,'ether_api_t']]],
   ['bsp',['BSP',['../group___r_e_n_e_s_a_s___c_o_m_m_o_n.html',1,'']]]

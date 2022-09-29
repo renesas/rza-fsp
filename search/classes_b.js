@@ -1,12 +1,14 @@
 var searchData=
 [
-  ['uart_5fapi_5ft',['uart_api_t',['../group___u_a_r_t___a_p_i.html#structuart__api__t',1,'']]],
-  ['uart_5fcallback_5fargs_5ft',['uart_callback_args_t',['../group___u_a_r_t___a_p_i.html#structuart__callback__args__t',1,'']]],
-  ['uart_5fcfg_5ft',['uart_cfg_t',['../group___u_a_r_t___a_p_i.html#structuart__cfg__t',1,'']]],
-  ['uart_5finfo_5ft',['uart_info_t',['../group___u_a_r_t___a_p_i.html#structuart__info__t',1,'']]],
-  ['uart_5finstance_5ft',['uart_instance_t',['../group___u_a_r_t___a_p_i.html#structuart__instance__t',1,'']]],
-  ['usb_5fapi_5ft',['usb_api_t',['../group___u_s_b___a_p_i.html#structusb__api__t',1,'']]],
-  ['usb_5fhhid_5fapi_5ft',['usb_hhid_api_t',['../group___u_s_b___h_h_i_d___a_p_i.html#structusb__hhid__api__t',1,'']]],
-  ['usb_5fhhid_5finstance_5ft',['usb_hhid_instance_t',['../group___u_s_b___h_h_i_d___a_p_i.html#structusb__hhid__instance__t',1,'']]],
-  ['usb_5finstance_5ft',['usb_instance_t',['../group___u_s_b___a_p_i.html#structusb__instance__t',1,'']]]
+  ['timer_5fapi_5ft',['timer_api_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__api__t',1,'']]],
+  ['timer_5fcallback_5fargs_5ft',['timer_callback_args_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__callback__args__t',1,'']]],
+  ['timer_5fcfg_5ft',['timer_cfg_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__cfg__t',1,'']]],
+  ['timer_5finfo_5ft',['timer_info_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__info__t',1,'']]],
+  ['timer_5finstance_5ft',['timer_instance_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__instance__t',1,'']]],
+  ['timer_5fstatus_5ft',['timer_status_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__status__t',1,'']]],
+  ['transfer_5fapi_5ft',['transfer_api_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__api__t',1,'']]],
+  ['transfer_5fcfg_5ft',['transfer_cfg_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__cfg__t',1,'']]],
+  ['transfer_5finfo_5ft',['transfer_info_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__info__t',1,'']]],
+  ['transfer_5finstance_5ft',['transfer_instance_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__instance__t',1,'']]],
+  ['transfer_5fproperties_5ft',['transfer_properties_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__properties__t',1,'']]]
 ];

@@ -20,19 +20,23 @@ var group___b_s_p___m_c_u =
     [ "R_BSP_MODULE_STOP", "group___b_s_p___m_c_u.html#ga2edfa2301d2ada75a9418be0e146e2bb", null ],
     [ "fsp_ip_t", "group___b_s_p___m_c_u.html#ga7880302f0edd7cc4290c037809975950", [
       [ "FSP_IP_GTM", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950afe554013bd2f3cbbd8462cea8eeee4ca", null ],
-      [ "FSP_IP_GPT", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a83fe18962b058df65adb9ce089719ebb", null ],
-      [ "FSP_IP_POEG", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950acfc9bb8ff007a7b82cf4fd845dfce053", null ],
       [ "FSP_IP_PORT", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a3403f62d1f8cc29a868e5da9a86a46f7", null ],
       [ "FSP_IP_IA55", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950ae25d7ecef38bf5b9a2dc1a24886dbf7c", null ],
       [ "FSP_IP_SCIF", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a837b8847e248ed296512f20813008cd5", null ],
       [ "FSP_IP_RIIC", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a17e007a04505fb7a7614067e3d5e7447", null ],
       [ "FSP_IP_RSPI", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950acbce1d6d73ea0d9a18c42b2389c69888", null ],
-      [ "FSP_IP_MHU", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950abfff39a6b8ca24d18832ad7153cc0880", null ],
       [ "FSP_IP_DMAC", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a494addfd4ceb1fabb0bea0893b444641", null ],
       [ "FSP_IP_SSI", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a372bbc7267801454ac9a1bf3677ef60c", null ],
       [ "FSP_IP_CANFD", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950aacbead3e070986a6c40c32d2485d5c4e", null ],
       [ "FSP_IP_ETHER", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950ae3b56c1e088e6511314baa66fa9c57f0", null ],
-      [ "FSP_IP_EDMAC", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a36232c6ae35f6058166d3e25ffa31065", null ]
+      [ "FSP_IP_EDMAC", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a36232c6ae35f6058166d3e25ffa31065", null ],
+      [ "FSP_IP_CRU", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950af619b44b2545725e1dc38e9aa494bdc9", null ],
+      [ "FSP_IP_LCDC", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a262b8cb7bfbecd9ce7220c80b3fb7b3f", null ],
+      [ "FSP_IP_USB", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a4fc550151c80c18d9fa8322d422a610a", null ],
+      [ "FSP_IP_ADC", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950ac49bfca1e1ccf88f53586fc28bd54250", null ],
+      [ "FSP_IP_WDT", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950a9b738d0f557574bb4d659abc2dc0fbf8", null ],
+      [ "FSP_IP_SDHI", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950afd3bcaf69cb14356e5fbcac52a2eb48a", null ],
+      [ "FSP_IP_ISU", "group___b_s_p___m_c_u.html#gga7880302f0edd7cc4290c037809975950ad22a417dc36aaca14be2ae4e8c51e90f", null ]
     ] ],
     [ "bsp_warm_start_event_t", "group___b_s_p___m_c_u.html#ga6fe6dc3c0813eeae8665430a31c005b4", [
       [ "BSP_WARM_START_RESET", "group___b_s_p___m_c_u.html#gga6fe6dc3c0813eeae8665430a31c005b4a682d5dad980652c1acbc5b04531f6da2", null ],

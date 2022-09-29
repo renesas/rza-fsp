@@ -16,6 +16,7 @@ var searchData=
   ['broadcast_5ffilter',['broadcast_filter',['../group___e_t_h_e_r___a_p_i.html#a538e42b696b0b1b941e2a7a92cf9a6aa',1,'ether_cfg_t']]],
   ['brr',['brr',['../group___s_c_i_f___u_a_r_t.html#acc601128ecd5e04fcc306b249a2bb7bf',1,'scif_baud_setting_t']]],
   ['buffer_5fcfg',['buffer_cfg',['../group___c_a_m_e_r_a___a_p_i.html#a4744d71a3ea41c9fddb8df8321317b85',1,'cru_cfg_t']]],
+  ['buffer_5fmode',['buffer_mode',['../group___a_d_c.html#a8ccf8c0714c173bc9e9d536df5df56f9',1,'adc_c_extended_cfg_t']]],
   ['bufferchange',['bufferChange',['../group___d_i_s_p_l_a_y___a_p_i.html#a85f2ecab6965b0dcd8920d2699ae32dc',1,'display_api_t']]],
   ['bufferrelease',['bufferRelease',['../group___e_t_h_e_r___a_p_i.html#aa38e7f82e66fd26fd8d51b11f46ae6e6',1,'ether_api_t']]]
 ];

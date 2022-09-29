@@ -12,6 +12,7 @@ var searchData=
   ['gether_5fprevious_5flink_5fstatus_5ft',['gether_previous_link_status_t',['../group___g_e_t_h_e_r.html#ga10835260a6b440f5a4b6c22b33f47dac',1,'r_gether.h']]],
   ['gether_5fprevious_5flink_5fstatus_5fup',['GETHER_PREVIOUS_LINK_STATUS_UP',['../group___g_e_t_h_e_r.html#gga10835260a6b440f5a4b6c22b33f47dacacae2cd0407a465aa961cacde260ea540',1,'r_gether.h']]],
   ['gpioint',['gpioint',['../group___i_n_t_c___t_i_n_t.html#a8066afa114318265d9fe96031434bbd3',1,'intc_tint_extended_cfg_t']]],
+  ['group_5fmask',['group_mask',['../group___a_d_c___a_p_i.html#a2e4f7b7ce1a5858b39f7a85ad16ab655',1,'adc_callback_args_t']]],
   ['general_20timer_20_28r_5fgtm_29',['General Timer (r_gtm)',['../group___g_t_m.html',1,'']]],
   ['gtm_5fextended_5fcfg_5ft',['gtm_extended_cfg_t',['../group___g_t_m.html#structgtm__extended__cfg__t',1,'']]],
   ['gtm_5fgiws_5ftype_5fdisabled',['GTM_GIWS_TYPE_DISABLED',['../group___g_t_m.html#ggaae830979c17ceebe80264f0727e8a6b6a352d18878ec62f684b774ce2033e86ea',1,'r_gtm.h']]],

@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.0.0</span>
+   &#160;<span id="projectnumber">Release v1.1.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -212,17 +212,21 @@ Functions</h2></td></tr>
 <li>
 <a href="#bsp-clock-configuration">BSP Clock Configuration</a> </li>
 <li>
-<a href="#error-logging">Error Logging</a> </li>
-<li>
 <a href="#bsp-weak-symbols">BSP Weak Symbols</a> </li>
 <li>
 <a href="#warm-start-callbacks">Warm Start Callbacks</a> </li>
 <li>
 <a href="#c-runtime-initialization">C Runtime Initialization</a> </li>
 <li>
-<a href="#id-code">ID Codes</a> </li>
+<a href="#heap-allocation">Heap Allocation</a> </li>
+<li>
+<a href="#error-logging">Error Logging</a> </li>
 <li>
 <a href="#software-delay">Software Delay</a> </li>
+<li>
+<a href="#critical-section-macros">Critical Section Macros</a> </li>
+<li>
+<a href="#data-transfer-to-ram-at-startup">Data transfer to RAM at startup</a> </li>
 <li>
 <a href="#bsp-configuration">Configuration</a> </li>
 </ul>
@@ -265,7 +269,62 @@ Software Delay</h3>
 <div class="fragment"><div class="line"></div><div class="line">    <span class="comment">/* Delay at least 1 second. Depending on the number of wait states required for the region of memory</span></div><div class="line"><span class="comment">     * that the software_delay_loop has been linked in this could take longer. The default is 4 cycles per loop.</span></div><div class="line"><span class="comment">     * This can be modified by redefining DELAY_LOOP_CYCLES. BSP_DELAY_UNITS_SECONDS, BSP_DELAY_UNITS_MILLISECONDS,</span></div><div class="line"><span class="comment">     * and BSP_DELAY_UNITS_MICROSECONDS can all be used with R_BSP_SoftwareDelay. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaf3219448adfd1531cf69f68697ab184b">R_BSP_SoftwareDelay</a>(1, <a class="code" href="group___b_s_p___m_c_u.html#ggafd98e2a6f080d6a52a3ef72e3d731b2bacc709da08ef4acc99bf6e2e84946be5d">BSP_DELAY_UNITS_SECONDS</a>);</div><div class="line"></div></div><!-- fragment --> <h3><a class="anchor" id="critical-section-macros"></a>
 Critical Section Macros</h3>
 <p><a class="anchor" id="um_bsp_critical_section"></a>Implements a critical section. Some MCUs (MCUs with the BASEPRI register) support allowing high priority interrupts to execute during critical sections. On these MCUs, interrupts with priority less than or equal to BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION are not serviced in critical sections. Interrupts with higher priority than BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION still execute in critical sections.</p>
-<div class="fragment"><div class="line"></div><div class="line">    FSP_CRITICAL_SECTION_DEFINE;</div><div class="line"></div><div class="line">    <span class="comment">/* Store the current interrupt posture. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaddc2260c1ce320f3aa1f1cb05b9a5620">FSP_CRITICAL_SECTION_ENTER</a>;</div><div class="line"></div><div class="line">    <span class="comment">/* Interrupts cannot run in this section unless their priority is less than BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION. */</span></div><div class="line"></div><div class="line">    <span class="comment">/* Restore saved interrupt posture. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#ga23338e06b1e1537017ef4f3f94cda354">FSP_CRITICAL_SECTION_EXIT</a>;</div><div class="line"></div></div><!-- fragment --> <h1><a class="anchor" id="bsp-configuration"></a>
+<div class="fragment"><div class="line"></div><div class="line">    FSP_CRITICAL_SECTION_DEFINE;</div><div class="line"></div><div class="line">    <span class="comment">/* Store the current interrupt posture. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaddc2260c1ce320f3aa1f1cb05b9a5620">FSP_CRITICAL_SECTION_ENTER</a>;</div><div class="line"></div><div class="line">    <span class="comment">/* Interrupts cannot run in this section unless their priority is less than BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION. */</span></div><div class="line"></div><div class="line">    <span class="comment">/* Restore saved interrupt posture. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#ga23338e06b1e1537017ef4f3f94cda354">FSP_CRITICAL_SECTION_EXIT</a>;</div><div class="line"></div></div><!-- fragment --> <h3><a class="anchor" id="data-transfer-to-ram-at-startup"></a>
+Data transfer to RAM at startup</h3>
+<p>After starting FSP, the memory copy process is executed according to the rules described in sections.c of the src folder. The implementation of sections.c is described below. User can modify existing memory initialization rules and add new rules.</p>
+<h4>Default copy settings</h4>
+<p>sections.c generated by creating a new project performs the following operations by default.</p>
+<table class="doxtable">
+<tr>
+<th>Action </th><th>From </th><th>To </th><th>Size </th><th>When  </th></tr>
+<tr>
+<td>Copy </td><td>__sram_load_start </td><td>__sram_exec_start</td><td>__sram_load_end - __sram_load_start</td><td>End of Reset_Handler </td></tr>
+<tr>
+<td>Copy </td><td>__data_load_start </td><td>__data_exec_start</td><td>__data_load_end - __data_load_start</td><td>End of Reset_Handler(If you choose the eXecute-In-Place board pack) </td></tr>
+<tr>
+<td>Initialize to Zero</td><td>__bss_start</td><td>-</td><td>__bss_end - __bss_start</td><td>End of Reset_Handler </td></tr>
+<tr>
+<td>Initialize to Zero</td><td>__bss2_start</td><td>-</td><td>__bss2_end - __bss2_start</td><td>End of Reset_Handler </td></tr>
+</table>
+<p>The above symbols are defined in the linker script.</p>
+<h4>Tables describing memory initialization rules</h4>
+<p>There are four tables in sections.c: Select the table to use according to the copy conditions.</p>
+<table class="doxtable">
+<tr>
+<th>Table name </th><th>Action </th><th>When  </th></tr>
+<tr>
+<td>DTBL_F</td><td>Take a copy action on the specified memory.</td><td>The action is executed in the first half of Reset_Handler. </td></tr>
+<tr>
+<td>DTBL</td><td>Take a copy action on the specified memory.</td><td>The action is executed in the end part of Reset_Handler. </td></tr>
+<tr>
+<td>BTBL_F</td><td>Take a zero assignment action on the specified memory.</td><td>The action is executed in the first half of Reset_Handler. </td></tr>
+<tr>
+<td>BTBL</td><td>Take a zero assignment action on the specified memory.</td><td>The action is executed in the end part of Reset_Handler. </td></tr>
+</table>
+<p>DTBL and BTBL are used for the normal program area. If there is an area to be used in the subroutine called from Reset_Handler, use DTBL_F and BTBL_F.</p>
+<h4>Format of Copy Memory Table (DTBL_F, DTBL)</h4>
+<p>The table represents one copy rule in one row. The size of the array is variable length, and the end is determined by all zero row. The elements on one line are "Top address on ROM", "Bottom address on ROM", "Top address on RAM" in order from the left, and the input rules are shown below.</p>
+<table class="doxtable">
+<tr>
+<th>Elements </th><th>Description  </th></tr>
+<tr>
+<td>Top address on ROM</td><td>Start address of copy source area. Usually refers to the area on the flash ROM. </td></tr>
+<tr>
+<td>Bottom address on ROM</td><td>End address of copy source area. </td></tr>
+<tr>
+<td>Top address on RAM</td><td>Start address of copy destination area. Usually refers to the area on the DDR. </td></tr>
+</table>
+<h4>Format of Initialize to Zero Table (BTBL_F, BTBL)</h4>
+<p>The table represents one zero assignment rule in one row. The size of the array is variable length, and the end is determined by all zero row. The elements on one line are "Top address", "Bottom address" in order from the left, and the input rules are shown below.</p>
+<table class="doxtable">
+<tr>
+<th>Elements </th><th>Description  </th></tr>
+<tr>
+<td>Top address</td><td>Start address of zero assignment area. </td></tr>
+<tr>
+<td>Bottom address</td><td>End address of zero assignment area. </td></tr>
+</table>
+<h1><a class="anchor" id="bsp-configuration"></a>
 Configuration</h1>
 <p>The BSP is heavily data driven with most features and functionality being configured based on the content from configuration files. Configuration files represent the settings specified by the user and are generated when the project is built and/or when the Generate Project Content button is clicked in the RA Configuration editor.</p>
 <p><h2>Build Time Configurations for fsp_common</h2>
@@ -824,10 +883,6 @@ Variables</h2></td></tr>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950afe554013bd2f3cbbd8462cea8eeee4ca"></a>FSP_IP_GTM&#160;</td><td class="fielddoc"><p>General Timer. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a83fe18962b058df65adb9ce089719ebb"></a>FSP_IP_GPT&#160;</td><td class="fielddoc"><p>General PWM Timer. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950acfc9bb8ff007a7b82cf4fd845dfce053"></a>FSP_IP_POEG&#160;</td><td class="fielddoc"><p>Port Output Enable for GPT. </p>
-</td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a3403f62d1f8cc29a868e5da9a86a46f7"></a>FSP_IP_PORT&#160;</td><td class="fielddoc"><p>I/O Ports. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ae25d7ecef38bf5b9a2dc1a24886dbf7c"></a>FSP_IP_IA55&#160;</td><td class="fielddoc"><p>IA55 (Interrupt controller) </p>
@@ -838,8 +893,6 @@ Variables</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950acbce1d6d73ea0d9a18c42b2389c69888"></a>FSP_IP_RSPI&#160;</td><td class="fielddoc"><p>Renesas Serial Peripheral Interface. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950abfff39a6b8ca24d18832ad7153cc0880"></a>FSP_IP_MHU&#160;</td><td class="fielddoc"><p>Message Handling Unit. </p>
-</td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a494addfd4ceb1fabb0bea0893b444641"></a>FSP_IP_DMAC&#160;</td><td class="fielddoc"><p>Direct Memory Access Controller. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a372bbc7267801454ac9a1bf3677ef60c"></a>FSP_IP_SSI&#160;</td><td class="fielddoc"><p>Serial Sound Interface. </p>
@@ -849,6 +902,20 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ae3b56c1e088e6511314baa66fa9c57f0"></a>FSP_IP_ETHER&#160;</td><td class="fielddoc"><p>Ethernet MAC Controller. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a36232c6ae35f6058166d3e25ffa31065"></a>FSP_IP_EDMAC&#160;</td><td class="fielddoc"><p>Ethernet DMA Controller. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950af619b44b2545725e1dc38e9aa494bdc9"></a>FSP_IP_CRU&#160;</td><td class="fielddoc"><p>Camera Data Receiving Unit. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a262b8cb7bfbecd9ce7220c80b3fb7b3f"></a>FSP_IP_LCDC&#160;</td><td class="fielddoc"><p>LCD Controller. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a4fc550151c80c18d9fa8322d422a610a"></a>FSP_IP_USB&#160;</td><td class="fielddoc"><p>USB 2.0. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ac49bfca1e1ccf88f53586fc28bd54250"></a>FSP_IP_ADC&#160;</td><td class="fielddoc"><p>A/D Converter. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a9b738d0f557574bb4d659abc2dc0fbf8"></a>FSP_IP_WDT&#160;</td><td class="fielddoc"><p>Watchdog Timer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950afd3bcaf69cb14356e5fbcac52a2eb48a"></a>FSP_IP_SDHI&#160;</td><td class="fielddoc"><p>SD/MMC Host Interface. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ad22a417dc36aaca14be2ae4e8c51e90f"></a>FSP_IP_ISU&#160;</td><td class="fielddoc"><p>Image Scaling Unit. </p>
 </td></tr>
 </table>
 
@@ -1444,7 +1511,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.0.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

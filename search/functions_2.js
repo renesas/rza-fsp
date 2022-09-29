@@ -1,5 +1,19 @@
 var searchData=
 [
+  ['r_5fadc_5fc_5fcalibrate',['R_ADC_C_Calibrate',['../group___a_d_c.html#ga5cbf5113221d2cdbf11f36eb8b7ea21a',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fcallbackset',['R_ADC_C_CallbackSet',['../group___a_d_c.html#ga1644c43f8469049a20a1c183682b2eda',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fclose',['R_ADC_C_Close',['../group___a_d_c.html#ga51e75a0613a836dda17e8dff336fa5b9',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5finfoget',['R_ADC_C_InfoGet',['../group___a_d_c.html#ga71b8dbb9de7e428dbdc0bdd56c2331a4',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5foffsetset',['R_ADC_C_OffsetSet',['../group___a_d_c.html#ga1a6bcd25e5366666a3f25062e4b9d615',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fopen',['R_ADC_C_Open',['../group___a_d_c.html#ga52f7eee41184b0a91cfa9e73b1833122',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fread',['R_ADC_C_Read',['../group___a_d_c.html#ga0971485949f985d827aeaa69feff4f5a',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fread32',['R_ADC_C_Read32',['../group___a_d_c.html#gad95fbc1b2b5d7ced0f332c6cab3be5a0',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fsamplestatecountset',['R_ADC_C_SampleStateCountSet',['../group___a_d_c.html#ga002b131506372adc9b7117ac980dd077',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fscancfg',['R_ADC_C_ScanCfg',['../group___a_d_c.html#ga5f0ecdfeeb82907f1d20e68284fe8861',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fscangroupstart',['R_ADC_C_ScanGroupStart',['../group___a_d_c.html#ga2a5b64c160eb0b849ea5043bde9188cb',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fscanstart',['R_ADC_C_ScanStart',['../group___a_d_c.html#ga11e9ba160e344dc72ab9e862f7ce70db',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fscanstop',['R_ADC_C_ScanStop',['../group___a_d_c.html#gad2ba1ea2171aafa77a4ea3de325ad11c',1,'r_adc_c.c']]],
+  ['r_5fadc_5fc_5fstatusget',['R_ADC_C_StatusGet',['../group___a_d_c.html#ga1d98d3b28202140cc37796dd60fde5e3',1,'r_adc_c.c']]],
   ['r_5fbsp_5fgroupirqwrite',['R_BSP_GroupIrqWrite',['../group___b_s_p___m_c_u.html#gaed27ea47f0c85a1af9bb515600d5e2ba',1,'R_BSP_GroupIrqWrite(bsp_grp_irq_t irq, void(*p_callback)(bsp_grp_irq_t irq)):&#160;bsp_group_irq.c'],['../group___b_s_p___m_c_u.html#gaed27ea47f0c85a1af9bb515600d5e2ba',1,'R_BSP_GroupIrqWrite(bsp_grp_irq_t irq, void(*p_callback)(bsp_grp_irq_t irq)):&#160;bsp_group_irq.c']]],
   ['r_5fbsp_5fhardwareinit',['R_BSP_HardwareInit',['../group___b_s_p___m_c_u.html#ga8bad719318543adaef254ce1796613f0',1,'system.c']]],
   ['r_5fbsp_5fpinaccessdisable',['R_BSP_PinAccessDisable',['../group___b_s_p___i_o.html#gab5aab592b5fbbfa18d542c0812850b98',1,'bsp_io.h']]],
@@ -162,5 +176,12 @@ var searchData=
   ['r_5fusb_5fsuspend',['R_USB_Suspend',['../group___u_s_b.html#ga78ea3782bd018162fc06e3d24dc46b83',1,'r_usb_basic.c']]],
   ['r_5fusb_5fusedpipesget',['R_USB_UsedPipesGet',['../group___u_s_b.html#ga112c7de01280de80c529ec61789c9cc0',1,'r_usb_basic.c']]],
   ['r_5fusb_5fvbusset',['R_USB_VbusSet',['../group___u_s_b.html#ga0d8d4651d5f1fa839cc85d32374f9018',1,'r_usb_basic.c']]],
-  ['r_5fusb_5fwrite',['R_USB_Write',['../group___u_s_b.html#ga001f40866be6438435e65e78871a54d5',1,'r_usb_basic.c']]]
+  ['r_5fusb_5fwrite',['R_USB_Write',['../group___u_s_b.html#ga001f40866be6438435e65e78871a54d5',1,'r_usb_basic.c']]],
+  ['r_5fwdt_5fcallbackset',['R_WDT_CallbackSet',['../group___w_d_t.html#ga602ed1a63b61c46df822059ab6a5395e',1,'r_wdt.c']]],
+  ['r_5fwdt_5fcounterget',['R_WDT_CounterGet',['../group___w_d_t.html#gaf6b4f726ecfe6795c7887dc1226450ca',1,'r_wdt.c']]],
+  ['r_5fwdt_5fopen',['R_WDT_Open',['../group___w_d_t.html#gad64d0778fd0ceccb13a7287bb0d1fca8',1,'r_wdt.c']]],
+  ['r_5fwdt_5frefresh',['R_WDT_Refresh',['../group___w_d_t.html#gaff080d0dcc993cfbe7e99771396feffb',1,'r_wdt.c']]],
+  ['r_5fwdt_5fstatusclear',['R_WDT_StatusClear',['../group___w_d_t.html#gacd5b9ff42df96b9fd4603dda47b946cb',1,'r_wdt.c']]],
+  ['r_5fwdt_5fstatusget',['R_WDT_StatusGet',['../group___w_d_t.html#ga17bf328598042575cbe4f126f59bbc1b',1,'r_wdt.c']]],
+  ['r_5fwdt_5ftimeoutget',['R_WDT_TimeoutGet',['../group___w_d_t.html#gac6e98a5b526d81651da1ffeda3f70263',1,'r_wdt.c']]]
 ];

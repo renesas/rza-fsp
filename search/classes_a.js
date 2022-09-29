@@ -1,14 +1,13 @@
 var searchData=
 [
-  ['timer_5fapi_5ft',['timer_api_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__api__t',1,'']]],
-  ['timer_5fcallback_5fargs_5ft',['timer_callback_args_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__callback__args__t',1,'']]],
-  ['timer_5fcfg_5ft',['timer_cfg_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__cfg__t',1,'']]],
-  ['timer_5finfo_5ft',['timer_info_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__info__t',1,'']]],
-  ['timer_5finstance_5ft',['timer_instance_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__instance__t',1,'']]],
-  ['timer_5fstatus_5ft',['timer_status_t',['../group___t_i_m_e_r___a_p_i.html#structtimer__status__t',1,'']]],
-  ['transfer_5fapi_5ft',['transfer_api_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__api__t',1,'']]],
-  ['transfer_5fcfg_5ft',['transfer_cfg_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__cfg__t',1,'']]],
-  ['transfer_5finfo_5ft',['transfer_info_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__info__t',1,'']]],
-  ['transfer_5finstance_5ft',['transfer_instance_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__instance__t',1,'']]],
-  ['transfer_5fproperties_5ft',['transfer_properties_t',['../group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__properties__t',1,'']]]
+  ['scif_5fbaud_5fsetting_5ft',['scif_baud_setting_t',['../group___s_c_i_f___u_a_r_t.html#structscif__baud__setting__t',1,'']]],
+  ['scif_5fuart_5fextended_5fcfg_5ft',['scif_uart_extended_cfg_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__extended__cfg__t',1,'']]],
+  ['scif_5fuart_5finstance_5fctrl_5ft',['scif_uart_instance_ctrl_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__instance__ctrl__t',1,'']]],
+  ['spi_5fapi_5ft',['spi_api_t',['../group___s_p_i___a_p_i.html#structspi__api__t',1,'']]],
+  ['spi_5fcallback_5fargs_5ft',['spi_callback_args_t',['../group___s_p_i___a_p_i.html#structspi__callback__args__t',1,'']]],
+  ['spi_5fcfg_5ft',['spi_cfg_t',['../group___s_p_i___a_p_i.html#structspi__cfg__t',1,'']]],
+  ['spi_5finstance_5ft',['spi_instance_t',['../group___s_p_i___a_p_i.html#structspi__instance__t',1,'']]],
+  ['spi_5fwrite_5fread_5fguard_5fargs_5ft',['spi_write_read_guard_args_t',['../group___s_p_i___a_p_i.html#structspi__write__read__guard__args__t',1,'']]],
+  ['ssi_5fextended_5fcfg_5ft',['ssi_extended_cfg_t',['../group___s_s_i.html#structssi__extended__cfg__t',1,'']]],
+  ['ssi_5finstance_5fctrl_5ft',['ssi_instance_ctrl_t',['../group___s_s_i.html#structssi__instance__ctrl__t',1,'']]]
 ];
