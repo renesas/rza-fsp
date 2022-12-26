@@ -97,6 +97,7 @@ var group___i_o_p_o_r_t___a_p_i =
       [ "IOPORT_CFG_TINT_DISABLE", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574ac78c3e06c1adb07cd707118f321ef94e", null ],
       [ "IOPORT_CFG_TINT_ENABLE", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574a3691c62fc89eb3e7df1eae9064206c4e", null ],
       [ "IOPORT_CFG_SLEW_RATE_SLOW", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574a9c17101eaef4bf0fd2beb880a29317a8", null ],
+      [ "IOPORT_CFG_SLEW_RATE_FAST", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574accc921bf1d788c6f10b0225b65144f00", null ],
       [ "IOPORT_CFG_SLEW_RATE_FLAT", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574a14a3759e7b9db28ecd3e34968619c616", null ],
       [ "IOPORT_CFG_SPECIAL_PURPOSE_PORT_INPUT_DISABLE", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574a968aea46146f3db05b2f9d2e1c29650f", null ],
       [ "IOPORT_CFG_SPECIAL_PURPOSE_PORT_INPUT_ENABLE", "group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574a10595587e1c5984cecf3578625c05040", null ],

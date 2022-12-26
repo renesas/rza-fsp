@@ -1,13 +1,21 @@
 var searchData=
 [
-  ['scif_5fbaud_5fsetting_5ft',['scif_baud_setting_t',['../group___s_c_i_f___u_a_r_t.html#structscif__baud__setting__t',1,'']]],
-  ['scif_5fuart_5fextended_5fcfg_5ft',['scif_uart_extended_cfg_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__extended__cfg__t',1,'']]],
-  ['scif_5fuart_5finstance_5fctrl_5ft',['scif_uart_instance_ctrl_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__instance__ctrl__t',1,'']]],
-  ['spi_5fapi_5ft',['spi_api_t',['../group___s_p_i___a_p_i.html#structspi__api__t',1,'']]],
-  ['spi_5fcallback_5fargs_5ft',['spi_callback_args_t',['../group___s_p_i___a_p_i.html#structspi__callback__args__t',1,'']]],
-  ['spi_5fcfg_5ft',['spi_cfg_t',['../group___s_p_i___a_p_i.html#structspi__cfg__t',1,'']]],
-  ['spi_5finstance_5ft',['spi_instance_t',['../group___s_p_i___a_p_i.html#structspi__instance__t',1,'']]],
-  ['spi_5fwrite_5fread_5fguard_5fargs_5ft',['spi_write_read_guard_args_t',['../group___s_p_i___a_p_i.html#structspi__write__read__guard__args__t',1,'']]],
-  ['ssi_5fextended_5fcfg_5ft',['ssi_extended_cfg_t',['../group___s_s_i.html#structssi__extended__cfg__t',1,'']]],
-  ['ssi_5finstance_5fctrl_5ft',['ssi_instance_ctrl_t',['../group___s_s_i.html#structssi__instance__ctrl__t',1,'']]]
+  ['riic_5fmaster_5fextended_5fcfg_5ft',['riic_master_extended_cfg_t',['../group___r_i_i_c___m_a_s_t_e_r.html#structriic__master__extended__cfg__t',1,'']]],
+  ['riic_5fslave_5fextended_5fcfg_5ft',['riic_slave_extended_cfg_t',['../group___r_i_i_c___s_l_a_v_e.html#structriic__slave__extended__cfg__t',1,'']]],
+  ['rm_5fblock_5fmedia_5fapi_5ft',['rm_block_media_api_t',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#structrm__block__media__api__t',1,'']]],
+  ['rm_5fblock_5fmedia_5fcallback_5fargs_5ft',['rm_block_media_callback_args_t',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#structrm__block__media__callback__args__t',1,'']]],
+  ['rm_5fblock_5fmedia_5fcfg_5ft',['rm_block_media_cfg_t',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#structrm__block__media__cfg__t',1,'']]],
+  ['rm_5fblock_5fmedia_5finfo_5ft',['rm_block_media_info_t',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#structrm__block__media__info__t',1,'']]],
+  ['rm_5fblock_5fmedia_5finstance_5ft',['rm_block_media_instance_t',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#structrm__block__media__instance__t',1,'']]],
+  ['rm_5fblock_5fmedia_5fsdmmc_5finstance_5fctrl_5ft',['rm_block_media_sdmmc_instance_ctrl_t',['../structrm__block__media__sdmmc__instance__ctrl__t.html',1,'']]],
+  ['rm_5fblock_5fmedia_5fstatus_5ft',['rm_block_media_status_t',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#structrm__block__media__status__t',1,'']]],
+  ['rm_5fblock_5fmedia_5fusb_5finstance_5fctrl_5ft',['rm_block_media_usb_instance_ctrl_t',['../structrm__block__media__usb__instance__ctrl__t.html',1,'']]],
+  ['rm_5ffreertos_5fplus_5ffat_5fapi_5ft',['rm_freertos_plus_fat_api_t',['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html#structrm__freertos__plus__fat__api__t',1,'']]],
+  ['rm_5ffreertos_5fplus_5ffat_5fcallback_5fargs_5ft',['rm_freertos_plus_fat_callback_args_t',['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html#structrm__freertos__plus__fat__callback__args__t',1,'']]],
+  ['rm_5ffreertos_5fplus_5ffat_5fdevice_5ft',['rm_freertos_plus_fat_device_t',['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html#structrm__freertos__plus__fat__device__t',1,'']]],
+  ['rm_5ffreertos_5fplus_5ffat_5finstance_5fctrl_5ft',['rm_freertos_plus_fat_instance_ctrl_t',['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#structrm__freertos__plus__fat__instance__ctrl__t',1,'']]],
+  ['rm_5ffreertos_5fplus_5ffat_5finstance_5ft',['rm_freertos_plus_fat_instance_t',['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html#structrm__freertos__plus__fat__instance__t',1,'']]],
+  ['rspi_5fextended_5fcfg_5ft',['rspi_extended_cfg_t',['../group___r_s_p_i.html#structrspi__extended__cfg__t',1,'']]],
+  ['rspi_5finstance_5fctrl_5ft',['rspi_instance_ctrl_t',['../group___r_s_p_i.html#structrspi__instance__ctrl__t',1,'']]],
+  ['rspi_5frspck_5fdiv_5fsetting_5ft',['rspi_rspck_div_setting_t',['../group___r_s_p_i.html#structrspi__rspck__div__setting__t',1,'']]]
 ];

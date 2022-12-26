@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RZA Flexible Software Package Documentation: General Timer (r_gtm)</title>
+<title>RZ/A Flexible Software Package Documentation: General Timer (r_gtm)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -36,8 +36,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.1.0</span>
+   <div id="projectname">RZ/A Flexible Software Package Documentation
+   &#160;<span id="projectnumber">Release v1.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -202,13 +202,149 @@ Overview</h1>
 <h2><a class="anchor" id="r-gtm-features"></a>
 Features</h2>
 <p>The General timer has the following features:</p><ul>
-<li>Two operating modes<ul>
+<li>Supports periodic mode, one-shot mode as Timer API.</li>
+<li>Configurable period (counts per timer cycle).</li>
+<li>Supports runtime reconfiguration of period.</li>
+<li>Supports counting based on P0 clock.</li>
+<li>APIs are provided to start, stop the counter.</li>
+<li>APIs are provided to get the current period, source clock frequency, and count direction.</li>
+<li>APIs are provided to get the current timer status and counter value.</li>
+<li>Supports two operating modes as GTM API.<ul>
 <li>Interval timer mode</li>
-<li>Free-running comparison mode </li>
+<li>Free-running comparison mode</li>
 </ul>
 </li>
 </ul>
-<table class="memberdecls">
+<h2><a class="anchor" id="r-gtm-selecting-a-timer"></a>
+Selecting a Timer</h2>
+<p>RZ MPUs have two timer peripherals: the Multi-Function Timer Pulse Unit 3 (MTU3a) and the General Timer (GTM). When selecting between them, consider these factors:</p>
+<table class="doxtable">
+<tr>
+<th></th><th>MTU3 </th><th>GTM  </th></tr>
+<tr>
+<td>Available Channels</td><td>The number of MTU3 channels is device specific. All currently supported MPUs have at least 8 MTU3 channels.</td><td>All MPUs have 3 GTM channels. </td></tr>
+<tr>
+<td>Timer Resolution</td><td>All MPUs have at least one 16-bit MTU3 timer.</td><td>The GTM timers are 32-bit timers. </td></tr>
+<tr>
+<td>Clock Source</td><td>The MTU3 runs off P0 clock with a configurable divider up to 1024.</td><td>The GTM runs off P0 clock. </td></tr>
+</table>
+<h1><a class="anchor" id="r-gtm-configuration"></a>
+Configuration</h1>
+<p><h2>Build Time Configurations for r_gtm</h2>
+The following build time configurations are defined in fsp_cfg/r_gtm_cfg.h:<br />
+</p><table class="doxtable">
+<tr>
+<th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
+<tr>
+<td>Parameter Checking</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Default (BSP)</li>
+<li>
+Enabled</li>
+<li>
+Disabled</li>
+</ul>
+</td><td>Default (BSP) </td><td>If selected code for parameter checking is included in the build. </td></tr>
+</table>
+ <h2>Configurations for Timers &gt; Timer Driver on r_gtm</h2>
+This module can be added to the Stacks tab via New Stack &gt; Timers &gt; Timer Driver on r_gtm.<br />
+</p><table class="doxtable">
+<tr>
+<th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
+<tr>
+<td>General &gt; Name</td><td>Name must be a valid C symbol</td><td>g_timer0 </td><td>Module name. </td></tr>
+<tr>
+<td>General &gt; Channel</td><td>Channel number does not exist</td><td>0 </td><td>Physical hardware channel. </td></tr>
+<tr>
+<td>General &gt; Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Periodic</li>
+<li>
+One-Shot</li>
+</ul>
+</td><td>Periodic </td><td>Mode selection. Note: One-shot mode is implemented in software. ISR's must be enabled for one shot even if callback is unused. </td></tr>
+<tr>
+<td>General &gt; Period</td><td>Value must be non-negative</td><td>1 </td><td>Specify the timer period based on the selected unit.<br />
+<br />
+When the unit is set to 'Raw Counts', setting the period to 0x10000 results in the maximum period at the lowest divisor (fastest timer tick). Set the period to 0x10000 for a free running timer, pulse width measurement or pulse period measurement. Setting the period higher will automatically select a higher divider; the period can be set up to 0x80000 when counting from PCLKB or 0x800000 when counting from LOCO/subclock, which will use a divider of 8 or 128 respectively with the maximum period. </td></tr>
+<tr>
+<td>General &gt; Period Unit</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Raw Counts</li>
+<li>
+Nanoseconds</li>
+<li>
+Microseconds</li>
+<li>
+Milliseconds</li>
+<li>
+Seconds</li>
+<li>
+Hertz</li>
+<li>
+Kilohertz</li>
+</ul>
+</td><td>Milliseconds </td><td>Unit of the period specified above </td></tr>
+<tr>
+<td>General &gt; Count Source</td><td>P0CLK</td><td>P0CLK </td><td>GTM counter clock source. NOTE: The divisor is calculated automatically based on the selected period. See agt_count_source_t documentation for details. </td></tr>
+<tr>
+<td>Interrupts &gt; Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback function. If this callback function is provided, it is called from the interrupt service routine (ISR) each time the timer period elapses. </td></tr>
+<tr>
+<td>Interrupts &gt; Underflow Interrupt Priority</td><td>Illegal interrupt priority level</td><td>24 </td><td>Timer interrupt priority(0-31). Note: If you specify the lowest priority (i.e.,31), no interrupt will occur. </td></tr>
+<tr>
+<td>Interrupts &gt; Generate at Start</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Disable</li>
+<li>
+Enable</li>
+</ul>
+</td><td>Disable </td><td>Controls enabling or disabling of generates OSTMnTINT interrupt at starts </td></tr>
+<tr>
+<td>Extra Features &gt; GTM Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Interval timer mode</li>
+<li>
+Free-running comparison mode</li>
+</ul>
+</td><td>Interval timer mode </td><td>GTM Count Mode (Interval timer mode or Free-running comparison mode) </td></tr>
+</table>
+</p>
+<h2><a class="anchor" id="r-gtm-clock-configuration"></a>
+Clock Configuration</h2>
+<p>The GTM clock is based on the P0 clock frequency. You can set the P0 clock frequency using the <b>Clocks</b> tab of the Configuration editor.</p>
+<h2><a class="anchor" id="r-gtm-timer-period"></a>
+Timer Period</h2>
+<p>The Configuration editor will automatically calculate the period count value based on the selected period time, units.</p>
+<p>When the selected unit is "Raw counts", the maximum allowed period setting varies depending on the selected clock source:</p>
+<table class="doxtable">
+<tr>
+<th>Clock source </th><th>Maximum period (counts)  </th></tr>
+<tr>
+<td>P0 clock </td><td>0x100000000 </td></tr>
+</table>
+<dl class="section note"><dt>Note</dt><dd>Though the GTM is a 32-bit timer, because the period interrupt occurs when the counter underflows, setting the period register to 0 results in an effective period of 1 count. For this reason all user-provided raw count values reflect the actual number of period counts (not the raw register values).</dd></dl>
+<h1><a class="anchor" id="r-gtm-usage_notes"></a>
+Usage Notes</h1>
+<h2>Interval Timer Mode</h2>
+<p>In this mode, the timer counts down from the value specified in the compare match register. An interrupt request is generated when the counter reaches 0x0000_0000.</p>
+<h2>Free-Running Comparison Mode</h2>
+<p>In this mode, the counter counts up from 0x0000_0000 to 0xFFFF_FFFF. An interrupt request is output when the current value of the counter matches the value of the compare match register.</p>
+<h2>Updating Period</h2>
+<p>The period is updated after the next counter overflow or underflow after calling <a class="el" href="group___g_t_m.html#ga4368d6d5d2ae11cdb0f18cf8bdc75e24">R_GTM_PeriodSet()</a>.</p>
+<h2>One-Shot Mode</h2>
+<p>The GTM timer does not support one-shot mode natively. One-shot mode is achieved by stopping the timer in the interrupt service routine before the callback is called. If the interrupt is not serviced before the timer period expires again, the timer generates more than one event. The callback is only called once in this case.</p>
+<p>Examples of periodic signals that can be generated by this module are shown below:</p>
+<h1><a class="anchor" id="r-gtm-examples"></a>
+Examples</h1>
+<h2>GTM Basic Example</h2>
+<p>This is a basic example of minimal use of the GTM in an application.</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> gtm_basic_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = FSP_SUCCESS;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Initializes the module. */</span></div><div class="line">    err = <a class="code" href="group___g_t_m.html#ga329fac4f1af8dee4e45200fd0ce5a9a5">R_GTM_Open</a>(&amp;g_timer_ctrl, &amp;g_timer_cfg);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Start the timer. */</span></div><div class="line">    (void) <a class="code" href="group___g_t_m.html#gae0fe404d6571eb59c9f05f43f55eed25">R_GTM_Start</a>(&amp;g_timer_ctrl);</div><div class="line"></div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h2>GTM Callback Example</h2>
+<p>This is an example of a timer callback.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">/* Example callback called when timer expires. */</span></div><div class="line"><span class="keywordtype">void</span> timer_callback (<a class="code" href="group___t_i_m_e_r___a_p_i.html#structtimer__callback__args__t">timer_callback_args_t</a> * p_args)</div><div class="line">{</div><div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91ebae310bef0d640f06765c01b4b91a5b84c">TIMER_EVENT_CYCLE_END</a> == p_args-&gt;<a class="code" href="group___t_i_m_e_r___a_p_i.html#a61b9aabfcafc5e362dce56af7ea36bcf">event</a>)</div><div class="line">    {</div><div class="line">        <span class="comment">/* Add application code to be called periodically here. */</span></div><div class="line">    }</div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h2>GTM Free Running Counter Example</h2>
+<p>To use the GTM as a free running counter, select Free-Running Comparison Mode.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="keywordtype">void</span> gtm_counter_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = FSP_SUCCESS;</div><div class="line"></div><div class="line">    <span class="comment">/* Initializes the module. */</span></div><div class="line">    err = <a class="code" href="group___g_t_m.html#ga329fac4f1af8dee4e45200fd0ce5a9a5">R_GTM_Open</a>(&amp;g_timer_ctrl, &amp;g_timer_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="comment">/* Start the timer. */</span></div><div class="line">    (void) <a class="code" href="group___g_t_m.html#gae0fe404d6571eb59c9f05f43f55eed25">R_GTM_Start</a>(&amp;g_timer_ctrl);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* (Optional) Stop the timer. */</span></div><div class="line">    (void) <a class="code" href="group___g_t_m.html#ga89c7ca62fbb288cd5f44e5c773c699cf">R_GTM_Stop</a>(&amp;g_timer_ctrl);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Read the current counter value. Counter value is in status.counter. */</span></div><div class="line">    <a class="code" href="group___t_i_m_e_r___a_p_i.html#structtimer__status__t">timer_status_t</a> status;</div><div class="line">    (void) <a class="code" href="group___g_t_m.html#gaa95357cd0d4d8c43f7a2523d4c3b24f7">R_GTM_StatusGet</a>(&amp;g_timer_ctrl, &amp;status);</div><div class="line"></div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h2>GTM Period Update Example</h2>
+<p>This is an example of updating the period.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="preprocessor">#define GTM_EXAMPLE_MSEC_PER_SEC           (1000)</span></div><div class="line"><span class="preprocessor">#define GTM_EXAMPLE_DESIRED_PERIOD_MSEC    (20)</span></div><div class="line"></div><div class="line"><span class="comment">/* This example shows how to calculate a new period value at runtime. */</span></div><div class="line"><span class="keywordtype">void</span> gtm_period_calculation_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = FSP_SUCCESS;</div><div class="line"></div><div class="line">    <span class="comment">/* Initializes the module. */</span></div><div class="line">    err = <a class="code" href="group___g_t_m.html#ga329fac4f1af8dee4e45200fd0ce5a9a5">R_GTM_Open</a>(&amp;g_timer_ctrl, &amp;g_timer_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="comment">/* Start the timer. */</span></div><div class="line">    (void) <a class="code" href="group___g_t_m.html#gae0fe404d6571eb59c9f05f43f55eed25">R_GTM_Start</a>(&amp;g_timer_ctrl);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Get the source clock frequency (in Hz). There are several ways to do this in FSP:</span></div><div class="line"><span class="comment">     *  - Use the R_GTM_InfoGet function (it accounts for the clock source and divider).</span></div><div class="line"><span class="comment">     *  - Calculate the current P0 clock frequency using R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_P0CLK).</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * This example uses the last option (R_FSP_SystemClockHzGet).</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    uint32_t timer_freq_hz = <a class="code" href="group___b_s_p___m_c_u.html#ga992632ae2e45c2f962855fe4bbe98a63">R_FSP_SystemClockHzGet</a>(FSP_PRIV_CLOCK_P0CLK);</div><div class="line"></div><div class="line">    <span class="comment">/* Calculate the desired period based on the current clock. Note that this calculation could overflow if the</span></div><div class="line"><span class="comment">     * desired period is larger than UINT32_MAX / p0clk_freq_hz. A cast to uint64_t is used to prevent this. */</span></div><div class="line">    uint32_t period_counts =</div><div class="line">        (uint32_t) (((uint64_t) timer_freq_hz * gtm_EXAMPLE_DESIRED_PERIOD_MSEC) / gtm_EXAMPLE_MSEC_PER_SEC);</div><div class="line"></div><div class="line">    <span class="comment">/* Set the calculated period. */</span></div><div class="line">    err = <a class="code" href="group___g_t_m.html#ga4368d6d5d2ae11cdb0f18cf8bdc75e24">R_GTM_PeriodSet</a>(&amp;g_timer_ctrl, period_counts);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:structgtm__instance__ctrl__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_t_m.html#structgtm__instance__ctrl__t">gtm_instance_ctrl_t</a></td></tr>
@@ -706,7 +842,7 @@ Stop the timer before calling this function if one-shot output is used.</dd></dl
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

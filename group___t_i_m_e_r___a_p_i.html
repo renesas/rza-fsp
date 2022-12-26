@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RZA Flexible Software Package Documentation: Timer Interface</title>
+<title>RZ/A Flexible Software Package Documentation: Timer Interface</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -36,8 +36,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.1.0</span>
+   <div id="projectname">RZ/A Flexible Software Package Documentation
+   &#160;<span id="projectnumber">Release v1.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -173,7 +173,8 @@ Summary</h1>
 <p>The general timer interface provides standard timer functionality including periodic mode, one-shot mode, PWM output, and free-running timer mode. After each timer cycle (overflow or underflow), an interrupt can be triggered.</p>
 <p>If an instance supports output compare mode, it is provided in the extension configuration timer_on_&lt;instance&gt;_cfg_t defined in r_&lt;instance&gt;.h.</p>
 <p>Implemented by:</p><ul>
-<li><a class="el" href="group___g_t_m.html">General Timer (r_gtm)</a> </li>
+<li><a class="el" href="group___g_t_m.html">General Timer (r_gtm)</a></li>
+<li><a class="el" href="group___m_t_u3.html">Multi-Function Timer Pulse Unit 3 (r_mtu3)</a> </li>
 </ul>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -468,6 +469,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Initial configuration. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga329fac4f1af8dee4e45200fd0ce5a9a5">R_GTM_Open()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga0ee0beb7bd1f1773916b0c633454fe0b">R_MTU3_Open()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -493,6 +495,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Start the counter. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#gae0fe404d6571eb59c9f05f43f55eed25">R_GTM_Start()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga57aa8e231848fe1eb00775bd722418ee">R_MTU3_Start()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -517,6 +520,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Stop the counter. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga89c7ca62fbb288cd5f44e5c773c699cf">R_GTM_Stop()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga396b95f942eed8fd222c67e5bfd22800">R_MTU3_Stop()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -541,6 +545,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Reset the counter to the initial value. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga406683b70b461dec28c6a707eab2993d">R_GTM_Reset()</a></li>
+<li><a class="el" href="group___m_t_u3.html#gab23024474f1c7bb662f4f9dfc091d85c">R_MTU3_Reset()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -565,6 +570,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Enables input capture. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga853124c4bd7f079cb4040694fa13c22c">R_GTM_Enable()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga7be983a26523a21e6eec4ed02b3d0902">R_MTU3_Enable()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -589,6 +595,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Disables input capture. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga25c4fd1a5cbb556a97d22f7c5d4e7df5">R_GTM_Disable()</a></li>
+<li><a class="el" href="group___m_t_u3.html#gab8b9c7b84a459fabd5449e83db526ee1">R_MTU3_Disable()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -614,6 +621,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <p>Set the time until the timer expires. See implementation for details of period update timing.</p>
 <dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga4368d6d5d2ae11cdb0f18cf8bdc75e24">R_GTM_PeriodSet()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga0d64e832230506418738a816a38489e4">R_MTU3_PeriodSet()</a></li>
 </ul>
 </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Timer expiration may or may not generate a CPU interrupt based on how the timer is configured in <a class="el" href="group___t_i_m_e_r___a_p_i.html#af49a90087a53c8019d642a3f7abaa8ad">timer_api_t::open</a>. </dd></dl>
@@ -641,6 +649,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <p>Sets the number of counts for the pin level to be high. If the timer is counting, the updated duty cycle is reflected after the next timer expiration.</p>
 <dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga98e91cf35dfcff3ed975ee2b07bdd379">R_GTM_DutyCycleSet()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga5e4eda78ae4a5cb31e85eb682d6fe248">R_MTU3_DutyCycleSet()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -667,6 +676,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Stores timer information in p_info. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga553dfdd88e36aaf3c58088a5a7774156">R_GTM_InfoGet()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga0c1fcecad7205ef9928305c960c7e494">R_MTU3_InfoGet()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -692,6 +702,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Get the current counter value and timer state and store it in p_status. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#gaa95357cd0d4d8c43f7a2523d4c3b24f7">R_GTM_StatusGet()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga8e02f073acf66a66ef6e525c8b57454e">R_MTU3_StatusGet()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -717,6 +728,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Specify callback function and optional context pointer and working memory pointer. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga0213edecdcc056ecf3353c3b59a85bd9">R_GTM_CallbackSet()</a></li>
+<li><a class="el" href="group___m_t_u3.html#ga4ec0ad4f10536b74374b75f2ca46f527">R_MTU3_CallbackSet()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -744,6 +756,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Allows driver to be reconfigured and may reduce power consumption. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
 <li><a class="el" href="group___g_t_m.html#ga95721f8cb1f66dd8556d03b94abc40ed">R_GTM_Close()</a></li>
+<li><a class="el" href="group___m_t_u3.html#gace590734aa53fc0116c411decc0142d2">R_MTU3_Close()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -807,7 +820,8 @@ Pointer to the API structure for this instance. </td></tr>
       </table>
 </div><div class="memdoc">
 <p>Timer control block. Allocate an instance specific control block to pass into the timer API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___g_t_m.html#structgtm__instance__ctrl__t">gtm_instance_ctrl_t</a> </li>
+<li><a class="el" href="group___g_t_m.html#structgtm__instance__ctrl__t">gtm_instance_ctrl_t</a></li>
+<li><a class="el" href="group___m_t_u3.html#structmtu3__instance__ctrl__t">mtu3_instance_ctrl_t</a> </li>
 </ul>
 </dd></dl>
 
@@ -836,6 +850,18 @@ Pointer to the API structure for this instance. </td></tr>
 <tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91ebab7b635fbf34ede5a3e2f55b5a60ac21b"></a>TIMER_EVENT_CAPTURE_B&#160;</td><td class="fielddoc"><p>A capture has occurred on signal B. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91eba83cb2de8ac629fcd95525e94b94089f0"></a>TIMER_EVENT_TROUGH&#160;</td><td class="fielddoc"><p>Timer trough event (counter is 0, triangle-wave PWM only. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91eba5935edbb3d0b6d8b6f74a8402e758adf"></a>TIMER_EVENT_OUTPUT_COMPARE_0&#160;</td><td class="fielddoc"><p>An output has occurred on signal 0. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91eba1618c4f47f889499fe72ef5a3c2cf4eb"></a>TIMER_EVENT_OUTPUT_COMPARE_1&#160;</td><td class="fielddoc"><p>An output has occurred on signal 1. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91eba83346d837d9c89b9b1bed8c9a0078660"></a>TIMER_EVENT_DEAD_TIME&#160;</td><td class="fielddoc"><p>Dead time event. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91ebadc420bfc9860b5d461f10e557f9bb043"></a>TIMER_EVENT_CAPTURE_U&#160;</td><td class="fielddoc"><p>A capture has occurred on signal U. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91eba25cd94f46448cd5938f32c6a25438091"></a>TIMER_EVENT_CAPTURE_V&#160;</td><td class="fielddoc"><p>A capture has occurred on signal V. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac3bee51f7c9078f794c5ac19522f91eba58d231c0801a39b29b761e77dbdae2cf"></a>TIMER_EVENT_CAPTURE_W&#160;</td><td class="fielddoc"><p>A capture has occurred on signal W. </p>
 </td></tr>
 </table>
 
@@ -978,7 +1004,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

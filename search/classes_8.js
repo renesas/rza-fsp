@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['mmu_5fapi_5ft',['mmu_api_t',['../group___m_m_u___a_p_i.html#structmmu__api__t',1,'']]],
-  ['mmu_5fcfg_5ft',['mmu_cfg_t',['../group___m_m_u___a_p_i.html#structmmu__cfg__t',1,'']]],
-  ['mmu_5finstance_5ft',['mmu_instance_t',['../group___m_m_u___a_p_i.html#structmmu__instance__t',1,'']]]
+  ['lcdc_5fextended_5fcfg_5ft',['lcdc_extended_cfg_t',['../group___l_c_d_c.html#structlcdc__extended__cfg__t',1,'']]],
+  ['lcdc_5finstance_5fctrl_5ft',['lcdc_instance_ctrl_t',['../group___l_c_d_c.html#structlcdc__instance__ctrl__t',1,'']]]
 ];

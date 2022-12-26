@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RZA Flexible Software Package Documentation: Renesas Serial Peripheral Interface (r_rspi)</title>
+<title>RZ/A Flexible Software Package Documentation: Renesas Serial Peripheral Interface (r_rspi)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -36,8 +36,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.1.0</span>
+   <div id="projectname">RZ/A Flexible Software Package Documentation
+   &#160;<span id="projectnumber">Release v1.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -186,7 +186,285 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Driver for the RSPI peripheral on RZ MPUs. This module implements the <a class="el" href="group___s_p_i___a_p_i.html">SPI Interface</a>. </p>
-<table class="memberdecls">
+<h1><a class="anchor" id="r-rspi-overview"></a>
+Overview</h1>
+<h2><a class="anchor" id="r-rspi-features"></a>
+Features</h2>
+<ul>
+<li>Standard SPI Modes<ul>
+<li>Master or Slave Mode</li>
+<li>Clock Polarity (CPOL)<ul>
+<li>CPOL=0 SCLK is low when idle</li>
+<li>CPOL=1 SCLK is high when idle</li>
+</ul>
+</li>
+<li>Clock Phase (CPHA)<ul>
+<li>CPHA=0 Data Sampled on the even edge of SCLK (Master Mode Only)</li>
+<li>CPHA=1 Data Sampled on the odd edge of SCLK</li>
+</ul>
+</li>
+<li>MSB/LSB first</li>
+<li>8-Bit, 16-Bit, 32-Bit data frames<ul>
+<li>Hardware endian swap in 16-Bit and 32-Bit mode</li>
+</ul>
+</li>
+<li>4-Wire (SPI) Mode</li>
+</ul>
+</li>
+<li>Configurable bitrate</li>
+<li>Supports Full Duplex Mode</li>
+<li>DMAC Support</li>
+<li>Callback Events<ul>
+<li>Transfer Complete</li>
+<li>RX Overflow Error (The RSPI shift register is copied to the data register before previous data was read)</li>
+<li>Mode Fault Error (The SSL input signal is negated during the serial transfer period)</li>
+</ul>
+</li>
+</ul>
+<h1><a class="anchor" id="r-rspi-configuration"></a>
+Configuration</h1>
+<p><h2>Build Time Configurations for r_rspi</h2>
+The following build time configurations are defined in fsp_cfg/r_rspi_cfg.h:<br />
+</p><table class="doxtable">
+<tr>
+<th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
+<tr>
+<td>Parameter Checking</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Default (BSP)</li>
+<li>
+Enabled</li>
+<li>
+Disabled</li>
+</ul>
+</td><td>Default (BSP) </td><td>If selected code for parameter checking is included in the build. </td></tr>
+<tr>
+<td>DMAC Support</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Enabled</li>
+<li>
+Disabled</li>
+</ul>
+</td><td>Disabled </td><td>If enabled, DMAC instances will be included in the build for both transmission and reception. </td></tr>
+</table>
+ <h2>Configurations for Connectivity &gt; SPI Driver on r_rspi</h2>
+This module can be added to the Stacks tab via New Stack &gt; Connectivity &gt; SPI Driver on r_rspi.<br />
+</p><table class="doxtable">
+<tr>
+<th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
+<tr>
+<td>General &gt; Name</td><td>Name must be a valid C symbol</td><td>g_spi0 </td><td>Module name. </td></tr>
+<tr>
+<td>General &gt; Channel</td><td>Select between channel 0 and 2</td><td>0 </td><td>Select the RSPI channel. </td></tr>
+<tr>
+<td>General &gt; Operating Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Master</li>
+<li>
+Slave</li>
+</ul>
+</td><td>Master </td><td>Select the RSPI operating mode. </td></tr>
+<tr>
+<td>General &gt; Clock Phase</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+CPHA=0</li>
+<li>
+CPHA=1</li>
+</ul>
+</td><td>CPHA=0 </td><td>Select the clock edge to sample data. </td></tr>
+<tr>
+<td>General &gt; Clock Polarity</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+CPOL=0</li>
+<li>
+CPOL=1</li>
+</ul>
+</td><td>CPOL=0 </td><td>Select clock level when idle. </td></tr>
+<tr>
+<td>General &gt; Mode Fault Error</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Enable</li>
+<li>
+Disable</li>
+</ul>
+</td><td>Disable </td><td>Detect master/slave mode conflicts. </td></tr>
+<tr>
+<td>General &gt; Bit Order</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+MSB First</li>
+<li>
+LSB First</li>
+</ul>
+</td><td>MSB First </td><td>Select the data bit order. </td></tr>
+<tr>
+<td>Extra &gt; Slave Select Polarity</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Active Low</li>
+<li>
+Active High</li>
+</ul>
+</td><td>Active Low </td><td>Select the slave select active level. </td></tr>
+<tr>
+<td>Extra &gt; MOSI Idle State</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+MOSI Idle Value Fixing Disable</li>
+<li>
+MOSI Idle Value Fixing Low</li>
+<li>
+MOSI Idle Value Fixing High</li>
+</ul>
+</td><td>MOSI Idle Value Fixing Disable </td><td>Select the MOSI idle level if MOSI idle is enabled. </td></tr>
+<tr>
+<td>Extra &gt; Bitrate</td><td>Value must be an integer greater than 0</td><td>10000000 </td><td>Enter the desired bitrate, change the bitrate to a value supported by MCU. If the requested bitrate cannot be achieved, the settings with the largest possible value that is less than or equal to the requested bitrate is used. The theoretical bitrate is printed in a comment in the generated <a class="el" href="group___r_s_p_i.html#structrspi__extended__cfg__t">rspi_extended_cfg_t</a> structure. </td></tr>
+<tr>
+<td>Extra &gt; Clock Delay</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+RSPI_DELAY_COUNT_1</li>
+<li>
+RSPI_DELAY_COUNT_2</li>
+<li>
+RSPI_DELAY_COUNT_3</li>
+<li>
+RSPI_DELAY_COUNT_4</li>
+<li>
+RSPI_DELAY_COUNT_5</li>
+<li>
+RSPI_DELAY_COUNT_6</li>
+<li>
+RSPI_DELAY_COUNT_7</li>
+<li>
+RSPI_DELAY_COUNT_8</li>
+</ul>
+</td><td>RSPI_DELAY_COUNT_1 </td><td>Configure the number of RSPI clock cycles before each data frame. </td></tr>
+<tr>
+<td>Extra &gt; SSL Negation Delay</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+RSPI_DELAY_COUNT_1</li>
+<li>
+RSPI_DELAY_COUNT_2</li>
+<li>
+RSPI_DELAY_COUNT_3</li>
+<li>
+RSPI_DELAY_COUNT_4</li>
+<li>
+RSPI_DELAY_COUNT_5</li>
+<li>
+RSPI_DELAY_COUNT_6</li>
+<li>
+RSPI_DELAY_COUNT_7</li>
+<li>
+RSPI_DELAY_COUNT_8</li>
+</ul>
+</td><td>RSPI_DELAY_COUNT_1 </td><td>Configure the number of RSPI clock cycles after each data frame. </td></tr>
+<tr>
+<td>Extra &gt; Next Access Delay</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+RSPI_DELAY_COUNT_1</li>
+<li>
+RSPI_DELAY_COUNT_2</li>
+<li>
+RSPI_DELAY_COUNT_3</li>
+<li>
+RSPI_DELAY_COUNT_4</li>
+<li>
+RSPI_DELAY_COUNT_5</li>
+<li>
+RSPI_DELAY_COUNT_6</li>
+<li>
+RSPI_DELAY_COUNT_7</li>
+<li>
+RSPI_DELAY_COUNT_8</li>
+</ul>
+</td><td>RSPI_DELAY_COUNT_1 </td><td>Configure the number of RSPI clock cycles between each data frame. </td></tr>
+<tr>
+<td>Extra &gt; Receiver FIFO Trigger Level</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+1</li>
+<li>
+2</li>
+<li>
+4</li>
+<li>
+8</li>
+<li>
+16</li>
+<li>
+24</li>
+<li>
+32</li>
+<li>
+5</li>
+</ul>
+</td><td>24 </td><td>Configure the trigger level of RSPI receiver FIFO. </td></tr>
+<tr>
+<td>Extra &gt; Transmitter FIFO Trigger Level</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+7</li>
+<li>
+6</li>
+<li>
+4</li>
+<li>
+0</li>
+</ul>
+</td><td>4 </td><td>Configure the trigger level of RSPI transmitter FIFO. </td></tr>
+<tr>
+<td>Interrupts &gt; Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback function can be provided. If this callback function is provided, it will be called from the interrupt service routine (ISR). </td></tr>
+<tr>
+<td>Interrupts &gt; Receive Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for all RSPI interrupts(0-31). Note: If you specify the lowest priority (i.e.,31), no interrupt will occur. </td></tr>
+<tr>
+<td>Interrupts &gt; Transmit Buffer Empty Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for all RSPI interrupts(0-31). Note: If you specify the lowest priority (i.e.,31), no interrupt will occur. </td></tr>
+<tr>
+<td>Interrupts &gt; Error Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for all RSPI interrupts(0-31). Note: If you specify the lowest priority (i.e.,31), no interrupt will occur. </td></tr>
+</table>
+</p>
+<h2><a class="anchor" id="r-rspi-clock-configuration"></a>
+Clock Configuration</h2>
+<p>The clock for this module is derived from the following peripheral clock for each MCU group:<br />
+</p><table class="doxtable">
+<tr>
+<th>MCU Group</th><th>Peripheral Clock </th></tr>
+<tr>
+<td>RZA3UL</td><td>P0CLK</td></tr>
+</table>
+</p>
+<h2><a class="anchor" id="r-rspi-pin-configuration"></a>
+Pin Configuration</h2>
+<p>This module uses MOSI, MISO, RSPCK, and SSL pins to communicate with on board devices.</p>
+<dl class="section note"><dt>Note</dt><dd>At high bitrates, it might be nessecary to configure the pins with IOPORT_CFG_DRIVE_B11.</dd></dl>
+<h1><a class="anchor" id="r-rspi-usage_notes"></a>
+Usage Notes</h1>
+<h2>Performance</h2>
+<p>At high bitrates, interrupts may not be able to service transfers fast enough. In master mode this means there will be a delay between each data frame. In slave mode this could result in TX Underrun and RX Overflow errors.</p>
+<p>In order to improve performance at high bitrates, it is recommended that the instance be configured to service transfers using the DMAC.</p>
+<p>Another way to improve performance is to transfer the data in 16/32 bit wide data frames when possible. A typical use-case where this is possible is when reading/writing to a block device.</p>
+<h3>Transmit From RXI Interrupt</h3>
+<p>After every data frame the RSPI peripheral generates a transmit buffer empty interrupt and a receive buffer full interrupt. It is possible to configure the driver to handle transmit buffer empty interrupts in the receive buffer full isr. This only improves performance when the DMAC is not being used.</p>
+<dl class="section note"><dt>Note</dt><dd>Configuring the module to use RX DMAC instance without also providing a TX DMAC instance results in an invalid configuration when RXI transmit is enabled.</dd>
+<dd>
+Transmit Only mode is not supported when Transmit from RXI is enabled.</dd></dl>
+<h3>Clock Auto-Stopping</h3>
+<p>In master mode, if the Receive Buffer Full Interrupts are not handled fast enough, instead of generating a RX Overflow error, the last clock cycle will be stretched until the receive buffer is read.</p>
+<h2>Parity Mode</h2>
+<p>When parity mode is configured, the LSB of each data frame is used as a parity bit. When odd parity is selected, the LSB is set such that there are an odd number of ones in the data frame. When even parity is selected, the LSB is set such that there are an even number of ones in the data frame.</p>
+<h2><a class="anchor" id="r-rspi-limitations"></a>
+Limitations</h2>
+<p>Developers should be aware of the following limitations when using the RSPI:</p>
+<ul>
+<li>In master mode, the driver will only configure 4-Wire mode if the device supports SSL Level Keeping (SSLKP bit in SPCMD0) and will return FSP_ERR_UNSUPPORTED if configured for 4-Wire mode on devices without SSL Level Keeping. Without SSL Level Keeping, the SSL pin is toggled after every data frame. In most cases this is not desirable behavior so it is recommended that the SSL pin be driven in software if SSL Level Keeping is not present on the device.</li>
+<li>In order to use CPHA=0 setting in slave mode, the master must toggle the SSL pin after every data frame (Even if the device supports SSL Level Keeping). Because of this hardware limitation, the module will return FSP_ERR_UNSUPPORTED when it is configured to use CPHA=0 setting in slave mode.</li>
+<li>The module does not support communicating with multiple slaves using different SSL pins. In order to achieve this, the module must either be closed and re-opened to change the SSL pin or drive SSL in software. It is recommended that SSL be driven in software when controlling multiple slave devices.</li>
+<li>The RSPI peripheral has a minimum 3 SPI CLK delay between each data frame.</li>
+</ul>
+<h1><a class="anchor" id="r-rspi-examples"></a>
+Examples</h1>
+<h2>Basic Example</h2>
+<p>This is a basic example of minimal use of the RSPI in an application.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keywordtype">bool</span> g_transfer_complete = <span class="keyword">false</span>;</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> rspi_basic_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    uint8_t tx_buffer[TRANSFER_SIZE];</div><div class="line">    uint8_t rx_buffer[TRANSFER_SIZE];</div><div class="line"></div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = FSP_SUCCESS;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Initialize the SPI module. */</span></div><div class="line">    err = <a class="code" href="group___r_s_p_i.html#gaa303bc3394f99cd07e2ae96139651529">R_RSPI_Open</a>(&amp;g_rspi_ctrl, &amp;g_spi_cfg);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    handle_error(err);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Start a write/read transfer */</span></div><div class="line">    err = <a class="code" href="group___r_s_p_i.html#gad52ea6e5651ab88e2cbacfec46f6a4b3">R_RSPI_WriteRead</a>(&amp;g_rspi_ctrl, tx_buffer, rx_buffer, TRANSFER_SIZE, <a class="code" href="group___s_p_i___a_p_i.html#gga6ba4a8eef274a5b227fc2ab6ee61f8fdad6fa8af050db98465c43fd25fb8e8090">SPI_BIT_WIDTH_8_BITS</a>);</div><div class="line">    handle_error(err);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Wait for SPI_EVENT_TRANSFER_COMPLETE callback event. */</span></div><div class="line">    <span class="keywordflow">while</span> (<span class="keyword">false</span> == g_transfer_complete)</div><div class="line">    {</div><div class="line">        ;</div><div class="line">    }</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> r_rspi_callback (<a class="code" href="group___s_p_i___a_p_i.html#structspi__callback__args__t">spi_callback_args_t</a> * p_args)</div><div class="line">{</div><div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group___s_p_i___a_p_i.html#gga6e4960e8b344a8a8ec60f0c11d60f54ca2b456074a7304b0ac4be1cbe69d6dad1">SPI_EVENT_TRANSFER_COMPLETE</a> == p_args-&gt;<a class="code" href="group___s_p_i___a_p_i.html#ae1e14270178c91fb89697630627c1eee">event</a>)</div><div class="line">    {</div><div class="line">        g_transfer_complete = <span class="keyword">true</span>;</div><div class="line">    }</div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h2>Driving Software Slave Select Line</h2>
+<p>This is an example of communicating with multiple slave devices by asserting SSL in software.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="keywordtype">void</span> rspi_software_ssl_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    uint8_t tx_buffer[TRANSFER_SIZE];</div><div class="line">    uint8_t rx_buffer[TRANSFER_SIZE];</div><div class="line"></div><div class="line">    <span class="comment">/* Configure Slave Select Line 1 */</span></div><div class="line">    <a class="code" href="group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4">R_BSP_PinWrite</a>(SLAVE_SELECT_LINE_1, <a class="code" href="group___b_s_p___i_o.html#ggab4ef0cc3fce421d48310f23c614aadc0acf9a28559b5a18ed9b8af4c2a7df10ef">BSP_IO_LEVEL_HIGH</a>);</div><div class="line"></div><div class="line">    <span class="comment">/* Configure Slave Select Line 2 */</span></div><div class="line">    <a class="code" href="group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4">R_BSP_PinWrite</a>(SLAVE_SELECT_LINE_2, <a class="code" href="group___b_s_p___i_o.html#ggab4ef0cc3fce421d48310f23c614aadc0acf9a28559b5a18ed9b8af4c2a7df10ef">BSP_IO_LEVEL_HIGH</a>);</div><div class="line"></div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = FSP_SUCCESS;</div><div class="line"></div><div class="line">    <span class="comment">/* Initialize the SPI module. */</span></div><div class="line">    err = <a class="code" href="group___r_s_p_i.html#gaa303bc3394f99cd07e2ae96139651529">R_RSPI_Open</a>(&amp;g_rspi_ctrl, &amp;g_spi_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    handle_error(err);</div><div class="line"></div><div class="line">    <span class="comment">/* Assert Slave Select Line 1 */</span></div><div class="line">    <a class="code" href="group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4">R_BSP_PinWrite</a>(SLAVE_SELECT_LINE_1, <a class="code" href="group___b_s_p___i_o.html#ggab4ef0cc3fce421d48310f23c614aadc0abb31064742440cdbdd638330a1cf7a9f">BSP_IO_LEVEL_LOW</a>);</div><div class="line"></div><div class="line">    <span class="comment">/* Start a write/read transfer */</span></div><div class="line">    g_transfer_complete = <span class="keyword">false</span>;</div><div class="line">    err                 = <a class="code" href="group___r_s_p_i.html#gad52ea6e5651ab88e2cbacfec46f6a4b3">R_RSPI_WriteRead</a>(&amp;g_rspi_ctrl, tx_buffer, rx_buffer, TRANSFER_SIZE, <a class="code" href="group___s_p_i___a_p_i.html#gga6ba4a8eef274a5b227fc2ab6ee61f8fdad6fa8af050db98465c43fd25fb8e8090">SPI_BIT_WIDTH_8_BITS</a>);</div><div class="line">    handle_error(err);</div><div class="line"></div><div class="line">    <span class="comment">/* Wait for SPI_EVENT_TRANSFER_COMPLETE callback event. */</span></div><div class="line">    <span class="keywordflow">while</span> (<span class="keyword">false</span> == g_transfer_complete)</div><div class="line">    {</div><div class="line">        ;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">/* De-assert Slave Select Line 1 */</span></div><div class="line">    <a class="code" href="group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4">R_BSP_PinWrite</a>(SLAVE_SELECT_LINE_1, <a class="code" href="group___b_s_p___i_o.html#ggab4ef0cc3fce421d48310f23c614aadc0acf9a28559b5a18ed9b8af4c2a7df10ef">BSP_IO_LEVEL_HIGH</a>);</div><div class="line"></div><div class="line">    <span class="comment">/* Wait for minimum time required between transfers. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaf3219448adfd1531cf69f68697ab184b">R_BSP_SoftwareDelay</a>(SSL_NEXT_ACCESS_DELAY, <a class="code" href="group___b_s_p___m_c_u.html#ggafd98e2a6f080d6a52a3ef72e3d731b2baa0312618f2508347a9a815b5887c12ae">BSP_DELAY_UNITS_MICROSECONDS</a>);</div><div class="line"></div><div class="line">    <span class="comment">/* Assert Slave Select Line 2 */</span></div><div class="line">    <a class="code" href="group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4">R_BSP_PinWrite</a>(SLAVE_SELECT_LINE_2, <a class="code" href="group___b_s_p___i_o.html#ggab4ef0cc3fce421d48310f23c614aadc0abb31064742440cdbdd638330a1cf7a9f">BSP_IO_LEVEL_LOW</a>);</div><div class="line"></div><div class="line">    <span class="comment">/* Start a write/read transfer */</span></div><div class="line">    g_transfer_complete = <span class="keyword">false</span>;</div><div class="line">    err                 = <a class="code" href="group___r_s_p_i.html#gad52ea6e5651ab88e2cbacfec46f6a4b3">R_RSPI_WriteRead</a>(&amp;g_rspi_ctrl, tx_buffer, rx_buffer, TRANSFER_SIZE, <a class="code" href="group___s_p_i___a_p_i.html#gga6ba4a8eef274a5b227fc2ab6ee61f8fdad6fa8af050db98465c43fd25fb8e8090">SPI_BIT_WIDTH_8_BITS</a>);</div><div class="line">    handle_error(err);</div><div class="line"></div><div class="line">    <span class="comment">/* Wait for SPI_EVENT_TRANSFER_COMPLETE callback event. */</span></div><div class="line">    <span class="keywordflow">while</span> (<span class="keyword">false</span> == g_transfer_complete)</div><div class="line">    {</div><div class="line">        ;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">/* De-assert Slave Select Line 2 */</span></div><div class="line">    <a class="code" href="group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4">R_BSP_PinWrite</a>(SLAVE_SELECT_LINE_2, <a class="code" href="group___b_s_p___i_o.html#ggab4ef0cc3fce421d48310f23c614aadc0acf9a28559b5a18ed9b8af4c2a7df10ef">BSP_IO_LEVEL_HIGH</a>);</div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h2>Configuring the SPI Clock Divider Registers</h2>
+<p>This example demonstrates how to set the RSPI clock divisors at runtime.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="keywordtype">void</span> rspi_bitrate_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = FSP_SUCCESS;</div><div class="line"></div><div class="line">    g_spi_cfg.p_extend = &amp;g_spi_extended_cfg;</div><div class="line"></div><div class="line">    <span class="comment">/* Configure SPI Clock divider to achieve largest bitrate less than or equal to the desired bitrate. */</span></div><div class="line">    err = <a class="code" href="group___r_s_p_i.html#gad663d0a4eb35992cbf804cc5da21cb45">R_RSPI_CalculateBitrate</a>(BITRATE, &amp;(g_rspi_extended_cfg.spck_div));</div><div class="line">    handle_error(err);</div><div class="line"></div><div class="line">    <span class="comment">/* Initialize the SPI module. */</span></div><div class="line">    err = <a class="code" href="group___r_s_p_i.html#gaa303bc3394f99cd07e2ae96139651529">R_RSPI_Open</a>(&amp;g_rspi_ctrl, &amp;g_spi_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    handle_error(err);</div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:structrspi__rspck__div__setting__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#structrspi__rspck__div__setting__t">rspi_rspck_div_setting_t</a></td></tr>
@@ -360,22 +638,6 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#aca5de5e6709e812f9f9f528a42f97e15">rxfifo_trigger_bytes</a></td></tr>
 <tr class="memdesc:aca5de5e6709e812f9f9f528a42f97e15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive buffer data triggering number. <br /></td></tr>
 <tr class="separator:aca5de5e6709e812f9f9f528a42f97e15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe310162bb1a2159705aebc01176948e"><td class="memItemLeft" align="right" valign="top"><a id="abe310162bb1a2159705aebc01176948e"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#abe310162bb1a2159705aebc01176948e">reg_spcr</a></td></tr>
-<tr class="memdesc:abe310162bb1a2159705aebc01176948e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Backup SPCR register content. <br /></td></tr>
-<tr class="separator:abe310162bb1a2159705aebc01176948e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a388cb9859f413be7e4aa265805a90b3c"><td class="memItemLeft" align="right" valign="top"><a id="a388cb9859f413be7e4aa265805a90b3c"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#a388cb9859f413be7e4aa265805a90b3c">reg_spdcr</a></td></tr>
-<tr class="memdesc:a388cb9859f413be7e4aa265805a90b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Backup SPDCR register content. <br /></td></tr>
-<tr class="separator:a388cb9859f413be7e4aa265805a90b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89299de1dc8798c6fd079e307eb80a52"><td class="memItemLeft" align="right" valign="top"><a id="a89299de1dc8798c6fd079e307eb80a52"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#a89299de1dc8798c6fd079e307eb80a52">reg_spcmd0</a></td></tr>
-<tr class="memdesc:a89299de1dc8798c6fd079e307eb80a52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Backup SPCMD0 register content. <br /></td></tr>
-<tr class="separator:a89299de1dc8798c6fd079e307eb80a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc5413f9e36624b8a221aa29bc9d392d"><td class="memItemLeft" align="right" valign="top"><a id="adc5413f9e36624b8a221aa29bc9d392d"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#adc5413f9e36624b8a221aa29bc9d392d">reg_spbfcr</a></td></tr>
-<tr class="memdesc:adc5413f9e36624b8a221aa29bc9d392d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Backup SPBFCR register content. <br /></td></tr>
-<tr class="separator:adc5413f9e36624b8a221aa29bc9d392d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84b7d73e4143987055afde28fe246f05"><td class="memItemLeft" align="right" valign="top"><a id="a84b7d73e4143987055afde28fe246f05"></a>
 volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#a84b7d73e4143987055afde28fe246f05">transfer_is_pending</a></td></tr>
 <tr class="memdesc:a84b7d73e4143987055afde28fe246f05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfer is pending. <br /></td></tr>
@@ -868,7 +1130,7 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

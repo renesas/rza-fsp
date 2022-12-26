@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RZA Flexible Software Package Documentation: Display Interface</title>
+<title>RZ/A Flexible Software Package Documentation: Display Interface</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -36,8 +36,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.1.0</span>
+   <div id="projectname">RZ/A Flexible Software Package Documentation
+   &#160;<span id="projectnumber">Release v1.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -343,6 +343,18 @@ p_base</td>
 <td class="fielddoc">
 Base address to the frame buffer. </td></tr>
 <tr><td class="fieldtype">
+<a id="aeb8bcaee895f7ba9683d20cfc5d684bd"></a>uint32_t *</td>
+<td class="fieldname">
+p_base_cb</td>
+<td class="fielddoc">
+Base address to the frame buffer for Cb plane. </td></tr>
+<tr><td class="fieldtype">
+<a id="ad7f70ba5191a99c87b3d101695a34ea7"></a>uint32_t *</td>
+<td class="fieldname">
+p_base_cr</td>
+<td class="fielddoc">
+Base address to the frame buffer for Cr plane. </td></tr>
+<tr><td class="fieldtype">
 <a id="a1b25a280e83ced0734835eccb75e988a"></a>uint16_t</td>
 <td class="fieldname">
 hsize</td>
@@ -372,6 +384,12 @@ Coordinate Y. </td></tr>
 hstride</td>
 <td class="fielddoc">
 Memory stride (bytes) in a line. </td></tr>
+<tr><td class="fieldtype">
+<a id="ae3b4036cc4bcfd74f60f79052688381e"></a>uint16_t</td>
+<td class="fieldname">
+hstride_cbcr</td>
+<td class="fielddoc">
+Memory stride (bytes) in a line for Cb and Cr plane. </td></tr>
 <tr><td class="fieldtype">
 <a id="a7d9bf5f521c22af23cb64d350f54273f"></a><a class="el" href="group___d_i_s_p_l_a_y___a_p_i.html#ga698e66952a47ad6829bb8abe3da8ab9d">display_in_format_t</a></td>
 <td class="fieldname">
@@ -1022,6 +1040,8 @@ Pointer to the API structure for this instance. </td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga698e66952a47ad6829bb8abe3da8ab9da6043373d53bf1fa8d2bb1f062f3b0ce8"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR420_INTERLEAVED&#160;</td><td class="fielddoc"><p>YCbCr420 interleaved, 12 bits. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga698e66952a47ad6829bb8abe3da8ab9dac4a84d5cfa9f9de5b2a3de358e4f16c5"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR420_PLANAR&#160;</td><td class="fielddoc"><p>YCbCr420 planar, 16bits. </p>
+</td></tr>
 <tr><td class="fieldname"><a id="gga698e66952a47ad6829bb8abe3da8ab9da88cfaf7b1c4dd3be10f542d16e0e9421"></a>DISPLAY_IN_FORMAT_CUSTOM&#160;</td><td class="fielddoc"><p>All other options start at this value. </p>
 </td></tr>
 </table>
@@ -1124,7 +1144,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

@@ -15,11 +15,14 @@ var group___d_i_s_p_l_a_y___a_p_i =
     ] ],
     [ "display_input_cfg_t", "group___d_i_s_p_l_a_y___a_p_i.html#structdisplay__input__cfg__t", [
       [ "p_base", "group___d_i_s_p_l_a_y___a_p_i.html#aefcd17b220f4a92f92f5bd63d3eaa457", null ],
+      [ "p_base_cb", "group___d_i_s_p_l_a_y___a_p_i.html#aeb8bcaee895f7ba9683d20cfc5d684bd", null ],
+      [ "p_base_cr", "group___d_i_s_p_l_a_y___a_p_i.html#ad7f70ba5191a99c87b3d101695a34ea7", null ],
       [ "hsize", "group___d_i_s_p_l_a_y___a_p_i.html#a1b25a280e83ced0734835eccb75e988a", null ],
       [ "vsize", "group___d_i_s_p_l_a_y___a_p_i.html#a495b88e9ec5e91a1cdc862905e9a3642", null ],
       [ "coordinate_x", "group___d_i_s_p_l_a_y___a_p_i.html#a0f11be7d6c66a67eed66f95b736dd4ab", null ],
       [ "coordinate_y", "group___d_i_s_p_l_a_y___a_p_i.html#a26e099377ad96d04fc18ae77b1724c91", null ],
       [ "hstride", "group___d_i_s_p_l_a_y___a_p_i.html#a2cf569fd21677da2b3c55bd9b423feb2", null ],
+      [ "hstride_cbcr", "group___d_i_s_p_l_a_y___a_p_i.html#ae3b4036cc4bcfd74f60f79052688381e", null ],
       [ "format", "group___d_i_s_p_l_a_y___a_p_i.html#a7d9bf5f521c22af23cb64d350f54273f", null ],
       [ "data_swap", "group___d_i_s_p_l_a_y___a_p_i.html#a4d6fa76869eb255d482c8c699d9efa57", null ]
     ] ],
@@ -98,6 +101,7 @@ var group___d_i_s_p_l_a_y___a_p_i =
       [ "DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_YVYU", "group___d_i_s_p_l_a_y___a_p_i.html#gga698e66952a47ad6829bb8abe3da8ab9da163d9a3b38d1adca235f77990d63891f", null ],
       [ "DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE1", "group___d_i_s_p_l_a_y___a_p_i.html#gga698e66952a47ad6829bb8abe3da8ab9da167ff440049b49f0297e975d68065516", null ],
       [ "DISPLAY_IN_FORMAT_16BITS_YCBCR420_INTERLEAVED", "group___d_i_s_p_l_a_y___a_p_i.html#gga698e66952a47ad6829bb8abe3da8ab9da6043373d53bf1fa8d2bb1f062f3b0ce8", null ],
+      [ "DISPLAY_IN_FORMAT_16BITS_YCBCR420_PLANAR", "group___d_i_s_p_l_a_y___a_p_i.html#gga698e66952a47ad6829bb8abe3da8ab9dac4a84d5cfa9f9de5b2a3de358e4f16c5", null ],
       [ "DISPLAY_IN_FORMAT_CUSTOM", "group___d_i_s_p_l_a_y___a_p_i.html#gga698e66952a47ad6829bb8abe3da8ab9da88cfaf7b1c4dd3be10f542d16e0e9421", null ]
     ] ],
     [ "display_out_format_t", "group___d_i_s_p_l_a_y___a_p_i.html#ga46afda95d8d074b04384009ff27cd6d6", [

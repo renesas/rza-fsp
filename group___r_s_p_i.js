@@ -25,10 +25,6 @@ var group___r_s_p_i =
       [ "rx_count", "group___r_s_p_i.html#af07a6630edcb186c8ccb2b74d228f729", null ],
       [ "bit_width", "group___r_s_p_i.html#a4ed0f4d1ff28b7be854d963b057035d7", null ],
       [ "rxfifo_trigger_bytes", "group___r_s_p_i.html#aca5de5e6709e812f9f9f528a42f97e15", null ],
-      [ "reg_spcr", "group___r_s_p_i.html#abe310162bb1a2159705aebc01176948e", null ],
-      [ "reg_spdcr", "group___r_s_p_i.html#a388cb9859f413be7e4aa265805a90b3c", null ],
-      [ "reg_spcmd0", "group___r_s_p_i.html#a89299de1dc8798c6fd079e307eb80a52", null ],
-      [ "reg_spbfcr", "group___r_s_p_i.html#adc5413f9e36624b8a221aa29bc9d392d", null ],
       [ "transfer_is_pending", "group___r_s_p_i.html#a84b7d73e4143987055afde28fe246f05", null ]
     ] ],
     [ "rspi_ssl_polarity_t", "group___r_s_p_i.html#ga2342f44b16c4072b5e9302c4f05b4f94", [

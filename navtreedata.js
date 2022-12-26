@@ -1,6 +1,6 @@
 var NAVTREE =
 [
-  [ "RZA Flexible Software Package Documentation", "index.html", [
+  [ "RZ/A Flexible Software Package Documentation", "index.html", [
     [ "Introduction", "index.html", [
       [ "Overview", "index.html#introduction-overview", null ],
       [ "Using this Manual", "index.html#how-to-read", null ],
@@ -65,14 +65,17 @@ var NAVTREEINDEX =
 [
 "_c_o_p_y_r_i_g_h_t.html",
 "group___b_s_p___i_o.html",
-"group___c_a_m_e_r_a___a_p_i.html#gga35c4fa21f409d59af91f68c73ffeded1ac5147dc095dd7018d43b3a21b7c23475",
-"group___e_t_h_e_r___a_p_i.html#a81056220509a3158f9bea9ad526e1b60",
-"group___i2_s___a_p_i.html#a686e36c470790ae87da1ec6d3aee1058",
-"group___i_o_p_o_r_t___a_p_i.html#aad4fb5941cd80d4ed9db0262f29b30cf",
-"group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#ggadfb1288da0fcc7ae1dc88c58601374f8a8559df95856f0d5961b284bdbecbec4a",
-"group___s_c_i_f___u_a_r_t.html#gga5d3f2e170b79de59f46ae864fc993e95ad8eb49bdf41e9867d8a6d0986b9343a6",
-"group___t_r_a_n_s_f_e_r___a_p_i.html#ga769464d2068881ccb44573c96167812b",
-"group___u_s_b___a_p_i.html#gad2dd7082012d04a39d15368605a7b072"
+"group___c_a_m_e_r_a___a_p_i.html#a9755767d2b969147dc77dc46357e60e6",
+"group___d_i_s_p_l_a_y___a_p_i.html#aeb8bcaee895f7ba9683d20cfc5d684bd",
+"group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a9cb81e4b2d313458c747cdc401179a66",
+"group___i2_s___a_p_i.html#ggaee54a6afc2869dd7371211e8b1f9d13fa361da7905420f285636b4371467c5e8a",
+"group___i_o_p_o_r_t___a_p_i.html#ggac617eebcb7c2c1e45fa8e04fc473e574a3691c62fc89eb3e7df1eae9064206c4e",
+"group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#ggadfb1288da0fcc7ae1dc88c58601374f8a03165ce74cc447e345998cc45810bb8f",
+"group___r_i_i_c___s_l_a_v_e.html#aad289375a5899c38eddfb299556c01e9",
+"group___s_c_i_f___u_a_r_t.html#gga5d3f2e170b79de59f46ae864fc993e95a94ab8d8849528a45bd87bc014ff2352a",
+"group___s_p_i___f_l_a_s_h___a_p_i.html#a63de64208374fd3c6ea1db4ffb07111f",
+"group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__info__t",
+"group___u_s_b___a_p_i.html#gga565d5746bce505ef376bc2d3777d9302af5e68b2dca0d8369a411723260a3a306"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

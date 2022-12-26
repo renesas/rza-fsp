@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RZA Flexible Software Package Documentation: MCU Board Support Package</title>
+<title>RZ/A Flexible Software Package Documentation: MPU Board Support Package</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -36,8 +36,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.1.0</span>
+   <div id="projectname">RZ/A Flexible Software Package Documentation
+   &#160;<span id="projectnumber">Release v1.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -165,7 +165,7 @@ $(document).ready(function(){initNavTree('group___b_s_p___m_c_u.html','');});
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">MCU Board Support Package<div class="ingroups"><a class="el" href="group___r_e_n_e_s_a_s___c_o_m_m_o_n.html">BSP</a></div></div>  </div>
+<div class="title">MPU Board Support Package<div class="ingroups"><a class="el" href="group___r_e_n_e_s_a_s___c_o_m_m_o_n.html">BSP</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
@@ -183,6 +183,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga8bad719318543adaef254ce1796613f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga992632ae2e45c2f962855fe4bbe98a63"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga992632ae2e45c2f962855fe4bbe98a63">R_FSP_SystemClockHzGet</a> (fsp_priv_clock_t clock)</td></tr>
 <tr class="separator:ga992632ae2e45c2f962855fe4bbe98a63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga59f4ee93e461288010bbfd59bdd1023e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga59f4ee93e461288010bbfd59bdd1023e">R_FSP_SystemClockHzSet</a> (fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div)</td></tr>
+<tr class="separator:ga59f4ee93e461288010bbfd59bdd1023e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa45b494ded530db90d720d5082c1d6d9"><td class="memItemLeft" align="right" valign="top">__STATIC_INLINE <a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#gaa45b494ded530db90d720d5082c1d6d9">R_FSP_CurrentIrqGet</a> (void)</td></tr>
 <tr class="separator:gaa45b494ded530db90d720d5082c1d6d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga06a4e46c5cc56d1007d6a4204c999f79"><td class="memItemLeft" align="right" valign="top">__STATIC_INLINE <a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga06a4e46c5cc56d1007d6a4204c999f79">R_BSP_UniqueIdGet</a> ()</td></tr>
@@ -191,6 +193,18 @@ Functions</h2></td></tr>
 <tr class="separator:gaf3219448adfd1531cf69f68697ab184b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaed27ea47f0c85a1af9bb515600d5e2ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#gaed27ea47f0c85a1af9bb515600d5e2ba">R_BSP_GroupIrqWrite</a> (<a class="el" href="group___b_s_p___m_c_u.html#ga72e70676360e6a4d753a8d235e6b93a2">bsp_grp_irq_t</a> irq, void(*p_callback)(<a class="el" href="group___b_s_p___m_c_u.html#ga72e70676360e6a4d753a8d235e6b93a2">bsp_grp_irq_t</a> irq))</td></tr>
 <tr class="separator:gaed27ea47f0c85a1af9bb515600d5e2ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga663cf37a82f50ed971c82d8ff5050db5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga663cf37a82f50ed971c82d8ff5050db5">R_BSP_CACHE_CleanAll</a> (void)</td></tr>
+<tr class="separator:ga663cf37a82f50ed971c82d8ff5050db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4594c0d39cf749ed04699374d72040fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga4594c0d39cf749ed04699374d72040fb">R_BSP_CACHE_CleanInvalidateAll</a> (void)</td></tr>
+<tr class="separator:ga4594c0d39cf749ed04699374d72040fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga940852eb2cfccad7922d1c963ffd1251"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga940852eb2cfccad7922d1c963ffd1251">R_BSP_CACHE_InvalidateAll</a> (void)</td></tr>
+<tr class="separator:ga940852eb2cfccad7922d1c963ffd1251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaab5da4c80f7255ce96e3808dd22ff59e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#gaab5da4c80f7255ce96e3808dd22ff59e">R_BSP_CACHE_CleanRange</a> (uint64_t base_address, uint64_t length)</td></tr>
+<tr class="separator:gaab5da4c80f7255ce96e3808dd22ff59e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad2ded52ed898f2826dc446495dbd73d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#gad2ded52ed898f2826dc446495dbd73d3">R_BSP_CACHE_InvalidateRange</a> (uint64_t base_address, uint64_t length)</td></tr>
+<tr class="separator:gad2ded52ed898f2826dc446495dbd73d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8d763f54ace7c6464bf8317ee9feb749"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga8d763f54ace7c6464bf8317ee9feb749">R_BSP_CACHE_CleanInvalidateRange</a> (uint64_t base_address, uint64_t length)</td></tr>
+<tr class="separator:ga8d763f54ace7c6464bf8317ee9feb749"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga73859f9b8df6981b869024d0b9a86bdb"><td class="memItemLeft" align="right" valign="top">BSP_TFU_INLINE float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga73859f9b8df6981b869024d0b9a86bdb">__sinf</a> (float angle)</td></tr>
 <tr class="separator:ga73859f9b8df6981b869024d0b9a86bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga64ff048b8398edee6c87652cce7553fd"><td class="memItemLeft" align="right" valign="top">BSP_TFU_INLINE float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga64ff048b8398edee6c87652cce7553fd">__cosf</a> (float angle)</td></tr>
@@ -205,7 +219,7 @@ Functions</h2></td></tr>
 <tr class="separator:ga24bdcc94ec3b4abfc959e3e375f99b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>The BSP is responsible for getting the MCU from reset to the user's application. Before reaching the user's application, the BSP sets up the stacks, heap, clocks, interrupts, C runtime environment, and stack monitor. </p>
+<p>The BSP is responsible for getting the MPU from reset to the user's application. Before reaching the user's application, the BSP sets up the stacks, heap, clocks, interrupts, C runtime environment, and stack monitor. </p>
 <p><a class="anchor" id="um_bsp_data_initialization"></a><a class="anchor" id="um_stack_pointer_monitor"></a></p><ul>
 <li>
 <a href="#bsp-features">BSP Features</a> </li>
@@ -228,6 +242,8 @@ Functions</h2></td></tr>
 <li>
 <a href="#data-transfer-to-ram-at-startup">Data transfer to RAM at startup</a> </li>
 <li>
+<a href="#cache-operation">Cache operation</a> </li>
+<li>
 <a href="#bsp-configuration">Configuration</a> </li>
 </ul>
 <h1><a class="anchor" id="bsp-overview"></a>
@@ -236,16 +252,14 @@ Overview</h1>
 BSP Features</h2>
 <h3><a class="anchor" id="bsp-clock-configuration"></a>
 BSP Clock Configuration</h3>
-<p><a class="anchor" id="um_bsp_clock_initialization"></a>All system clocks are set up during BSP initialization based on the settings in bsp_clock_cfg.h. These settings are derived from clock configuration information provided from the RA Configuration editor <b>Clocks</b> tab.</p>
+<p><a class="anchor" id="um_bsp_clock_initialization"></a>All system clocks are set up during BSP initialization based on the settings in bsp_clock_cfg.h. These settings are derived from clock configuration information provided from the Configuration editor <b>Clocks</b> tab.</p>
 <ul>
-<li>Clock configuration is performed prior to initializing the C runtime environment to speed up the startup process, as it is possible to start up on a relatively slow (that is, 32 kHz) clock.</li>
-<li>The BSP implements the required delays to allow the selected clock to stabilize.</li>
+<li>Clock configuration is performed prior to initializing the C runtime environment to speed up the startup process.</li>
 <li><a class="anchor" id="um_bsp_systemcoreclock"></a>The BSP will configure the CMSIS SystemCoreClock variable after clock initialization with the current system clock frequency.</li>
 </ul>
 <h3><a class="anchor" id="bsp-weak-symbols"></a>
 BSP Weak Symbols</h3>
-<p>You might wonder how the BSP is able to place ISR addresses in the NVIC table without the user having explicitly defined one. All that is required by the BSP is that the interrupt event be given a priority.</p>
-<p>This is accomplished through the use of the 'weak' attribute. The weak attribute causes the declaration to be emitted as a weak symbol rather than a global. A weak symbol is one that can be overridden by an accompanying strong reference with the same name. When the BSP declares a function as weak, user code can define the same function and it will be used in place of the BSP function. By defining all possible interrupt sources as weak, the vector table can be built at compile time and any user declarations (strong references) will be used at runtime.</p>
+<p>The weak attribute causes the declaration to be emitted as a weak symbol rather than a global. A weak symbol is one that can be overridden by an accompanying strong reference with the same name. When the BSP declares a function as weak, user code can define the same function and it will be used in place of the BSP function.</p>
 <p>Weak symbols are supported for ELF targets and also for a.out targets when using the GNU assembler and linker.</p>
 <p>Note that in CMSIS <code>system.c</code>, there is also a weak definition (and a function body) for the Warm Start callback function <a class="el" href="group___b_s_p___m_c_u.html#ga662624feaff3850ffbe7fb118ab140d7">R_BSP_WarmStart()</a>. Because this function is defined in the same file as the weak declaration, it will be called as the 'default' implementation. The function may be overridden by the user by copying the body into their user application and modifying it as necessary. The linker identifies this as the 'strong' reference and uses it.</p>
 <h3><a class="anchor" id="warm-start-callbacks"></a>
@@ -255,20 +269,20 @@ Warm Start Callbacks</h3>
 <p>This function is not enabled/disabled and is always called for both events as part of the BSP startup. Therefore it needs a function body, which will not be called if the user is overriding it. The function body is located in system.c. To use this function just copy this function into your own code and modify it to meet your needs.</p>
 <h3><a class="anchor" id="c-runtime-initialization"></a>
 C Runtime Initialization</h3>
-<p>This BSP configuration allows the user to skip the FSP C runtime initialization code by setting the "C Runtime Initialization" to "Disabled" on the BSP tab of the RA Configuration editor. Disabling this option is useful in cases where a non-standard linker script is being used or other modifications to the runtime initialization are desired. If this macro is disabled, the user must use the 'Post Clock Init' event from the warm start (described above) to run their own runtime initialization code.</p>
+<p>This BSP configuration allows the user to skip the FSP C runtime initialization code by setting the "C Runtime Initialization" to "Disabled" on the BSP tab of the Configuration editor. Disabling this option is useful in cases where a non-standard linker script is being used or other modifications to the runtime initialization are desired. If this macro is disabled, the user must use the 'Post Clock Init' event from the warm start (described above) to run their own runtime initialization code.</p>
 <h3><a class="anchor" id="heap-allocation"></a>
 Heap Allocation</h3>
-<p><a class="anchor" id="um_bsp_stacks_and_heap"></a>The relatively low amount of on-chip SRAM available and lack of memory protection in an MCU means that heap use must be very carefully controlled to avoid memory leaks, overruns and attempted overallocation. Further, many RTOSes provide their own dynamic memory allocation system. For these reasons the default heap size is set at 0 bytes, effectively disabling dynamic memory. If it is required for an application setting a positive value to the "Heap size (bytes)" option in the RA Common configurations on the <b>BSP</b> tab will allocate a heap.</p>
+<p><a class="anchor" id="um_bsp_stacks_and_heap"></a>The relatively low amount of on-chip SRAM available and lack of memory protection in an MPU means that heap use must be very carefully controlled to avoid memory leaks, overruns and attempted overallocation. Further, many RTOSes provide their own dynamic memory allocation system. For these reasons the default heap size is set at 0 bytes, effectively disabling dynamic memory. If it is required for an application setting a positive value to the "Heap size (bytes)" option in the Common configurations on the <b>BSP</b> tab will allocate a heap.</p>
 <dl class="section note"><dt>Note</dt><dd>When using printf/sprintf (and other variants) to output floating point numbers a heap is required. A minimum size of 0x1000 (4096) bytes is recommended when starting development in this case.</dd></dl>
 <h3><a class="anchor" id="error-logging"></a>
 Error Logging</h3>
 <p><a class="anchor" id="um_bsp_error_logging"></a>When error logging is enabled, the error logging function can be redefined on the command line by defining <a class="el" href="group___b_s_p___m_c_u.html#ga960f46c44b67ba8ad5377cfc8e4e6a75">FSP_ERROR_LOG(err)</a> to the desired function call. The default function implementation is <a class="el" href="group___b_s_p___m_c_u.html#ga960f46c44b67ba8ad5377cfc8e4e6a75">FSP_ERROR_LOG(err)</a>=fsp_error_log(err, <b>FILE</b>, <b>LINE</b>). This implementation uses the predefined macros <b>FILE</b> and <b>LINE</b> to help identify the location where the error occurred. Removing the line from the function call can reduce code size when error logging is enabled. Some compilers may support other predefined macros like <b>FUNCTION</b>, which could be helpful for customizing the error logger.</p>
 <h3><a class="anchor" id="software-delay"></a>
 Software Delay</h3>
-<p><a class="anchor" id="um_bsp_software_delay"></a>Implements a blocking software delay. A delay can be specified in microseconds, milliseconds or seconds. The delay is implemented based on the system clock rate.</p>
-<div class="fragment"><div class="line"></div><div class="line">    <span class="comment">/* Delay at least 1 second. Depending on the number of wait states required for the region of memory</span></div><div class="line"><span class="comment">     * that the software_delay_loop has been linked in this could take longer. The default is 4 cycles per loop.</span></div><div class="line"><span class="comment">     * This can be modified by redefining DELAY_LOOP_CYCLES. BSP_DELAY_UNITS_SECONDS, BSP_DELAY_UNITS_MILLISECONDS,</span></div><div class="line"><span class="comment">     * and BSP_DELAY_UNITS_MICROSECONDS can all be used with R_BSP_SoftwareDelay. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaf3219448adfd1531cf69f68697ab184b">R_BSP_SoftwareDelay</a>(1, <a class="code" href="group___b_s_p___m_c_u.html#ggafd98e2a6f080d6a52a3ef72e3d731b2bacc709da08ef4acc99bf6e2e84946be5d">BSP_DELAY_UNITS_SECONDS</a>);</div><div class="line"></div></div><!-- fragment --> <h3><a class="anchor" id="critical-section-macros"></a>
+<p><a class="anchor" id="um_bsp_software_delay"></a>Implements a blocking software delay. A delay can be specified in microseconds, milliseconds or seconds.</p>
+<div class="fragment"><div class="line"></div><div class="line">    <span class="comment">/* Delay at least 1 second. Depending on the number of wait states required for the region of memory</span></div><div class="line"><span class="comment">     * that the software_delay_loop has been linked in this could take longer.</span></div><div class="line"><span class="comment">     * If you want to adjust the waiting time, redefine DELAY_LOOP_CYCLES.</span></div><div class="line"><span class="comment">     * You can specify the following three types of units for the second argument.</span></div><div class="line"><span class="comment">     *   BSP_DELAY_UNITS_SECONDS</span></div><div class="line"><span class="comment">     *   BSP_DELAY_UNITS_MILLISECONDS</span></div><div class="line"><span class="comment">     *   BSP_DELAY_UNITS_MICROSECONDS */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaf3219448adfd1531cf69f68697ab184b">R_BSP_SoftwareDelay</a>(1, <a class="code" href="group___b_s_p___m_c_u.html#ggafd98e2a6f080d6a52a3ef72e3d731b2bacc709da08ef4acc99bf6e2e84946be5d">BSP_DELAY_UNITS_SECONDS</a>);</div><div class="line"></div></div><!-- fragment --> <h3><a class="anchor" id="critical-section-macros"></a>
 Critical Section Macros</h3>
-<p><a class="anchor" id="um_bsp_critical_section"></a>Implements a critical section. Some MCUs (MCUs with the BASEPRI register) support allowing high priority interrupts to execute during critical sections. On these MCUs, interrupts with priority less than or equal to BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION are not serviced in critical sections. Interrupts with higher priority than BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION still execute in critical sections.</p>
+<p><a class="anchor" id="um_bsp_critical_section"></a>Implements a critical section. Some MPUs (MPU that handles interrupts with a GIC that has an Interrupt Priority Mask Register) support allowing high priority interrupts to execute during critical sections. On these MPUs, interrupts with priority less than or equal to BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION are not serviced in critical sections. Interrupts with higher priority than BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION still execute in critical sections.</p>
 <div class="fragment"><div class="line"></div><div class="line">    FSP_CRITICAL_SECTION_DEFINE;</div><div class="line"></div><div class="line">    <span class="comment">/* Store the current interrupt posture. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#gaddc2260c1ce320f3aa1f1cb05b9a5620">FSP_CRITICAL_SECTION_ENTER</a>;</div><div class="line"></div><div class="line">    <span class="comment">/* Interrupts cannot run in this section unless their priority is less than BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION. */</span></div><div class="line"></div><div class="line">    <span class="comment">/* Restore saved interrupt posture. */</span></div><div class="line">    <a class="code" href="group___b_s_p___m_c_u.html#ga23338e06b1e1537017ef4f3f94cda354">FSP_CRITICAL_SECTION_EXIT</a>;</div><div class="line"></div></div><!-- fragment --> <h3><a class="anchor" id="data-transfer-to-ram-at-startup"></a>
 Data transfer to RAM at startup</h3>
 <p>After starting FSP, the memory copy process is executed according to the rules described in sections.c of the src folder. The implementation of sections.c is described below. User can modify existing memory initialization rules and add new rules.</p>
@@ -324,9 +338,18 @@ Data transfer to RAM at startup</h3>
 <tr>
 <td>Bottom address</td><td>End address of zero assignment area. </td></tr>
 </table>
-<h1><a class="anchor" id="bsp-configuration"></a>
+<h3><a class="anchor" id="cache-operation"></a>
+Cache operation</h3>
+<p>The following functions in this BSP perform CLEAN and INVALIDATE data cache operations.</p>
+<ul>
+<li>R_BSP_CACHE_InvalidateAll</li>
+<li>R_BSP_CACHE_InvalidateRange</li>
+</ul>
+<p>This behaviour comes from the MPU spec that cleaning data cache is automatically performed when invalidating it. That means there is no way to only invalidate data cache. Please keep this spec into your mind when developing application.</p>
+<p>Therefore, when using memory shared by CPU and bus-master modules, please place the memory in non-cached area. For example, when using SDHI, Gether, USB, CRU, LCDC and DMA drivers, please consider specifying non-cached area for the buffer used in the drivers.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment"> *  To create a buffer in the non-cached area, specify the section below in the variable definition.</span></div><div class="line"><span class="comment"> *  Note: Only variables without initial values can be created. */</span></div><div class="line">g_uncached_buffer[UNCACHED_BUFFER_SIZE] __attribute__((section(<span class="stringliteral">&quot;UNCACHED_BSS&quot;</span>)));</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> bsp_example_set_physical_address (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line"><span class="preprocessor">#if (BSP_HAS_MMU_SUPPORT)</span></div><div class="line">    uint64_t pa;                       <span class="comment">/* Physical Address */</span></div><div class="line">    uint64_t va;                       <span class="comment">/* Virtual Address */</span></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line">    <span class="comment">/* When writing an address to a bus master register, use the address translation function to convert the virtual address</span></div><div class="line"><span class="comment">     * to a physical address before writing. */</span></div><div class="line"><span class="preprocessor">#if (BSP_HAS_MMU_SUPPORT)</span></div><div class="line">    va = (uint64_t) (<span class="keywordtype">void</span> *) g_uncached_buffer;</div><div class="line">    R_MMU_VAtoPA(&amp;g_mmu_ctrl, va, (<span class="keywordtype">void</span> *) &amp;pa);</div><div class="line"></div><div class="line">    preg-&gt;WRITE_ADR_REGISTER = pa;</div><div class="line"><span class="preprocessor">#else</span></div><div class="line">    preg-&gt;WRITE_ADR_REGISTER = (uint32_t) g_uncached_buffer;</div><div class="line"><span class="preprocessor">#endif</span></div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h1><a class="anchor" id="bsp-configuration"></a>
 Configuration</h1>
-<p>The BSP is heavily data driven with most features and functionality being configured based on the content from configuration files. Configuration files represent the settings specified by the user and are generated when the project is built and/or when the Generate Project Content button is clicked in the RA Configuration editor.</p>
+<p>The BSP is heavily data driven with most features and functionality being configured based on the content from configuration files. Configuration files represent the settings specified by the user and are generated when the project is built and/or when the Generate Project Content button is clicked in the Configuration editor.</p>
 <p><h2>Build Time Configurations for fsp_common</h2>
 The following build time configurations are defined in fsp_cfg/bsp/bsp_cfg.h:<br />
 </p><table class="doxtable">
@@ -917,6 +940,14 @@ Variables</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ad22a417dc36aaca14be2ae4e8c51e90f"></a>FSP_IP_ISU&#160;</td><td class="fielddoc"><p>Image Scaling Unit. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ad8802ee74d9cafca9a1c4d5faea8e253"></a>FSP_IP_SCI&#160;</td><td class="fielddoc"><p>Serial Communications Interface. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a7e7705b2505050da600c075db4723581"></a>FSP_IP_MTU3&#160;</td><td class="fielddoc"><p>Multi-Function Timer Pulse Unit 3. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950a1c676fd9dd7144b81736e11dcdaba73e"></a>FSP_IP_SPI_MULTI&#160;</td><td class="fielddoc"><p>SPI Multi I/O Bus Controller. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7880302f0edd7cc4290c037809975950ae9c9834bcc5a2abfd28727a31864e8e1"></a>FSP_IP_OCTA&#160;</td><td class="fielddoc"><p>Octa Memory Controller. </p>
+</td></tr>
 </table>
 
 </div>
@@ -1116,16 +1147,59 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get the system clock frequency.</p>
+<p>Get a clock frequency.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">clock</td><td>Element number of the array that defines the frequency of the bus clock.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">clock</td><td>Element number of the array that defines the frequency of each clock.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">g_clock_freq[clock]</td><td>System clock frequency. </td></tr>
+    <tr><td class="paramname">g_clock_freq[clock]</td><td>Clock frequency. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga59f4ee93e461288010bbfd59bdd1023e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga59f4ee93e461288010bbfd59bdd1023e">&#9670;&nbsp;</a></span>R_FSP_SystemClockHzSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_FSP_SystemClockHzSet </td>
+          <td>(</td>
+          <td class="paramtype">fsp_priv_clock_t&#160;</td>
+          <td class="paramname"><em>clock</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>clock_sel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>clock_div</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set a clock frequency.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">clock</td><td>Element number of the array that defines the frequency of each clock. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">clock_sel</td><td>Value to set in Source Clock Setting register. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">clock_div</td><td>Value to set in Division Ratio Setting register. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1253,6 +1327,180 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ga663cf37a82f50ed971c82d8ff5050db5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga663cf37a82f50ed971c82d8ff5050db5">&#9670;&nbsp;</a></span>R_BSP_CACHE_CleanAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_BSP_CACHE_CleanAll </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Clean whole cache.</p>
+<p>Execute DC CSW instruction for all set/way of cache.</p>
+<dl class="section note"><dt>Note</dt><dd>DC CSW instructions in AArch64 perform both a clean and invalidate of the target set/way. </dd></dl>
+
+</div>
+</div>
+<a id="ga4594c0d39cf749ed04699374d72040fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4594c0d39cf749ed04699374d72040fb">&#9670;&nbsp;</a></span>R_BSP_CACHE_CleanInvalidateAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_BSP_CACHE_CleanInvalidateAll </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Clean&amp;Invalidate whole cache.</p>
+<p>Execute DC CISW instruction for all set/way of cache. </p>
+
+</div>
+</div>
+<a id="ga940852eb2cfccad7922d1c963ffd1251"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga940852eb2cfccad7922d1c963ffd1251">&#9670;&nbsp;</a></span>R_BSP_CACHE_InvalidateAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_BSP_CACHE_InvalidateAll </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Invalidate whole cache.</p>
+<p>Execute DC ISW instruction for all set/way of cache.</p>
+<dl class="section note"><dt>Note</dt><dd>DC ISW instructions in AArch64 perform both a clean and invalidate of the target set/way. </dd></dl>
+
+</div>
+</div>
+<a id="gaab5da4c80f7255ce96e3808dd22ff59e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaab5da4c80f7255ce96e3808dd22ff59e">&#9670;&nbsp;</a></span>R_BSP_CACHE_CleanRange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_BSP_CACHE_CleanRange </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>base_address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cache Clean by MVA.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">base_address</td><td>start address (Must be a 4-byte aligned address) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">length</td><td>number of bytes (Must be a multiple of 4)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Executes DC CVAC and IC IVAU instruction for cache lines within the specified address range. </p>
+
+</div>
+</div>
+<a id="gad2ded52ed898f2826dc446495dbd73d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad2ded52ed898f2826dc446495dbd73d3">&#9670;&nbsp;</a></span>R_BSP_CACHE_InvalidateRange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_BSP_CACHE_InvalidateRange </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>base_address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cache Invalidate by MVA.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">base_address</td><td>start address (Must be a 4-byte aligned address) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">length</td><td>number of bytes (Must be a multiple of 4)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Executes DC IVAC and IC IVAU instruction for cache lines within the specified address range.</p>
+<dl class="section note"><dt>Note</dt><dd>DC IVAC instructions in AArch64 perform both a clean and invalidate. </dd></dl>
+
+</div>
+</div>
+<a id="ga8d763f54ace7c6464bf8317ee9feb749"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8d763f54ace7c6464bf8317ee9feb749">&#9670;&nbsp;</a></span>R_BSP_CACHE_CleanInvalidateRange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void R_BSP_CACHE_CleanInvalidateRange </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>base_address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cache Clean&amp;Invalidate by MVA.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">base_address</td><td>start address (Must be a 4-byte aligned address) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">length</td><td>number of bytes (Must be a multiple of 4)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Executes DC CIVAC and IC IVAU instruction for cache lines within the specified address range. </p>
 
 </div>
 </div>
@@ -1511,7 +1759,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

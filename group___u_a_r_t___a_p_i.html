@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
-<title>RZA Flexible Software Package Documentation: UART Interface</title>
+<title>RZ/A Flexible Software Package Documentation: UART Interface</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -36,8 +36,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RZA Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.1.0</span>
+   <div id="projectname">RZ/A Flexible Software Package Documentation
+   &#160;<span id="projectnumber">Release v1.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -179,6 +179,7 @@ Summary</h1>
 <li>CTS/RTS hardware flow control support (with an associated IOPORT pin)</li>
 </ul>
 <p>Implemented by:</p><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html">UART (r_sci_uart)</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html">Serial Communications Interface (SCIF) UART (r_scif_uart)</a> </li>
 </ul>
 <table class="memberdecls">
@@ -448,6 +449,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Open UART device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#gaef2636b50df00f5e888e833f0e6bbf6c">R_SCI_UART_Open()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga2a791c5e359c3fe2d85339fc3f915bc3">R_SCIF_UART_Open()</a></li>
 </ul>
 </dd></dl>
@@ -473,6 +475,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Read from UART device. The read buffer is used until the read is complete. When a transfer is complete, the callback is called with event UART_EVENT_RX_COMPLETE. Bytes received outside an active transfer are received in the callback function with event UART_EVENT_RX_CHAR. The maximum transfer size is reported by <a class="el" href="group___u_a_r_t___a_p_i.html#aa6d5231c2b45a6479fc513d087924a50">infoGet()</a>. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#gac2be874dbe37956cf84532a6ca901165">R_SCI_UART_Read()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga07a261385112a6909e86c441411e2e53">R_SCIF_UART_Read()</a></li>
 </ul>
 </dd></dl>
@@ -499,6 +502,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Write to UART device. The write buffer is used until write is complete. Do not overwrite write buffer contents until the write is finished. When the write is complete (all bytes are fully transmitted on the wire), the callback called with event UART_EVENT_TX_COMPLETE. The maximum transfer size is reported by <a class="el" href="group___u_a_r_t___a_p_i.html#aa6d5231c2b45a6479fc513d087924a50">infoGet()</a>. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#ga8916449e6e6de86681c04d1931645e7c">R_SCI_UART_Write()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga42409976902f41a6c92890ca8d9eb28a">R_SCIF_UART_Write()</a></li>
 </ul>
 </dd></dl>
@@ -526,6 +530,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div><div class="memdoc">
 <p>Change baud rate. </p><dl class="section warning"><dt>Warning</dt><dd>Calling this API aborts any in-progress transmission and disables reception until the new baud settings have been applied.</dd></dl>
 <dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#ga3b3a6c761a66c6cbcca3c72a451b3371">R_SCI_UART_BaudSet()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga6ed81db7a7e6f618870e1479734c5860">R_SCIF_UART_BaudSet()</a></li>
 </ul>
 </dd></dl>
@@ -551,6 +556,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Get the driver specific information. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#ga00f07c25ed95b9e1de217f34c42b9d38">R_SCI_UART_InfoGet()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#gafc4582fe6a3b46c7e933d709204c01f3">R_SCIF_UART_InfoGet()</a></li>
 </ul>
 </dd></dl>
@@ -576,6 +582,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Abort ongoing transfer. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#ga816beee7f9f27113cd2d792c54c6af53">R_SCI_UART_Abort()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga540d3842dd9db9c39e36c230583e29b1">R_SCIF_UART_Abort()</a></li>
 </ul>
 </dd></dl>
@@ -601,7 +608,8 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Specify callback function and optional context pointer and working memory pointer. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li>R_SCIF_Uart_CallbackSet()</li>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#gad990fe4af20d895bf37fd26721677410">R_SCI_UART_CallbackSet()</a></li>
+<li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga6880b7cd58a44c99fe197b1b0a14e737">R_SCIF_UART_CallbackSet()</a></li>
 </ul>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -628,6 +636,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Close UART device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#ga49e8b74b71d1901a209a94ed4c220d4d">R_SCI_UART_Close()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga0d573f7ffdec42630a06605b64c00482">R_SCIF_UART_Close()</a></li>
 </ul>
 </dd></dl>
@@ -652,6 +661,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
       </table>
 </div><div class="memdoc">
 <p>Stop ongoing read and return the number of bytes remaining in the read. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#gae084836f4ee37c2730f7a8b332d58325">R_SCI_UART_ReadStop()</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#gaef7c79f4e4ed3370d27f6cc73d744270">R_SCIF_UART_ReadStop()</a></li>
 </ul>
 </dd></dl>
@@ -717,6 +727,7 @@ Pointer to the API structure for this instance. </td></tr>
       </table>
 </div><div class="memdoc">
 <p>UART control block. Allocate an instance specific control block to pass into the UART API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
+<li><a class="el" href="group___s_c_i___u_a_r_t.html#structsci__uart__instance__ctrl__t">sci_uart_instance_ctrl_t</a></li>
 <li><a class="el" href="group___s_c_i_f___u_a_r_t.html#structscif__uart__instance__ctrl__t">scif_uart_instance_ctrl_t</a> </li>
 </ul>
 </dd></dl>
@@ -853,7 +864,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.1.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

@@ -51,7 +51,13 @@ var group___t_i_m_e_r___a_p_i =
       [ "TIMER_EVENT_CREST", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba73d4afde72c0b28a768c8e6d25c050f8", null ],
       [ "TIMER_EVENT_CAPTURE_A", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba4bc1252f63147f4a01f7b7ba88afac1d", null ],
       [ "TIMER_EVENT_CAPTURE_B", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91ebab7b635fbf34ede5a3e2f55b5a60ac21b", null ],
-      [ "TIMER_EVENT_TROUGH", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba83cb2de8ac629fcd95525e94b94089f0", null ]
+      [ "TIMER_EVENT_TROUGH", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba83cb2de8ac629fcd95525e94b94089f0", null ],
+      [ "TIMER_EVENT_OUTPUT_COMPARE_0", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba5935edbb3d0b6d8b6f74a8402e758adf", null ],
+      [ "TIMER_EVENT_OUTPUT_COMPARE_1", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba1618c4f47f889499fe72ef5a3c2cf4eb", null ],
+      [ "TIMER_EVENT_DEAD_TIME", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba83346d837d9c89b9b1bed8c9a0078660", null ],
+      [ "TIMER_EVENT_CAPTURE_U", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91ebadc420bfc9860b5d461f10e557f9bb043", null ],
+      [ "TIMER_EVENT_CAPTURE_V", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba25cd94f46448cd5938f32c6a25438091", null ],
+      [ "TIMER_EVENT_CAPTURE_W", "group___t_i_m_e_r___a_p_i.html#ggac3bee51f7c9078f794c5ac19522f91eba58d231c0801a39b29b761e77dbdae2cf", null ]
     ] ],
     [ "timer_variant_t", "group___t_i_m_e_r___a_p_i.html#gaa3525eef2e1fa1bc8809b2d3aaf0de5d", [
       [ "TIMER_VARIANT_32_BIT", "group___t_i_m_e_r___a_p_i.html#ggaa3525eef2e1fa1bc8809b2d3aaf0de5da7dddd2791567467dc7bcf74ca2fc2cbb", null ],

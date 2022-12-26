@@ -1,6 +1,7 @@
 var group___r_e_n_e_s_a_s___m_o_d_u_l_e_s =
 [
     [ "ADC (r_adc_c)", "group___a_d_c.html", "group___a_d_c" ],
+    [ "Controller Area Network - Flexible Data (r_canfd)", "group___c_a_n_f_d.html", "group___c_a_n_f_d" ],
     [ "Camera Data Receiving Unit (r_cru)", "group___c_r_u.html", "group___c_r_u" ],
     [ "Direct Memory Access Controller (r_dmac)", "group___d_m_a_c.html", "group___d_m_a_c" ],
     [ "Ethernet (r_gether)", "group___g_e_t_h_e_r.html", "group___g_e_t_h_e_r" ],
@@ -12,13 +13,23 @@ var group___r_e_n_e_s_a_s___m_o_d_u_l_e_s =
     [ "I/O Ports (r_ioport)", "group___i_o_p_o_r_t.html", "group___i_o_p_o_r_t" ],
     [ "LCD Controller (r_lcdc)", "group___l_c_d_c.html", "group___l_c_d_c" ],
     [ "Memory Managing Unit (r_mmu)", "group___m_m_u.html", "group___m_m_u" ],
+    [ "Multi-Function Timer Pulse Unit 3 (r_mtu3)", "group___m_t_u3.html", "group___m_t_u3" ],
     [ "I2C Master on RIIC (r_riic_master)", "group___r_i_i_c___m_a_s_t_e_r.html", "group___r_i_i_c___m_a_s_t_e_r" ],
+    [ "I2C Slave (r_riic_slave)", "group___r_i_i_c___s_l_a_v_e.html", "group___r_i_i_c___s_l_a_v_e" ],
     [ "Renesas Serial Peripheral Interface (r_rspi)", "group___r_s_p_i.html", "group___r_s_p_i" ],
+    [ "UART (r_sci_uart)", "group___s_c_i___u_a_r_t.html", "group___s_c_i___u_a_r_t" ],
     [ "Serial Communications Interface (SCIF) UART (r_scif_uart)", "group___s_c_i_f___u_a_r_t.html", "group___s_c_i_f___u_a_r_t" ],
+    [ "SD/MMC Host Interface (r_sdhi)", "group___s_d_h_i.html", "group___s_d_h_i" ],
+    [ "Quad Serial Peripheral Interface Flash (r_spibsc)", "group___s_p_i_b_s_c.html", "group___s_p_i_b_s_c" ],
     [ "Serial Sound Interface (r_ssi)", "group___s_s_i.html", "group___s_s_i" ],
     [ "USB (r_usb_basic)", "group___u_s_b.html", "group___u_s_b" ],
     [ "USB Host Human Interface Device Class Driver (r_usb_hhid)", "group___u_s_b___h_h_i_d.html", "group___u_s_b___h_h_i_d" ],
+    [ "USB Host Mass Storage Class Driver (r_usb_hmsc)", "group___u_s_b___h_m_s_c.html", "group___u_s_b___h_m_s_c" ],
+    [ "USB Peripheral Communications Device Class (r_usb_pcdc)", "group___u_s_b___p_c_d_c.html", null ],
     [ "Watchdog (r_wdt)", "group___w_d_t.html", "group___w_d_t" ],
+    [ "SD/MMC Block Media Implementation (rm_block_media_sdmmc)", "group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html", "group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c" ],
+    [ "USB HMSC Block Media Implementation (rm_block_media_usb)", "group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html", "group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b" ],
+    [ "FreeRTOS+FAT Port (rm_freertos_plus_fat)", "group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html", "group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t" ],
     [ "FreeRTOS Plus TCP (rm_freertos_plus_tcp)", "group___f_r_e_e_r_t_o_s___p_l_u_s___t_c_p.html", null ],
     [ "FreeRTOS Port (rm_freertos_port)", "group___r_m___f_r_e_e_r_t_o_s___p_o_r_t.html", null ]
 ];
