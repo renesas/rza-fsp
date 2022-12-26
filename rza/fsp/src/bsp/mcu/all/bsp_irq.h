@@ -81,8 +81,8 @@ __STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
 }
 
 /*******************************************************************************************************************//**
- * Clear the interrupt status flag for a given interrupt. When an interrupt is triggered the status flag
- * is set. If it is not cleared in the ISR then the interrupt will trigger again immediately.
+ * Clear the interrupt status flag for a given interrupt. There is no processing to be performed by this function in
+ * this BSP.
  *
  * @param[in] irq            Interrupt for which to clear the status flag. Note that the enums listed for IRQn_Type are
  *                           only those for the Cortex Processor Exceptions Numbers.
@@ -91,45 +91,69 @@ __STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
 {
-    if (irq < 32)
-    {
-        R_BSP_GICD_ClearSpiPending(irq);
-    }
-    else
-    {
-        R_BSP_GICR_ClearSgiPpiPending(irq);
-    }
+    FSP_PARAMETER_NOT_USED(irq);
+
+    /* Do nothing */
 }
 
 /*******************************************************************************************************************//**
- * Clear the interrupt status flag for a given interrupt and clear the NVIC pending interrupt.
+ * Clear the interrupt status flag for a given interrupt and clear the GIC pending interrupt.
  *
- * @param[in] irq            Interrupt for which to clear the status flag. Note that the enums listed for IRQn_Type are
- *                           only those for the Cortex Processor Exceptions Numbers.
+ * @param[in] irq            Interrupt for which to clear the status flag and pending state. Note that the enums listed
+ *                           for IRQn_Type are only those for the Cortex Processor Exceptions Numbers.
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
 {
-    /* Clear the status flag in IA55. */
+    /* Clear the status flag. */
     R_BSP_IrqStatusClear(irq);
+
+    /* Clear pending state in GIC. */
+    if (irq < 32)
+    {
+        R_BSP_GICR_ClearSgiPpiPending(irq);
+    }
+    else
+    {
+        R_BSP_GICD_ClearSpiPending(irq);
+    }
 }
 
 /*******************************************************************************************************************//**
- * Sets the interrupt priority and context.
+ * Sets the routing table, interrupt priority, interrupt type, interrupt group, and interrupt class for the interrupt
+ * of the specified id. Also sets the context after setting them.
  *
  * @param[in] irq            The IRQ to configure.
- * @param[in] priority       NVIC priority of the interrupt
+ * @param[in] priority       GIC priority of the interrupt
  * @param[in] p_context      The interrupt context is a pointer to data required in the ISR.
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
 {
-    R_BSP_GICD_SetSpiRoute(irq, R_BSP_GICR_GetRoute(), GICD_IROUTER_ROUTE_FIX);
+    uint64_t route = R_BSP_GICR_GetRoute();
+
+    /* Calculate route information to be given to the R_BSP_GICD_SetSpiRoute function. The second argument to
+     * R_BSP_GICD_SetSpiRoute function expects Affinity level 3 value to be located from bit 39 to bit 32.
+     * However, in the return value of the R_BSP_GICR_GetRoute function that refers to the Affinity value bit of
+     * the GICR_TYPER register, Affinity level 3 value is located from bit 31 to bit 24. Therefore, this calculation
+     * adjusts the bit position of Affinity level 3 value. */
+    route = (0x0000000000FFFFFF & route) | ((0x00000000FF000000 & route) << 8);
+
+    /* Sets information that affinity level and routing mode to identify a CPU interface that notify of interrupts. */
+    R_BSP_GICD_SetSpiRoute(irq, route, GICD_IROUTER_ROUTE_FIX);
+
+    /* Sets interrupt priority. */
     R_BSP_GICD_SetSpiPriority(irq, (priority << 3) & 0xFF);
+
+    /* Sets interrupt type that is edge-triggered or level-sensitive. */
     R_BSP_GICD_SetSpiSense(irq, (e_gicd_icfgr_sense_t) g_int_sense_array[irq]);
+
+    /* Sets interrupt group. */
     R_BSP_GICD_SetSpiSecurity(irq, GICD_IGROUPR_G1S);
+
+    /* Sets interrupt class to class1. */
     R_BSP_GICD_SetSpiClass(irq, 1);
 
     /* Store the context. The context is recovered in the ISR. */
@@ -137,7 +161,7 @@ __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void 
 }
 
 /*******************************************************************************************************************//**
- * Enable the IRQ in the NVIC (Without clearing the pending bit).
+ * Enable the IRQ in the GIC (Without clearing the pending bit).
  *
  * @param[in] irq            The IRQ to enable. Note that the enums listed for IRQn_Type are only those for the Cortex
  *                           Processor Exceptions Numbers.
@@ -150,26 +174,26 @@ __STATIC_INLINE void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
 }
 
 /*******************************************************************************************************************//**
- * Clears pending interrupts in both ICU and NVIC, then enables the interrupt.
+ * Clears pending interrupts in the GIC, then enables the interrupt.
  *
- * @param[in] irq            Interrupt for which to clear status flag and enable in the NVIC. Note that the enums listed
+ * @param[in] irq            Interrupt for which to clear status flag and enable in the GIC. Note that the enums listed
  *                           for IRQn_Type are only those for the Cortex Processor Exceptions Numbers.
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqEnable (IRQn_Type const irq)
 {
-    /* Clear pending interrupts in the status flag and NVIC. */
+    /* Clear pending interrupts in the GIC. */
     R_BSP_IrqClearPending(irq);
 
-    /* Enable the IRQ in the NVIC. */
+    /* Enable the IRQ in the GIC. */
     R_BSP_IrqEnableNoClear(irq);
 }
 
 /*******************************************************************************************************************//**
- * Disables interrupts in the NVIC.
+ * Disables interrupts in the GIC.
  *
- * @param[in] irq            The IRQ to disable in the NVIC. Note that the enums listed for IRQn_Type are
+ * @param[in] irq            The IRQ to disable in the GIC. Note that the enums listed for IRQn_Type are
  *                           only those for the Cortex Processor Exceptions Numbers.
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
@@ -183,7 +207,7 @@ __STATIC_INLINE void R_BSP_IrqDisable (IRQn_Type const irq)
  * Sets the interrupt priority and context, clears pending interrupts, then enables the interrupt.
  *
  * @param[in] irq            Interrupt number.
- * @param[in] priority       NVIC priority of the interrupt
+ * @param[in] priority       GIC priority of the interrupt
  * @param[in] p_context      The interrupt context is a pointer to data required in the ISR.
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.

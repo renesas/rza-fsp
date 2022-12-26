@@ -203,11 +203,11 @@ void r_usb_hstd_hci_task (void)
                 {
                     if (USB_IP1 == ptr->ip)
                     {
-                        ptr->ipp1->USBINTR_b.PortChangeDetectEnable = 0; /* Port Change Detect Disable  */
+                        /* None */
                     }
                     else
                     {
-                        ptr->ipp->USBINTR_b.PortChangeDetectEnable = 0;  /* Port change detect Disable  */
+                        /* None */
                     }
                 }
 

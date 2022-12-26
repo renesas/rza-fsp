@@ -66,8 +66,10 @@ static st_usb_hci_cb_info_t cb =
 };
 
  #if (BSP_CFG_RTOS == 2)
-SemaphoreHandle_t SemaphoreHandleRead;
- #endif
+  #if defined(USB_CFG_HMSC_USE)
+extern SemaphoreHandle_t SemaphoreHandleRead;
+  #endif                               /*  #if defined(USB_CFG_HMSC_USE) */
+ #endif                                /* #if (BSP_CFG_RTOS == 2) */
 
 /***********************************************************************************************************************
  * Renesas USB Host Driver API functions
@@ -185,10 +187,10 @@ void R_USB_HstdReturnEnuMGR (uint16_t cls_result)
  *              : uint16_t member          : Device address/pipe number
  * Return          : usb_er_t                 : USB_OK etc
  ***********************************************************************************************************************/
-usb_er_t R_USB_HstdChangeDeviceState (usb_utr_cb_t complete, uint16_t msginfo, uint16_t member)
+usb_er_t R_USB_HstdChangeDeviceState (usb_utr_t * ptr, usb_cb_t complete, uint16_t msginfo, uint16_t member)
 {
-    st_usb_utr_t * p_blf;
-    usb_er_t       err;
+    usb_utr_t * p_blf;
+    usb_er_t    err;
 
     /* Get mem pool blk */
     err = USB_PGET_BLK(USB_MGR_MPL, &p_blf);
@@ -197,7 +199,9 @@ usb_er_t R_USB_HstdChangeDeviceState (usb_utr_cb_t complete, uint16_t msginfo, u
         USB_PRINTF2("*** member%d : msginfo=%d ***\n", member, msginfo);
         p_blf->msginfo  = msginfo;
         p_blf->keyword  = member;
-        p_blf->complete = (usb_cb_t) &complete;
+        p_blf->complete = (usb_cb_t) complete;
+        p_blf->ip       = ptr->ip;
+        p_blf->ipp      = ptr->ipp;
 
         /* Send message */
         err = USB_SND_MSG(USB_MGR_MBX, (usb_msg_t *) p_blf);
@@ -382,9 +386,11 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
     /* Scheduler init */
     usb_hstd_sche_init();
  #if (BSP_CFG_RTOS == 2)
+  #if defined(USB_CFG_HMSC_USE)
     /* create access control semaphore */
     vSemaphoreCreateBinary(SemaphoreHandleRead);
- #endif
+  #endif                               /* #if defined(USB_CFG_HMSC_USE) */
+ #endif                                /* #if (BSP_CFG_RTOS == 2) */
 
     /* Manager Mode */
     g_usb_hstd_mgr_mode[ptr->ip]     = USB_DETACHED;

@@ -28,12 +28,8 @@
 #define USB_SUSPEND_MODE    (1U)
 #define USB_NORMAL_MODE     (0)
 
-#define USB0_CFIFO8         (USB_M0->CFIFOLL)
-#define USB0_D0FIFO8        (USB_M0->D0FIFOLL)
-#define USB0_D1FIFO8        (USB_M0->D1FIFOLL)
-#define USB0_CFIFO16        (USB_M0->CFIFOL)
-#define USB0_D0FIFO16       (USB_M0->D0FIFOL)
-#define USB0_D1FIFO16       (USB_M0->D1FIFOL)
+#define USB0_CFIFO8         (USB_M0->CFIFO_byte.LL)
+#define USB0_CFIFO16        (USB_M0->CFIFO_hword.L)
 
 #if USB_CFG_ENDIAN == USB_CFG_LITTLE
 

@@ -805,7 +805,7 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl
      */
     p_ctrl->p_reg->ICIER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK;
 
-    /* Set valid interrupt contexts and user provided priority. Enable the interrupts at the NVIC  */
+    /* Set valid interrupt contexts and user provided priority. Enable the interrupts at the GIC  */
     R_BSP_IrqCfgEnable(p_extend->tmoi_irq, p_cfg->ipl, p_ctrl);
     R_BSP_IrqCfgEnable(p_extend->ali_irq, p_cfg->ipl, p_ctrl);
     R_BSP_IrqCfgEnable(p_extend->spi_irq, p_cfg->ipl, p_ctrl);
@@ -896,15 +896,15 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
     /* Enable TXI. This is treated differently to support restart functionality.
      * In case the previous RIIC master transaction enabled restart, the queued TXI will fire a this point.
      *
-     * The TXI had been NVIC-disabled (but Peripheral enabled) before setting the
+     * The TXI had been GIC-disabled (but Peripheral enabled) before setting the
      * RS bit by the previous restart enabled transaction.
      * The RS bit mimics a "stop" followed by a "start" and keeps the bus busy.
      * As a part of the previous transaction, TXI fires at the peripheral level and is queued at the CPU.
      *
      * If the previous transaction was not restart enabled -
-     * NVIC-enable TXI which will fire after the start condition below.
+     * GIC-enable TXI which will fire after the start condition below.
      */
-    R_BSP_IrqEnable(p_ctrl->p_cfg->txi_irq);
+    R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->txi_irq);
 
     /* Enable SPIE to detect unexpected STOP condition. This is disabled between communication events as it can lead
      * to undesired interrupts in multi-master setups. */
@@ -1066,6 +1066,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
             /* Enable the transmit end IRQ, to issue a STOP or RESTART */
             /* Clear any pending TEND interrupts */
             R_BSP_IrqStatusClear(p_ctrl->p_cfg->tei_irq);
+            R_BSP_IrqClearPending(p_ctrl->p_cfg->tei_irq); 
 
             /* Enable the TXEND interrupt */
             p_ctrl->p_reg->ICIER_b.TEIE = 1UL;
@@ -1107,13 +1108,13 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
         /* Send RESTART */
         if (p_ctrl->restart)
         {
-            /* NOTE:Only disable in NVIC, disabling in I2C would cause the
+            /* NOTE:Only disable in GIC, disabling in I2C would cause the
              * restart condition to fail because we are using the buffered
              * interrupt to start the next sequence */
             R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
             p_ctrl->p_reg->ICIER_b.TIE = 1UL;
 
-            /* Request RIIC to issue the restart condition. At this point we will queue a TXI at the NVIC level. */
+            /* Request RIIC to issue the restart condition. At this point we will queue a TXI at the GIC level. */
             p_ctrl->p_reg->ICCR2 = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK;
 
             /* Disable timeout function */
@@ -1349,7 +1350,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
     {
         if (p_ctrl->restart)
         {
-            /* NOTE:Only disable in NVIC, disabling in I2C would cause the
+            /* NOTE:Only disable in GIC, disabling in I2C would cause the
              * restart condition to fail because we are using the buffered
              * interrupt to start the next sequence */
             R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);

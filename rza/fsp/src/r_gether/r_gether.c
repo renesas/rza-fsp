@@ -325,11 +325,14 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
     fsp_err_t phy_ret;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
-
     /** Check parameters. */
     err = gether_open_param_check(p_instance_ctrl, p_cfg); /** check arguments */
     GETHER_ERROR_RETURN((FSP_SUCCESS == err), err);
 #endif
+
+    /* Prevent ether from resetting the linking process if it has already opened, even if the parameter-checking
+     * function is disabled. */
+    GETHER_ERROR_RETURN((GETHER_OPEN != p_instance_ctrl->open), FSP_ERR_ALREADY_OPEN);
 
     /** Make sure this channel exists. */
     p_instance_ctrl->p_reg_emac  = ((R_EMAC0_Type *) (R_EMAC0_BASE + (GETHER_ETHERC_REG_SIZE * p_cfg->channel)));
@@ -527,32 +530,25 @@ fsp_err_t R_GETHER_BufferRelease (ether_ctrl_t * const p_ctrl)
     p_instance_ctrl->p_rx_descriptor->die = GETHER_DECRIPTOR_INT_RX;
     p_instance_ctrl->p_rx_descriptor->dt  = GETHER_DESCRIPTOR_TYPE_FEMPTY;
 
-    /* Clean cache after writing descriptor */
-    R_BSP_CACHE_CleanRange((address_size_t) p_instance_ctrl->p_rx_descriptor, sizeof(gether_instance_rx_descriptor_t));
-
-    /* Invalidate cache before reading descriptor */
-    R_BSP_CACHE_InvalidateRange((address_size_t) p_instance_ctrl->p_rx_descriptor,
-                                sizeof(gether_instance_rx_descriptor_t));
-
     p_instance_ctrl->p_rx_descriptor++;
 
     if ((p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) ||
         (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINK))
     {
         /* Move to next descriptor */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
         uint64_t pa = (uint64_t)
-                      (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
+                      (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor &
+                                 GETHER_ADDRESS_UPPER_BITS_MASK) |
                                 (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
-        R_MMU_PAtoVA(&g_mmu_ctrl, pa, (void *) &p_instance_ctrl->p_rx_descriptor);
-    }
-
-    {
-        uint8_t * p_nextdata =
+        uint64_t va;
+        R_MMU_PAtoVA(&g_mmu_ctrl, pa, &va);
+        p_instance_ctrl->p_rx_descriptor = (gether_instance_rx_descriptor_t *) va;
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_instance_ctrl->p_rx_descriptor =
             (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
                       (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
-
-        /* Invalidate cache of receive buffer not to clear  */
-        R_BSP_CACHE_CleanInvalidateRange((address_size_t) p_nextdata, p_instance_ctrl->p_gether_cfg->ether_buffer_size);
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     }
 
     err = FSP_SUCCESS;
@@ -587,10 +583,19 @@ fsp_err_t R_GETHER_RxBufferUpdate (ether_ctrl_t * const p_ctrl, __attribute__((u
     while (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX)
     {
         /* next descriptor */
-        p_instance_ctrl->p_rx_descriptor = (gether_instance_rx_descriptor_t *)
-                                           (((address_size_t) p_instance_ctrl->p_rx_descriptor &
-                                             GETHER_ADDRESS_UPPER_BITS_MASK) |
-                                            (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        uint64_t pa = (uint64_t)
+                      (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor &
+                                 GETHER_ADDRESS_UPPER_BITS_MASK) |
+                                (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+        uint64_t va;
+        R_MMU_PAtoVA(&g_mmu_ctrl, pa, &va);
+        p_instance_ctrl->p_rx_descriptor = (gether_instance_rx_descriptor_t *) va;
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_instance_ctrl->p_rx_descriptor =
+            (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
+                      (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     }
 
     p_instance_ctrl->p_rx_descriptor->dt = GETHER_DESCRIPTOR_TYPE_FEMPTY;
@@ -662,7 +667,6 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
     {
         uint32_t link_up_request = 0;
 #if (GETHER_CFG_USE_LINKSTA == 1)
-
         /*
          * The Link Up/Down is confirmed by the Link Status bit of PHY register1,
          * because the LINK signal of PHY-LSI is used for LED indicator, and
@@ -678,7 +682,6 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         {
             link_up_request = 0;
         }
-
 #elif (GETHER_CFG_USE_LINKSTA == 0)
         link_up_request = 1;
 #endif
@@ -692,11 +695,14 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
             p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
             /* Initialize the transmit and receive descriptor */
-            memset(p_instance_ctrl->p_gether_cfg->p_rx_descriptors, 0x00,
+            memset(p_instance_ctrl->p_gether_cfg->p_rx_descriptors,
+                   0x00,
                    sizeof(gether_instance_rx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_rx_descriptors + 1));
-            memset(p_instance_ctrl->p_gether_cfg->p_tx_descriptors, 0x00,
+            memset(p_instance_ctrl->p_gether_cfg->p_tx_descriptors,
+                   0x00,
                    sizeof(gether_instance_tx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_tx_descriptors + 1));
-            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel], 0x00,
+            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel],
+                   0x00,
                    sizeof(g_gether_basic_descriptors[0]));
 
             /* Initialize the Ethernet buffer */
@@ -753,6 +759,7 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
                               (1 << R_ETHER_CSR2_RICMP4_Pos);
 
             /* Set the base address of descriptors */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
             {
                 uint64_t pa = 0;
                 R_MMU_VAtoPA(&g_mmu_ctrl,
@@ -760,7 +767,9 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
                              &pa);
                 p_reg_ether->DBAT = (uint32_t) (address_size_t) pa;
             }
-
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+            p_reg_ether->DBAT = (uint64_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel];
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
             /* Set RX */
             p_reg_ether->RCR = GETHER_RCR_DEFAULT_VALUE;
 
@@ -846,7 +855,6 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
 #if (GETHER_CFG_USE_LINKSTA == 1)
-
         /*
          * The Link Up/Down is confirmed by the Link Status bit of PHY register1,
          * because the LINK signal of PHY-LSI is used for LED indicator, and
@@ -861,7 +869,6 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         {
             link_down_request = 0;
         }
-
 #elif (GETHER_CFG_USE_LINKSTA == 0)
         link_down_request = 1;
 #endif
@@ -957,7 +964,6 @@ fsp_err_t R_GETHER_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
     if (FSP_SUCCESS == err)
     {
 #if (GETHER_CFG_USE_LINKSTA == 1)
-
         /* It is confirmed not to become Link down while changing the setting. */
         if (GETHER_CFG_LINK_PRESENT == p_reg_emac->PSR_b.LMON)
         {
@@ -967,9 +973,7 @@ fsp_err_t R_GETHER_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
         {
             err = FSP_ERR_ETHER_ERROR_LINK;
         }
-
 #else
-
         /* It is confirmed not to become Link down while changing the setting. */
         err = gether_link_status_check(p_instance_ctrl);
 #endif
@@ -1005,6 +1009,9 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
     uint8_t               * p_read_buffer     = NULL; /* Buffer location controlled by the Ethernet driver */
     uint8_t               * p_read_buffer_out = NULL; /* Buffer location controlled by the Ethernet driver */
     uint32_t                received_size     = GETHER_NO_DATA;
+#if  (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t va;
+#endif
 
     /* Check argument */
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
@@ -1025,10 +1032,6 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
 
     while (FSP_SUCCESS == err)
     {
-        /* Invalidate cache before reading descriptor */
-        R_BSP_CACHE_InvalidateRange((address_size_t) p_instance_ctrl->p_rx_descriptor,
-                                    sizeof(gether_instance_rx_descriptor_t));
-
         /* empty */
         if (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_FEMPTY)
         {
@@ -1046,10 +1049,10 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
                 (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
                           (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
 
-            /* Invalidate cache before reading data */
-            R_BSP_CACHE_InvalidateRange((address_size_t) p_read_buffer,
-                                        (received_size + 3) & GETHER_ADDRESS_4BYTE_MASK);
-
+#if  (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+            R_MMU_PAtoVA(&g_mmu_ctrl, (address_size_t) p_read_buffer, &va);
+            p_read_buffer = (uint8_t *) va;
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
             /* copy data */
             memcpy(p_buffer, p_read_buffer, received_size);
             *length_bytes = received_size;
@@ -1086,10 +1089,10 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
                 (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
                           (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
 
-            /* Invalidate cache before reading data */
-            R_BSP_CACHE_InvalidateRange((address_size_t) p_read_buffer,
-                                        (received_size + 3) & GETHER_ADDRESS_4BYTE_MASK);
-
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+            R_MMU_PAtoVA(&g_mmu_ctrl, (address_size_t) p_read_buffer, &va);
+            p_read_buffer = (uint8_t *) va;
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
             /* copy data */
             memcpy(p_read_buffer_out + received_size, p_read_buffer, receive_size);
             received_size += receive_size;
@@ -1139,10 +1142,10 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
                     (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
                               (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
 
-                /* Invalidate cache before reading data */
-                R_BSP_CACHE_InvalidateRange((address_size_t) p_read_buffer,
-                                            (received_size + 3) & GETHER_ADDRESS_4BYTE_MASK);
-
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+                R_MMU_PAtoVA(&g_mmu_ctrl, (address_size_t) p_read_buffer, &va);
+                p_read_buffer = (uint8_t *) va;
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
                 /* Copy data */
                 memcpy(p_read_buffer_out + received_size, p_read_buffer, receive_size);
                 received_size += receive_size;
@@ -1160,12 +1163,20 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
         else if ((p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) ||
                  (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
             /* Move to next descriptor */
             uint64_t pa = (uint64_t)
                           (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor &
                                      GETHER_ADDRESS_UPPER_BITS_MASK) |
                                     (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
-            R_MMU_PAtoVA(&g_mmu_ctrl, pa, (void *) &p_instance_ctrl->p_rx_descriptor);
+            R_MMU_PAtoVA(&g_mmu_ctrl, pa, &va);
+            p_instance_ctrl->p_rx_descriptor = (gether_instance_rx_descriptor_t *) va;
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+            p_instance_ctrl->p_rx_descriptor =
+                (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor &
+                           GETHER_ADDRESS_UPPER_BITS_MASK) |
+                          (address_size_t) p_instance_ctrl->p_rx_descriptor->dptr);
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
         }
         else
         {
@@ -1251,18 +1262,22 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
             p_reg_toe->CSR0_b.TPE   = 1;
         }
 
-        /* Invalidate cache before reading descriptor */
-        R_BSP_CACHE_InvalidateRange((address_size_t) p_tx_desc, sizeof(gether_instance_tx_descriptor_t));
-
         if ((p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+            /* Move to next descriptor */
+            uint64_t pa = (uint64_t)
+                          (void *) (((address_size_t) p_tx_desc & GETHER_ADDRESS_UPPER_BITS_MASK) |
+                                    (address_size_t) p_instance_ctrl->p_tx_descriptor->dptr);
+            uint64_t va;
+            R_MMU_PAtoVA(&g_mmu_ctrl, pa, &va);
+            p_instance_ctrl->p_tx_descriptor = (gether_instance_tx_descriptor_t *) va;
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
             p_instance_ctrl->p_tx_descriptor =
                 (void *) (((address_size_t) p_tx_desc & GETHER_ADDRESS_UPPER_BITS_MASK) |
                           (address_size_t) p_tx_desc->dptr);
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
             p_tx_desc = p_instance_ctrl->p_tx_descriptor;
-
-            /* Invalidate cache before reading descriptor */
-            R_BSP_CACHE_InvalidateRange((address_size_t) p_tx_desc, sizeof(gether_instance_tx_descriptor_t));
         }
 
         /* use single descriptor */
@@ -1277,17 +1292,16 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
                       (address_size_t) p_tx_desc->dptr);
         memcpy(p_copy_dst, p_write_buffer, frame_length);
 
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
         /* Clean cache after writing data */
         R_BSP_CACHE_CleanRange((address_size_t) p_copy_dst, (frame_length + 3) & GETHER_ADDRESS_4BYTE_MASK);
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
 
         /* Decide DT */
         p_tx_desc->dt = GETHER_DESCRIPTOR_TYPE_FSINGLE;
 
         do
         {
-            /* Clean cache after writing descriptor */
-            R_BSP_CACHE_CleanRange((address_size_t) p_tx_desc, sizeof(gether_instance_tx_descriptor_t));
-
             /* Read back the last written descriptor */
             dummy = *p_tx_desc;
         } while (memcmp(&dummy, p_tx_desc, sizeof(gether_instance_tx_descriptor_t)));
@@ -1296,14 +1310,21 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
         p_instance_ctrl->p_tx_descriptor++;
         p_tx_desc = p_instance_ctrl->p_tx_descriptor;
 
-        /* Invalidate cache before reading descriptor */
-        R_BSP_CACHE_InvalidateRange((address_size_t) p_tx_desc, sizeof(gether_instance_tx_descriptor_t));
-
         if ((p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+            /* Move to next descriptor */
+            uint64_t pa = (uint64_t)
+                          (void *) (((address_size_t) p_tx_desc & GETHER_ADDRESS_UPPER_BITS_MASK) |
+                                    (address_size_t) p_instance_ctrl->p_tx_descriptor->dptr);
+            uint64_t va;
+            R_MMU_PAtoVA(&g_mmu_ctrl, pa, &va);
+            p_instance_ctrl->p_tx_descriptor = (gether_instance_tx_descriptor_t *) va;
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
             p_instance_ctrl->p_tx_descriptor =
                 (void *) (((address_size_t) p_tx_desc & GETHER_ADDRESS_UPPER_BITS_MASK) |
                           (address_size_t) p_tx_desc->dptr);
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
         }
     }
 
@@ -1341,12 +1362,16 @@ fsp_err_t R_GETHER_TxStatusGet (__attribute__((unused)) ether_ctrl_t * const p_c
     p_reg_ether = (R_ETHER0_Type *) p_instance_ctrl->p_reg_ether;
 
     p_descriptor = (gether_instance_tx_descriptor_t *) (address_size_t) p_reg_ether->CDAR0;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    {
+        uint64_t va;
+        R_MMU_PAtoVA(&g_mmu_ctrl, (uint64_t) p_descriptor, &va);
+        p_descriptor = (gether_instance_tx_descriptor_t *) va;
+    }
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+
     if (p_instance_ctrl->p_tx_descriptor == p_descriptor)
     {
-        /* Invalidate cache before reading descriptor */
-        R_BSP_CACHE_InvalidateRange((address_size_t) p_instance_ctrl->p_tx_descriptor,
-                                    sizeof(gether_instance_tx_descriptor_t));
-
         if (p_descriptor->dt == GETHER_DESCRIPTOR_TYPE_FEMPTY)
         {
             err = FSP_SUCCESS;
@@ -1495,7 +1520,9 @@ static void gether_reset_mac (R_ETHER0_Type * const p_reg)
 static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
-    uint64_t pa     = 0;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa = 0;
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     uint32_t tx_num = p_instance_ctrl->p_gether_cfg->num_tx_descriptors;
     ether_instance_extend_t * p_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
@@ -1519,18 +1546,14 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
         p_instance_ctrl->p_rx_descriptor[i].msc = 0;
         p_instance_ctrl->p_rx_descriptor[i].ds  = p_instance_ctrl->p_gether_cfg->ether_buffer_size &
                                                   GETHER_MASK_12BITS;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
         R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) p_instance_ctrl->p_gether_cfg->pp_ether_buffers[tx_num + i], &pa);
         p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t) pa;
-        p_instance_ctrl->p_rx_descriptor[i].dt   = GETHER_DESCRIPTOR_TYPE_FEMPTY;
-
-        /* Clean cache after writing descriptor */
-        R_BSP_CACHE_CleanRange((address_size_t) (&p_instance_ctrl->p_rx_descriptor[i]),
-                               sizeof(gether_instance_rx_descriptor_t));
-
-        /* Invalidate cache of receive buffer not to clear  */
-        R_BSP_CACHE_CleanInvalidateRange(
-            (address_size_t) (&p_instance_ctrl->p_gether_cfg->pp_ether_buffers[tx_num + i]),
-            (p_instance_ctrl->p_gether_cfg->ether_buffer_size + 3) & GETHER_ADDRESS_4BYTE_MASK);
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t)
+                                                   p_instance_ctrl->p_gether_cfg->pp_ether_buffers[tx_num + i];
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_instance_ctrl->p_rx_descriptor[i].dt = GETHER_DESCRIPTOR_TYPE_FEMPTY;
     }
 
     p_instance_ctrl->p_rx_descriptor[i].die = 0;
@@ -1539,13 +1562,13 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
     p_instance_ctrl->p_rx_descriptor[i].ps  = 0;
     p_instance_ctrl->p_rx_descriptor[i].msc = 0;
     p_instance_ctrl->p_rx_descriptor[i].ds  = 0;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_ctrl->p_rx_descriptor[0]), &pa);
     p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t) pa;
-    p_instance_ctrl->p_rx_descriptor[i].dt   = GETHER_DESCRIPTOR_TYPE_LINKFIX;
-
-    /* Clean cache after writing descriptor */
-    R_BSP_CACHE_CleanRange((address_size_t) (&p_instance_ctrl->p_rx_descriptor[i]),
-                           sizeof(gether_instance_rx_descriptor_t));
+#else
+    p_instance_ctrl->p_rx_descriptor[i].dptr = (uint32_t) (address_size_t) &(p_instance_ctrl->p_rx_descriptor[0]);
+#endif
+    p_instance_ctrl->p_rx_descriptor[i].dt = GETHER_DESCRIPTOR_TYPE_LINKFIX;
 }                                      /* End of function gether_init_descriptors() */
 
 /***********************************************************************************************************************
@@ -1558,7 +1581,9 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
 static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     uint64_t pa = 0;
+#endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     ether_instance_extend_t * p_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
     /* Initialize the descriptors */
@@ -1573,22 +1598,24 @@ static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ct
     /* Initialize Base descriptors */
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_TX_OFFSET].dt =
         GETHER_DESCRIPTOR_TYPE_LINKFIX;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_extend->p_tx_descriptor[0]), &pa);
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_TX_OFFSET].dptr =
         (uint32_t) (address_size_t) pa;
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+    g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_TX_OFFSET].dptr =
+        (uint32_t) (address_size_t) &(p_instance_extend->p_tx_descriptor[0]);
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_RX_OFFSET].dt =
         GETHER_DESCRIPTOR_TYPE_LINKFIX;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_extend->p_rx_descriptor[0]), &pa);
     g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_RX_OFFSET].dptr =
         (uint32_t) (address_size_t) pa;
-
-    /* Clean cache after writing descriptor */
-    R_BSP_CACHE_CleanRange((address_size_t) &g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel]
-                           [GETHER_BASE_DESCRIPTOR_TX_OFFSET],
-                           sizeof(gether_basic_descriptor_t));
-    R_BSP_CACHE_CleanRange((address_size_t) &g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel]
-                           [GETHER_BASE_DESCRIPTOR_RX_OFFSET],
-                           sizeof(gether_basic_descriptor_t));
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+    g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel][GETHER_BASE_DESCRIPTOR_RX_OFFSET].dptr =
+        (uint32_t) (address_size_t) &(p_instance_extend->p_rx_descriptor[0]);
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
 
     /* Initialize TX descriptors */
     for (i = 0; i < (p_instance_ctrl->p_gether_cfg->num_tx_descriptors); i++)
@@ -1597,26 +1624,28 @@ static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ct
         p_instance_ctrl->p_tx_descriptor[i].tag = 0;
         p_instance_ctrl->p_tx_descriptor[i].msr = 0;
         p_instance_ctrl->p_tx_descriptor[i].ds  = 0;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
         R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) p_instance_ctrl->p_gether_cfg->pp_ether_buffers[i], &pa);
         p_instance_ctrl->p_tx_descriptor[i].dptr = (uint32_t) (address_size_t) pa;
-        p_instance_ctrl->p_tx_descriptor[i].dt   = GETHER_DESCRIPTOR_TYPE_FEMPTY;
-
-        /* Clean cache after writing descriptor */
-        R_BSP_CACHE_CleanRange((address_size_t) &(p_instance_ctrl->p_tx_descriptor[i]),
-                               sizeof(gether_instance_tx_descriptor_t));
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_instance_ctrl->p_tx_descriptor[i].dptr = (uint32_t) (address_size_t)
+                                                   p_instance_ctrl->p_gether_cfg->pp_ether_buffers[i];
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_instance_ctrl->p_tx_descriptor[i].dt = GETHER_DESCRIPTOR_TYPE_FEMPTY;
     }
 
     p_instance_ctrl->p_tx_descriptor[i + 0].die = GETHER_DECRIPTOR_INT_TX;
     p_instance_ctrl->p_tx_descriptor[i + 0].tag = 0;
     p_instance_ctrl->p_tx_descriptor[i + 0].msr = 0;
     p_instance_ctrl->p_tx_descriptor[i + 0].ds  = 0;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) &(p_instance_ctrl->p_tx_descriptor[0]), &pa);
     p_instance_ctrl->p_tx_descriptor[i + 0].dptr = (uint32_t) (address_size_t) pa;
-    p_instance_ctrl->p_tx_descriptor[i + 0].dt   = GETHER_DESCRIPTOR_TYPE_LINKFIX;
-
-    /* Clean cache after writing descriptor */
-    R_BSP_CACHE_CleanRange((address_size_t) &(p_instance_ctrl->p_tx_descriptor[i]),
-                           sizeof(gether_instance_tx_descriptor_t));
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+    p_instance_ctrl->p_tx_descriptor[i + 0].dptr = (uint32_t) (address_size_t)
+                                                   &(p_instance_ctrl->p_tx_descriptor[0]);
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+    p_instance_ctrl->p_tx_descriptor[i + 0].dt = GETHER_DESCRIPTOR_TYPE_LINKFIX;
 
     gether_init_rx_descriptors(p_instance_ctrl);
 }                                      /* End of function gether_init_descriptors() */
@@ -1673,7 +1702,6 @@ static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instan
     R_ETHER0_Type * p_reg_ether;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
-
     /* Check argument */
     if ((NULL == p_instance_ctrl) || (GETHER_OPEN != p_instance_ctrl->open))
     {
@@ -1696,7 +1724,6 @@ static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instan
     else
     {
 #if (GETHER_CFG_USE_LINKSTA == 1)
-
         /* LINK Signal Change Interrupt Enable */
         p_reg_emac->CXR21_b.LINKI  = 1;
         p_reg_emac->CXR22_b.LINKIM = 1;
@@ -1708,7 +1735,6 @@ static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instan
 
 #if ((defined(__GNUC__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) || (defined(__ARMCC_VERSION) && \
     !defined(__ARM_BIG_ENDIAN)) || (defined(__ICCARM__) && (__LITTLE_ENDIAN__)))
-
     /* Set little endian mode */
     p_reg_ether->CCC_b.BOC = 0;
 #endif
@@ -1782,7 +1808,6 @@ static void gether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
     uint32_t       mac_l;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
-
     /* Check argument */
     if ((NULL == p_instance_ctrl) || (GETHER_OPEN != p_instance_ctrl->open))
     {

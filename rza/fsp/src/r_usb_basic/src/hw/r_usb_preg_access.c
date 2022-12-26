@@ -106,7 +106,9 @@ void hw_usb_pset_wkup (uint8_t usb_ip)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->DVSTCTR0 |= USB_WKUP;
+ #endif
     }
 }
 
@@ -128,7 +130,9 @@ void hw_usb_pset_enb_rsme (uint8_t usb_ip)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->INTENB0 |= USB_RSME;
+ #endif
     }
 }
 
@@ -150,7 +154,9 @@ void hw_usb_pclear_enb_rsme (uint8_t usb_ip)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->INTENB0 = (uint16_t) (USB_M1->INTENB0 & (~USB_RSME));
+ #endif
     }
 }
 
@@ -172,7 +178,9 @@ void hw_usb_pclear_sts_resm (uint8_t usb_ip)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->INTSTS0 = (uint16_t) ~USB_RESM;
+ #endif
     }
 }
 
@@ -194,7 +202,9 @@ void hw_usb_pclear_sts_valid (uint8_t usb_ip)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->INTSTS0 = (uint16_t) ~USB_VALID;
+ #endif
     }
 }
 
@@ -216,7 +226,9 @@ void hw_usb_pset_ccpl (uint8_t usb_ip)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->DCPCTR |= USB_CCPL;
+ #endif
     }
 }
 
@@ -406,6 +418,7 @@ void hw_usb_pcontrol_dcpctr_pid (uint8_t usb_ip, uint16_t data)
     }
     else
     {
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
         USB_M1->DCPCTR &= (uint16_t) (~USB_PID);
         if (data == USB_SETUP_STATUS_ACK)
         {
@@ -415,6 +428,7 @@ void hw_usb_pcontrol_dcpctr_pid (uint8_t usb_ip, uint16_t data)
         {
             USB_M1->DCPCTR |= (uint16_t) USB_PID_STALL;
         }
+ #endif
     }
 }
 

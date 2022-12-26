@@ -51,6 +51,7 @@ typedef struct
             __IOM uint8_t CM   : 1;
         } SMR_b;
     };
+
     union
     {
         __IOM uint8_t BRR;
@@ -59,6 +60,7 @@ typedef struct
             __IOM uint8_t BRR : 8;
         } BRR_b;
     };
+
     union
     {
         __IOM uint8_t SCR;
@@ -73,6 +75,7 @@ typedef struct
             __IOM uint8_t TIE  : 1;
         } SCR_b;
     };
+
     union
     {
         __IOM uint8_t TDR;
@@ -81,6 +84,7 @@ typedef struct
             __IOM uint8_t TDR : 8;
         } TDR_b;
     };
+
     union
     {
         __IOM uint8_t SSR;
@@ -96,6 +100,7 @@ typedef struct
             __IOM uint8_t TDRE : 1;
         } SSR_b;
     };
+
     union
     {
         __IM uint8_t RDR;
@@ -104,6 +109,7 @@ typedef struct
             __IM uint8_t RDR : 8;
         } RDR_b;
     };
+
     union
     {
         __IOM uint8_t SCMR;
@@ -118,6 +124,7 @@ typedef struct
             uint8_t            : 1;
         } SCMR_b;
     };
+
     union
     {
         __IOM uint8_t SEMR;
@@ -133,9 +140,29 @@ typedef struct
             __IOM uint8_t RXDESEL : 1;
         } SEMR_b;
     };
-    __IM uint8_t RESERVED[1];
-    __IM uint8_t RESERVED1[4];
-    __IM uint8_t RESERVED2[1];
+
+    union
+    {
+        __IOM uint8_t SNFR;
+        struct
+        {
+            __IOM uint8_t NFCS : 3;
+            uint8_t            : 5;
+        } SNFR_b;
+    };
+
+    __IM uint8_t RESERVED[4];
+    union
+    {
+        __IOM uint8_t SECR;
+        struct
+        {
+            uint8_t            : 1;
+            __IOM uint8_t CTSE : 1;
+            uint8_t            : 6;
+        } SECR_b;
+    };
+
     union
     {
         struct
@@ -149,6 +176,7 @@ typedef struct
                 } TDRHL_b;
             };
         };
+
         struct
         {
             union
@@ -159,6 +187,7 @@ typedef struct
                     __IOM uint8_t TDRH : 8;
                 } TDRH_b;
             };
+
             union
             {
                 __IOM uint8_t TDRL;
@@ -169,6 +198,7 @@ typedef struct
             };
         };
     };
+
     union
     {
         struct
@@ -182,6 +212,7 @@ typedef struct
                 } RDRHL_b;
             };
         };
+
         struct
         {
             union
@@ -192,6 +223,7 @@ typedef struct
                     __IM uint8_t RDRH : 8;
                 } RDRH_b;
             };
+
             union
             {
                 __IM uint8_t RDRL;
@@ -202,6 +234,7 @@ typedef struct
             };
         };
     };
+
     union
     {
         __IOM uint8_t MDDR;
@@ -210,20 +243,20 @@ typedef struct
             __IOM uint8_t MDDR : 8;
         } MDDR_b;
     };
-} R_SCIG_0_Type;
+} R_SCI0_Type;
 
 /* =========================================================================================================================== */
 /* ================                          Device Specific Peripheral Address Map                           ================ */
 /* =========================================================================================================================== */
 
-#define R_SCIg_0_BASE    0x1004D000
-#define R_SCIg_1_BASE    0x1004D400
+#define R_SCI0_BASE    0x1004D000
+#define R_SCI1_BASE    0x1004D400
 
 /* =========================================================================================================================== */
 /* ================                                  Peripheral declaration                                   ================ */
 /* =========================================================================================================================== */
 
-#define R_SCIg_0    ((R_SCIG_0_Type *) R_SCIg_0_BASE)
-#define R_SCIg_1    ((R_SCIG_0_Type *) R_SCIg_1_BASE)
+#define R_SCI0    ((R_SCI0_Type *) R_SCI0_BASE)
+#define R_SCI1    ((R_SCI0_Type *) R_SCI1_BASE)
 
 #endif

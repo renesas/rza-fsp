@@ -604,10 +604,12 @@ void usb_cstd_usb_task (void)
         if (USB_FLGSET == usb_cstd_check_schedule()) /* Check for any task processing requests flags. */
         {
             /** Use only in non-OS. In RTOS, the kernel will schedule these tasks, no polling. **/
+   #if USB_IP_EHCI_OHCI == 0
             usb_hstd_hcd_task((void *) 0);           /* HCD Task */
+   #endif
             usb_hstd_mgr_task((void *) 0);           /* MGR Task */
    #if USB_CFG_HUB == USB_CFG_ENABLE
-            usb_hhub_task((usb_vp_int_t) 0);         /* HUB Task */
+            usb_hhub_task();                         /* HUB Task */
    #endif /* USB_CFG_HUB == USB_CFG_ENABLE */
             usb_class_task();
         }

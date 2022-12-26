@@ -57,7 +57,11 @@ uint64_t r_usb_pa_to_va (uint64_t paddr)
 {
     uint64_t vaddr;
 
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     R_MMU_PAtoVA(&g_mmu_ctrl, paddr, &vaddr);
+#else                                  /* #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT) */
+    vaddr = paddr;
+#endif /* #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT) */
 
     return vaddr;
 }                                      /* End of function r_usb_pa_to_va() */
@@ -78,7 +82,11 @@ uint64_t r_usb_va_to_pa (uint64_t vaddr)
 {
     uint64_t paddr;
 
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     R_MMU_VAtoPA(&g_mmu_ctrl, vaddr, &paddr);
+#else                                  /* #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT) */
+    paddr = vaddr;
+#endif /* #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT) */
 
     return paddr;
 }

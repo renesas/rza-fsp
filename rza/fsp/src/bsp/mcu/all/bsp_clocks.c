@@ -45,6 +45,8 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
+static void bsp_prv_clock_pre_setting(fsp_priv_clock_t clock);
+static void bsp_prv_clock_post_setting(fsp_priv_clock_t clock);
 
 /*******************************************************************************************************************//**
  * @internal
@@ -258,6 +260,580 @@ void bsp_clock_init (void)
 #endif
 }
 
+/*******************************************************************************************************************//**
+ * Perform any necessary processing before changing the frequency.
+ *
+ * @param[in] clock                    Desired clock
+ **********************************************************************************************************************/
+static void bsp_prv_clock_pre_setting (fsp_priv_clock_t clock)
+{
+    FSP_PARAMETER_NOT_USED(clock);
+}
+
+/*******************************************************************************************************************//**
+ * Perform any necessary processing after changing the frequency.
+ *
+ * @param[in] clock                    Desired clock
+ **********************************************************************************************************************/
+static void bsp_prv_clock_post_setting (fsp_priv_clock_t clock)
+{
+    FSP_PARAMETER_NOT_USED(clock);
+}
+
+/*******************************************************************************************************************//**
+ * Set the Source Clock Setting register to change the frequency.
+ *
+ * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
+ * @param[in]   clock_sel             Value to set in Source Clock Setting register.
+ **********************************************************************************************************************/
+void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
+{
+    uint32_t clock_freq = g_clock_freq[clock];
+
+    switch (clock)
+    {
+        /* Set the value to bit[1:0] of the CPG_PL2SDHI_DSEL register. */
+        case FSP_PRIV_CLOCK_SD0CLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_SELSDHI0_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_SELSDHI0_STS_Pos,
+                                       0U);
+
+            /* Select the 266MHz source once before changing to the desired settings (see section
+             * 'Source Clock Setting (SDHI) Register (CPG_PL2SDHI_DSEL)' of the user's manual). */
+            R_CPG->CPG_PL2SDHI_DSEL = (uint32_t) (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_WEN_Msk |
+                                                  (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_SET_Msk &
+                                                   (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 <<
+                                                    R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_SELSDHI0_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_SELSDHI0_STS_Pos,
+                                       0U);
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 != clock_sel)
+            {
+                R_CPG->CPG_PL2SDHI_DSEL = (uint32_t) (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_WEN_Msk |
+                                                      (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_SET_Msk &
+                                                       (clock_sel << R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_SET_Pos)));
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_SELSDHI0_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                           R_CPG_CPG_CLKSTATUS_SELSDHI0_STS_Pos,
+                                           0U);
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_533 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL2_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_400 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL2_1600_HZ >> 2;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL2_533_HZ >> 1;
+            }
+            else
+            {
+                /* If this condition is met, prohibited value was set in the register. */
+                ;
+            }
+
+            break;
+        }
+
+        /* Set the value to bit[5:4] of the CPG_PL2SDHI_DSEL register. */
+        case FSP_PRIV_CLOCK_SD1CLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_SELSDHI1_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_SELSDHI1_STS_Pos,
+                                       0U);
+
+            /* Select the 266MHz source once before changing to the desired settings (see section
+             * 'Source Clock Setting (SDHI) Register (CPG_PL2SDHI_DSEL)' of the user's manual). */
+            R_CPG->CPG_PL2SDHI_DSEL = (uint32_t) (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_WEN_Msk |
+                                                  (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_SET_Msk &
+                                                   (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 <<
+                                                    R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_SELSDHI1_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_SELSDHI1_STS_Pos,
+                                       0U);
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 != clock_sel)
+            {
+                R_CPG->CPG_PL2SDHI_DSEL = (uint32_t) (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_WEN_Msk |
+                                                      (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_SET_Msk &
+                                                       (clock_sel << R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_SET_Pos)));
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_SELSDHI1_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                           R_CPG_CPG_CLKSTATUS_SELSDHI1_STS_Pos,
+                                           0U);
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_533 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL2_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_400 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL2_1600_HZ >> 2;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL2_533_HZ >> 1;
+            }
+            else
+            {
+                /* If this condition is met, clock_sel is an invalid value. */
+                ;
+            }
+
+            break;
+        }
+
+        /* Set the value to bit[8] of the CPG_PL3_SSEL register. */
+        case FSP_PRIV_CLOCK_SPI0CLK:
+        {
+            uint32_t clock_mon = (uint32_t) ((R_CPG_CPG_CLKMON_SPI_MULTI_CLK1_MON_Msk & R_CPG->CPG_CLKMON_SPI_MULTI) >>
+                                             R_CPG_CPG_CLKMON_SPI_MULTI_CLK1_MON_Pos);
+
+            /* If SPI_CLK is supplied, the clock stops before setting the CPG_PL3_SSEL register. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_SPI_MULTI = R_CPG_CPG_CLKON_SPI_MULTI_CLK1_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_SPI_MULTI_CLK1_MON_Msk & R_CPG->CPG_CLKMON_SPI_MULTI) >>
+                                           R_CPG_CPG_CLKMON_SPI_MULTI_CLK1_MON_Pos,
+                                           0U);
+            }
+
+            R_CPG->CPG_PL3_SSEL = (uint32_t) (R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_WEN_Msk |
+                                              (R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Pos)));
+
+            /* If the clock was stopped before setting the CPG_PL3_SSEL register, the clock supply resumes. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_SPI_MULTI = (uint32_t) (R_CPG_CPG_CLKON_SPI_MULTI_CLK1_ONWEN_Msk |
+                                                         R_CPG_CPG_CLKON_SPI_MULTI_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_SPI_MULTI_CLK1_MON_Msk & R_CPG->CPG_CLKMON_SPI_MULTI) >>
+                                           R_CPG_CPG_CLKMON_SPI_MULTI_CLK1_MON_Pos,
+                                           1U);
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ;
+            }
+            else
+            {
+                /* If this condition is met, clock_sel is an invalid value. */
+                ;
+            }
+
+            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+                                             R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Pos);
+            if (BSP_CLOCKS_PL3C_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 1);
+
+            /* Changing settings for the SPI0 clock related register, SPI1 clock frequency changes at the same time.
+             * So it is updated the variable that stored SPI1 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_SPI1CLK] = clock_freq >> 1;
+            break;
+        }
+
+        /* Set the value to bit[8] of the CPG_PL3_SSEL register. */
+        case FSP_PRIV_CLOCK_SPI1CLK:
+        {
+            uint32_t clock_mon = (uint32_t) ((R_CPG_CPG_CLKMON_SPI_MULTI_CLK0_MON_Msk & R_CPG->CPG_CLKMON_SPI_MULTI) >>
+                                             R_CPG_CPG_CLKMON_SPI_MULTI_CLK0_MON_Pos);
+
+            /* If SPI_CLK is supplied, the clock stops before setting the CPG_PL3_SSEL register. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_SPI_MULTI = R_CPG_CPG_CLKON_SPI_MULTI_CLK0_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_SPI_MULTI_CLK0_MON_Msk & R_CPG->CPG_CLKMON_SPI_MULTI) >>
+                                           R_CPG_CPG_CLKMON_SPI_MULTI_CLK0_MON_Pos,
+                                           0U);
+            }
+
+            R_CPG->CPG_PL3_SSEL = (uint32_t) (R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_WEN_Msk |
+                                              (R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Pos)));
+
+            /* If the clock was stopped before setting the CPG_PL3_SSEL register, the clock supply resumes. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_SPI_MULTI = (uint32_t) (R_CPG_CPG_CLKON_SPI_MULTI_CLK0_ONWEN_Msk |
+                                                         R_CPG_CPG_CLKON_SPI_MULTI_CLK0_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_SPI_MULTI_CLK0_MON_Msk & R_CPG->CPG_CLKMON_SPI_MULTI) >>
+                                           R_CPG_CPG_CLKMON_SPI_MULTI_CLK0_MON_Pos,
+                                           1U);
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ;
+            }
+            else
+            {
+                /* If this condition is met, clock_sel is an invalid value. */
+                ;
+            }
+
+            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+                                             R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Pos);
+            if (BSP_CLOCKS_PL3C_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 2);
+
+            /* Changing settings for the SPI1 clock related register, SPI0 clock frequency changes at the same time.
+             * So it is updated the variable that stored SPI0 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = clock_freq << 1;
+            break;
+        }
+
+        /* Set the value to bit[12] of the CPG_PL3_SSEL register. */
+        case FSP_PRIV_CLOCK_OC0CLK:
+        {
+            uint32_t clock_mon = (uint32_t) ((R_CPG_CPG_CLKMON_OCTA_CLK1_MON_Msk & R_CPG->CPG_CLKMON_OCTA) >>
+                                             R_CPG_CPG_CLKMON_OCTA_CLK1_MON_Pos);
+
+            /* If OCTA_MCLK is supplied, the clock stops before setting the CPG_PL3_SSEL register. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_OCTA = R_CPG_CPG_CLKON_OCTA_CLK1_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_OCTA_CLK1_MON_Msk & R_CPG->CPG_CLKMON_OCTA) >>
+                                           R_CPG_CPG_CLKMON_OCTA_CLK1_MON_Pos,
+                                           0U);
+            }
+
+            R_CPG->CPG_PL3_SSEL = (uint32_t) (R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_WEN_Msk |
+                                              (R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Pos)));
+
+            /* If the clock was stopped before setting the CPG_PL3_SSEL register, the clock supply resumes. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_OCTA = (uint32_t) (R_CPG_CPG_CLKON_OCTA_CLK1_ONWEN_Msk |
+                                                    R_CPG_CPG_CLKON_OCTA_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_OCTA_CLK1_MON_Msk & R_CPG->CPG_CLKMON_OCTA) >>
+                                           R_CPG_CPG_CLKMON_OCTA_CLK1_MON_Pos,
+                                           1U);
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ >> 1;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ >> 1;
+            }
+            else
+            {
+                /* If this condition is met, clock_sel is an invalid value. */
+                ;
+            }
+
+            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+                                             R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Pos);
+            if (BSP_CLOCKS_PL3F_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 1);
+
+            /* Changing settings for the OC0 clock related register, OC1 clock frequency changes at the same time.
+             * So it is updated the variable that stored OC1 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_OC1CLK] = clock_freq >> 1;
+            break;
+        }
+
+        /* Set the value to bit[12] of the CPG_PL3_SSEL register. */
+        case FSP_PRIV_CLOCK_OC1CLK:
+        {
+            uint32_t clock_mon = (uint32_t) ((R_CPG_CPG_CLKMON_OCTA_CLK0_MON_Msk & R_CPG->CPG_CLKMON_OCTA) >>
+                                             R_CPG_CPG_CLKMON_OCTA_CLK0_MON_Pos);
+
+            /* If OCTA_ACLK is supplied, the clock stops before setting the CPG_PL3_SSEL register. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_OCTA = R_CPG_CPG_CLKON_OCTA_CLK0_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_OCTA_CLK0_MON_Msk & R_CPG->CPG_CLKMON_OCTA) >>
+                                           R_CPG_CPG_CLKMON_OCTA_CLK0_MON_Pos,
+                                           0U);
+            }
+
+            R_CPG->CPG_PL3_SSEL = (uint32_t) (R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_WEN_Msk |
+                                              (R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Pos)));
+
+            /* If the clock was stopped before setting the CPG_PL3_SSEL register, the clock supply resumes. */
+            if (clock_mon)
+            {
+                R_CPG->CPG_CLKON_OCTA = (uint32_t) (R_CPG_CPG_CLKON_OCTA_CLK0_ONWEN_Msk |
+                                                    R_CPG_CPG_CLKON_OCTA_CLK0_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_OCTA_CLK0_MON_Msk & R_CPG->CPG_CLKMON_OCTA) >>
+                                           R_CPG_CPG_CLKMON_OCTA_CLK0_MON_Pos,
+                                           1U);
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ >> 2;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_sel)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ >> 2;
+            }
+            else
+            {
+                /* If this condition is met, clock_sel is an invalid value. */
+                ;
+            }
+
+            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+                                             R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Pos);
+            if (BSP_CLOCKS_PL3F_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 2);
+
+            /* Changing settings for the OC1 clock related register, OC0 clock frequency changes at the same time.
+             * So it is updated the variable that stored OC0 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_OC0CLK] = clock_freq << 1;
+            break;
+        }
+
+        default:
+        {
+            FSP_PARAMETER_NOT_USED(clock_sel);
+            break;
+        }
+    }
+
+    g_clock_freq[clock] = clock_freq;
+}
+
+/*******************************************************************************************************************//**
+ * Set the Division Ratio Setting register to change the frequency.
+ *
+ * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
+ * @param[in]   clock_div             Value to set in Division Ratio Setting register.
+ **********************************************************************************************************************/
+void bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
+{
+    uint32_t clock_freq = g_clock_freq[clock];
+
+    switch (clock)
+    {
+        /* Set the value to bit[1:0] the CPG_PL1_DDIV register. */
+        case FSP_PRIV_CLOCK_ICLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL1_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL1_STS_Pos,
+                                       0U);
+            R_CPG->CPG_PL1_DDIV = (uint32_t) (R_CPG_CPG_PL1_DDIV_DIV_PLL1SET_WEN_Msk |
+                                              (R_CPG_CPG_PL1_DDIV_DIVPL1_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL1_DDIV_DIVPL1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL1_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL1_STS_Pos,
+                                       0U);
+            clock_freq = BSP_CFG_CLOCK_PLL1_HZ >> clock_div;
+            break;
+        }
+
+        /* Set the value to bit[10:8] the CPG_PL3A_DDIV register. */
+        case FSP_PRIV_CLOCK_SPI0CLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Pos,
+                                       0U);
+            R_CPG->CPG_PL3A_DDIV = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIV_PLL3_C_WEN_Msk |
+                                               (R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk &
+                                                (clock_div << R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Pos,
+                                       0U);
+
+            uint32_t clock_source = (R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Msk & R_CPG->CPG_PL3_SSEL) >>
+                                    R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ;
+            }
+            else
+            {
+                /* If this condition is met, prohibited value was set in the register. */
+                ;
+            }
+
+            if (BSP_CLOCKS_PL3C_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 1);
+
+            /* Changing settings for the SPI0 clock related register, SPI1 clock frequency changes at the same time.
+             * So it is updated the variable that stored SPI1 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_SPI1CLK] = clock_freq >> 1;
+            break;
+        }
+
+        /* Set the value to bit[10:8] the CPG_PL3A_DDIV register. */
+        case FSP_PRIV_CLOCK_SPI1CLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Pos,
+                                       0U);
+            R_CPG->CPG_PL3A_DDIV = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIV_PLL3_C_WEN_Msk |
+                                               (R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk &
+                                                (clock_div << R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3C_STS_Pos,
+                                       0U);
+
+            uint32_t clock_source = (R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Msk & R_CPG->CPG_PL3_SSEL) >>
+                                    R_CPG_CPG_PL3_SSEL_SEL_PLL3_3_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ;
+            }
+            else
+            {
+                /* If this condition is met, prohibited value was set in the register. */
+                ;
+            }
+
+            if (BSP_CLOCKS_PL3C_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 2);
+
+            /* Changing settings for the SPI1 clock related register, SPI0 clock frequency changes at the same time.
+             * So it is updated the variable that stored SPI0 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = clock_freq << 1;
+            break;
+        }
+
+        /* Set the value to bit[14:12] the CPG_PL3A_DDIV register. */
+        case FSP_PRIV_CLOCK_OC0CLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Pos,
+                                       0U);
+            R_CPG->CPG_PL3A_DDIV = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIV_PL3F_WEN_Msk |
+                                               (R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk &
+                                                (clock_div << R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Pos,
+                                       0U);
+
+            uint32_t clock_source = (R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Msk & R_CPG->CPG_PL3_SSEL) >>
+                                    R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ;
+            }
+            else
+            {
+                /* If this condition is met, prohibited value was set in the register. */
+                ;
+            }
+
+            if (BSP_CLOCKS_PL3F_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 1);
+
+            /* Changing settings for the OC0 clock related register, OC1 clock frequency changes at the same time.
+             * So it is updated the variable that stored OC1 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_OC1CLK] = clock_freq >> 1;
+            break;
+        }
+
+        /* Set the value to bit[14:12] the CPG_PL3A_DDIV register. */
+        case FSP_PRIV_CLOCK_OC1CLK:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Pos,
+                                       0U);
+            R_CPG->CPG_PL3A_DDIV = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIV_PL3F_WEN_Msk |
+                                               (R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk &
+                                                (clock_div << R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Msk & R_CPG->CPG_CLKSTATUS) >>
+                                       R_CPG_CPG_CLKSTATUS_DIVPL3F_STS_Pos,
+                                       0U);
+
+            uint32_t clock_source = (R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Msk & R_CPG->CPG_PL3_SSEL) >>
+                                    R_CPG_CPG_PL3_SSEL_SEL_PLL3_5_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_533 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_533_HZ;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL3_400 == clock_source)
+            {
+                clock_freq = BSP_CFG_CLOCK_PLL3_400_HZ;
+            }
+            else
+            {
+                /* If this condition is met, prohibited value was set in the register. */
+                ;
+            }
+
+            if (BSP_CLOCKS_PL3F_DIV_32 == clock_div)
+            {
+                clock_div++;
+            }
+
+            clock_freq = clock_freq >> (clock_div + 2);
+
+            /* Changing settings for the OC1 clock related register, OC0 clock frequency changes at the same time.
+             * So it is updated the variable that stored OC0 clock frequency. */
+            g_clock_freq[FSP_PRIV_CLOCK_OC0CLK] = clock_freq << 1;
+            break;
+        }
+
+        default:
+        {
+            FSP_PARAMETER_NOT_USED(clock_div);
+            break;
+        }
+    }
+
+    g_clock_freq[clock] = clock_freq;
+}
+
 /** @} (end addtogroup BSP_MCU_PRV) */
 
 /*******************************************************************************************************************//**
@@ -266,15 +842,30 @@ void bsp_clock_init (void)
  **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
- * Get the system clock frequency.
+ * Get a clock frequency.
  *
- * @param[in]   clock                 Element number of the array that defines the frequency of the bus clock.
+ * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
  *
- * @retval      g_clock_freq[clock]   System clock frequency.
+ * @retval      g_clock_freq[clock]   Clock frequency.
  **********************************************************************************************************************/
 uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
 {
     return g_clock_freq[clock];
+}
+
+/*******************************************************************************************************************//**
+ * Set a clock frequency.
+ *
+ * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
+ * @param[in]   clock_sel             Value to set in Source Clock Setting register.
+ * @param[in]   clock_div             Value to set in Division Ratio Setting register.
+ **********************************************************************************************************************/
+void R_FSP_SystemClockHzSet (fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div)
+{
+    bsp_prv_clock_pre_setting(clock);
+    bsp_prv_clock_selector_set(clock, clock_sel);
+    bsp_prv_clock_divider_set(clock, clock_div);
+    bsp_prv_clock_post_setting(clock);
 }
 
 /** @} (end addtogroup BSP_MCU_PRV) */

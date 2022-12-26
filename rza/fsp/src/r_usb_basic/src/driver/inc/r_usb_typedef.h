@@ -58,8 +58,13 @@ typedef volatile R_USB_FS0_Type * usb_regadr1_t;
 typedef volatile R_USB_FS0_Type * usb_regadr_t;
 #else /* defined (BSP_MCU_GROUP_RZT2M) */
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+  #if    defined(BSP_MCU_GROUP_RZA3UL)
+typedef volatile R_USB01_Type * usb_regadr1_t;
+typedef volatile R_USB01_Type * usb_regadr_t;
+  #else
 typedef volatile R_USBF_Type * usb_regadr1_t;
 typedef volatile R_USBF_Type * usb_regadr_t;
+  #endif
  #else                                 /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
   #if    defined(BSP_MCU_GROUP_RZA3UL)
 typedef volatile R_USB10_Type * usb_regadr1_t;

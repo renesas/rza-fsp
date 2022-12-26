@@ -96,9 +96,11 @@ static QueueHandle_t g_hcd_mbx_hdl USB_BUFFER_PLACE_IN_SECTION;
  #else                                 /* #if USB_IP_EHCI_OHCI == 0 */
 static QueueHandle_t g_hci_mbx_hdl USB_BUFFER_PLACE_IN_SECTION;
  #endif /* #if USB_IP_EHCI_OHCI == 0 */
-static QueueHandle_t g_mgr_mbx_hdl      USB_BUFFER_PLACE_IN_SECTION;
-static QueueHandle_t g_hub_mbx_hdl      USB_BUFFER_PLACE_IN_SECTION;
-static QueueHandle_t g_pcd_mbx_hdl      USB_BUFFER_PLACE_IN_SECTION;
+static QueueHandle_t g_mgr_mbx_hdl USB_BUFFER_PLACE_IN_SECTION;
+static QueueHandle_t g_hub_mbx_hdl USB_BUFFER_PLACE_IN_SECTION;
+ #if (USB_UT_MODE == 0)
+static QueueHandle_t g_pcd_mbx_hdl USB_BUFFER_PLACE_IN_SECTION;
+ #endif                                /*   #if (USB_UT_MODE == 0) */
 static QueueHandle_t g_cls_mbx_hdl      USB_BUFFER_PLACE_IN_SECTION;
 static QueueHandle_t g_hmsc_mbx_hdl     USB_BUFFER_PLACE_IN_SECTION;
 static QueueHandle_t g_hmsc_req_mbx_hdl USB_BUFFER_PLACE_IN_SECTION;
@@ -153,8 +155,12 @@ static void * g_p_hhid_mpl[QUEUE_SIZE] USB_BUFFER_PLACE_IN_SECTION;
 /** Declare an array of memory pool handlers. **/
 QueueHandle_t * g_mpl_table[] =
 {
-    &g_hci_mpl_hdl,                    /* Not used */
-    &g_mgr_mpl_hdl,                    /* A memory pool handler of USB HCD task */
+ #if USB_IP_EHCI_OHCI == 0
+    &g_hcd_mpl_hdl,                    /* A memory pool handler of USB HCD task */
+ #else
+    &g_hci_mpl_hdl,                    /* A memory pool handler of USB HCI task */
+ #endif
+    &g_mgr_mpl_hdl,                    /* A memory pool handler of USB MGR task */
     &g_mgr_mpl_hdl,                    /* A memory pool handler of USB MGR task */
     &g_hub_mpl_hdl,                    /* A memory pool handler of USB HUB task */
     &g_cls_mpl_hdl,                    /* A memory pool handler of USB internal communication */
@@ -689,11 +695,23 @@ usb_rtos_err_t usb_rtos_configuration (void)
 
         return err;
     }
-    #endif                             /*defined(USB_CFG_HHID_USE)*/
-   #endif                              /* #if USB_IP_EHCI_OHCI == 0 */
-  #endif                               /* ( (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST ) */
+    #endif                                 /*defined(USB_CFG_HHID_USE)*/
+   #endif                                  /* #if USB_IP_EHCI_OHCI == 0 */
+  #endif                                   /* ( (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST ) */
 
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+    g_mbx_table[0]  = NULL;
+    g_mbx_table[1]  = &g_hcd_mbx_hdl;      /* A mailbox handler of USB HCD task */
+    g_mbx_table[2]  = &g_mgr_mbx_hdl;      /* A mailbox handler of USB HCD task */
+    g_mbx_table[3]  = &g_hub_mbx_hdl;      /* A mailbox handler of USB MGR task */
+    g_mbx_table[4]  = &g_cls_mbx_hdl;      /* A mailbox handler of USB HUB task */
+    g_mbx_table[5]  = &g_pcd_mbx_hdl;      /* A mailbox handler of USB internal communication */
+    g_mbx_table[6]  = &g_hmsc_mbx_hdl;     /* A mailbox handler of USB PCD task */
+    g_mbx_table[7]  = &g_hmsc_req_mbx_hdl; /* A mailbox handler of USB HMSC */
+    g_mbx_table[8]  = &g_hcdc_mbx_hdl;     /* A mailbox handler for class request (via PIPE0) of USB HMSC */
+    g_mbx_table[9]  = &g_hhid_mbx_hdl;     /* A mailbox handler of USB HCDC task */
+    g_mbx_table[10] = &g_pmsc_mbx_hdl;     /* A mailbox handler of USB HHID task */
+
     /** Create mailbox **/
     /** USB PCD task **/
     g_pcd_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));

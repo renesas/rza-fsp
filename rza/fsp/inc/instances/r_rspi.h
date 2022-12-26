@@ -132,10 +132,6 @@ typedef struct st_rspi_instance_ctrl
     /* Pointer to context to be passed into callback function */
     void const  * p_context;
     uint32_t      rxfifo_trigger_bytes; ///< Receive buffer data triggering number
-    uint32_t      reg_spcr;             ///< Backup SPCR register content
-    uint32_t      reg_spdcr;            ///< Backup SPDCR register content
-    uint32_t      reg_spcmd0;           ///< Backup SPCMD0 register content
-    uint32_t      reg_spbfcr;           ///< Backup SPBFCR register content
     volatile bool transfer_is_pending;  ///< Transfer is pending
 } rspi_instance_ctrl_t;
 

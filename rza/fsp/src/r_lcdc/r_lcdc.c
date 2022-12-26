@@ -23,6 +23,7 @@
  **********************************************************************************************************************/
 #include "r_lcdc.h"
 #include "bsp_api.h"
+#include "hal_data.h"
 #include "r_lcdc_cfg.h"
 
 /***********************************************************************************************************************
@@ -38,7 +39,7 @@
 #define LCDC_VSPD_DL_CTRL                     (0x0100)
 #define LCDC_VSPD_LIF_CTRL_OBTH               (0x5DC)
 #define LCDC_VSPD_LIF_CTRL_LBA1               (0x600)
-#define LCDC_VSPD_DL_BODY_SIZE                (168)
+#define LCDC_VSPD_DL_BODY_SIZE                (200)
 #define LCDC_VSPD_DPR_RPF0_ROUTE_RT_RPF0      (0x26)
 #define LCDC_VSPD_DPR_RPF0_ROUTE_RT_RPF1      (0x27)
 #define LCDC_VSPD_DPR_WPF0_FPROCH             (0x05)
@@ -70,6 +71,7 @@
 #define LAYER_MAX_VCOOR                       (800)
 
 #define CAST_TO_UINT32                        (0xFFFFFFFFU)
+#define DL_NUM_CMD                            (25)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -82,7 +84,7 @@ typedef struct
 
 typedef struct
 {
-    set_address_data_t cmd[21];
+    set_address_data_t cmd[DL_NUM_CMD];
 } display_list_data_type;
 
 /***********************************************************************************************************************
@@ -150,6 +152,7 @@ static const uint32_t display_format_table[] =
     0x0000C147,                        /* YCbCr422 interleaved type0 YVYU, 16 bits */
     0x00000148,                        /* YCbCr420 interleaved type1,      16 bits */
     0x00000149,                        /* YCbCr420 interleaved,            16 bits */
+    0x0000004C,                        /* YCbCr420 Planar                  16 bits */
 };
 
 static lcdc_ctrl_t r_lcdc_blk =
@@ -227,14 +230,14 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
     /* Enable LCDC Interrupt */
     r_lcdc_interrupt_enable(p_cfg, p_api_ctrl);
 
+    /* Initialize Layer Status */
+    layer_status = LAYER_STATUS_INIT;
+
     /* Layer 1 Setting (RPF0) */
     r_lcdc_layer1_set(p_cfg);
 
     /* Layer 2 Setting (RPF1) */
     r_lcdc_layer2_set(p_cfg);
-
-    /* Initialize Layer Status */
-    layer_status = LAYER_STATUS_INIT;
 
     /* Output Setting */
     r_lcdc_output_set(p_cfg);
@@ -309,18 +312,9 @@ fsp_err_t R_LCDC_Close (display_ctrl_t * const p_api_ctrl)
          */
     }
 
-    /* Software Reset for VSPD */
+    /* Software Reset */
     R_LCDC->VI6_SRESET_b.SRST0 = 1;
     while (R_LCDC->VI6_WPF0_IRQ_STA_b.FRE == 0)
-    {
-        /*
-         * No Operation
-         */
-    }
-
-    /* Software reset to FCPVD */
-    R_LCDC->FCP_RST_b.SOFTRST = 1;
-    while (R_LCDC->FCP_STA_b.ACT == 1)
     {
         /*
          * No Operation
@@ -348,10 +342,6 @@ fsp_err_t R_LCDC_Start (display_ctrl_t * const p_api_ctrl)
     FSP_ASSERT(p_ctrl);
     FSP_ERROR_RETURN(DISPLAY_STATE_OPENED == p_ctrl->state, FSP_ERR_NOT_OPEN);
 #endif
-
-    /* Layer Status Setting */
-    /* Enable all Layers */
-    layer_status |= LAYER_ENABLE_ALL;
 
     /* Set Data to Display List Body */
     dl_body.cmd[0].set_data = layer_status;
@@ -458,6 +448,11 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
     FSP_ERROR_RETURN((DISPLAY_STATE_DISPLAYING == p_ctrl->state), FSP_ERR_INVALID_MODE);
 #endif
 
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
+
     /* Check layer number */
     FSP_ERROR_RETURN((layer == 0 || layer == 1), FSP_ERR_INVALID_LAYER_SETTING);
 
@@ -477,7 +472,15 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
         }
 
         /* Set layer1's buffer address to Display List Body */
+        /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t)framebuffer & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[1].set_data = (uint64_t)pa & CAST_TO_UINT32;
+#else
         dl_body.cmd[1].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
+#endif
+
     }
     else if (layer == DISPLAY_FRAME_LAYER_2)
     {
@@ -493,7 +496,14 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
         }
 
         /* Set layer2's buffer address to Display List Body */
+#if (BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t)framebuffer & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[11].set_data = (uint64_t)pa & CAST_TO_UINT32;
+#else
         dl_body.cmd[11].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
+#endif
+        //dl_body.cmd[11].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
     }
     else
     {
@@ -668,6 +678,10 @@ static void r_lcdc_clock_set (void)
  **********************************************************************************************************************/
 static void r_lcdc_dl_set (void)
 {
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
     /* Fixed Value */
     R_LCDC->VI6_DL_CTRL_b.AR_WAIT = LCDC_VSPD_DL_CTRL;
 
@@ -695,7 +709,13 @@ static void r_lcdc_dl_set (void)
     R_LCDC->VI6_DL_EXT_CTRL0_b.DLPRI = 0b1;
 
     /* Display List Header Address */
+#if (BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t) (&dl_body) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_DL_HDR_ADDR0 = pa & CAST_TO_UINT32;
+#else
     R_LCDC->VI6_DL_HDR_ADDR0 = (uint64_t) (&dl_body) & CAST_TO_UINT32;
+#endif
 
     /* Data swapping in long word (32-bit) units is enabled */
     R_LCDC->VI6_DL_SWAP0_b.LWS = 0b1;
@@ -709,6 +729,11 @@ static void r_lcdc_dl_set (void)
  **********************************************************************************************************************/
 static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
 {
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
+
     /* set Display List Body address */
     dl_body.cmd[0].set_address  = (uint64_t) (&(R_LCDC->VI6_WPF0_SRCRPF)) & CAST_TO_UINT32;
     dl_body.cmd[1].set_address  = (uint64_t) (&(R_LCDC->VI6_RPF0_SRCM_ADDR_Y)) & CAST_TO_UINT32;
@@ -731,10 +756,22 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
     dl_body.cmd[18].set_address = (uint64_t) (&(R_LCDC->VI6_RPF1_CKEY_CTRL)) & CAST_TO_UINT32;
     dl_body.cmd[19].set_address = (uint64_t) (&(R_LCDC->VI6_RPF1_CKEY_SET0)) & CAST_TO_UINT32;
     dl_body.cmd[20].set_address = (uint64_t) (&(R_LCDC->VI6_RPF1_CKEY_SET1)) & CAST_TO_UINT32;
+    dl_body.cmd[21].set_address = (uint64_t) (&(R_LCDC->VI6_RPF0_SRCM_ADDR_C0)) & CAST_TO_UINT32;
+    dl_body.cmd[22].set_address = (uint64_t) (&(R_LCDC->VI6_RPF0_SRCM_ADDR_C1)) & CAST_TO_UINT32;
+    dl_body.cmd[23].set_address = (uint64_t) (&(R_LCDC->VI6_RPF1_SRCM_ADDR_C0)) & CAST_TO_UINT32;
+    dl_body.cmd[24].set_address = (uint64_t) (&(R_LCDC->VI6_RPF1_SRCM_ADDR_C1)) & CAST_TO_UINT32;
 
     /* set Display List Body data */
     dl_body.cmd[0].set_data = LAYER_STATUS_INIT;
+
+    /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t)(p_cfg->input[0].p_base) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    dl_body.cmd[1].set_data = pa & CAST_TO_UINT32;
+#else
     dl_body.cmd[1].set_data = (uint64_t) (p_cfg->input[0].p_base) & CAST_TO_UINT32;
+#endif
     dl_body.cmd[2].set_data = display_format_table[p_cfg->input[0].format];
 
     /* input format : RGB - output format : YCbCr */
@@ -754,13 +791,22 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
 
     dl_body.cmd[3].set_data  = (uint32_t) ((p_cfg->input[0].hsize << 16) + p_cfg->input[0].vsize);
     dl_body.cmd[4].set_data  = (uint32_t) ((p_cfg->input[0].hsize << 16) + p_cfg->input[0].vsize);
-    dl_body.cmd[5].set_data  = (p_cfg->input[0].hstride) << 16;
+    dl_body.cmd[5].set_data  = (uint32_t) ((p_cfg->input[0].hstride) << 16 | (p_cfg->input[0].hstride_cbcr));
     dl_body.cmd[6].set_data  = (uint32_t) ((p_cfg->input[0].coordinate_x << 16) + p_cfg->input[0].coordinate_y);
     dl_body.cmd[7].set_data  = (uint32_t) (p_cfg->input[0].data_swap);
     dl_body.cmd[8].set_data  = 0;
     dl_body.cmd[9].set_data  = 0;
     dl_body.cmd[10].set_data = 0;
+
+    /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t)(p_cfg->input[1].p_base) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    dl_body.cmd[11].set_data = pa & CAST_TO_UINT32;
+#else
     dl_body.cmd[11].set_data = (uint64_t) (p_cfg->input[1].p_base) & CAST_TO_UINT32;
+#endif
+
     dl_body.cmd[12].set_data = display_format_table[p_cfg->input[1].format];
 
     /* input format : RGB - output format : YCbCr */
@@ -780,12 +826,36 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
 
     dl_body.cmd[13].set_data = (uint32_t) ((p_cfg->input[1].hsize << 16) + p_cfg->input[1].vsize);
     dl_body.cmd[14].set_data = (uint32_t) ((p_cfg->input[1].hsize << 16) + p_cfg->input[1].vsize);
-    dl_body.cmd[15].set_data = (p_cfg->input[1].hstride) << 16;
+    dl_body.cmd[15].set_data = (uint32_t) ((p_cfg->input[1].hstride) << 16 | (p_cfg->input[1].hstride));
     dl_body.cmd[16].set_data = (uint32_t) ((p_cfg->input[1].coordinate_x << 16) + p_cfg->input[1].coordinate_y);
     dl_body.cmd[17].set_data = (uint32_t) (p_cfg->input[1].data_swap);
     dl_body.cmd[18].set_data = 0;
     dl_body.cmd[19].set_data = 0;
     dl_body.cmd[20].set_data = 0;
+
+    /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t)(p_cfg->input[0].p_base_cb) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    dl_body.cmd[21].set_data = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)(p_cfg->input[0].p_base_cr) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    dl_body.cmd[22].set_data = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)(p_cfg->input[1].p_base_cb) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    dl_body.cmd[23].set_data = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)(p_cfg->input[1].p_base_cr) & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    dl_body.cmd[24].set_data = pa & CAST_TO_UINT32;
+#else
+    dl_body.cmd[21].set_data = (uint64_t) (p_cfg->input[0].p_base_cb) & CAST_TO_UINT32;
+    dl_body.cmd[22].set_data = (uint64_t) (p_cfg->input[0].p_base_cr) & CAST_TO_UINT32;
+    dl_body.cmd[23].set_data = (uint64_t) (p_cfg->input[1].p_base_cb) & CAST_TO_UINT32;
+    dl_body.cmd[24].set_data = (uint64_t) (p_cfg->input[1].p_base_cr) & CAST_TO_UINT32;
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -796,6 +866,10 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
  **********************************************************************************************************************/
 static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
 {
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
     static uint32_t hsize;
     static uint32_t vsize;
     static uint32_t coor_x;
@@ -812,6 +886,7 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
 
     /* Stride Setting */
     R_LCDC->VI6_RPF0_SRCM_PSTRIDE_b.PICT_STRD_Y = p_cfg->input[0].hstride;
+    R_LCDC->VI6_RPF0_SRCM_PSTRIDE_b.PICT_STRD_C = p_cfg->input[0].hstride_cbcr;
 
     /* Location Setting */
     coor_x               = (uint32_t) p_cfg->input[0].coordinate_x;
@@ -819,13 +894,42 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
     R_LCDC->VI6_RPF0_LOC = coor_x << 16 | coor_y;
 
     /* Buffer address Setting */
+    /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t)p_cfg->input[0].p_base & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_RPF0_SRCM_ADDR_Y = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)p_cfg->input[0].p_base_cb & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_RPF0_SRCM_ADDR_C0 = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)p_cfg->input[0].p_base_cr & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_RPF0_SRCM_ADDR_C1 = pa & CAST_TO_UINT32;
+#else
     R_LCDC->VI6_RPF0_SRCM_ADDR_Y = (uint64_t) p_cfg->input[0].p_base & CAST_TO_UINT32;
+    R_LCDC->VI6_RPF0_SRCM_ADDR_C0 = (uint64_t) p_cfg->input[0].p_base_cb & CAST_TO_UINT32;
+    R_LCDC->VI6_RPF0_SRCM_ADDR_C1 = (uint64_t) p_cfg->input[0].p_base_cr & CAST_TO_UINT32;
+#endif
+
 
     /* Alpha Setting (RPF0 Alpha data is 0x00) */
     R_LCDC->VI6_RPF0_ALPH_SEL_b.ASEL = 0x0;
 
     /* Swap Setting */
     R_LCDC->VI6_RPF0_DSWAP = p_cfg->input[0].data_swap;
+
+    if(p_cfg->input[0].p_base == NULL)
+    {
+        /* Disable Layer1 (RPF0) */
+        layer_status &= LAYER_DISABLE_1;
+    }
+    else
+    {
+        /* Enable layer1 (RPF0) */
+        layer_status |= LAYER_ENABLE_1;
+    }
 }
 
 /*******************************************************************************************************************//**
@@ -836,6 +940,10 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
  **********************************************************************************************************************/
 static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
 {
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
     static uint32_t hsize;
     static uint32_t vsize;
     static uint32_t coor_x;
@@ -852,6 +960,7 @@ static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
 
     /* Stride Setting */
     R_LCDC->VI6_RPF1_SRCM_PSTRIDE_b.PICT_STRD_Y = p_cfg->input[1].hstride;
+    R_LCDC->VI6_RPF1_SRCM_PSTRIDE_b.PICT_STRD_C = p_cfg->input[1].hstride_cbcr;
 
     /* Location Setting */
     coor_x               = (uint32_t) p_cfg->input[1].coordinate_x;
@@ -859,13 +968,41 @@ static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
     R_LCDC->VI6_RPF1_LOC = coor_x << 16 | coor_y;
 
     /* Buffer address Setting */
+    /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t)p_cfg->input[1].p_base & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_RPF1_SRCM_ADDR_Y = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)p_cfg->input[1].p_base_cb & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_RPF1_SRCM_ADDR_C0 = pa & CAST_TO_UINT32;
+
+    va = (uint64_t)p_cfg->input[1].p_base_cr & CAST_TO_UINT32;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    R_LCDC->VI6_RPF1_SRCM_ADDR_C1 = pa & CAST_TO_UINT32;
+#else
     R_LCDC->VI6_RPF1_SRCM_ADDR_Y = (uint64_t) p_cfg->input[1].p_base & CAST_TO_UINT32;
+    R_LCDC->VI6_RPF1_SRCM_ADDR_C0 = (uint64_t) p_cfg->input[1].p_base_cb & CAST_TO_UINT32;
+    R_LCDC->VI6_RPF1_SRCM_ADDR_C1 = (uint64_t) p_cfg->input[1].p_base_cr & CAST_TO_UINT32;
+#endif
 
     /* Alpha Setting */
     R_LCDC->VI6_RPF1_ALPH_SEL_b.ASEL = 0x0;
 
     /* Swap Setting */
-    R_LCDC->VI6_RPF0_DSWAP = p_cfg->input[1].data_swap;
+    R_LCDC->VI6_RPF1_DSWAP = p_cfg->input[1].data_swap;
+
+    if(p_cfg->input[1].p_base == NULL)
+    {
+        /* Disable Layer1 (RPF0) */
+        layer_status &= LAYER_DISABLE_2;
+    }
+    else
+    {
+        /* Enable layer1 (RPF0) */
+        layer_status |= LAYER_ENABLE_2;
+    }
 }
 
 /*******************************************************************************************************************//**
@@ -884,7 +1021,7 @@ static void r_lcdc_output_set (display_cfg_t const * const p_cfg)
     R_LCDC->VI6_WPF0_IRQ_ENB_b.FREE = 0b1;
 
     /*Background layer Setting */
-    R_LCDC->VI6_WPF0_SRCRPF = layer_status;
+    R_LCDC->VI6_WPF0_SRCRPF = LAYER_DISABLE_ALL;
 
     /* Format Setting */
     R_LCDC->VI6_WPF0_OUTFMT = display_format_table[p_cfg->output.format];
@@ -985,6 +1122,10 @@ static void r_lcdc_brs_set (void)
  **********************************************************************************************************************/
 static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, display_frame_layer_t layer)
 {
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
     /* Display List Body Setting */
     /* Change Layer Setting */
     if (layer == DISPLAY_FRAME_LAYER_1)
@@ -999,14 +1140,32 @@ static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, disp
             /* Enable Layer1 (RPF0) */
             layer_status |= LAYER_ENABLE_1;
         }
-
+        /* Set physical address of buffer to descriptor */
+#if (BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t)(p_cfg->input.p_base) & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[1].set_data = pa & CAST_TO_UINT32;
+#else
         dl_body.cmd[1].set_data = (uint64_t) (p_cfg->input.p_base) & CAST_TO_UINT32;
+#endif
         dl_body.cmd[2].set_data = display_format_table[p_cfg->input.format];
         dl_body.cmd[3].set_data = (uint32_t) ((p_cfg->input.hsize << 16) + p_cfg->input.vsize);
         dl_body.cmd[4].set_data = (uint32_t) ((p_cfg->input.hsize << 16) + p_cfg->input.vsize);
-        dl_body.cmd[5].set_data = ((p_cfg->input.hstride) << 16);
+        dl_body.cmd[5].set_data = (uint32_t) (((p_cfg->input.hstride) << 16) | (p_cfg->input.hstride_cbcr));
         dl_body.cmd[6].set_data = (uint32_t) ((p_cfg->input.coordinate_x << 16) + p_cfg->input.coordinate_y);
         dl_body.cmd[7].set_data = (uint32_t) (p_cfg->input.data_swap);
+#if (BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t)(p_cfg->input.p_base_cb) & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[21].set_data = pa & CAST_TO_UINT32;
+
+        va = (uint64_t)(p_cfg->input.p_base_cr) & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[22].set_data = pa & CAST_TO_UINT32;
+#else
+        dl_body.cmd[21].set_data = (uint64_t) (p_cfg->input.p_base_cb) & CAST_TO_UINT32;
+        dl_body.cmd[22].set_data = (uint64_t) (p_cfg->input.p_base_cr) & CAST_TO_UINT32;
+#endif
     }
     else if (layer == DISPLAY_FRAME_LAYER_2)
     {
@@ -1021,13 +1180,31 @@ static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, disp
             layer_status |= LAYER_ENABLE_2;
         }
 
+#if (BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t)(p_cfg->input.p_base) & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[11].set_data = pa & CAST_TO_UINT32;
+#else
         dl_body.cmd[11].set_data = (uint64_t) (p_cfg->input.p_base) & CAST_TO_UINT32;
+#endif
         dl_body.cmd[12].set_data = display_format_table[p_cfg->input.format];
         dl_body.cmd[13].set_data = (uint32_t) ((p_cfg->input.hsize << 16) + p_cfg->input.vsize);
         dl_body.cmd[14].set_data = (uint32_t) ((p_cfg->input.hsize << 16) + p_cfg->input.vsize);
-        dl_body.cmd[15].set_data = ((p_cfg->input.hstride) << 16);
+        dl_body.cmd[15].set_data = (uint32_t) (((p_cfg->input.hstride) << 16) | (p_cfg->input.hstride_cbcr));
         dl_body.cmd[16].set_data = (uint32_t) ((p_cfg->input.coordinate_x << 16) + p_cfg->input.coordinate_y);
         dl_body.cmd[17].set_data = (uint32_t) (p_cfg->input.data_swap);
+#if (BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t)(p_cfg->input.p_base_cb) & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[23].set_data = pa & CAST_TO_UINT32;
+
+        va = (uint64_t)(p_cfg->input.p_base_cr) & CAST_TO_UINT32;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        dl_body.cmd[24].set_data = pa & CAST_TO_UINT32;
+#else
+        dl_body.cmd[23].set_data = (uint64_t) (p_cfg->input.p_base_cb) & CAST_TO_UINT32;
+        dl_body.cmd[24].set_data = (uint64_t) (p_cfg->input.p_base_cr) & CAST_TO_UINT32;
+#endif
     }
     else
     {

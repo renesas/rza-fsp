@@ -53,6 +53,7 @@
 #define GETHER_PHY_REG_AN_ADVERTISEMENT          (4)
 #define GETHER_PHY_REG_AN_LINK_PARTNER           (5)
 #define GETHER_PHY_REG_AN_EXPANSION              (6)
+#define GETHER_PHY_REG_AN_MASTER_SLAVE_STATUS    (10)
 #define GETHER_PHY_REG_EXSTATUS                  (15)
 
 /* Basic Mode Control Register Bit Definitions */
@@ -103,6 +104,9 @@
 #define GETHER_PHY_AN_LINK_PARTNER_10F           (1 << 6)
 #define GETHER_PHY_AN_LINK_PARTNER_10H           (1 << 5)
 #define GETHER_PHY_AN_LINK_PARTNER_SELECTOR      (1 << 0)
+
+/* Auto Negotiate Master Slave Status Bit Definitions */
+#define GETHER_PHY_AN_LINK_PARTNER_1000F         (1 << 11)
 
 #define GETHER_PHY_EXSTATUS_1000FX               (1 << 15)
 #define GETHER_PHY_EXSTATUS_1000HX               (1 << 14)
@@ -391,17 +395,20 @@ fsp_err_t R_GETHER_PHY_LinkPartnerAbilityGet (ether_phy_ctrl_t * const p_ctrl,
     }
 
 #if (GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+    /* Check if the link partner has 1000BASE-T full duplex capability */
+    reg = gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_AN_MASTER_SLAVE_STATUS);
+    if (GETHER_PHY_AN_LINK_PARTNER_1000F == (reg & GETHER_PHY_AN_LINK_PARTNER_1000F)) {
+        /* Get the link partner response */
+        reg = gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_EXSTATUS);
+        if (GETHER_PHY_EXSTATUS_1000FX == (reg & GETHER_PHY_EXSTATUS_1000FX))
+        {
+            (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_1000F;
+        }
 
-    /* Get the link partner response */
-    reg = gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_EXSTATUS);
-    if (GETHER_PHY_EXSTATUS_1000HX == (reg & GETHER_PHY_EXSTATUS_1000HX))
-    {
-        (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_1000H;
-    }
-
-    if (GETHER_PHY_EXSTATUS_1000HT == (reg & GETHER_PHY_EXSTATUS_1000HT))
-    {
-        (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_1000H;
+        if (GETHER_PHY_EXSTATUS_1000FT == (reg & GETHER_PHY_EXSTATUS_1000FT))
+        {
+            (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_1000F;
+        }
     }
 #endif
 

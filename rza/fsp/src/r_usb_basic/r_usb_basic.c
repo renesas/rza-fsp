@@ -73,7 +73,7 @@
 
 /******************************************************************************
  * Macro definitions
- ******************************************************************************/
+ *****************************************************************************/
 #define USB_VALUE_100    (100)
 #define USB_VALUE_7FH    (0x7F)
 #define USB_VALUE_80H    (0x80)
@@ -81,7 +81,7 @@
 
 /******************************************************************************
  * Exported global variables (to be accessed by other files)
- ******************************************************************************/
+ *****************************************************************************/
 #if (BSP_CFG_RTOS == 0)
 usb_event_t g_usb_cstd_event;
 uint16_t    g_usb_change_device_state[USB_NUM_USBIP];
@@ -585,6 +585,8 @@ fsp_err_t R_USB_Open (usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_c
         else
         {
 #if defined(USB_CFG_PCDC_USE)
+            g_usb_callback[p_ctrl->type * 2]         = usb_pcdc_read_complete;
+            g_usb_callback[(p_ctrl->type * 2) + 1]   = usb_pcdc_write_complete;
             g_usb_open_class[p_ctrl->module_number] |= (uint16_t) (1 << USB_CLASS_INTERNAL_PCDC);
             g_usb_open_class[p_ctrl->module_number] |= (uint16_t) (1 << USB_CLASS_INTERNAL_PCDCC);
 #endif                                 /* defined(USB_CFG_PCDC_USE) */
@@ -684,12 +686,15 @@ fsp_err_t R_USB_Close (usb_ctrl_t * const p_api_ctrl)
 
 #if USB_IP_EHCI_OHCI == 1
  #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-    utr.ip  = p_ctrl->module_number;
-    utr.ipp = usb_hstd_get_usb_ip_adr(utr.ip);
+    if (is_init[p_ctrl->module_number] == USB_YES)
+    {
+        utr.ip  = p_ctrl->module_number;
+        utr.ipp = usb_hstd_get_usb_ip_adr(utr.ip);
 
-    /* EHCI/OHCI module stop */
-    usb_hstd_ehci_deinit(&utr);
-    usb_hstd_ohci_deinit(&utr);
+        /* EHCI/OHCI module stop */
+        usb_hstd_ehci_deinit(&utr);
+        usb_hstd_ohci_deinit(&utr);
+    }
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
 #endif                                 /* #if USB_IP_EHCI_OHCI == 1 */
 

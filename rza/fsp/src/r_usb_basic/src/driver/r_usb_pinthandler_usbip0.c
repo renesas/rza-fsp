@@ -59,7 +59,7 @@ void usb_pstd_usb_handler (void)
     IRQn_Type   irq;
     usb_cfg_t * p_cfg;
 
-    irq   = R_FSP_CurrentIrqGet();
+    irq   = (USB_U2P_IXL_INT_IRQn);
     p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet(irq);
 
     usb_pstd_interrupt_clock(p_cfg->module_number);

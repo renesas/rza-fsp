@@ -46,9 +46,9 @@
 
 /** USB task stack size in words **/
  #define HCD_STACK_SIZE     (512)
- #define HUB_STACK_SIZE     (512)
- #define MGR_STACK_SIZE     (512)
- #define PCD_STACK_SIZE     (512)
+ #define HUB_STACK_SIZE     (1536)
+ #define MGR_STACK_SIZE     (1536)
+ #define PCD_STACK_SIZE     (1536)
  #define PMSC_STACK_SIZE    (512)
  #define HCDC_STACK_SIZE    (512)
  #define HHID_STACK_SIZE    (512)

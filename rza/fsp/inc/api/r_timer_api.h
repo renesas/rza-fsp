@@ -35,6 +35,7 @@
  *
  * Implemented by:
  * - @ref GTM
+ * - @ref MTU3
  *
  * @{
  **********************************************************************************************************************/
@@ -67,6 +68,12 @@ typedef enum e_timer_event
     TIMER_EVENT_CAPTURE_A,                     ///< A capture has occurred on signal A
     TIMER_EVENT_CAPTURE_B,                     ///< A capture has occurred on signal B
     TIMER_EVENT_TROUGH,                        ///< Timer trough event (counter is 0, triangle-wave PWM only
+    TIMER_EVENT_OUTPUT_COMPARE_0,              ///< An output has occurred on signal 0
+    TIMER_EVENT_OUTPUT_COMPARE_1,              ///< An output has occurred on signal 1
+    TIMER_EVENT_DEAD_TIME,                     ///< Dead time event
+    TIMER_EVENT_CAPTURE_U,                     ///< A capture has occurred on signal U
+    TIMER_EVENT_CAPTURE_V,                     ///< A capture has occurred on signal V
+    TIMER_EVENT_CAPTURE_W,                     ///< A capture has occurred on signal W
 } timer_event_t;
 
 /** Timer variant types. */
@@ -90,6 +97,7 @@ typedef struct st_timer_callback_args
 /** Timer control block.  Allocate an instance specific control block to pass into the timer API calls.
  * @par Implemented as
  * - gtm_instance_ctrl_t
+ * - mtu3_instance_ctrl_t
  */
 typedef void timer_ctrl_t;
 
@@ -190,6 +198,7 @@ typedef struct st_timer_api
     /** Initial configuration.
      * @par Implemented as
      * - @ref R_GTM_Open()
+     * - @ref R_MTU3_Open()
      *
      * @param[in]   p_ctrl     Pointer to control block. Must be declared by user. Elements set here.
      * @param[in]   p_cfg      Pointer to configuration structure. All elements of this structure must be set by user.
@@ -199,6 +208,7 @@ typedef struct st_timer_api
     /** Start the counter.
      * @par Implemented as
      * - @ref R_GTM_Start()
+     * - @ref R_MTU3_Start()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      */
@@ -207,6 +217,7 @@ typedef struct st_timer_api
     /** Stop the counter.
      * @par Implemented as
      * - @ref R_GTM_Stop()
+     * - @ref R_MTU3_Stop()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      */
@@ -215,6 +226,7 @@ typedef struct st_timer_api
     /** Reset the counter to the initial value.
      * @par Implemented as
      * - @ref R_GTM_Reset()
+     * - @ref R_MTU3_Reset()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      */
@@ -223,6 +235,7 @@ typedef struct st_timer_api
     /** Enables input capture.
      * @par Implemented as
      * - @ref R_GTM_Enable()
+     * - @ref R_MTU3_Enable()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      */
@@ -231,6 +244,7 @@ typedef struct st_timer_api
     /** Disables input capture.
      * @par Implemented as
      * - @ref R_GTM_Disable()
+     * - @ref R_MTU3_Disable()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      */
@@ -240,6 +254,7 @@ typedef struct st_timer_api
      *
      * @par Implemented as
      * - @ref R_GTM_PeriodSet()
+     * - @ref R_MTU3_PeriodSet()
      *
      * @note Timer expiration may or may not generate a CPU interrupt based on how the timer is configured in
      * @ref timer_api_t::open.
@@ -253,6 +268,7 @@ typedef struct st_timer_api
      *
      * @par Implemented as
      * - @ref R_GTM_DutyCycleSet()
+     * - @ref R_MTU3_DutyCycleSet()
      *
      * @param[in]   p_ctrl             Control block set in @ref timer_api_t::open call for this timer.
      * @param[in]   duty_cycle_counts  Time until duty cycle should expire.
@@ -263,6 +279,7 @@ typedef struct st_timer_api
     /** Stores timer information in p_info.
      * @par Implemented as
      * - @ref R_GTM_InfoGet()
+     * - @ref R_MTU3_InfoGet()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      * @param[out]  p_info     Collection of information for this timer.
@@ -272,6 +289,7 @@ typedef struct st_timer_api
     /** Get the current counter value and timer state and store it in p_status.
      * @par Implemented as
      * - @ref R_GTM_StatusGet()
+     * - @ref R_MTU3_StatusGet()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      * @param[out]  p_status   Current status of this timer.
@@ -281,6 +299,7 @@ typedef struct st_timer_api
     /** Specify callback function and optional context pointer and working memory pointer.
      * @par Implemented as
      * - @ref R_GTM_CallbackSet()
+     * - @ref R_MTU3_CallbackSet()
      *
      * @param[in]   p_ctrl                   Control block set in @ref timer_api_t::open call for this timer.
      * @param[in]   p_callback               Callback function to register
@@ -294,6 +313,7 @@ typedef struct st_timer_api
     /** Allows driver to be reconfigured and may reduce power consumption.
      * @par Implemented as
      * - @ref R_GTM_Close()
+     * - @ref R_MTU3_Close()
      *
      * @param[in]   p_ctrl     Control block set in @ref timer_api_t::open call for this timer.
      */

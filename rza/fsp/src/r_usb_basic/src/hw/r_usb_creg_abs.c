@@ -39,6 +39,7 @@
  ******************************************************************************/
 #define USB_READ_PIPECTR_CNT    (0xFFFFU)
 #define USB_VALUE_100           (100)
+#define USB_VALUE_4000          (4000)
 
 /******************************************************************************
  * Exported global variables (to be accessed by other files)
@@ -128,7 +129,7 @@ void usb_cstd_pipe_init (usb_utr_t * ptr, uint16_t pipe)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
   #if (BSP_CFG_RTOS == 2)
-        if (USB_NULL != g_p_usb_pstd_pipe[pipe])
+        if (NULL != g_p_usb_pstd_pipe[pipe])
         {
             vPortFree(g_p_usb_pstd_pipe[pipe]);
         }
@@ -143,7 +144,7 @@ void usb_cstd_pipe_init (usb_utr_t * ptr, uint16_t pipe)
     {
  #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
   #if (BSP_CFG_RTOS == 2)
-        if (USB_NULL != g_p_usb_hstd_pipe[ptr->ip][pipe])
+        if (NULL != g_p_usb_hstd_pipe[ptr->ip][pipe])
         {
             vPortFree(g_p_usb_hstd_pipe[ptr->ip][pipe]);
         }
@@ -241,7 +242,7 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t * ptr, uint16_t pipe_no)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
   #if (BSP_CFG_RTOS == 2)
-        if (USB_NULL != g_p_usb_pstd_pipe[pipe_no])
+        if (NULL != g_p_usb_pstd_pipe[pipe_no])
         {
             vPortFree(g_p_usb_pstd_pipe[pipe_no]);
         }
@@ -254,7 +255,7 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t * ptr, uint16_t pipe_no)
     {
  #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
   #if (BSP_CFG_RTOS == 2)
-        if (USB_NULL != g_p_usb_hstd_pipe[ptr->ip][pipe_no])
+        if (NULL != g_p_usb_hstd_pipe[ptr->ip][pipe_no])
         {
             vPortFree(g_p_usb_hstd_pipe[ptr->ip][pipe_no]);
         }
@@ -375,7 +376,7 @@ uint16_t usb_cstd_is_set_frdy (usb_utr_t * ptr, uint16_t pipe, uint16_t fifosel,
 
     /* WAIT_LOOP */
 
-    for (i = 0; i < USB_VALUE_100; i++)
+    for (i = 0; i < USB_VALUE_4000; i++)
     {
         buffer = hw_usb_read_fifoctr(ptr, fifosel);
 
@@ -389,13 +390,22 @@ uint16_t usb_cstd_is_set_frdy (usb_utr_t * ptr, uint16_t pipe, uint16_t fifosel,
         /* Caution!!!
          * Depending on the external bus speed of CPU, you may need to wait
          * for 100ns here.
-         * For details, please look at the data sheet.   *//***** The example of reference. *****/
-        buffer = hw_usb_read_syscfg(ptr);
-        (void) buffer;
-        buffer = hw_usb_read_syssts(ptr);
-        (void) buffer;
+         * For details, please look at the data sheet.   */
 
-        usb_cpu_delay_1us((uint16_t) 10);
+        /***** The example of reference. *****/
+        buffer = hw_usb_read_syscfg(ptr);
+
+        if (buffer != 0)
+        {
+            /* None */
+        }
+
+        buffer = hw_usb_read_syssts(ptr);
+
+        if (buffer != 0)
+        {
+            /* None */
+        }
 
         /*************************************/
     }

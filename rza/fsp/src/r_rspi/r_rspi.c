@@ -188,7 +188,7 @@ fsp_err_t R_RSPI_Open (spi_ctrl_t * p_api_ctrl, spi_cfg_t const * const p_cfg)
     /* Configure hardware registers according to the r_spi_api configuration structure. */
     r_rspi_hw_config(p_ctrl);
 
-    /* Enable interrupts in NVIC. */
+    /* Enable interrupts in GIC. */
     r_rspi_nvic_config(p_ctrl);
 
 #if RSPI_CFG_DMAC_ENABLE
@@ -367,7 +367,7 @@ fsp_err_t R_RSPI_Close (spi_ctrl_t * const p_api_ctrl)
     }
 #endif
 
-    /* Disable interrupts in NVIC. */
+    /* Disable interrupts in GIC. */
     R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
     R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
     R_BSP_IrqDisable(p_ctrl->p_cfg->eri_irq);
@@ -540,61 +540,56 @@ static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
 {
     uint32_t sslp  = 0;
     uint32_t sppcr = 0;
+    uint32_t spdcr  = 0;
     uint32_t spckd = 0;
     uint32_t sslnd = 0;
     uint32_t spnd  = 0;
+    uint32_t spcmd0 = 0;
+    uint32_t spbfcr = 0;
+    uint32_t spcr   = 0;
 
     /* Enable IP */
     R_BSP_MODULE_START(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
     R_BSP_MODULE_CLKON(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
     R_BSP_MODULE_RSTOFF(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
 
-    /* Reset register value in instance structure */
-    p_ctrl->reg_spcr   = 0;
-    p_ctrl->reg_spdcr  = 0;
-    p_ctrl->reg_spcmd0 = 0;
-    p_ctrl->reg_spbfcr = 0;
-
     /* Reset SPI controller */
-    p_ctrl->p_regs->SPCR = (uint8_t) p_ctrl->reg_spcr;
+    p_ctrl->p_regs->SPCR = (uint8_t) spcr;
 
     /* Enable Error interrupt only in slave mode. */
     if (SPI_MODE_SLAVE == p_ctrl->p_cfg->operating_mode)
     {
-        p_ctrl->reg_spcr |= R_RSPI0_SPCR_SPEIE_Msk;
+        spcr |= R_RSPI0_SPCR_SPEIE_Msk;
     }
-
-    /* Enable SPI mode. */
-    p_ctrl->reg_spcr |= R_RSPI0_SPCR_SPE_Msk;
 
     /* Configure Master Mode setting. */
     if (SPI_MODE_MASTER == p_ctrl->p_cfg->operating_mode)
     {
-        p_ctrl->reg_spcr |= R_RSPI0_SPCR_MSTR_Msk;
+        spcr |= R_RSPI0_SPCR_MSTR_Msk;
     }
 
     /* Configure CPHA setting. */
     if (SPI_CLK_PHASE_EDGE_EVEN == p_ctrl->p_cfg->clk_phase)
     {
-        p_ctrl->reg_spcmd0 |= R_RSPI0_SPCMD0_CPHA_Msk;
+        spcmd0 |= R_RSPI0_SPCMD0_CPHA_Msk;
     }
 
     /* Configure CPOL setting. */
     if (SPI_CLK_POLARITY_HIGH == p_ctrl->p_cfg->clk_polarity)
     {
-        p_ctrl->reg_spcmd0 |= R_RSPI0_SPCMD0_CPOL_Msk;
+        spcmd0 |= R_RSPI0_SPCMD0_CPOL_Msk;
     }
 
     /* Configure Bit Order (MSB,LSB) */
     if (SPI_BIT_ORDER_LSB_FIRST == p_ctrl->p_cfg->bit_order)
     {
-        p_ctrl->reg_spcmd0 |= R_RSPI0_SPCMD0_LSBF_Msk;
+        spcmd0 |= R_RSPI0_SPCMD0_LSBF_Msk;
     }
 
     rspi_extended_cfg_t * p_extend = ((rspi_extended_cfg_t *) p_ctrl->p_cfg->p_extend);
 
     /* Configure SSL Level Keep Setting. */
-    p_ctrl->reg_spcmd0 |= R_RSPI0_SPCMD0_SSLKP_Msk;
+    spcmd0 |= R_RSPI0_SPCMD0_SSLKP_Msk;
 
     /* Configure SSLn polarity setting. */
     if (RSPI_SSLP_HIGH == p_extend->ssl_polarity)
@@ -614,24 +609,27 @@ static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
     }
 
     /* Configure the Bit Rate Division Setting */
-    p_ctrl->reg_spcmd0 |= ((unsigned) p_extend->spck_div.brdv << R_RSPI0_SPCMD0_BRDV_Pos);
+    spcmd0 |= ((unsigned) p_extend->spck_div.brdv << R_RSPI0_SPCMD0_BRDV_Pos);
 
     /* Set 8bit transfer */
-    p_ctrl->reg_spcmd0 |= RSPI_SPCMD_WIDTH_8BIT;
+    spcmd0 |= RSPI_SPCMD_WIDTH_8BIT;
 
     /* Enable all delay settings. */
     if (SPI_MODE_MASTER == p_ctrl->p_cfg->operating_mode)
     {
         /* Note that disabling delay settings is same as setting delay to 1. */
-        p_ctrl->reg_spcmd0 |= (R_RSPI0_SPCMD0_SPNDEN_Msk | R_RSPI0_SPCMD0_SLNDEN_Msk | R_RSPI0_SPCMD0_SCKDEN_Msk);
+        spcmd0 |= (R_RSPI0_SPCMD0_SPNDEN_Msk | R_RSPI0_SPCMD0_SLNDEN_Msk | R_RSPI0_SPCMD0_SCKDEN_Msk);
 
         spckd = p_extend->spck_delay;
         sslnd = p_extend->ssl_negation_delay;
         spnd  = p_extend->next_access_delay;
     }
 
+    /* Pre-storing TX FIFO trigger level (not write at this time) */
+    spbfcr |= ((unsigned) p_extend->tx_trigger_level << R_RSPI0_SPBFCR_TXTRG_Pos);
+
     /* Reset FIFOs */
-    p_ctrl->p_regs->SPBFCR = (uint8_t) (p_ctrl->reg_spbfcr | R_RSPI0_SPBFCR_RXRST_Msk | R_RSPI0_SPBFCR_TXRST_Msk);
+    p_ctrl->p_regs->SPBFCR = (uint8_t) (spbfcr | R_RSPI0_SPBFCR_RXRST_Msk | R_RSPI0_SPBFCR_TXRST_Msk);
 
     /* Clear the status register. */
     p_ctrl->p_regs->SPSR;
@@ -641,21 +639,18 @@ static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
     p_ctrl->p_regs->SSLP   = (uint8_t) sslp;
     p_ctrl->p_regs->SPPCR  = (uint8_t) sppcr;
     p_ctrl->p_regs->SPBR   = p_extend->spck_div.spbr;
-    p_ctrl->p_regs->SPDCR  = (uint8_t) p_ctrl->reg_spdcr;
+    p_ctrl->p_regs->SPDCR  = (uint8_t) spdcr;
     p_ctrl->p_regs->SPCKD  = (uint8_t) spckd;
     p_ctrl->p_regs->SSLND  = (uint8_t) sslnd;
     p_ctrl->p_regs->SPND   = (uint8_t) spnd;
-    p_ctrl->p_regs->SPCMD0 = (uint16_t) p_ctrl->reg_spcmd0;
+    p_ctrl->p_regs->SPCMD0 = (uint16_t) spcmd0;
     p_ctrl->p_regs->SPSCR  = 0;
-    p_ctrl->p_regs->SPBFCR = (uint8_t) p_ctrl->reg_spbfcr;
-    p_ctrl->p_regs->SPCR   = (uint8_t) p_ctrl->reg_spcr;
-
-    /* Pre-storing TX FIFO trigger level (not write at this time) */
-    p_ctrl->reg_spbfcr |= ((unsigned) p_extend->tx_trigger_level << R_RSPI0_SPBFCR_TXTRG_Pos);
+    p_ctrl->p_regs->SPBFCR = (uint8_t) spbfcr;
+    p_ctrl->p_regs->SPCR   = (uint8_t) spcr;
 }
 
 /*******************************************************************************************************************//**
- * Enable Receive Buffer Full, Transmit Buffer Empty, and Error Interrupts in the NVIC.
+ * Enable Receive Buffer Full, Transmit Buffer Empty, and Error Interrupts in the GIC.
  *
  * @param[in]  p_ctrl          pointer to control structure.
  **********************************************************************************************************************/
@@ -677,35 +672,38 @@ static void r_rspi_nvic_config (rspi_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void r_rspi_bit_width_config (rspi_instance_ctrl_t * p_ctrl)
 {
-    p_ctrl->reg_spdcr  &= (uint32_t) (~R_RSPI0_SPDCR_SPLW_Msk);
-    p_ctrl->reg_spcmd0 &= (uint32_t) (~R_RSPI0_SPCMD0_SPB_Msk);
+    uint32_t spdcr  = p_ctrl->p_regs->SPDCR;
+    uint32_t spcmd0 = p_ctrl->p_regs->SPCMD0;
+
+    spdcr &= (uint32_t) (~R_RSPI0_SPDCR_SPLW_Msk);
+    spcmd0 &= (uint32_t) (~R_RSPI0_SPCMD0_SPB_Msk);
     if (SPI_BIT_WIDTH_8_BITS == p_ctrl->bit_width)
     {
         /* Configure byte access to data register. */
-        p_ctrl->reg_spdcr |= RSPI_SPDCR_WIDTH_8BIT;
+        spdcr |= RSPI_SPDCR_WIDTH_8BIT;
 
         /* Configure 8-Bit Mode.  */
-        p_ctrl->reg_spcmd0 |= RSPI_SPCMD_WIDTH_8BIT;
+        spcmd0 |= RSPI_SPCMD_WIDTH_8BIT;
     }
     else if (SPI_BIT_WIDTH_16_BITS == p_ctrl->bit_width)
     {
         /* Configure Half-Word access to data register. */
-        p_ctrl->reg_spdcr |= RSPI_SPDCR_WIDTH_16BIT;
+        spdcr |= RSPI_SPDCR_WIDTH_16BIT;
 
         /* Configure 16-Bit Mode. */
-        p_ctrl->reg_spcmd0 |= RSPI_SPCMD_WIDTH_16BIT;
+        spcmd0 |= RSPI_SPCMD_WIDTH_16BIT;
     }
     else                               /* SPI_BIT_WIDTH_32_BITS */
     {
         /* Configure Word access to data register. */
-        p_ctrl->reg_spdcr |= RSPI_SPDCR_WIDTH_32BIT;
+        spdcr |= RSPI_SPDCR_WIDTH_32BIT;
 
         /* Configure 32-Bit Mode. */
-        p_ctrl->reg_spcmd0 |= RSPI_SPCMD_WIDTH_32BIT;
+        spcmd0 |= RSPI_SPCMD_WIDTH_32BIT;
     }
 
-    p_ctrl->p_regs->SPDCR  = (uint8_t) p_ctrl->reg_spdcr;
-    p_ctrl->p_regs->SPCMD0 = (uint16_t) p_ctrl->reg_spcmd0;
+    p_ctrl->p_regs->SPDCR  = (uint8_t) spdcr;
+    p_ctrl->p_regs->SPCMD0 = (uint16_t) spcmd0;
 }
 
 /*******************************************************************************************************************//**
@@ -819,7 +817,8 @@ static void r_rspi_set_rx_fifo_hint (rspi_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void r_rspi_set_rxtrg (rspi_instance_ctrl_t * p_ctrl, rspi_rx_trigger_level_t level)
 {
-    p_ctrl->p_regs->SPBFCR = (uint8_t) (p_ctrl->reg_spbfcr | ((unsigned) level << R_RSPI0_SPBFCR_RXTRG_Pos));
+    p_ctrl->p_regs->SPBFCR &= (uint8_t) (~R_RSPI0_SPBFCR_RXTRG_Msk);
+    p_ctrl->p_regs->SPBFCR |= (uint8_t) (level << R_RSPI0_SPBFCR_RXTRG_Pos);
 }
 
 /*******************************************************************************************************************//**
@@ -1016,9 +1015,6 @@ static fsp_err_t r_rspi_write_read_common (spi_ctrl_t * const    p_api_ctrl,
     }
 #endif
 
-    /* Set spcr.SPE (may cleared by error interrupt) */
-    p_ctrl->reg_spcr |= R_RSPI0_SPCR_SPE_Msk;
-
     /* Set transfer width */
     r_rspi_bit_width_config(p_ctrl);
 
@@ -1028,22 +1024,27 @@ static fsp_err_t r_rspi_write_read_common (spi_ctrl_t * const    p_api_ctrl,
     /* Update receiver FIFO trigger level */
     r_rspi_set_rx_fifo_level(p_ctrl);
 
-    /* Enable receiver interrupt */
-    p_ctrl->reg_spcr |= R_RSPI0_SPCR_SPRIE_Msk;
-
     /* Preparing transmitter */
     r_rspi_transmit(p_ctrl);
+
+    uint32_t spcr = p_ctrl->p_regs->SPCR;
     if (p_ctrl->tx_count || p_ctrl->p_cfg->p_transfer_tx)
     {
         /* More data remained */
-        p_ctrl->reg_spcr |= R_RSPI0_SPCR_SPTIE_Msk;
+        spcr |= R_RSPI0_SPCR_SPTIE_Msk;
     }
+
+    /* Enable receiver interrupt */
+    spcr |= R_RSPI0_SPCR_SPRIE_Msk;
 
     /* Set pending flag */
     p_ctrl->transfer_is_pending = true;
 
+    /* Set spcr.SPE (may cleared by error interrupt) */
+    spcr |= R_RSPI0_SPCR_SPE_Msk;
+
     /* Write register */
-    p_ctrl->p_regs->SPCR = (uint8_t) p_ctrl->reg_spcr;
+    p_ctrl->p_regs->SPCR = (uint8_t) spcr;
 
     return FSP_SUCCESS;
 }
@@ -1127,8 +1128,7 @@ static void r_rspi_receive (rspi_instance_ctrl_t * p_ctrl)
     if (0 == rx_count)
     {
         /* Disable receive interrupt */
-        p_ctrl->reg_spcr    &= (uint32_t) (~R_RSPI0_SPCR_SPRIE_Msk);
-        p_ctrl->p_regs->SPCR = (uint8_t) p_ctrl->reg_spcr;
+        p_ctrl->p_regs->SPCR &= (uint8_t) (~R_RSPI0_SPCR_SPRIE_Msk);
 
         /* Clear transfer pending flag */
         p_ctrl->transfer_is_pending = false;
@@ -1233,8 +1233,7 @@ static void r_rspi_transmit (rspi_instance_ctrl_t * p_ctrl)
     if (0 == tx_count)
     {
         /* Disable transmit interrupt if no more transmit data */
-        p_ctrl->reg_spcr    &= (uint32_t) (~R_RSPI0_SPCR_SPTIE_Msk);
-        p_ctrl->p_regs->SPCR = (uint8_t) p_ctrl->reg_spcr;
+        p_ctrl->p_regs->SPCR &= (uint8_t) (~R_RSPI0_SPCR_SPTIE_Msk);
     }
 }
 

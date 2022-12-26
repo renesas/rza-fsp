@@ -135,7 +135,7 @@ static void usb_pstd_interrupt (uint16_t type, uint16_t status, usb_cfg_t * p_cf
             USB_PRINTF0("RESUME int peri\n");
 
             /* Callback */
-            if (USB_NULL != g_usb_pstd_driver.devresume)
+            if (NULL != g_usb_pstd_driver.devresume)
             {
                 (*g_usb_pstd_driver.devresume)(&utr, USB_NO_ARG, USB_NULL);
             }
@@ -328,7 +328,7 @@ static void usb_pstd_interrupt (uint16_t type, uint16_t status, usb_cfg_t * p_cf
                 g_usb_pstd_req_reg.request_length = g_usb_pstd_req_length;
 
                 /* Callback */
-                if (USB_NULL != g_usb_pstd_driver.ctrltrans)
+                if (NULL != g_usb_pstd_driver.ctrltrans)
                 {
                     (*g_usb_pstd_driver.ctrltrans)(&g_usb_pstd_req_reg, stginfo, &utr);
                 }
@@ -407,7 +407,7 @@ static void usb_pstd_interrupt (usb_utr_t * p_mess)
             USB_PRINTF0("RESUME int peri\n");
 
             /* Callback */
-            if (USB_NULL != g_usb_pstd_driver.devresume)
+            if (NULL != g_usb_pstd_driver.devresume)
             {
                 (*g_usb_pstd_driver.devresume)(p_mess, USB_NO_ARG, USB_NULL);
             }
@@ -598,7 +598,7 @@ static void usb_pstd_interrupt (usb_utr_t * p_mess)
                 g_usb_pstd_req_reg.request_length = g_usb_pstd_req_length;
 
                 /* Callback */
-                if (USB_NULL != g_usb_pstd_driver.ctrltrans)
+                if (NULL != g_usb_pstd_driver.ctrltrans)
                 {
                     (*g_usb_pstd_driver.ctrltrans)(&g_usb_pstd_req_reg, stginfo, p_mess);
                 }
@@ -733,7 +733,7 @@ usb_er_t usb_pstd_set_submitutr (usb_utr_t * utrmsg)
     if (USB_TRUE == usb_pstd_chk_configured(utrmsg))
     {
  #if (BSP_CFG_RTOS == 2)
-        if (USB_NULL != g_p_usb_pstd_pipe[pipenum])
+        if (NULL != g_p_usb_pstd_pipe[pipenum])
         {
             usb_cstd_pipe_msg_forward(utrmsg, pipenum);
 
@@ -896,9 +896,12 @@ uint16_t usb_pstd_get_alternate_num (uint16_t int_num)
     i   = ptr[0];
 
     /* Interface descriptor[0] */
-    ptr     = (uint8_t *) ((uint32_t) ptr + ptr[0]);
-    length  = (uint16_t) (*(uint8_t *) ((uint32_t) g_usb_pstd_driver.p_configtbl + (uint16_t) 2U));
-    length |= (uint16_t) ((uint16_t) (*(uint8_t *) ((uint32_t) g_usb_pstd_driver.p_configtbl + (uint16_t) 3U)) << 8U);
+    ptr    = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + ptr[0]);
+    length =
+        (uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) g_usb_pstd_driver.p_configtbl + (uint16_t) 2U));
+    length |=
+        (uint16_t) ((uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) g_usb_pstd_driver.p_configtbl +
+                                                          (uint16_t) 3U)) << 8U);
 
     /* Search descriptor table size */
     /* WAIT_LOOP */
@@ -919,7 +922,7 @@ uint16_t usb_pstd_get_alternate_num (uint16_t int_num)
                 i = (uint16_t) (i + ptr[0]);
 
                 /* Interface descriptor[0] */
-                ptr = (uint8_t *) ((uint32_t) ptr + ptr[0]);
+                ptr = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + ptr[0]);
                 break;
             }
 
@@ -945,7 +948,7 @@ uint16_t usb_pstd_get_alternate_num (uint16_t int_num)
                 i = (uint16_t) (i + ptr[0]);
 
                 /* Interface descriptor[0] */
-                ptr = (uint8_t *) ((uint32_t) ptr + ptr[0]);
+                ptr = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + ptr[0]);
                 break;
             }
         }
@@ -982,10 +985,10 @@ void usb_pstd_set_eptbl_index (uint16_t int_num, uint16_t alt_num)
     /* Configuration descriptor */
     ptr     = g_usb_pstd_driver.p_configtbl;
     i       = *ptr;
-    length  = (uint16_t) (*(uint8_t *) ((uint32_t) ptr + (uint32_t) 3U));
+    length  = (uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 3U));
     length  = (uint16_t) (length << 8);
-    length  = (uint16_t) (length + (uint16_t) (*(uint8_t *) ((uint32_t) ptr + (uint32_t) 2U)));
-    ptr     = (uint8_t *) ((uint32_t) ptr + (*ptr));
+    length  = (uint16_t) (length + (uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 2U)));
+    ptr     = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (*ptr));
     start   = 0;
     numbers = 0;
     j       = 0;
@@ -994,23 +997,25 @@ void usb_pstd_set_eptbl_index (uint16_t int_num, uint16_t alt_num)
     for ( ; i < length; )
     {
         /* Descriptor type ? */
-        switch (*(uint8_t *) ((uint32_t) ptr + (uint32_t) 1U))
+        switch (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 1U))
         {
             /* Interface */
             case USB_DT_INTERFACE:
             {
-                if (((*(uint8_t *) ((uint32_t) ptr + (uint32_t) 2U)) == int_num) &&
-                    ((*(uint8_t *) ((uint32_t) ptr + (uint32_t) 3U)) == alt_num))
+                if (((*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 2U)) == int_num) &&
+                    ((*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 3U)) == alt_num))
                 {
-                    numbers = *(uint8_t *) ((uint32_t) ptr + (uint32_t) 4U);
+                    numbers = *(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 4U);
                 }
                 else
                 {
-                    start = (uint16_t) (start + (uint16_t) (*(uint8_t *) ((uint32_t) ptr + (uint32_t) 4U)));
+                    start =
+                        (uint16_t) (start +
+                                    (uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 4U)));
                 }
 
                 i   = (uint8_t) (i + (*ptr));
-                ptr = (uint8_t *) ((uint32_t) ptr + (*ptr));
+                ptr = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (*ptr));
                 break;
             }
 
@@ -1019,7 +1024,7 @@ void usb_pstd_set_eptbl_index (uint16_t int_num, uint16_t alt_num)
             {
                 if (j < numbers)
                 {
-                    ep = (uint16_t) *(uint8_t *) ((uint32_t) ptr + (uint32_t) 2U);
+                    ep = (uint16_t) *(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (uint32_t) 2U);
                     if (USB_EP_IN == (ep & USB_EP_DIRMASK))
                     {
                         dir = 1;       /* IN */
@@ -1035,7 +1040,7 @@ void usb_pstd_set_eptbl_index (uint16_t int_num, uint16_t alt_num)
                 }
 
                 i   = (uint16_t) (i + (*ptr));
-                ptr = (uint8_t *) ((uint32_t) ptr + (*ptr));
+                ptr = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (*ptr));
                 break;
             }
 
@@ -1055,7 +1060,7 @@ void usb_pstd_set_eptbl_index (uint16_t int_num, uint16_t alt_num)
             default:
             {
                 i   = (uint16_t) (i + (*ptr));
-                ptr = (uint8_t *) ((uint32_t) ptr + (*ptr));
+                ptr = (uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptr + (*ptr));
                 break;
             }
         }
@@ -1082,7 +1087,7 @@ uint16_t usb_pstd_chk_remote (void)
     }
 
     /* Get Configuration Descriptor - bmAttributes */
-    atr = *(uint8_t *) ((uint32_t) g_usb_pstd_driver.p_configtbl + (uint32_t) 7U);
+    atr = *(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) g_usb_pstd_driver.p_configtbl + (uint32_t) 7U);
 
     /* Remote WakeUp check(= D5) */
     if (USB_CF_RWUPON == (atr & USB_CF_RWUPON))
@@ -1115,7 +1120,7 @@ uint8_t usb_pstd_get_current_power (void)
     uint8_t currentpower;
 
     /* Standard configuration descriptor */
-    tmp = *(uint8_t *) ((uint32_t) g_usb_pstd_driver.p_configtbl + (uint32_t) 7U);
+    tmp = *(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) g_usb_pstd_driver.p_configtbl + (uint32_t) 7U);
     if (USB_CF_SELFP == (tmp & USB_CF_SELFP))
     {
         /* Self Powered */
@@ -1304,7 +1309,7 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
     }
 
   #if (BSP_CFG_RTOS == 0)
-    if (USB_NULL != g_p_usb_pstd_pipe[pipenum])
+    if (NULL != g_p_usb_pstd_pipe[pipenum])
     {
         /* Get PIPE TYPE */
         if (USB_TYPFIELD_ISO != usb_cstd_get_pipe_type(ptr, pipenum))
@@ -1372,7 +1377,7 @@ usb_er_t usb_pstd_transfer_end (usb_utr_t * p_utr, uint16_t pipe)
         return USB_ERROR;              /* Error */
     }
 
-    if (USB_NULL == g_p_usb_pstd_pipe[pipe])
+    if (NULL == g_p_usb_pstd_pipe[pipe])
     {
         USB_PRINTF0("### usb_pstd_transfer_end overlaps\n");
         err = USB_ERROR;
@@ -1683,12 +1688,12 @@ void usb_peri_devdefault (usb_utr_t * ptr, uint16_t mode, uint16_t data2)
 
         /* Set Descriptor type.  */
         /* Hi-Speed Mode */
-        if (USB_NULL != g_usb_pstd_driver.p_configtbl)
+        if (NULL != g_usb_pstd_driver.p_configtbl)
         {
             g_usb_pstd_driver.p_configtbl[1] = USB_DT_OTHER_SPEED_CONF;
         }
 
-        if (USB_NULL != g_usb_pstd_driver.p_othertbl)
+        if (NULL != g_usb_pstd_driver.p_othertbl)
         {
             g_usb_pstd_driver.p_othertbl[1] = USB_DT_CONFIGURATION;
         }
@@ -1699,18 +1704,18 @@ void usb_peri_devdefault (usb_utr_t * ptr, uint16_t mode, uint16_t data2)
 
         /* Set Descriptor type. */
         /* Full-Speed Mode */
-        if (USB_NULL != g_usb_pstd_driver.p_configtbl)
+        if (NULL != g_usb_pstd_driver.p_configtbl)
         {
             g_usb_pstd_driver.p_configtbl[1] = USB_DT_CONFIGURATION;
         }
 
-        if (USB_NULL != g_usb_pstd_driver.p_othertbl)
+        if (NULL != g_usb_pstd_driver.p_othertbl)
         {
             g_usb_pstd_driver.p_othertbl[1] = USB_DT_OTHER_SPEED_CONF;
         }
     }
 
-    if (USB_NULL == ptable)
+    if (NULL == ptable)
     {
         while (1)
         {
@@ -1718,9 +1723,9 @@ void usb_peri_devdefault (usb_utr_t * ptr, uint16_t mode, uint16_t data2)
         }
     }
 
-    len = (uint16_t) (*(uint8_t *) ((uint32_t) ptable + (uint32_t) 3));
+    len = (uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptable + (uint32_t) 3));
     len = (uint16_t) (len << 8);
-    len = (uint16_t) (len + (uint16_t) (*(uint8_t *) ((uint32_t) ptable + (uint32_t) 2)));
+    len = (uint16_t) (len + (uint16_t) (*(uint8_t *) (uintptr_t) ((uint32_t) (uintptr_t) ptable + (uint32_t) 2)));
 
     usb_pstd_clr_pipe_table(ptr->ip);
     usb_peri_pipe_info(ptable, mode, len, ptr);

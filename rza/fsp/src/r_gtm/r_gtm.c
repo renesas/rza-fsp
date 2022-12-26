@@ -577,6 +577,7 @@ void gtm_int_isr (IRQn_Type const irq)
             callback_args = *p_args;
         }
 
+        p_args->event     = TIMER_EVENT_CYCLE_END;
         p_args->p_context = p_instance_ctrl->p_context;
 
 #if BSP_TZ_SECURE_BUILD

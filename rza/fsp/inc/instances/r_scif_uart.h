@@ -141,7 +141,7 @@ typedef struct st_scif_uart_instance_ctrl
 } scif_uart_instance_ctrl_t;
 
 /** Register settings to achieve a desired baud rate and modulation duty. */
-typedef struct st_baud_setting_t
+typedef struct st_scif_baud_setting_t
 {
     struct
     {

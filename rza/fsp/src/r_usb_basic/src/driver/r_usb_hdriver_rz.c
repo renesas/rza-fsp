@@ -46,9 +46,14 @@
  ***********************************************************************************************************************/
 #if USB_IP_EHCI_OHCI == 1
 
+ #define USB_DATA_DIR_IN     (0x80U)
+ #define USB_DATA_DIR_OUT    (0x00U)
+
 /***********************************************************************************************************************
  * Private global variables and functions
  ***********************************************************************************************************************/
+void usb_memcpy(uint32_t addr1, uint32_t addr2, uint32_t size);
+
 st_usb_pipe_t g_usb_hstd_pipe[USB_MAXPIPE + 1U];           /* pipe information */
 
 /***********************************************************************************************************************
@@ -426,21 +431,49 @@ void usb_hstd_over_current_cb (void * p_utr)
 void usb_hstd_transfer_end_cb (usb_utr_t * ptr, void * p_utr, uint32_t actual_size, uint16_t status)
 {
     st_usb_utr_t * p_mess;
-    uint16_t       data2 = 0;
+    uint16_t       devadr = ptr->keyword;
+    uint16_t       data2  = 0;
 
     p_mess = (st_usb_utr_t *) p_utr;
 
-    if (USB_DATA_SHT == status)
+    if (1 == g_data_read_flag)
+    {
+        if ((p_mess->keyword != USB_PIPE0) && (g_usb_hstd_pipe[p_mess->keyword].direction == USB_DATA_DIR_IN))
+        {
+            usb_memcpy(g_data_buf_addr[p_mess->ip][devadr], (uint32_t) (uintptr_t) p_mess->p_tranadr, p_mess->tranlen);
+        }
+        else if ((p_mess->keyword == USB_PIPE0) && (g_usb_hstd_pipe[p_mess->keyword].direction == USB_DATA_DIR_IN))
+        {
+            if (0 != g_data_buf_addr[p_mess->ip][p_mess->keyword])
+            {
+                usb_memcpy(g_data_buf_addr[p_mess->ip][p_mess->keyword],
+                           (uint32_t) (uintptr_t) p_mess->p_tranadr,
+                           p_mess->tranlen);
+            }
+        }
+        else
+        {
+        }
+
+        g_data_read_flag = 0;
+    }
+
+    if ((USB_DATA_SHT == status) || (USB_DATA_OK == status))
     {
         p_mess->tranlen -= actual_size;
     }
 
     /* Status setting */
-    p_mess->result = status;
+    p_mess->status = status;
 
     /* Callback */
     p_mess->complete(p_mess, ptr->keyword, data2);
 }                                      /* End of function usb_hstd_transfer_end_cb() */
+
+void usb_memcpy (uint32_t addr1, uint32_t addr2, uint32_t size)
+{
+    memcpy((void *) (uintptr_t) addr1, (void *) (uintptr_t) addr2, size);
+}
 
 #endif                                 /* USB_IP_EHCI_OHCI == 1 */
 

@@ -44,6 +44,8 @@
 #define BSP_FEATURE_ADC_VALID_CHANNEL_MASK           (0xF)
 #define BSP_FEATURE_ADC_NUM_CHANNELS                 (2U)
 
+#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT              (1)
+
 #define BSP_FEATURE_CANFD_NUM_CHANNELS               (2U)
 
 #define BSP_FEATURE_CPG_HAS_ICLK                     (1U)
@@ -89,9 +91,13 @@
 #define BSP_FEATURE_RSPI_CLOCK                       (FSP_PRIV_CLOCK_P0CLK)
 #define BSP_FEATURE_RSPI_MAX_CHANNELS                (3U)
 
+#define BSP_FEATURE_SDHI_VALID_CHANNEL_MASK          (0x3)
 #define BSP_FEATURE_SDHI_MAX_CHANNELS                (2U)
 #define BSP_FEATURE_SDHI_MIN_CLOCK_DIVISION_SHIFT    (0U)
 
+#define BSP_FEATURE_SCI_CHANNELS                     (0x03U)
+#define BSP_FEATURE_SCI_UART_CSTPEN_CHANNELS         (0U)
+#define BSP_FEATURE_SCI_CLOCK                        (FSP_PRIV_CLOCK_P0CLK)
 #define BSP_FEATURE_SCI_MAX_CHANNELS                 (2U)
 
 #define BSP_FEATURE_SCIF_CHANNELS                    (0x1FU)

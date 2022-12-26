@@ -541,7 +541,7 @@ fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * con
 
 /*******************************************************************************************************************//**
  * Updates the user callback and has option of providing memory for callback structure.
- * Implements uart_api_t::callbackSet
+ * Implements @ref uart_api_t::callbackSet
  *
  * @retval  FSP_SUCCESS                  Callback updated successfully.
  * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.

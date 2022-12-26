@@ -43,6 +43,14 @@
 #include "r_usb_dmaca_rz_if.h"
 #include "r_usb_dmaca_rz_private.h"
 
+/* DMACA DMAC0I */
+
+void r_usb_dmaca_intDMAC0I_isr(IRQn_Type const irq);
+
+/* DMACA DMAC1I */
+
+void r_usb_dmaca_intDMAC1I_isr(IRQn_Type const irq);
+
 #if USB_CFG_DMA == USB_CFG_ENABLE
 
 /*******************************************************************************
@@ -53,12 +61,6 @@ typedef void (* DMACI_Callback)(void);
 /*******************************************************************************
  * Private variables and functions
  *******************************************************************************/
-
-/* DMACA DMAC0I */
-static void r_usb_dmaca_intDMAC0I_isr(void);
-
-/* DMACA DMAC1I */
-static void r_usb_dmaca_intDMAC1I_isr(void);
 
 /*******************************************************************************
  * Exported global variables (to be accessed by other files)
@@ -97,50 +99,6 @@ bool r_usb_dmaca_channel_valid_check (uint8_t channel)
     }
 
     return ret;
-}
-
-/************************************************************************************
- * Outline      : Interrupt DMAC0I handler
- * Function Name: r_usb_dmaca_intDMAC0I_isr
- * Description  : Types of interrupt requests from DMACA channel 0.
- *                If the pointer to function is 'FIT_NO_FUNC' or 'NULL',
- *                write a program under "do something" in this
- *                r_usb_dmaca_intDMAC0I_isr() function.
- * Arguments    : None
- * Return Value : None
- ************************************************************************************/
-static void r_usb_dmaca_intDMAC0I_isr (void)
-{
-    if (((uint32_t) NULL != (uint32_t) p_DMACI_Handlers[USB_DMACA_CH0]))
-    {
-        ((DMACI_Callback) p_DMACI_Handlers[USB_DMACA_CH0])();
-    }
-    else
-    {
-        /* do something */
-    }
-}
-
-/************************************************************************************
- * Outline      : Interrupt DMAC1I handler
- * Function Name: r_usb_dmaca_intDMAC1I_isr
- * Description  : Types of interrupt requests from DMACA channel1.
- *                If the pointer to function is 'FIT_NO_FUNC' or 'NULL',
- *                write a program under "do something" in this
- *                r_usb_dmaca_intDMAC1I_isr() function.
- * Arguments    : None
- * Return Value : None
- ************************************************************************************/
-static void r_usb_dmaca_intDMAC1I_isr (void)
-{
-    if (((uint32_t) NULL != (uint32_t) p_DMACI_Handlers[USB_DMACA_CH1]))
-    {
-        ((DMACI_Callback) p_DMACI_Handlers[USB_DMACA_CH1])();
-    }
-    else
-    {
-        /* do something */
-    }
 }
 
 /*******************************************************************************
@@ -285,6 +243,56 @@ int32_t r_intc_dummy_read_enable (uint16_t int_id)
  #endif
 }
 
+#endif                                 /* #if USB_CFG_DMA == USB_CFG_ENABLE */
+
+/************************************************************************************
+ * Outline      : Interrupt DMAC0I handler
+ * Function Name: r_usb_dmaca_intDMAC0I_isr
+ * Description  : Types of interrupt requests from DMACA channel 0.
+ *                If the pointer to function is 'FIT_NO_FUNC' or 'NULL',
+ *                write a program under "do something" in this
+ *                r_usb_dmaca_intDMAC0I_isr() function.
+ * Arguments    : None
+ * Return Value : None
+ ************************************************************************************/
+void r_usb_dmaca_intDMAC0I_isr (IRQn_Type const irq)
+{
+    FSP_PARAMETER_NOT_USED(irq);
+#if USB_CFG_DMA == USB_CFG_ENABLE
+    if (((uint32_t) NULL != (uint32_t) p_DMACI_Handlers[USB_DMACA_CH0]))
+    {
+        ((DMACI_Callback) p_DMACI_Handlers[USB_DMACA_CH0])();
+    }
+    else
+    {
+        /* do something */
+    }
 #endif
+}
+
+/************************************************************************************
+ * Outline      : Interrupt DMAC1I handler
+ * Function Name: r_usb_dmaca_intDMAC1I_isr
+ * Description  : Types of interrupt requests from DMACA channel1.
+ *                If the pointer to function is 'FIT_NO_FUNC' or 'NULL',
+ *                write a program under "do something" in this
+ *                r_usb_dmaca_intDMAC1I_isr() function.
+ * Arguments    : None
+ * Return Value : None
+ ************************************************************************************/
+void r_usb_dmaca_intDMAC1I_isr (IRQn_Type const irq)
+{
+    FSP_PARAMETER_NOT_USED(irq);
+#if USB_CFG_DMA == USB_CFG_ENABLE
+    if (((uint32_t) NULL != (uint32_t) p_DMACI_Handlers[USB_DMACA_CH1]))
+    {
+        ((DMACI_Callback) p_DMACI_Handlers[USB_DMACA_CH1])();
+    }
+    else
+    {
+        /* do something */
+    }
+#endif
+}
 
 /* End of File */

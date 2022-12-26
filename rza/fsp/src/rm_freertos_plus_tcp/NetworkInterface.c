@@ -100,8 +100,9 @@ static void       prvCheckLinkStatusTask(void * pvParameters);
  **********************************************************************************************************************/
 BaseType_t xNetworkInterfaceInitialise (void)
 {
-    fsp_err_t  err;
-    BaseType_t xReturn = pdFAIL;
+    static BaseType_t tasksCreated = pdFALSE;
+    fsp_err_t         err;
+    BaseType_t        xReturn = pdFAIL;
 
     if (ETHER_ZEROCOPY_ENABLE == gp_freertos_ether->p_cfg->zerocopy)
     {
@@ -114,32 +115,42 @@ BaseType_t xNetworkInterfaceInitialise (void)
 
     err = gp_freertos_ether->p_api->open(gp_freertos_ether->p_ctrl, gp_freertos_ether->p_cfg);
 
+    if ((FSP_SUCCESS != err) && (FSP_ERR_ALREADY_OPEN != err))
+    {
+        return pdFAIL;
+    }
+
+    err = gp_freertos_ether->p_api->linkProcess(gp_freertos_ether->p_ctrl);
+
     if (FSP_SUCCESS != err)
     {
         return pdFAIL;
     }
 
-    do
+    /* prevent tasks from repeatedly creating when reconnected from the network */
+    if (pdFALSE == tasksCreated)
     {
-        err = gp_freertos_ether->p_api->linkProcess(gp_freertos_ether->p_ctrl);
-    } while (FSP_SUCCESS != err);
-
-    xReturn = xTaskCreate(prvRXHandlerTask,
-                          "RXHandlerTask",
-                          configMINIMAL_STACK_SIZE,
-                          NULL,
-                          configMAX_PRIORITIES - 1,
-                          &xRxHanderTaskHandle);
-
-    if (pdFALSE != xReturn)
-    {
-        xReturn = xTaskCreate(prvCheckLinkStatusTask,
-                              "CheckLinkStatusTask",
+        xReturn = xTaskCreate(prvRXHandlerTask,
+                              "RXHandlerTask",
                               configMINIMAL_STACK_SIZE,
                               NULL,
-                              configMAX_PRIORITIES,
-                              NULL);
+                              configMAX_PRIORITIES - 1,
+                              &xRxHanderTaskHandle);
+
+        if (pdPASS == xReturn)
+        {
+            xReturn = xTaskCreate(prvCheckLinkStatusTask,
+                                  "CheckLinkStatusTask",
+                                  configMINIMAL_STACK_SIZE,
+                                  NULL,
+                                  configMAX_PRIORITIES,
+                                  NULL);
+        }
+
+        tasksCreated = (pdPASS == xReturn);
     }
+
+    xReturn = tasksCreated;
 
     return xReturn;
 }
@@ -340,8 +351,8 @@ __attribute__((weak)) BaseType_t xApplicationGetRandomNumber (uint32_t * pulNumb
      */
     uint32_t ulRandomValue = 0;
 
-    ulRandomValue = (uint32_t)(((((uint32_t) rand()) & UNSIGNED_SHORT_RANDOM_NUMBER_MASK)) |      // NOLINT (rand() has limited randomness. But c99 does not support random)
-                               ((((uint32_t) rand()) & UNSIGNED_SHORT_RANDOM_NUMBER_MASK) << 16)); // NOLINT (rand() has limited randomness. But c99 does not support random)
+    ulRandomValue = (uint32_t) (((((uint32_t) rand()) & UNSIGNED_SHORT_RANDOM_NUMBER_MASK)) |       // NOLINT (rand() has limited randomness. But c99 does not support random)
+                                ((((uint32_t) rand()) & UNSIGNED_SHORT_RANDOM_NUMBER_MASK) << 16)); // NOLINT (rand() has limited randomness. But c99 does not support random)
 
     *(pulNumber) = ulRandomValue;
 

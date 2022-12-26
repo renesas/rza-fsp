@@ -75,9 +75,9 @@ uint16_t usb_pstd_chk_vbsts (uint8_t usb_ip)
     do
     {
         buf1 = hw_usb_read_intsts(usb_ip);
-        usb_cpu_delay_1us((uint16_t) 10);
+        usb_cpu_delay_1us((uint16_t) 80);
         buf2 = hw_usb_read_intsts(usb_ip);
-        usb_cpu_delay_1us((uint16_t) 10);
+        usb_cpu_delay_1us((uint16_t) 80);
         buf3 = hw_usb_read_intsts(usb_ip);
     } while (((buf1 & USB_VBSTS) != (buf2 & USB_VBSTS)) || ((buf2 & USB_VBSTS) != (buf3 & USB_VBSTS)));
 

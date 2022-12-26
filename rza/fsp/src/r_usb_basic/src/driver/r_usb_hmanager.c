@@ -240,7 +240,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                 case 4:                /* Receive Configuration Descriptor(xx) */
                 {
   #ifdef USB_HOST_COMPLIANCE_MODE
-                    p_descriptor_table = (uint8_t *) gs_usb_hstd_device_descriptor;
+                    p_descriptor_table = (uint8_t *) g_usb_hstd_device_descriptor[ptr->ip];
 
                     /* If 'vendor_id' and 'product_id' value is defined by PET, */
                     /*    system works for compliance test mode. */
@@ -258,7 +258,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
 
                         if ((0x0100 < product_id) && (product_id < 0x0109))
                         {
-                            g_usb_hstd_enum_seq[ptr - ip] = 6; /* Enumeration End */
+                            g_usb_hstd_enum_seq[ptr->ip] = 6; /* Enumeration End */
                             usb_hstd_electrical_test_mode(ptr, product_id);
                             enume_mode = USB_NOTTPL;
                             break;
@@ -266,9 +266,10 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
 
                         if (0x0200 == product_id)
                         {
-                            g_usb_hstd_enum_seq[ptr - ip] = 5; /* Skip EnumSeq 5 */
-                            p_descriptor_table            = (uint8_t *) gs_usb_hstd_configuration_descriptor;
-                            usb_hstd_enum_set_configuration(g_usb_hstd_device_addr[ptr->ip],
+                            g_usb_hstd_enum_seq[ptr->ip] = 5; /* Skip EnumSeq 5 */
+                            p_descriptor_table           = (uint8_t *) g_usb_hstd_config_descriptor[ptr->ip];
+                            usb_hstd_enum_set_configuration(ptr,
+                                                            g_usb_hstd_device_addr[ptr->ip],
                                                             (uint16_t) (p_descriptor_table[USB_CON_B_CONFIGURATION_VALUE
                                                                         ]));
                             break;
@@ -881,7 +882,7 @@ static uint16_t usb_hstd_chk_device_class (usb_utr_t * ptr, usb_hcdreg_t * drive
                 {
                     id_check = USB_OK;
  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
-                    g_usb_disp_param[ptr->ip].status = USB_CT_TPL;
+                    g_usb_disp_param[ptr->ip].status = USB_COMPLIANCETEST_TPL;
                     g_usb_disp_param[ptr->ip].pid    = product_id;
                     g_usb_disp_param[ptr->ip].vid    = vendor_id;
                     g_usb_disp_param_set[ptr->ip]    = USB_ON;
@@ -902,14 +903,14 @@ static uint16_t usb_hstd_chk_device_class (usb_utr_t * ptr, usb_hcdreg_t * drive
  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
         if (USB_IFCLS_HUB == descriptor_table[4])
         {
-            g_usb_disp_param[ptr->ip].status = USB_CT_HUB;
+            g_usb_disp_param[ptr->ip].status = USB_COMPLIANCETEST_HUB;
             g_usb_disp_param[ptr->ip].pid    = product_id;
             g_usb_disp_param[ptr->ip].vid    = vendor_id;
             g_usb_disp_param_set[ptr->ip]    = USB_ON;
         }
         else
         {
-            g_usb_disp_param[ptr->ip].status = USB_CT_NOTTPL;
+            g_usb_disp_param[ptr->ip].status = USB_COMPLIANCETEST_NOTTPL;
             g_usb_disp_param[ptr->ip].pid    = product_id;
             g_usb_disp_param[ptr->ip].vid    = vendor_id;
             g_usb_disp_param_set[ptr->ip]    = USB_ON;
@@ -1052,11 +1053,8 @@ void usb_hstd_submit_result (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
 {
     (void) data1;
     (void) data2;
- #if USB_IP_EHCI_OHCI == 0
+
     usb_hstd_mgr_snd_mbx(ptr, (uint16_t) USB_MSG_MGR_SUBMITRESULT, ptr->keyword, ptr->status);
- #else                                 /* USB_IP_EHCI_OHCI == 0 */
-    usb_hstd_mgr_snd_mbx(ptr, (uint16_t) USB_MSG_MGR_SUBMITRESULT, ptr->keyword, ptr->result);
- #endif /* USB_IP_EHCI_OHCI == 0 */
 }
 
 /******************************************************************************
@@ -2095,6 +2093,7 @@ uint16_t usb_hstd_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16_t stri
 
  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
   #if USB_CFG_ELECTRICAL == USB_CFG_ENABLE
+   #if  USB_IP_EHCI_OHCI == 0
 
 /******************************************************************************
  * Function Name   : usb_hstd_electrical_test_mode
@@ -2112,11 +2111,11 @@ void usb_hstd_electrical_test_mode (usb_utr_t * ptr, uint16_t product_id)
     {
         case 0x0101:                   /* Test_SE0_NAK */
         {
-   #if USB_IP_EHCI_OHCI == 1
+    #if USB_IP_EHCI_OHCI == 1
             r_usb_hstd_hci_electrical_test(ptr, 0);
-   #else
+    #else
             usb_hstd_test_signal(ptr, 3);
-   #endif
+    #endif
 
             /* WAIT_LOOP */
             while (1)
@@ -2231,6 +2230,7 @@ void usb_hstd_electrical_test_mode (usb_utr_t * ptr, uint16_t product_id)
 /******************************************************************************
  * End of function usb_hstd_electrical_test_mode
  ******************************************************************************/
+   #endif                              /* USB_IP_EHCI_OHCI == 0*/
   #endif                               /* USB_CFG_ELECTRICAL == USB_CFG_ENABLE */
  #endif                                /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
 
@@ -2555,10 +2555,12 @@ void usb_hstd_mgr_task (void * stacd)
                     case USB_DETACH:
                     {
  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
-                        disp_param.status = USB_CT_DETACH;
+                        disp_param.status = USB_COMPLIANCETEST_DETACH;
                         disp_param.pid    = USB_NULL;
                         disp_param.vid    = USB_NULL;
+  #if USB_IP_EHCI_OHCI == 0
                         usb_compliance_disp((void *) &disp_param);
+  #endif                               /* USB_IP_EHCI_OHCI == 0 */
  #endif                                /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
                         g_usb_hstd_mgr_mode[ptr->ip]     = USB_DETACHED;
                         g_usb_hstd_device_speed[ptr->ip] = USB_NOCONNECT;
@@ -2616,10 +2618,12 @@ void usb_hstd_mgr_task (void * stacd)
                     case USB_ATTACHF:
                     {
  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
-                        disp_param.status = USB_CT_ATTACH;
+                        disp_param.status = USB_COMPLIANCETEST_ATTACH;
                         disp_param.pid    = USB_NULL;
                         disp_param.vid    = USB_NULL;
+  #if USB_IP_EHCI_OHCI == 0
                         usb_compliance_disp((void *) &disp_param);
+  #endif                               /* USB_IP_EHCI_OHCI == 0 */
  #endif                                /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
 
                         if (USB_DETACHED == g_usb_hstd_mgr_mode[ptr->ip])
@@ -2824,6 +2828,15 @@ void usb_hstd_mgr_task (void * stacd)
                 usb_hstd_device_state_ctrl2(ptr, hp->complete, devaddr, ptr->msginfo, msginfo);
                 break;
             }
+
+ #if USB_IP_EHCI_OHCI == 1
+            case USB_DO_CLR_STALL:
+            {
+                pipenum = ptr->keyword;
+                usb_hstd_clr_stall(ptr, pipenum, ptr->complete);
+                break;
+            }
+ #endif                                /* #if USB_IP_EHCI_OHCI == 1 */
 
             default:
             {

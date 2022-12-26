@@ -89,7 +89,7 @@ typedef struct st_external_irq_cfg
 {
     uint8_t                 channel;   ///< Hardware channel used.
     uint8_t                 ipl;       ///< Interrupt priority
-    IRQn_Type               irq;       ///< NVIC interrupt number assigned to this instance
+    IRQn_Type               irq;       ///< GIC interrupt number assigned to this instance
     external_irq_trigger_t  trigger;   ///< Trigger setting.
     external_irq_pclk_div_t pclk_div;  ///< Digital filter clock divisor setting.
     bool filter_enable;                ///< Digital filter enable/disable setting.

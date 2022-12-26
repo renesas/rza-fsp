@@ -48,6 +48,7 @@
 #if  USB_IP_EHCI_OHCI == 1
 
  #define USB_VAL_32          (32U)
+ #define USB_VAL_100         (100U)
  #define USB_VAL_XFF         (0x000000FFU)
  #define USB_VAL_X7F         (0x0000007FU)
  #define USB_VAL_XC0         (0x000000C0U)
@@ -762,7 +763,11 @@ void usb_hstd_ohci_port_reset (usb_utr_t * ptr)
 
     *p_port_status_reg = USB_VAL_X001U; /* Clear PRSC bit */
 
-    usb_cpu_delay_xms(10);              /* Wait 10ms */
+ #ifdef USB_CFG_HMSC_USE
+    R_BSP_SoftwareDelay(USB_VAL_100, BSP_DELAY_UNITS_MILLISECONDS);
+ #else
+    R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
+ #endif                                /* Wait 10ms */
 } /* End of function usb_hstd_ohci_port_reset() */
 
 /***********************************************************************************************************************

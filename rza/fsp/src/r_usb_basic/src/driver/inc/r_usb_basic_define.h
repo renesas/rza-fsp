@@ -852,7 +852,7 @@
 /*************************************************************************
  * old basic_cfg.h #define
  *************************************************************************/
-#if (BSP_CFG_RTOS == 0)
+#if (BSP_CFG_RTOS == 0) || USB_IP_EHCI_OHCI == 0
  #define USB_SND_MSG(ID, MESS)        (usb_cstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
  #define USB_ISND_MSG(ID, MESS)       (usb_cstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
  #define USB_RCV_MSG(ID, MESS)        (usb_cstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS), (usb_tm_t) (0U)))

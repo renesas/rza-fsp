@@ -178,7 +178,8 @@ typedef enum e_ioport_cfg_options
 
     /* For SR Register */
     IOPORT_CFG_SLEW_RATE_SLOW = 0x00000000,                     ///< Sets the pin slew-rate to slow
-    IOPORT_CFG_SLEW_RATE_FLAT = 0x00020000,                     ///< Sets the pin slew-rate to flat
+    IOPORT_CFG_SLEW_RATE_FAST = 0x00020000,                     ///< Sets the pin slew-rate to fast
+    IOPORT_CFG_SLEW_RATE_FLAT = 0x00020000,                     ///< DEPRECATED Sets the pin slew-rate to flat
 
     /* For IEN Register */
     IOPORT_CFG_SPECIAL_PURPOSE_PORT_INPUT_DISABLE = 0x00000000, ///< Disable input the pin of special purpose port

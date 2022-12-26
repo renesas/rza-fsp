@@ -33,6 +33,7 @@
  * - CTS/RTS hardware flow control support (with an associated IOPORT pin)
  *
  * Implemented by:
+ * - @ref SCI_UART
  * - @ref SCIF_UART
  *
  * @{
@@ -161,6 +162,7 @@ typedef struct st_uart_cfg
 
 /** UART control block.  Allocate an instance specific control block to pass into the UART API calls.
  * @par Implemented as
+ * - sci_uart_instance_ctrl_t
  * - scif_uart_instance_ctrl_t
  */
 typedef void uart_ctrl_t;
@@ -170,6 +172,7 @@ typedef struct st_uart_api
 {
     /** Open  UART device.
      * @par Implemented as
+     * - @ref R_SCI_UART_Open()
      * - @ref R_SCIF_UART_Open()
      *
      * @param[in,out]  p_ctrl     Pointer to the UART control block. Must be declared by user. Value set here.
@@ -183,6 +186,7 @@ typedef struct st_uart_api
      * the callback function with event UART_EVENT_RX_CHAR.
      * The maximum transfer size is reported by infoGet().
      * @par Implemented as
+     * - @ref R_SCI_UART_Read()
      * - @ref R_SCIF_UART_Read()
      *
      * @param[in]   p_ctrl     Pointer to the UART control block for the channel.
@@ -196,6 +200,7 @@ typedef struct st_uart_api
      * the callback called with event UART_EVENT_TX_COMPLETE.
      * The maximum transfer size is reported by infoGet().
      * @par Implemented as
+     * - @ref R_SCI_UART_Write()
      * - @ref R_SCIF_UART_Write()
      *
      * @param[in]   p_ctrl     Pointer to the UART control block.
@@ -209,6 +214,7 @@ typedef struct st_uart_api
      * settings have been applied.
      *
      * @par Implemented as
+     * - @ref R_SCI_UART_BaudSet()
      * - @ref R_SCIF_UART_BaudSet()
      *
      * @param[in]   p_ctrl          Pointer to the UART control block.
@@ -218,6 +224,7 @@ typedef struct st_uart_api
 
     /** Get the driver specific information.
      * @par Implemented as
+     * - @ref R_SCI_UART_InfoGet()
      * - @ref R_SCIF_UART_InfoGet()
      *
      * @param[in]   p_ctrl     Pointer to the UART control block.
@@ -228,6 +235,7 @@ typedef struct st_uart_api
     /**
      * Abort ongoing transfer.
      * @par Implemented as
+     * - @ref R_SCI_UART_Abort()
      * - @ref R_SCIF_UART_Abort()
      *
      * @param[in]   p_ctrl                   Pointer to the UART control block.
@@ -238,7 +246,8 @@ typedef struct st_uart_api
     /**
      * Specify callback function and optional context pointer and working memory pointer.
      * @par Implemented as
-     * - R_SCIF_Uart_CallbackSet()
+     * - @ref R_SCI_UART_CallbackSet()
+     * - @ref R_SCIF_UART_CallbackSet()
      *
      * @param[in]   p_api_ctrl               Pointer to the UART control block.
      * @param[in]   p_callback               Callback function
@@ -251,6 +260,7 @@ typedef struct st_uart_api
 
     /** Close UART device.
      * @par Implemented as
+     * - @ref R_SCI_UART_Close()
      * - @ref R_SCIF_UART_Close()
      *
      * @param[in]   p_ctrl     Pointer to the UART control block.
@@ -259,6 +269,7 @@ typedef struct st_uart_api
 
     /** Stop ongoing read and return the number of bytes remaining in the read.
      * @par Implemented as
+     * - @ref R_SCI_UART_ReadStop()
      * - @ref R_SCIF_UART_ReadStop()
      *
      * @param[in]      p_ctrl                Pointer to the UART control block.

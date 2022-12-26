@@ -23,6 +23,9 @@
  **********************************************************************************************************************/
 #include "r_dmac.h"
 #include "r_dmac_cfg.h"
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+ #include "hal_data.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -67,6 +70,8 @@ void dmac_err_isr(IRQn_Type const irq);
 static fsp_err_t r_dmac_prv_enable(dmac_instance_ctrl_t * p_ctrl);
 static void      r_dmac_prv_disable(dmac_instance_ctrl_t * p_ctrl);
 static void      r_dmac_config_transfer_info(dmac_instance_ctrl_t * p_ctrl, transfer_info_t * p_info);
+static void      r_dmac_activation_trigger_enable(dmac_extended_cfg_t const * const p_extend);
+static void      r_dmac_activation_trigger_disable(dmac_extended_cfg_t const * const p_extend);
 
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
 static fsp_err_t r_dma_open_parameter_checking(dmac_instance_ctrl_t * const p_ctrl, transfer_cfg_t const * const p_cfg);
@@ -263,7 +268,7 @@ fsp_err_t R_DMAC_SoftwareStop (transfer_ctrl_t * const p_api_ctrl)
         /* Software Reset */
         p_ctrl->p_reg->CHCTRL = R_DMA_CHCTRL_SWRST_Msk;
 
-        return FSP_SUCCESS;;
+        return FSP_SUCCESS;
     }
 
     /* Check whether a transfer is suspended. */
@@ -363,46 +368,7 @@ fsp_err_t R_DMAC_Close (transfer_ctrl_t * const p_api_ctrl)
     dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
 
     /* Disable DMAC transfers on this channel. */
-    if ((0 == p_extend->channel) || (1 == p_extend->channel))
-    {
-        p_reg_ex->DMARS0 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else if ((2 == p_extend->channel) || (3 == p_extend->channel))
-    {
-        p_reg_ex->DMARS1 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else if ((4 == p_extend->channel) || (5 == p_extend->channel))
-    {
-        p_reg_ex->DMARS2 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else if ((6 == p_extend->channel) || (7 == p_extend->channel))
-    {
-        p_reg_ex->DMARS3 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else if ((8 == p_extend->channel) || (9 == p_extend->channel))
-    {
-        p_reg_ex->DMARS4 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else if ((10 == p_extend->channel) || (11 == p_extend->channel))
-    {
-        p_reg_ex->DMARS5 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else if ((12 == p_extend->channel) || (13 == p_extend->channel))
-    {
-        p_reg_ex->DMARS6 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
-    else
-    {
-        p_reg_ex->DMARS7 &=
-            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-    }
+    r_dmac_activation_trigger_disable(p_extend);
 
     p_ctrl->p_reg->CHCTRL = R_DMA_CHCTRL_CLREN_Msk;
     FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CHSTAT_b.TACT, 0);
@@ -442,20 +408,45 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
     FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
 #endif
 
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
+
     if ((1 == p_ctrl->p_reg->CHSTAT_b.EN) && (0 == p_ctrl->p_reg->CHCFG_b.REN))
     {
         p_src_cast  = (uint32_t *) p_src;
         p_dest_cast = (uint32_t *) p_dest;
         if (1 == p_ctrl->p_reg->CHSTAT_b.SR)
         {
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+            va = *p_src_cast;
+            R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+            p_ctrl->p_reg->N1SA = (uint32_t) pa;
+        
+            va = *p_dest_cast;
+            R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+            p_ctrl->p_reg->N1DA = (uint32_t) pa;
+#else
             p_ctrl->p_reg->N1SA = *p_src_cast;
             p_ctrl->p_reg->N1DA = *p_dest_cast;
+#endif
             p_ctrl->p_reg->N1TB = num_transfers;
         }
         else
         {
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+            va = *p_src_cast;
+            R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+            p_ctrl->p_reg->N0SA = (uint32_t) pa;
+        
+            va = *p_dest_cast;
+            R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+            p_ctrl->p_reg->N0DA = (uint32_t) pa;
+#else
             p_ctrl->p_reg->N0SA = *p_src_cast;
             p_ctrl->p_reg->N0DA = *p_dest_cast;
+#endif
             p_ctrl->p_reg->N0TB = num_transfers;
         }
 
@@ -493,62 +484,7 @@ static fsp_err_t r_dmac_prv_enable (dmac_instance_ctrl_t * p_ctrl)
     if (p_extend->activation_source)
     {
         /* DMAC trigger source set. */
-        if ((0 == p_extend->channel) || (1 == p_extend->channel))
-        {
-            p_reg_ex->DMARS0 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS0 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((2 == p_extend->channel) || (3 == p_extend->channel))
-        {
-            p_reg_ex->DMARS1 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS1 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((4 == p_extend->channel) || (5 == p_extend->channel))
-        {
-            p_reg_ex->DMARS2 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS2 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((6 == p_extend->channel) || (7 == p_extend->channel))
-        {
-            p_reg_ex->DMARS3 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS3 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((8 == p_extend->channel) || (9 == p_extend->channel))
-        {
-            p_reg_ex->DMARS4 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS4 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((10 == p_extend->channel) || (11 == p_extend->channel))
-        {
-            p_reg_ex->DMARS5 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS5 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((12 == p_extend->channel) || (13 == p_extend->channel))
-        {
-            p_reg_ex->DMARS6 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS6 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else
-        {
-            p_reg_ex->DMARS7 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-            p_reg_ex->DMARS7 |=
-                (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
+        r_dmac_activation_trigger_enable(p_extend);
     }
 
     if ((NULL != p_extend->p_callback) || p_extend->activation_source)
@@ -581,8 +517,19 @@ static fsp_err_t r_dmac_prv_enable (dmac_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void r_dmac_prv_disable (dmac_instance_ctrl_t * p_ctrl)
 {
+    dmac_extended_cfg_t  * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
     /* Disable DMA transfer. */
     p_ctrl->p_reg->CHCTRL = R_DMA_CHCTRL_CLREN_Msk;
+
+    /* Wait DMA stop */
+    FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CHSTAT_b.TACT, 0);
+
+    /* Software Reset */
+    p_ctrl->p_reg->CHCTRL = R_DMA_CHCTRL_SWRST_Msk;
+
+    /* Disable DMAC transfers on this channel. */
+    r_dmac_activation_trigger_disable(p_extend);
 
     /* Set DMA transfer end interrupt mask */
     p_ctrl->p_reg->CHCFG |= R_DMA_CHCFG_DEM_Msk;
@@ -598,8 +545,14 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
 {
     dmac_extended_cfg_t  * p_extend      = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
     dmac_extended_info_t * p_extend_info = (dmac_extended_info_t *) p_info->p_extend_info;
+
     uint32_t             * p_src_cast;
     uint32_t             * p_dest_cast;
+
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
 
     uint32_t dctrl = DMAC_PRV_DCTRL_DEFAULT_VALUE;
     uint32_t chcfg = DMAC_PRV_CHCFG_DEFAULT_VALUE;
@@ -643,8 +596,19 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     p_dest_cast = (uint32_t *) &p_info->p_dest;
 
     /* Next0 transfer setting. */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    va = *p_src_cast;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    p_ctrl->p_reg->N0SA = (uint32_t) pa;
+
+    va = *p_dest_cast;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    p_ctrl->p_reg->N0DA = (uint32_t) pa;
+#else                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     p_ctrl->p_reg->N0SA = *p_src_cast;
     p_ctrl->p_reg->N0DA = *p_dest_cast;
+#endif                         
+
     p_ctrl->p_reg->N0TB = p_info->length;
 
     p_ctrl->p_reg->CHCFG  = chcfg;
@@ -658,8 +622,18 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
         p_dest_cast = (uint32_t *) &p_next1_register->p_dest;
 
         /* Next1 transfer setting. */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = *p_src_cast;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        p_ctrl->p_reg->N1SA = (uint32_t) pa;
+    
+        va = *p_dest_cast;
+        R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+        p_ctrl->p_reg->N1DA = (uint32_t) pa;
+#else
         p_ctrl->p_reg->N1SA = *p_src_cast;
         p_ctrl->p_reg->N1DA = *p_dest_cast;
+#endif
         p_ctrl->p_reg->N1TB = p_next1_register->length;
     }
 }
@@ -758,6 +732,110 @@ static fsp_err_t r_dmac_enable_parameter_checking (dmac_instance_ctrl_t * const 
 
 #endif
 
+static void r_dmac_activation_trigger_enable(dmac_extended_cfg_t const * const p_extend)
+{
+    if ((0 == p_extend->channel) || (1 == p_extend->channel))
+    {
+        p_reg_ex->DMARS0 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS0 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((2 == p_extend->channel) || (3 == p_extend->channel))
+    {
+        p_reg_ex->DMARS1 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS1 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((4 == p_extend->channel) || (5 == p_extend->channel))
+    {
+        p_reg_ex->DMARS2 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS2 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((6 == p_extend->channel) || (7 == p_extend->channel))
+    {
+        p_reg_ex->DMARS3 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS3 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((8 == p_extend->channel) || (9 == p_extend->channel))
+    {
+        p_reg_ex->DMARS4 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS4 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((10 == p_extend->channel) || (11 == p_extend->channel))
+    {
+        p_reg_ex->DMARS5 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS5 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((12 == p_extend->channel) || (13 == p_extend->channel))
+    {
+        p_reg_ex->DMARS6 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS6 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else
+    {
+        p_reg_ex->DMARS7 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+        p_reg_ex->DMARS7 |=
+            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+}
+
+static void r_dmac_activation_trigger_disable(dmac_extended_cfg_t const * const p_extend)
+{
+    if ((0 == p_extend->channel) || (1 == p_extend->channel))
+    {
+        p_reg_ex->DMARS0 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((2 == p_extend->channel) || (3 == p_extend->channel))
+    {
+        p_reg_ex->DMARS1 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((4 == p_extend->channel) || (5 == p_extend->channel))
+    {
+        p_reg_ex->DMARS2 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((6 == p_extend->channel) || (7 == p_extend->channel))
+    {
+        p_reg_ex->DMARS3 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((8 == p_extend->channel) || (9 == p_extend->channel))
+    {
+        p_reg_ex->DMARS4 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((10 == p_extend->channel) || (11 == p_extend->channel))
+    {
+        p_reg_ex->DMARS5 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else if ((12 == p_extend->channel) || (13 == p_extend->channel))
+    {
+        p_reg_ex->DMARS6 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+    else
+    {
+        p_reg_ex->DMARS7 &=
+            (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+    }
+}
+
 /*******************************************************************************************************************//**
  * DMAC ISR
  **********************************************************************************************************************/
@@ -771,47 +849,10 @@ void dmac_int_isr (IRQn_Type const irq)
 
     if (p_extend->activation_source)
     {
-        if ((0 == p_extend->channel) || (1 == p_extend->channel))
-        {
-            p_reg_ex->DMARS0 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((2 == p_extend->channel) || (3 == p_extend->channel))
-        {
-            p_reg_ex->DMARS1 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((4 == p_extend->channel) || (5 == p_extend->channel))
-        {
-            p_reg_ex->DMARS2 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((6 == p_extend->channel) || (7 == p_extend->channel))
-        {
-            p_reg_ex->DMARS3 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((8 == p_extend->channel) || (9 == p_extend->channel))
-        {
-            p_reg_ex->DMARS4 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((10 == p_extend->channel) || (11 == p_extend->channel))
-        {
-            p_reg_ex->DMARS5 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else if ((12 == p_extend->channel) || (13 == p_extend->channel))
-        {
-            p_reg_ex->DMARS6 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
-        else
-        {
-            p_reg_ex->DMARS7 &=
-                (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
-        }
+        /* Activation source disabled */
+        r_dmac_activation_trigger_disable(p_extend);
 
+        /* Call peripheral module handler */
         if (p_extend->p_peripheral_module_handler)
         {
             p_extend->p_peripheral_module_handler(p_extend->activation_irq_number);

@@ -257,6 +257,7 @@ __STATIC_INLINE fsp_err_t R_BSP_UniqueIdGet ()
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 uint32_t R_FSP_SystemClockHzGet(fsp_priv_clock_t clock);
+void     R_FSP_SystemClockHzSet(fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div);
 
 #if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
 

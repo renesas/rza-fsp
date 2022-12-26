@@ -91,46 +91,69 @@ unsigned long long R_BSP_CACHE_DisableInst(void);
 unsigned long long R_BSP_CACHE_DisableData(void);
 
 /*******************************************************************************************************************//**
+ * @addtogroup BSP_MCU
+ *
+ * @{
+ **********************************************************************************************************************/
+
+/*******************************************************************************************************************//**
  * Clean whole cache.
  *
+ * Execute DC CSW instruction for all set/way of cache.
+ *
+ * @note DC CSW instructions in AArch64 perform both a clean and invalidate of the target set/way.
  **********************************************************************************************************************/
 void R_BSP_CACHE_CleanAll(void);
 
 /*******************************************************************************************************************//**
  * Clean&Invalidate whole cache.
  *
+ * Execute DC CISW instruction for all set/way of cache.
  **********************************************************************************************************************/
 void R_BSP_CACHE_CleanInvalidateAll(void);
 
 /*******************************************************************************************************************//**
  * Invalidate whole cache.
  *
+ * Execute DC ISW instruction for all set/way of cache.
+ *
+ * @note DC ISW instructions in AArch64 perform both a clean and invalidate of the target set/way.
  **********************************************************************************************************************/
 void R_BSP_CACHE_InvalidateAll(void);
 
 /*******************************************************************************************************************//**
  * Cache Clean by MVA.
  *
- * @param     base_address      start address (Must be a 4-byte aligned address)
- * @param     length            number of bytes (Must be a multiple of 4)
+ * @param[in]     base_address      start address (Must be a 4-byte aligned address)
+ * @param[in]     length            number of bytes (Must be a multiple of 4)
+ *
+ * Executes DC CVAC and IC IVAU instruction for cache lines within the specified address range.
  **********************************************************************************************************************/
 void R_BSP_CACHE_CleanRange(uint64_t base_address, uint64_t length);
 
 /*******************************************************************************************************************//**
  * Cache Invalidate by MVA.
  *
- * @param     base_address      start address (Must be a 4-byte aligned address)
- * @param     length            number of bytes (Must be a multiple of 4)
+ * @param[in]     base_address      start address (Must be a 4-byte aligned address)
+ * @param[in]     length            number of bytes (Must be a multiple of 4)
+ *
+ * Executes DC IVAC and IC IVAU instruction for cache lines within the specified address range.
+ *
+ * @note DC IVAC instructions in AArch64 perform both a clean and invalidate.
  **********************************************************************************************************************/
 void R_BSP_CACHE_InvalidateRange(uint64_t base_address, uint64_t length);
 
 /*******************************************************************************************************************//**
  * Cache Clean&Invalidate by MVA.
  *
- * @param     base_address      start address (Must be a 4-byte aligned address)
- * @param     length            number of bytes (Must be a multiple of 4)
+ * @param[in]     base_address      start address (Must be a 4-byte aligned address)
+ * @param[in]     length            number of bytes (Must be a multiple of 4)
+ *
+ * Executes DC CIVAC and IC IVAU instruction for cache lines within the specified address range.
  **********************************************************************************************************************/
 void R_BSP_CACHE_CleanInvalidateRange(uint64_t base_address, uint64_t length);
+
+/** @} (end addtogroup BSP_MCU) */
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

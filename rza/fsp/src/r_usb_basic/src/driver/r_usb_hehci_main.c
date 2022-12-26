@@ -44,7 +44,6 @@
 #define USB_VAL_100       (100U)
 #define USB_VAL_256       (256U)
 #define USB_VAL_512       (512U)
-#define USB_VAL_1024      (1024U)
 #define USB_VAL_X20       (0x00000020U)
 #define USB_VAL_INTR      (0x00000037U)
 #define USB_VAL_X1000     (0x00001000U)
@@ -550,7 +549,11 @@ uint32_t usb_hstd_ehci_port_reset (usb_utr_t * ptr)
             timeout++;
         }
 
-        usb_cpu_delay_xms(10);
+ #ifdef USB_CFG_HMSC_USE
+        R_BSP_SoftwareDelay(USB_VAL_100, BSP_DELAY_UNITS_MILLISECONDS);
+ #else
+        R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
+ #endif
 
         result = TRUE;
     }

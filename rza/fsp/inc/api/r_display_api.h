@@ -98,6 +98,7 @@ typedef enum e_display_in_format
     DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_YVYU = 15, ///< YCbCr422 interleaved type0 YVYU,  16 bits
     DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE1      = 16, ///< YCbCr420 interleaved type1,       16 bits
     DISPLAY_IN_FORMAT_16BITS_YCBCR420_INTERLEAVED            = 17, ///< YCbCr420 interleaved,             12 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR420_PLANAR                 = 18, ///< YCbCr420 planar,                  16bits
 
     /** All other options start at this value. */
     DISPLAY_IN_FORMAT_CUSTOM = 0x80,
@@ -187,11 +188,14 @@ typedef struct e_display_colorkeying_layer
 typedef struct st_display_input_cfg
 {
     uint32_t          * p_base;        ///< Base address to the frame buffer
+    uint32_t          * p_base_cb;     ///< Base address to the frame buffer for Cb plane
+    uint32_t          * p_base_cr;     ///< Base address to the frame buffer for Cr plane
     uint16_t            hsize;         ///< Horizontal pixels in a line
     uint16_t            vsize;         ///< Vertical pixels in a frame
     uint16_t            coordinate_x;  ///< Coordinate X
     uint16_t            coordinate_y;  ///< Coordinate Y
     uint16_t            hstride;       ///< Memory stride (bytes) in a line
+    uint16_t            hstride_cbcr;  ///< Memory stride (bytes) in a line for Cb and Cr plane
     display_in_format_t format;        ///< Input format setting
     display_data_swap_t data_swap;     ///< Input data swap_Setting
 } display_input_cfg_t;

@@ -27,6 +27,7 @@
 /*****************************************************************************
  * Public Variables
  ******************************************************************************/
+#define USB_VAL_1024    1024U
 
 /* r_usbif_api.c */
 #if (BSP_CFG_RTOS == 0)
@@ -58,6 +59,13 @@ extern uint16_t          g_usb_hstd_ignore_cnt[][USB_MAX_PIPE_NO + 1U]; /* Ignor
 extern usb_hcdreg_t      g_usb_hstd_device_drv[][USB_MAXDEVADDR + 1U];  /* Device driver (registration) */
 extern volatile uint16_t g_usb_hstd_device_info[][USB_MAXDEVADDR + 1U][8U];
 extern usb_ctrl_trans_t  g_usb_ctrl_request[USB_NUM_USBIP][USB_MAXDEVADDR + 1];
+
+ #if USB_IP_EHCI_OHCI == 1
+extern uint32_t g_data_buf_addr[USB_NUM_USBIP][USB_MAXDEVADDR + 1];
+extern uint8_t  g_temp_data_buf[USB_NUM_USBIP][USB_MAXDEVADDR + 1][USB_VAL_1024];
+extern uint8_t  g_data_read_flag;
+ #endif                                                         /* #if USB_IP_EHCI_OHCI == 1 */
+
  #if (BSP_CFG_RTOS == 2)
 extern usb_hdl_t g_usb_hstd_sus_res_task_id[];
  #endif                                                         /*  #if (BSP_CFG_RTOS == 2) */

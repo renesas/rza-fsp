@@ -22,6 +22,7 @@
  * Includes
  **********************************************************************************************************************/
 #include "bsp_api.h"
+#include "hal_data.h"
 #include "r_cru.h"
 #include "r_cru_cfg.h"
 
@@ -33,6 +34,9 @@
 #define CSI2_DPHYTIM1                  (0x0A0A0C12)
 #define CSI2_DPHYSKW0                  (0x00001111)
 #define CSI2_MCT2                      (0x0016000B)
+#define CPG_CLKON_CRU_VCLK_DISABLE     (0x00020000)
+#define CPG_CLKON_CRU_VCLK_ENABLE      (0x00020002)
+#define CPG_RST_CRU_UNIT0_ENABLE       (0x00010001)
 
 #define YUV422_10BIT_FORMAT_ENALBE     (1U)
 #define YUV422_8BIT_FORMAT_ENALBE      (1U)
@@ -88,6 +92,7 @@
 #define MICROSEC_WAIT_20               (20U)
 #define MICROSEC_WAIT_10               (10U)
 #define MILISEC_WAIT_1                 (1U)
+#define BIT_SHIFT_32                   (32)
 
 #define CAPTURE_HSIZE_MAX              (2800)
 #define CAPTURE_VSIZE_MAX              (4095)
@@ -157,6 +162,29 @@ static const uint8_t capture_output_format[] =
     0x2, /* RGB888 32bit  */           ///< B-G-R-A
 };
 
+static volatile  uint32_t * const AMnMBnADDRL[8] =
+{
+     &(R_CRU->AMnMB1ADDRL),
+     &(R_CRU->AMnMB2ADDRL),
+     &(R_CRU->AMnMB3ADDRL),
+     &(R_CRU->AMnMB4ADDRL),
+     &(R_CRU->AMnMB5ADDRL),
+     &(R_CRU->AMnMB6ADDRL),
+     &(R_CRU->AMnMB7ADDRL),
+     &(R_CRU->AMnMB8ADDRL),
+};
+
+static volatile  uint32_t * const AMnMBnADDRH[8] =
+{
+     &(R_CRU->AMnMB1ADDRH),
+     &(R_CRU->AMnMB2ADDRH),
+     &(R_CRU->AMnMB3ADDRH),
+     &(R_CRU->AMnMB4ADDRH),
+     &(R_CRU->AMnMB5ADDRH),
+     &(R_CRU->AMnMB6ADDRH),
+     &(R_CRU->AMnMB7ADDRH),
+     &(R_CRU->AMnMB8ADDRH),
+};
 static cru_instance_ctrl_t * r_cru_blk;
 
 /***********************************************************************************************************************
@@ -215,17 +243,11 @@ fsp_err_t R_CRU_Open (cru_ctrl_t * const p_api_ctrl, cru_cfg_t const * const p_c
 #endif
 
     R_BSP_MODULE_RSTON(FSP_IP_CRU, 0);
-    R_BSP_MODULE_RSTON(FSP_IP_CRU, 1);
-    R_BSP_MODULE_RSTON(FSP_IP_CRU, 2);
 
     R_BSP_MODULE_CLKON(FSP_IP_CRU, 1);
-    R_BSP_MODULE_CLKON(FSP_IP_CRU, 2);
-    R_BSP_MODULE_CLKON(FSP_IP_CRU, 3);
-    R_BSP_MODULE_CLKON(FSP_IP_CRU, 4);
 
     /* MIPI-CSI2 input receive start */
     R_BSP_MODULE_RSTOFF(FSP_IP_CRU, 1);
-    R_BSP_MODULE_RSTOFF(FSP_IP_CRU, 2);
 
     /* D-PHY setting */
     r_cru_mipi_dphy_set();
@@ -452,8 +474,23 @@ static void r_cru_mipi_link_set (cru_cfg_t const * const p_cfg)
     R_CRU->CSI2nDTEL = CSI2_DTEL;
     R_CRU->CSI2nDTEH = CSI2_DTEH;
 
+    R_CPG->CPG_CLKON_CRU = CPG_CLKON_CRU_VCLK_DISABLE;
+    while(R_CPG->CPG_CLKMON_CRU_b.CLK1_MON == 0b1)
+    {
+        /* Do Nothing */
+    }
+
     /* enable LINK receive */
     R_CRU->CSI2nMCT3_b.RXEN = 0b1;
+
+    R_CPG->CPG_CLKON_CRU = CPG_CLKON_CRU_VCLK_ENABLE;
+    while(R_CPG->CPG_CLKMON_CRU_b.CLK1_MON == 0b0)
+    {
+        /* Do Nothing */
+    }
+
+    /* Release the CRU from the reset state for the third time (D-PHY)) */
+    R_CPG->CPG_RST_CRU = CPG_RST_CRU_UNIT0_ENABLE;
 }
 
 /*******************************************************************************************************************//**
@@ -464,9 +501,16 @@ static void r_cru_mipi_link_set (cru_cfg_t const * const p_cfg)
  **********************************************************************************************************************/
 static void r_cru_axi_set (cru_cfg_t const * const p_cfg)
 {
+#if (BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;   /* Physical Address */
+    uint64_t va;   /* Virtual Address */
+#endif
+
     /* MB setting */
     uint16_t wait;
     uint8_t  MB_valid = 1;
+    uint8_t  i = 0;
+
     for (wait = 0; wait < p_cfg->buffer_cfg.num_buffers; wait++)
     {
         MB_valid *= 2;
@@ -475,77 +519,26 @@ static void r_cru_axi_set (cru_cfg_t const * const p_cfg)
     MB_valid--;
     R_CRU->AMnMBVALID_b.MBVALID = MB_valid;
 
-    /* Buffer address setting  */
-    if (p_cfg->buffer_cfg.pp_buffer[0] != NULL)
+    for(i = 0;i < p_cfg->buffer_cfg.num_buffers; i++)
     {
-        R_CRU->AMnMB1ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[0]) & CAST_TO_UINT32;
-    }
-    else
-    {
+        /* Buffer address setting  */
+        if (p_cfg->buffer_cfg.pp_buffer[0] != NULL)
+        {
+            /* Set physical address of read buffer to an I/O register */
+#if (BSP_HAS_MMU_SUPPORT)
+            va = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[i]) & CAST_TO_UINT32;
+            R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+            *AMnMBnADDRL[i] = (uint32_t)((uint64_t)pa) & CAST_TO_UINT32;
+            *AMnMBnADDRH[i] = (uint32_t)((uint64_t)pa >> BIT_SHIFT_32 ) & CAST_TO_UINT2;
+#else
+            *AMnMBnADDRL[i] = (uint32_t)((uint64_t)p_cfg->buffer_cfg.pp_buffer[i]) & CAST_TO_UINT32;
+            *AMnMBnADDRH[i] = (uint32_t)((uint64_t)p_cfg->buffer_cfg.pp_buffer[i] >> BIT_SHIFT_32 ) & CAST_TO_UINT2;
+#endif
+        }
+        else
+        {
         /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[1] != NULL)
-    {
-        R_CRU->AMnMB2ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[1]) & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[2] != NULL)
-    {
-        R_CRU->AMnMB3ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[2]) & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[3] != NULL)
-    {
-        R_CRU->AMnMB4ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[3]) & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[4] != NULL)
-    {
-        R_CRU->AMnMB5ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[4]) & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[5] != NULL)
-    {
-        R_CRU->AMnMB6ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer)[5] & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[6] != NULL)
-    {
-        R_CRU->AMnMB7ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[6]) & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
-
-    if (p_cfg->buffer_cfg.pp_buffer[7] != NULL)
-    {
-        R_CRU->AMnMB8ADDRL = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[7]) & CAST_TO_UINT32;
-    }
-    else
-    {
-        /* Do Nothing */
+        }
     }
 
     /* AXI Master transfer stop setting */
