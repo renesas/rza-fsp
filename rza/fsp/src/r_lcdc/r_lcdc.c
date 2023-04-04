@@ -448,9 +448,9 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
     FSP_ERROR_RETURN((DISPLAY_STATE_DISPLAYING == p_ctrl->state), FSP_ERR_INVALID_MODE);
 #endif
 
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
 
     /* Check layer number */
@@ -473,14 +473,13 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
 
         /* Set layer1's buffer address to Display List Body */
         /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-        va = (uint64_t)framebuffer & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t) framebuffer & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-        dl_body.cmd[1].set_data = (uint64_t)pa & CAST_TO_UINT32;
+        dl_body.cmd[1].set_data = pa & CAST_TO_UINT32;
 #else
         dl_body.cmd[1].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
 #endif
-
     }
     else if (layer == DISPLAY_FRAME_LAYER_2)
     {
@@ -496,14 +495,15 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
         }
 
         /* Set layer2's buffer address to Display List Body */
-#if (BSP_HAS_MMU_SUPPORT)
-        va = (uint64_t)framebuffer & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t) framebuffer & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-        dl_body.cmd[11].set_data = (uint64_t)pa & CAST_TO_UINT32;
+        dl_body.cmd[11].set_data = pa & CAST_TO_UINT32;
 #else
         dl_body.cmd[11].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
 #endif
-        //dl_body.cmd[11].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
+
+        // dl_body.cmd[11].set_data = (uint64_t) framebuffer & CAST_TO_UINT32;
     }
     else
     {
@@ -678,10 +678,11 @@ static void r_lcdc_clock_set (void)
  **********************************************************************************************************************/
 static void r_lcdc_dl_set (void)
 {
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
+
     /* Fixed Value */
     R_LCDC->VI6_DL_CTRL_b.AR_WAIT = LCDC_VSPD_DL_CTRL;
 
@@ -709,7 +710,7 @@ static void r_lcdc_dl_set (void)
     R_LCDC->VI6_DL_EXT_CTRL0_b.DLPRI = 0b1;
 
     /* Display List Header Address */
-#if (BSP_HAS_MMU_SUPPORT)
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     va = (uint64_t) (&dl_body) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_DL_HDR_ADDR0 = pa & CAST_TO_UINT32;
@@ -729,9 +730,9 @@ static void r_lcdc_dl_set (void)
  **********************************************************************************************************************/
 static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
 {
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
 
     /* set Display List Body address */
@@ -765,8 +766,8 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
     dl_body.cmd[0].set_data = LAYER_STATUS_INIT;
 
     /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-    va = (uint64_t)(p_cfg->input[0].p_base) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t) (p_cfg->input[0].p_base) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     dl_body.cmd[1].set_data = pa & CAST_TO_UINT32;
 #else
@@ -799,8 +800,8 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
     dl_body.cmd[10].set_data = 0;
 
     /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-    va = (uint64_t)(p_cfg->input[1].p_base) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t) (p_cfg->input[1].p_base) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     dl_body.cmd[11].set_data = pa & CAST_TO_UINT32;
 #else
@@ -834,20 +835,20 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
     dl_body.cmd[20].set_data = 0;
 
     /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-    va = (uint64_t)(p_cfg->input[0].p_base_cb) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t) (p_cfg->input[0].p_base_cb) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     dl_body.cmd[21].set_data = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)(p_cfg->input[0].p_base_cr) & CAST_TO_UINT32;
+    va = (uint64_t) (p_cfg->input[0].p_base_cr) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     dl_body.cmd[22].set_data = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)(p_cfg->input[1].p_base_cb) & CAST_TO_UINT32;
+    va = (uint64_t) (p_cfg->input[1].p_base_cb) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     dl_body.cmd[23].set_data = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)(p_cfg->input[1].p_base_cr) & CAST_TO_UINT32;
+    va = (uint64_t) (p_cfg->input[1].p_base_cr) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     dl_body.cmd[24].set_data = pa & CAST_TO_UINT32;
 #else
@@ -866,9 +867,9 @@ static void r_lcdc_dl_address_set (display_cfg_t const * const p_cfg)
  **********************************************************************************************************************/
 static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
 {
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
     static uint32_t hsize;
     static uint32_t vsize;
@@ -895,24 +896,23 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
 
     /* Buffer address Setting */
     /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-    va = (uint64_t)p_cfg->input[0].p_base & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t) p_cfg->input[0].p_base & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_RPF0_SRCM_ADDR_Y = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)p_cfg->input[0].p_base_cb & CAST_TO_UINT32;
+    va = (uint64_t) p_cfg->input[0].p_base_cb & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_RPF0_SRCM_ADDR_C0 = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)p_cfg->input[0].p_base_cr & CAST_TO_UINT32;
+    va = (uint64_t) p_cfg->input[0].p_base_cr & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_RPF0_SRCM_ADDR_C1 = pa & CAST_TO_UINT32;
 #else
-    R_LCDC->VI6_RPF0_SRCM_ADDR_Y = (uint64_t) p_cfg->input[0].p_base & CAST_TO_UINT32;
+    R_LCDC->VI6_RPF0_SRCM_ADDR_Y  = (uint64_t) p_cfg->input[0].p_base & CAST_TO_UINT32;
     R_LCDC->VI6_RPF0_SRCM_ADDR_C0 = (uint64_t) p_cfg->input[0].p_base_cb & CAST_TO_UINT32;
     R_LCDC->VI6_RPF0_SRCM_ADDR_C1 = (uint64_t) p_cfg->input[0].p_base_cr & CAST_TO_UINT32;
 #endif
-
 
     /* Alpha Setting (RPF0 Alpha data is 0x00) */
     R_LCDC->VI6_RPF0_ALPH_SEL_b.ASEL = 0x0;
@@ -920,7 +920,7 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
     /* Swap Setting */
     R_LCDC->VI6_RPF0_DSWAP = p_cfg->input[0].data_swap;
 
-    if(p_cfg->input[0].p_base == NULL)
+    if (p_cfg->input[0].p_base == NULL)
     {
         /* Disable Layer1 (RPF0) */
         layer_status &= LAYER_DISABLE_1;
@@ -940,9 +940,9 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
  **********************************************************************************************************************/
 static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
 {
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
     static uint32_t hsize;
     static uint32_t vsize;
@@ -969,20 +969,20 @@ static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
 
     /* Buffer address Setting */
     /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-    va = (uint64_t)p_cfg->input[1].p_base & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    va = (uint64_t) p_cfg->input[1].p_base & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_RPF1_SRCM_ADDR_Y = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)p_cfg->input[1].p_base_cb & CAST_TO_UINT32;
+    va = (uint64_t) p_cfg->input[1].p_base_cb & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_RPF1_SRCM_ADDR_C0 = pa & CAST_TO_UINT32;
 
-    va = (uint64_t)p_cfg->input[1].p_base_cr & CAST_TO_UINT32;
+    va = (uint64_t) p_cfg->input[1].p_base_cr & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     R_LCDC->VI6_RPF1_SRCM_ADDR_C1 = pa & CAST_TO_UINT32;
 #else
-    R_LCDC->VI6_RPF1_SRCM_ADDR_Y = (uint64_t) p_cfg->input[1].p_base & CAST_TO_UINT32;
+    R_LCDC->VI6_RPF1_SRCM_ADDR_Y  = (uint64_t) p_cfg->input[1].p_base & CAST_TO_UINT32;
     R_LCDC->VI6_RPF1_SRCM_ADDR_C0 = (uint64_t) p_cfg->input[1].p_base_cb & CAST_TO_UINT32;
     R_LCDC->VI6_RPF1_SRCM_ADDR_C1 = (uint64_t) p_cfg->input[1].p_base_cr & CAST_TO_UINT32;
 #endif
@@ -993,7 +993,7 @@ static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
     /* Swap Setting */
     R_LCDC->VI6_RPF1_DSWAP = p_cfg->input[1].data_swap;
 
-    if(p_cfg->input[1].p_base == NULL)
+    if (p_cfg->input[1].p_base == NULL)
     {
         /* Disable Layer1 (RPF0) */
         layer_status &= LAYER_DISABLE_2;
@@ -1122,10 +1122,11 @@ static void r_lcdc_brs_set (void)
  **********************************************************************************************************************/
 static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, display_frame_layer_t layer)
 {
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
+
     /* Display List Body Setting */
     /* Change Layer Setting */
     if (layer == DISPLAY_FRAME_LAYER_1)
@@ -1140,9 +1141,10 @@ static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, disp
             /* Enable Layer1 (RPF0) */
             layer_status |= LAYER_ENABLE_1;
         }
+
         /* Set physical address of buffer to descriptor */
-#if (BSP_HAS_MMU_SUPPORT)
-        va = (uint64_t)(p_cfg->input.p_base) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t) (p_cfg->input.p_base) & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         dl_body.cmd[1].set_data = pa & CAST_TO_UINT32;
 #else
@@ -1154,12 +1156,12 @@ static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, disp
         dl_body.cmd[5].set_data = (uint32_t) (((p_cfg->input.hstride) << 16) | (p_cfg->input.hstride_cbcr));
         dl_body.cmd[6].set_data = (uint32_t) ((p_cfg->input.coordinate_x << 16) + p_cfg->input.coordinate_y);
         dl_body.cmd[7].set_data = (uint32_t) (p_cfg->input.data_swap);
-#if (BSP_HAS_MMU_SUPPORT)
-        va = (uint64_t)(p_cfg->input.p_base_cb) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t) (p_cfg->input.p_base_cb) & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         dl_body.cmd[21].set_data = pa & CAST_TO_UINT32;
 
-        va = (uint64_t)(p_cfg->input.p_base_cr) & CAST_TO_UINT32;
+        va = (uint64_t) (p_cfg->input.p_base_cr) & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         dl_body.cmd[22].set_data = pa & CAST_TO_UINT32;
 #else
@@ -1180,8 +1182,8 @@ static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, disp
             layer_status |= LAYER_ENABLE_2;
         }
 
-#if (BSP_HAS_MMU_SUPPORT)
-        va = (uint64_t)(p_cfg->input.p_base) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t) (p_cfg->input.p_base) & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         dl_body.cmd[11].set_data = pa & CAST_TO_UINT32;
 #else
@@ -1193,12 +1195,12 @@ static void r_lcdc_layer_change (display_runtime_cfg_t const * const p_cfg, disp
         dl_body.cmd[15].set_data = (uint32_t) (((p_cfg->input.hstride) << 16) | (p_cfg->input.hstride_cbcr));
         dl_body.cmd[16].set_data = (uint32_t) ((p_cfg->input.coordinate_x << 16) + p_cfg->input.coordinate_y);
         dl_body.cmd[17].set_data = (uint32_t) (p_cfg->input.data_swap);
-#if (BSP_HAS_MMU_SUPPORT)
-        va = (uint64_t)(p_cfg->input.p_base_cb) & CAST_TO_UINT32;
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+        va = (uint64_t) (p_cfg->input.p_base_cb) & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         dl_body.cmd[23].set_data = pa & CAST_TO_UINT32;
 
-        va = (uint64_t)(p_cfg->input.p_base_cr) & CAST_TO_UINT32;
+        va = (uint64_t) (p_cfg->input.p_base_cr) & CAST_TO_UINT32;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         dl_body.cmd[24].set_data = pa & CAST_TO_UINT32;
 #else

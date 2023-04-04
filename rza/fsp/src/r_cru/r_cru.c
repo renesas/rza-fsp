@@ -162,28 +162,28 @@ static const uint8_t capture_output_format[] =
     0x2, /* RGB888 32bit  */           ///< B-G-R-A
 };
 
-static volatile  uint32_t * const AMnMBnADDRL[8] =
+static volatile uint32_t * const AMnMBnADDRL[8] =
 {
-     &(R_CRU->AMnMB1ADDRL),
-     &(R_CRU->AMnMB2ADDRL),
-     &(R_CRU->AMnMB3ADDRL),
-     &(R_CRU->AMnMB4ADDRL),
-     &(R_CRU->AMnMB5ADDRL),
-     &(R_CRU->AMnMB6ADDRL),
-     &(R_CRU->AMnMB7ADDRL),
-     &(R_CRU->AMnMB8ADDRL),
+    &(R_CRU->AMnMB1ADDRL),
+    &(R_CRU->AMnMB2ADDRL),
+    &(R_CRU->AMnMB3ADDRL),
+    &(R_CRU->AMnMB4ADDRL),
+    &(R_CRU->AMnMB5ADDRL),
+    &(R_CRU->AMnMB6ADDRL),
+    &(R_CRU->AMnMB7ADDRL),
+    &(R_CRU->AMnMB8ADDRL),
 };
 
-static volatile  uint32_t * const AMnMBnADDRH[8] =
+static volatile uint32_t * const AMnMBnADDRH[8] =
 {
-     &(R_CRU->AMnMB1ADDRH),
-     &(R_CRU->AMnMB2ADDRH),
-     &(R_CRU->AMnMB3ADDRH),
-     &(R_CRU->AMnMB4ADDRH),
-     &(R_CRU->AMnMB5ADDRH),
-     &(R_CRU->AMnMB6ADDRH),
-     &(R_CRU->AMnMB7ADDRH),
-     &(R_CRU->AMnMB8ADDRH),
+    &(R_CRU->AMnMB1ADDRH),
+    &(R_CRU->AMnMB2ADDRH),
+    &(R_CRU->AMnMB3ADDRH),
+    &(R_CRU->AMnMB4ADDRH),
+    &(R_CRU->AMnMB5ADDRH),
+    &(R_CRU->AMnMB6ADDRH),
+    &(R_CRU->AMnMB7ADDRH),
+    &(R_CRU->AMnMB8ADDRH),
 };
 static cru_instance_ctrl_t * r_cru_blk;
 
@@ -475,7 +475,7 @@ static void r_cru_mipi_link_set (cru_cfg_t const * const p_cfg)
     R_CRU->CSI2nDTEH = CSI2_DTEH;
 
     R_CPG->CPG_CLKON_CRU = CPG_CLKON_CRU_VCLK_DISABLE;
-    while(R_CPG->CPG_CLKMON_CRU_b.CLK1_MON == 0b1)
+    while (R_CPG->CPG_CLKMON_CRU_b.CLK1_MON == 0b1)
     {
         /* Do Nothing */
     }
@@ -484,7 +484,7 @@ static void r_cru_mipi_link_set (cru_cfg_t const * const p_cfg)
     R_CRU->CSI2nMCT3_b.RXEN = 0b1;
 
     R_CPG->CPG_CLKON_CRU = CPG_CLKON_CRU_VCLK_ENABLE;
-    while(R_CPG->CPG_CLKMON_CRU_b.CLK1_MON == 0b0)
+    while (R_CPG->CPG_CLKMON_CRU_b.CLK1_MON == 0b0)
     {
         /* Do Nothing */
     }
@@ -501,15 +501,15 @@ static void r_cru_mipi_link_set (cru_cfg_t const * const p_cfg)
  **********************************************************************************************************************/
 static void r_cru_axi_set (cru_cfg_t const * const p_cfg)
 {
-#if (BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
 
     /* MB setting */
     uint16_t wait;
     uint8_t  MB_valid = 1;
-    uint8_t  i = 0;
+    uint8_t  i        = 0;
 
     for (wait = 0; wait < p_cfg->buffer_cfg.num_buffers; wait++)
     {
@@ -519,25 +519,25 @@ static void r_cru_axi_set (cru_cfg_t const * const p_cfg)
     MB_valid--;
     R_CRU->AMnMBVALID_b.MBVALID = MB_valid;
 
-    for(i = 0;i < p_cfg->buffer_cfg.num_buffers; i++)
+    for (i = 0; i < p_cfg->buffer_cfg.num_buffers; i++)
     {
         /* Buffer address setting  */
         if (p_cfg->buffer_cfg.pp_buffer[0] != NULL)
         {
             /* Set physical address of read buffer to an I/O register */
-#if (BSP_HAS_MMU_SUPPORT)
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
             va = (uint64_t) (p_cfg->buffer_cfg.pp_buffer[i]) & CAST_TO_UINT32;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-            *AMnMBnADDRL[i] = (uint32_t)((uint64_t)pa) & CAST_TO_UINT32;
-            *AMnMBnADDRH[i] = (uint32_t)((uint64_t)pa >> BIT_SHIFT_32 ) & CAST_TO_UINT2;
+            *AMnMBnADDRL[i] = (uint32_t) (pa) & CAST_TO_UINT32;
+            *AMnMBnADDRH[i] = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT2;
 #else
-            *AMnMBnADDRL[i] = (uint32_t)((uint64_t)p_cfg->buffer_cfg.pp_buffer[i]) & CAST_TO_UINT32;
-            *AMnMBnADDRH[i] = (uint32_t)((uint64_t)p_cfg->buffer_cfg.pp_buffer[i] >> BIT_SHIFT_32 ) & CAST_TO_UINT2;
+            *AMnMBnADDRL[i] = (uint32_t) ((uint64_t) p_cfg->buffer_cfg.pp_buffer[i]) & CAST_TO_UINT32;
+            *AMnMBnADDRH[i] = (uint32_t) ((uint64_t) p_cfg->buffer_cfg.pp_buffer[i] >> BIT_SHIFT_32) & CAST_TO_UINT2;
 #endif
         }
         else
         {
-        /* Do Nothing */
+            /* Do Nothing */
         }
     }
 

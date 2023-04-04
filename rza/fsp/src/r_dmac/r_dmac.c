@@ -400,6 +400,7 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
                          uint32_t const          num_transfers)
 {
     dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) p_api_ctrl;
+
     uint32_t             * p_src_cast;
     uint32_t             * p_dest_cast;
 
@@ -415,8 +416,8 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
 
     if ((1 == p_ctrl->p_reg->CHSTAT_b.EN) && (0 == p_ctrl->p_reg->CHCFG_b.REN))
     {
-        p_src_cast  = (uint32_t *) p_src;
-        p_dest_cast = (uint32_t *) p_dest;
+        p_src_cast  = (uint32_t *) &p_src;
+        p_dest_cast = (uint32_t *) &p_dest;
         if (1 == p_ctrl->p_reg->CHSTAT_b.SR)
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
@@ -850,7 +851,10 @@ void dmac_int_isr (IRQn_Type const irq)
     if (p_extend->activation_source)
     {
         /* Activation source disabled */
-        r_dmac_activation_trigger_disable(p_extend);
+        if(1 != p_ctrl->p_reg->CHSTAT_b.EN)
+        {
+            r_dmac_activation_trigger_disable(p_extend);
+        }
 
         /* Call peripheral module handler */
         if (p_extend->p_peripheral_module_handler)

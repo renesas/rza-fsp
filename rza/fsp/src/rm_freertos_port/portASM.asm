@@ -42,7 +42,7 @@
 
 	/* .extern vector_table*/
 
-	.global FreeRTOS_IRQ_Handler
+	.global FreeRTOS_FIQ_Handler
 	.global FreeRTOS_SWI_Handler
 	.global vPortRestoreTaskContext
 
@@ -230,11 +230,11 @@ SyncSp0:
 
     .balign 0x80
 IrqSp0:
-    B irq_handler
+    B FreeRTOS_FIQ_Handler
 
     .balign 0x80
 FiqSp0:
-    B fiq_handler
+    B FreeRTOS_FIQ_Handler
 
     .balign 0x80
 SerrSp0:
@@ -252,11 +252,11 @@ SyncSpx:
     .balign 0x80
 
 IrqSpx:
-    B irq_handler
+    B FreeRTOS_FIQ_Handler
 
     .balign 0x80
 FiqSpx:
-    B fiq_handler
+    B FreeRTOS_FIQ_Handler
 
     .balign 0x80
 SerrSpx:
@@ -366,11 +366,11 @@ vPortRestoreTaskContext:
 
 
 /******************************************************************************
- * FreeRTOS_IRQ_Handler handles IRQ entry and exit.
+ * FreeRTOS_FIQ_Handler handles FIQ entry and exit.
  *****************************************************************************/
 .align 8
-.type FreeRTOS_IRQ_Handler, %function
-FreeRTOS_IRQ_Handler:
+.type FreeRTOS_FIQ_Handler, %function
+FreeRTOS_FIQ_Handler:
 	/* Save volatile registers. */
 	STP		X0, X1, [SP, #-0x10]!
 	STP		X2, X3, [SP, #-0x10]!
@@ -404,7 +404,7 @@ FreeRTOS_IRQ_Handler:
 	STP		X1, X5, [SP, #-0x10]!
 
 	/* Call the C handler. */
-	BL vApplicationIRQHandler
+	BL FIQ_ExecuteHandler
 
 	/* Disable interrupts. */
 	MSR 	DAIFSET, #1
