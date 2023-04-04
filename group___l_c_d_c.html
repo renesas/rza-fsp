@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.2.0</span>
+   &#160;<span id="projectnumber">Release v1.2.1</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -352,13 +352,13 @@ Disabled</li>
 <tr>
 <td>Input &gt; Graphics Layer 2 &gt; Framebuffer &gt; Section for framebuffer allocation</td><td>Manual Entry</td><td>UNCACHED_BSS </td><td>Specify the section in which to allocate the framebuffer. When Arm Compiler 6 is used to place this memory in on-chip SRAM, the section name must be .bss or start with .bss. to avoid consuming unnecessary ROM space. </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Horizontal total cycles</td><td>Value must be between 3 and 28668</td><td>2200 </td><td>Specify the total cycles in a horizontal line. Set to the number of cycles defined in the data sheet of LCD panel sheet in your system </td></tr>
+<td>Output &gt; Timing &gt; Horizontal total cycles</td><td>Value must be between 3 and 28668</td><td>1650 </td><td>Specify the total cycles in a horizontal line. Set to the number of cycles defined in the data sheet of LCD panel sheet in your system </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Horizontal active video cycles</td><td>Value must be between 0 and 8191</td><td>1920 </td><td>Specify the number of active video cycles in a horizontal line (including front and back porch). Set to the number of cycles defined in the data sheet of LCD panel sheet in your system. </td></tr>
+<td>Output &gt; Timing &gt; Horizontal active video cycles</td><td>Value must be between 0 and 8191</td><td>1280 </td><td>Specify the number of active video cycles in a horizontal line (including front and back porch). Set to the number of cycles defined in the data sheet of LCD panel sheet in your system. </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Horizontal back porch cycles</td><td>Value must be between 0 and 12286</td><td>192 </td><td>Specify the number of back porch cycles in a horizontal line. Back porch starts from the beginning of Hsync cycles, which means back porch cycles contain Hsync cycles. Set to the number of cycles defined in the data sheet of LCD panel sheet in your system. </td></tr>
+<td>Output &gt; Timing &gt; Horizontal back porch cycles</td><td>Value must be between 0 and 12286</td><td>260 </td><td>Specify the number of back porch cycles in a horizontal line. Back porch starts from the beginning of Hsync cycles, which means back porch cycles contain Hsync cycles. Set to the number of cycles defined in the data sheet of LCD panel sheet in your system. </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Horizontal sync signal cycles</td><td>Value must be between 0 and 8191</td><td>44 </td><td>Specify the number of Hsync signal assertion cycles. Set to the number of cycles defined in the data sheet of LCD panel sheet in your system. </td></tr>
+<td>Output &gt; Timing &gt; Horizontal sync signal cycles</td><td>Value must be between 0 and 8191</td><td>40 </td><td>Specify the number of Hsync signal assertion cycles. Set to the number of cycles defined in the data sheet of LCD panel sheet in your system. </td></tr>
 <tr>
 <td>Output &gt; Timing &gt; Horizontal sync signal polarity</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -366,13 +366,13 @@ Low active</li>
 <li>
 High active</li>
 </ul>
-</td><td>module.driver.display.output.htiming.sync_polarity.signal_polarity_haictive </td><td>Select the polarity of Hsync signal to match your system. </td></tr>
+</td><td>High active </td><td>Select the polarity of Hsync signal to match your system. </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Vertical total lines</td><td>Value must be between 0 and 28668</td><td>1125 </td><td>Specify number of total lines in a frame (including front and back porch). </td></tr>
+<td>Output &gt; Timing &gt; Vertical total lines</td><td>Value must be between 0 and 28668</td><td>750 </td><td>Specify number of total lines in a frame (including front and back porch). </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Vertical active video lines</td><td>Value must be between 0 and 8191</td><td>1080 </td><td>Specify the number of active video lines in a frame. </td></tr>
+<td>Output &gt; Timing &gt; Vertical active video lines</td><td>Value must be between 0 and 8191</td><td>720 </td><td>Specify the number of active video lines in a frame. </td></tr>
 <tr>
-<td>Output &gt; Timing &gt; Vertical back porch lines</td><td>Value must be between 0 and 12286</td><td>41 </td><td>Specify the number of back porch lines in a frame. Back porch starts from the beginning of Vsync lines, which means back porch lines contain Vsync lines. </td></tr>
+<td>Output &gt; Timing &gt; Vertical back porch lines</td><td>Value must be between 0 and 12286</td><td>25 </td><td>Specify the number of back porch lines in a frame. Back porch starts from the beginning of Vsync lines, which means back porch lines contain Vsync lines. </td></tr>
 <tr>
 <td>Output &gt; Timing &gt; Vertical sync signal lines</td><td>Value must be between 0 and 8191</td><td>5 </td><td>Specify the Vsync signal assertion lines in a frame. </td></tr>
 <tr>
@@ -382,7 +382,7 @@ Low active</li>
 <li>
 High active</li>
 </ul>
-</td><td>module.driver.display.output.vtiming.sync_polarity.signal_polarity_haictive </td><td>Select the polarity of Vsync signal to match to your system. </td></tr>
+</td><td>High active </td><td>Select the polarity of Vsync signal to match to your system. </td></tr>
 <tr>
 <td>Output &gt; Timing &gt; Data Enable Signal Polarity</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -826,7 +826,7 @@ Under run interrupt vector. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.2.0 User's Manual Copyright © (2022) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v1.2.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>
