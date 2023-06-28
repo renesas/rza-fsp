@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.2.1</span>
+   &#160;<span id="projectnumber">Release v2.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -430,9 +430,15 @@ Input capture at both edges</li>
 <tr>
 <td>Interrupts &gt; Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback function can be specified here. If this callback function is provided, it will be called from the interrupt service routine (ISR) each time the timer period elapses </td></tr>
 <tr>
+<td>Interrupts &gt; Overflow/Crest Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the overflow interrupt. </td></tr>
+<tr>
 <td>Interrupts &gt; Overflow/Crest Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the overflow interrupt priority. This is the crest interrupt for triangle-wave PWM. </td></tr>
 <tr>
+<td>Interrupts &gt; Capture A Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the capture A interrupt. </td></tr>
+<tr>
 <td>Interrupts &gt; Capture A Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for capture A. </td></tr>
+<tr>
+<td>Interrupts &gt; Capture B Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the capture B interrupt. </td></tr>
 <tr>
 <td>Interrupts &gt; Capture B Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for capture B. </td></tr>
 <tr>
@@ -1902,7 +1908,7 @@ Advanced PWM features, optional. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.2.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v2.0.0 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

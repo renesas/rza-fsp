@@ -11,6 +11,7 @@ var group___r_e_n_e_s_a_s___i_n_t_e_r_f_a_c_e_s =
     [ "I2C Slave Interface", "group___i2_c___s_l_a_v_e___a_p_i.html", "group___i2_c___s_l_a_v_e___a_p_i" ],
     [ "I2S Interface", "group___i2_s___a_p_i.html", "group___i2_s___a_p_i" ],
     [ "I/O Port Interface", "group___i_o_p_o_r_t___a_p_i.html", "group___i_o_p_o_r_t___a_p_i" ],
+    [ "Image Scaling Interface", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i" ],
     [ "Memory Managing Unit Interface", "group___m_m_u___a_p_i.html", "group___m_m_u___a_p_i" ],
     [ "SD/MMC Interface", "group___s_d_m_m_c___a_p_i.html", "group___s_d_m_m_c___a_p_i" ],
     [ "SPI Interface", "group___s_p_i___a_p_i.html", "group___s_p_i___a_p_i" ],
@@ -24,5 +25,6 @@ var group___r_e_n_e_s_a_s___i_n_t_e_r_f_a_c_e_s =
     [ "USB PCDC Interface", "group___u_s_b___p_c_d_c___a_p_i.html", "group___u_s_b___p_c_d_c___a_p_i" ],
     [ "WDT Interface", "group___w_d_t___a_p_i.html", "group___w_d_t___a_p_i" ],
     [ "Block Media Interface", "group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html", "group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i" ],
+    [ "FileX Block Media Port Interface", "group___r_m___f_i_l_e_x___b_l_o_c_k___m_e_d_i_a___a_p_i.html", "group___r_m___f_i_l_e_x___b_l_o_c_k___m_e_d_i_a___a_p_i" ],
     [ "FreeRTOS+FAT Port Interface", "group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html", "group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i" ]
 ];

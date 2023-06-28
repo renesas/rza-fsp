@@ -11,6 +11,7 @@ var group___r_s_p_i =
       [ "spck_delay", "group___r_s_p_i.html#a0cbb7690023ca0e3a82dd9acf79e34f3", null ],
       [ "ssl_negation_delay", "group___r_s_p_i.html#ace6d2dd7ac73c2171a7c2f0edb11db22", null ],
       [ "next_access_delay", "group___r_s_p_i.html#a4a5671a7b1a0b31742f3fb3ffb832532", null ],
+      [ "ssl_level_keep", "group___r_s_p_i.html#ae3192998dbe33aee6614dd5f5850d289", null ],
       [ "rx_trigger_level", "group___r_s_p_i.html#a4d6543f22a352c931855cd85e19cfe45", null ],
       [ "tx_trigger_level", "group___r_s_p_i.html#ac9029124a35943dc5f347657d28d3c16", null ]
     ] ],
@@ -35,6 +36,10 @@ var group___r_s_p_i =
       [ "RSPI_MOSI_IDLE_VALUE_FIXING_DISABLE", "group___r_s_p_i.html#ggae3deb1d097bc300a5ed42849ebb200c6a671c871f2ed8584714caf4c0d562da4e", null ],
       [ "RSPI_MOSI_IDLE_VALUE_FIXING_LOW", "group___r_s_p_i.html#ggae3deb1d097bc300a5ed42849ebb200c6a2a42bca9fb7a5f485d0c21c70d83c6bc", null ],
       [ "RSPI_MOSI_IDLE_VALUE_FIXING_HIGH", "group___r_s_p_i.html#ggae3deb1d097bc300a5ed42849ebb200c6a334fbae8188c8d89825231b5126c432d", null ]
+    ] ],
+    [ "rspi_ssl_level_keep_t", "group___r_s_p_i.html#gaae19ba80f9290f4ad12e794cf1bac9f2", [
+      [ "RSPI_SSL_LEVEL_KEEP_DISABLE", "group___r_s_p_i.html#ggaae19ba80f9290f4ad12e794cf1bac9f2ab841c4b6e56bf3a45f323d77f93b2d03", null ],
+      [ "RSPI_SSL_LEVEL_KEEP_ENABLE", "group___r_s_p_i.html#ggaae19ba80f9290f4ad12e794cf1bac9f2aabdf42d404217b46fab49e661dc6f128", null ]
     ] ],
     [ "rspi_delay_count_t", "group___r_s_p_i.html#ga8f68c8c6c98ee871ad72bbb94c559775", [
       [ "RSPI_DELAY_COUNT_1", "group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775acf6c2af3c3fd7da891cd64c6ac082ed7", null ],

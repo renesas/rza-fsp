@@ -1,6 +1,7 @@
 var group___g_e_t_h_e_r =
 [
     [ "gether_instance_rx_descriptor_t", "group___g_e_t_h_e_r.html#structgether__instance__rx__descriptor__t", null ],
+    [ "ether_instance_descriptor_t", "group___g_e_t_h_e_r.html#structether__instance__descriptor__t", null ],
     [ "ether_instance_ctrl_t", "group___g_e_t_h_e_r.html#structether__instance__ctrl__t", [
       [ "open", "group___g_e_t_h_e_r.html#a5a47551251fa2ce32c2eb47789bfc1ec", null ],
       [ "p_gether_cfg", "group___g_e_t_h_e_r.html#a88e645f1404f878dcf07089565addfb9", null ],
@@ -33,6 +34,7 @@ var group___g_e_t_h_e_r =
     [ "R_GETHER_Write", "group___g_e_t_h_e_r.html#ga2b60f8ac3dfedcffa0d6b7b3a312b51b", null ],
     [ "R_GETHER_LinkProcess", "group___g_e_t_h_e_r.html#ga7280977fc26137e2fdaf652d650e0175", null ],
     [ "R_GETHER_WakeOnLANEnable", "group___g_e_t_h_e_r.html#gaac407ed3fc8ae8e6ed98a2655ee8c00c", null ],
+    [ "R_GETHER_CallbackSet", "group___g_e_t_h_e_r.html#ga1433a154970bdf2e09928c4631717dc4", null ],
     [ "R_GETHER_RxBufferUpdate", "group___g_e_t_h_e_r.html#gab8cbb949266413cc4a598e641d30bf76", null ],
     [ "R_GETHER_TxStatusGet", "group___g_e_t_h_e_r.html#gab669c8be88de12133986ee28096ee01b", null ]
 ];

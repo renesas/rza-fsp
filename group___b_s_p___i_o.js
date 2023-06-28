@@ -156,8 +156,72 @@ var group___b_s_p___i_o =
       [ "BSP_IO_RIIC1_SDA", "group___b_s_p___i_o.html#gga0adbfd4b7db319886d667acb4804d80aa6828c5428be0bd1a3a5b79e111871411", null ],
       [ "BSP_IO_RIIC1_SCL", "group___b_s_p___i_o.html#gga0adbfd4b7db319886d667acb4804d80aa8c0b73a965fe066d0d58a4fb513d84dc", null ]
     ] ],
+    [ "bsp_sd_channel_t", "group___b_s_p___i_o.html#gad0c359892ab6323f72558fb6f0efbb39", [
+      [ "BSP_SD_CHANNEL_0", "group___b_s_p___i_o.html#ggad0c359892ab6323f72558fb6f0efbb39a78721ea751aeb12179ca343858f91c7b", null ],
+      [ "BSP_SD_CHANNEL_1", "group___b_s_p___i_o.html#ggad0c359892ab6323f72558fb6f0efbb39a982209b33546c7b97b98e0e182fee582", null ]
+    ] ],
+    [ "bsp_ethernet_channel_t", "group___b_s_p___i_o.html#ga7a9217abd402bee215bab2874db8dbcd", [
+      [ "BSP_ETHERNET_CHANNEL_0", "group___b_s_p___i_o.html#gga7a9217abd402bee215bab2874db8dbcdadf0b3becd8ccf61e2336c87d51ebdb92", null ],
+      [ "BSP_ETHERNET_CHANNEL_1", "group___b_s_p___i_o.html#gga7a9217abd402bee215bab2874db8dbcdac1123d8c4918b71283ddd440f9f6b679", null ]
+    ] ],
+    [ "bsp_sd_voltage_t", "group___b_s_p___i_o.html#ga5909e53671d51b521963bb4a9c5bb961", [
+      [ "BSP_SD_VOLTAGE_33", "group___b_s_p___i_o.html#gga5909e53671d51b521963bb4a9c5bb961a9a5b3ea4f1555314b07a3bf5567d96b5", null ],
+      [ "BSP_SD_VOLTAGE_18", "group___b_s_p___i_o.html#gga5909e53671d51b521963bb4a9c5bb961ad6d758c60ce16e34187d1c3ea956c983", null ]
+    ] ],
+    [ "bsp_qspi_voltage_t", "group___b_s_p___i_o.html#gac10820a16ee9dcbe7fbbd21ad81eee9f", [
+      [ "BSP_QSPI_VOLTAGE_33", "group___b_s_p___i_o.html#ggac10820a16ee9dcbe7fbbd21ad81eee9fa87d2f4e20a62d305f5a9cd99e28093b1", null ],
+      [ "BSP_QSPI_VOLTAGE_18", "group___b_s_p___i_o.html#ggac10820a16ee9dcbe7fbbd21ad81eee9fa7b2e7dbd3b7011e86d86d71652eb843a", null ]
+    ] ],
+    [ "bsp_xspi_voltage_t", "group___b_s_p___i_o.html#gaca40cd8c80dc5bf04d65d3d5db9e3d7c", [
+      [ "BSP_XSPI_VOLTAGE_33", "group___b_s_p___i_o.html#ggaca40cd8c80dc5bf04d65d3d5db9e3d7ca731b6ae8493cc93ec326574439aa983d", null ],
+      [ "BSP_XSPI_VOLTAGE_18", "group___b_s_p___i_o.html#ggaca40cd8c80dc5bf04d65d3d5db9e3d7caf71bc73917bb7416833e3dca8a41a1b0", null ],
+      [ "BSP_XSPI_VOLTAGE_25", "group___b_s_p___i_o.html#ggaca40cd8c80dc5bf04d65d3d5db9e3d7ca37e1061cff55bbab7d5ddae4071322dd", null ]
+    ] ],
+    [ "bsp_ethernet_voltage_t", "group___b_s_p___i_o.html#ga0eaa3fb56a6c45bb8725d7ccc3c7c67e", [
+      [ "BSP_ETHERNET_VOLTAGE_33", "group___b_s_p___i_o.html#gga0eaa3fb56a6c45bb8725d7ccc3c7c67ea74ec767baac2681f30afba30a09b80f5", null ],
+      [ "BSP_ETHERNET_VOLTAGE_18", "group___b_s_p___i_o.html#gga0eaa3fb56a6c45bb8725d7ccc3c7c67ea188654c0888f5e6daa99f0f456128ce4", null ],
+      [ "BSP_ETHERNET_VOLTAGE_25", "group___b_s_p___i_o.html#gga0eaa3fb56a6c45bb8725d7ccc3c7c67eaaadd11c1476569d301871c45eae8d9eb", null ]
+    ] ],
+    [ "bsp_i3c_voltage_t", "group___b_s_p___i_o.html#gac4cc2c33eed8a21f90fac99d323a2b85", [
+      [ "BSP_I3C_VOLTAGE_18", "group___b_s_p___i_o.html#ggac4cc2c33eed8a21f90fac99d323a2b85a00b60308d9f46162d50bb8014fe345d0", null ],
+      [ "BSP_I3C_VOLTAGE_12", "group___b_s_p___i_o.html#ggac4cc2c33eed8a21f90fac99d323a2b85a341c63122ad909d8ea4a615bdb3a9f8d", null ]
+    ] ],
+    [ "bsp_ethernet_mode_t", "group___b_s_p___i_o.html#ga96797df60510eb9bc4a73613de51fae5", [
+      [ "BSP_ETHERNET_MODE_RMII", "group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a2a654e5a38c212f306093f5e60218a22", null ],
+      [ "BSP_ETHERNET_MODE_MII", "group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a96490fa59d311791525aa664edd21abd", null ]
+    ] ],
+    [ "bsp_i3c_mode_t", "group___b_s_p___i_o.html#gaf63bd80b976004bd5ed7fd251fcdf1b4", [
+      [ "BSP_I3C_MODE_STB", "group___b_s_p___i_o.html#ggaf63bd80b976004bd5ed7fd251fcdf1b4a7bfb9e2a71ee2dcc6910de37e977ccc8", null ],
+      [ "BSP_I3C_MODE_NOR", "group___b_s_p___i_o.html#ggaf63bd80b976004bd5ed7fd251fcdf1b4a36240372d534ab9cbe23287aa4020805", null ]
+    ] ],
+    [ "bsp_bypass_oscillator_t", "group___b_s_p___i_o.html#ga78e68e2247154764cd7d387d3b191095", [
+      [ "BSP_BYPASS_OSCILLATOR_RTC", "group___b_s_p___i_o.html#gga78e68e2247154764cd7d387d3b191095a32152264d3d4ea0b5e8f3e4bb36346a8", null ],
+      [ "BSP_BYPASS_OSCILLATOR_AUDIO", "group___b_s_p___i_o.html#gga78e68e2247154764cd7d387d3b191095a4e41231154d741945cb439385369bdf3", null ],
+      [ "BSP_BYPASS_OSCILLATOR_EMCLK", "group___b_s_p___i_o.html#gga78e68e2247154764cd7d387d3b191095a9305c0e423f1fbafdd0e0e19e08bdbae", null ]
+    ] ],
+    [ "bsp_bypass_mode_t", "group___b_s_p___i_o.html#ga65987c1da1d49f85463de102d5d24c2e", [
+      [ "BSP_BYPASS_MODE_CRYSTAL_OSC", "group___b_s_p___i_o.html#gga65987c1da1d49f85463de102d5d24c2eafc7271d2760ab1dcd2e368e2eb7f9a7a", null ],
+      [ "BSP_BYPASS_MODE_EXTERNAL_CLK", "group___b_s_p___i_o.html#gga65987c1da1d49f85463de102d5d24c2eaf8967b77658e57030b8e3b5611049e09", null ],
+      [ "BSP_BYPASS_MODE_POWER_DOWN", "group___b_s_p___i_o.html#gga65987c1da1d49f85463de102d5d24c2ea018ff64d40ae82d9f9014b637ba79869", null ]
+    ] ],
+    [ "bsp_bypass_freq_range_t", "group___b_s_p___i_o.html#gabb6374b9eb754bff909bb9b0d25a04fb", [
+      [ "BSP_BYPASS_FREQ_RANGE_1MHZ", "group___b_s_p___i_o.html#ggabb6374b9eb754bff909bb9b0d25a04fbaf7dda67eeadcf51f16aff39c09f7614b", null ],
+      [ "BSP_BYPASS_FREQ_RANGE_12MHZ", "group___b_s_p___i_o.html#ggabb6374b9eb754bff909bb9b0d25a04fbad943f5284b3332ff337bc791ab36ffd4", null ],
+      [ "BSP_BYPASS_FREQ_RANGE_24MHZ", "group___b_s_p___i_o.html#ggabb6374b9eb754bff909bb9b0d25a04fba0b0d404e8b95a60f5f6f8ce3f3b71ff4", null ],
+      [ "BSP_BYPASS_FREQ_RANGE_48MHZ", "group___b_s_p___i_o.html#ggabb6374b9eb754bff909bb9b0d25a04fba13b74446c67d06c3feffa96cd34a6dc3", null ]
+    ] ],
     [ "R_BSP_PinRead", "group___b_s_p___i_o.html#ga6764c3fac52569cadd44b83a6d3f432d", null ],
     [ "R_BSP_PinWrite", "group___b_s_p___i_o.html#ga33cef14f93543bcb3531b4f2e377c5c4", null ],
     [ "R_BSP_PinAccessEnable", "group___b_s_p___i_o.html#ga0ad2123f7a5152cf108883163581f11b", null ],
-    [ "R_BSP_PinAccessDisable", "group___b_s_p___i_o.html#gab5aab592b5fbbfa18d542c0812850b98", null ]
+    [ "R_BSP_PinAccessDisable", "group___b_s_p___i_o.html#gab5aab592b5fbbfa18d542c0812850b98", null ],
+    [ "R_BSP_OENAccessEnable", "group___b_s_p___i_o.html#ga1366a1a0609b52482af37acf4b1354b8", null ],
+    [ "R_BSP_OENAccessDisable", "group___b_s_p___i_o.html#ga9d18d53cf22913ba5379a9b2b78f8af9", null ],
+    [ "R_BSP_EthernetModeCfg", "group___b_s_p___i_o.html#ga12a7886e4da364860e1bd6236cdba973", null ],
+    [ "R_BSP_SDVoltageModeCfg", "group___b_s_p___i_o.html#ga583ef49050efabf390c97e6e4633e173", null ],
+    [ "R_BSP_QSPIVoltageModeCfg", "group___b_s_p___i_o.html#ga273b018bc22b835afd630e6b46a3cc4e", null ],
+    [ "R_BSP_XSPIVoltageModeCfg", "group___b_s_p___i_o.html#ga59bb3fd83a257bd92926ea266faa9fd8", null ],
+    [ "R_BSP_EthernetVoltageModeCfg", "group___b_s_p___i_o.html#gaee8fdb90b591063571f73dc23d4306b4", null ],
+    [ "R_BSP_I3CControlCfg", "group___b_s_p___i_o.html#gaea02bfef9058ac480e59f4175124c4da", null ],
+    [ "R_BSP_BypassModeCfg", "group___b_s_p___i_o.html#gaa07b15ea5255e2d6ad2a8fb9231adcda", null ],
+    [ "R_BSP_XSPIOutputEnableCfg", "group___b_s_p___i_o.html#ga3c75c9c53842401896a9feb2e969c5b0", null ]
 ];

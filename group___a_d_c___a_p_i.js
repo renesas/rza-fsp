@@ -15,7 +15,7 @@ var group___a_d_c___a_p_i =
       [ "p_address", "group___a_d_c___a_p_i.html#a571924e3bdadf79649ab70ae82489368", null ],
       [ "length", "group___a_d_c___a_p_i.html#a3f8dd9f7ffefcbc0180fc7252c0482c9", null ],
       [ "transfer_size", "group___a_d_c___a_p_i.html#a85b0300314b3d3c1b37db311b92ade6b", null ],
-      [ "calibration_data", "group___a_d_c___a_p_i.html#a5869042d58165926402aa499eefb68f2", null ],
+      [ "calibration_data", "group___a_d_c___a_p_i.html#a30ff31cabfb5926e1954a941874e8c42", null ],
       [ "slope_microvolts", "group___a_d_c___a_p_i.html#abaf272ea2350e486390dc250ae8f9af3", null ],
       [ "calibration_ongoing", "group___a_d_c___a_p_i.html#a0ffb4b8f70b79eef55805cedcbde013b", null ]
     ] ],

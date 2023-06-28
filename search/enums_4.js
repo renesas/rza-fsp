@@ -5,6 +5,7 @@ var searchData=
   ['ether_5fmulticast_5ft',['ether_multicast_t',['../group___e_t_h_e_r___a_p_i.html#gae306f2239ef51705ac7e2dc962837947',1,'r_ether_api.h']]],
   ['ether_5fphy_5fflow_5fcontrol_5ft',['ether_phy_flow_control_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#ga113895595732b38ac87e4efecacb87de',1,'r_ether_phy_api.h']]],
   ['ether_5fphy_5flink_5fspeed_5ft',['ether_phy_link_speed_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#gaf227c12b47e90edc8ec5729bfccf9bfb',1,'r_ether_phy_api.h']]],
+  ['ether_5fphy_5flsi_5ftype_5ft',['ether_phy_lsi_type_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5',1,'r_ether_phy_api.h']]],
   ['ether_5fphy_5fmii_5ftype_5ft',['ether_phy_mii_type_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#gaafbecb98180b1f07abe8449332b5a122',1,'r_ether_phy_api.h']]],
   ['ether_5fphy_5fvoltage_5ft',['ether_phy_voltage_t',['../group___g_e_t_h_e_r___p_h_y.html#ga1a273cc6e824fe12881c4dca26f82e24',1,'r_gether_phy.h']]],
   ['ether_5fpromiscuous_5ft',['ether_promiscuous_t',['../group___e_t_h_e_r___a_p_i.html#ga3d443f5aaeafc8b8fa20eda633cbede1',1,'r_ether_api.h']]],

@@ -1,12 +1,14 @@
 var searchData=
 [
   ['mpu_20board_20support_20package',['MPU Board Support Package',['../group___b_s_p___m_c_u.html',1,'']]],
+  ['major',['major',['../group___r_e_n_e_s_a_s___c_o_m_m_o_n.html#a85964fe9ef31d11bde39475763db564c',1,'fsp_pack_version_t::version_id_b_s']]],
   ['maxpacketsizeget',['maxPacketSizeGet',['../group___u_s_b___h_h_i_d___a_p_i.html#ad2efecb9d87312ff91ae383fcaf46f6b',1,'usb_hhid_api_t']]],
   ['mddr',['mddr',['../group___s_c_i___u_a_r_t.html#a19ef6bb6f6c798e98e5500acbfca2ba3',1,'baud_setting_t::mddr()'],['../group___s_c_i_f___u_a_r_t.html#acbf8ff1fb27039b0240beceeff67d048',1,'scif_baud_setting_t::mddr()']]],
   ['media_5finserted',['media_inserted',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#ac25f2f253126a6522ac0147593e719da',1,'rm_block_media_status_t']]],
   ['mediainit',['mediaInit',['../group___s_d_m_m_c___a_p_i.html#a2e756a69a66f0a6ae00eaa8a33f36243',1,'sdmmc_api_t::mediaInit()'],['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a5aa622a8eca72b3722138b467be0d436',1,'rm_block_media_api_t::mediaInit()'],['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html#aaab7bc55bea492140d1eb5ad59858c2f',1,'rm_freertos_plus_fat_api_t::mediaInit()']]],
   ['mii_5fbit_5faccess_5fwait_5ftime',['mii_bit_access_wait_time',['../group___e_t_h_e_r___p_h_y___a_p_i.html#a336b9a7ec0bc861c1b0ac90f9052e447',1,'ether_phy_cfg_t']]],
   ['mii_5ftype',['mii_type',['../group___e_t_h_e_r___p_h_y___a_p_i.html#a339809c3abd9e0aef94670716425d5b9',1,'ether_phy_cfg_t']]],
+  ['minor',['minor',['../group___r_e_n_e_s_a_s___c_o_m_m_o_n.html#a00ab09fb1ebf2eb2ca08e364a3289e44',1,'fsp_pack_version_t::version_id_b_s']]],
   ['memory_20managing_20unit_20_28r_5fmmu_29',['Memory Managing Unit (r_mmu)',['../group___m_m_u.html',1,'']]],
   ['memory_20managing_20unit_20interface',['Memory Managing Unit Interface',['../group___m_m_u___a_p_i.html',1,'']]],
   ['mmu_5fapi_5ft',['mmu_api_t',['../group___m_m_u___a_p_i.html#structmmu__api__t',1,'']]],

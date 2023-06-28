@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.2.1</span>
+   &#160;<span id="projectnumber">Release v2.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -233,6 +233,34 @@ This module can be added to the Stacks tab via New Stack &gt; Graphics &gt; CRU 
 <tr>
 <td>Input &gt; Capture Specifications &gt; Line to start capture from</td><td>Value must be an integer</td><td>0 </td><td>Specify the vertical line to start capturing image data from. Allows an image smaller than the native resolution of a camera to be captured. </td></tr>
 <tr>
+<td>Input &gt; Timing Custom &gt; Timing</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+User custom</li>
+<li>
+Over 360Mbps</li>
+<li>
+360 Mbps</li>
+<li>
+250 Mbps</li>
+<li>
+125 Mbps</li>
+<li>
+80 Mbps</li>
+</ul>
+</td><td>Over 360Mbps </td><td>If User Custom is selected, any value can be set as each parameter </td></tr>
+<tr>
+<td>Input &gt; Timing Custom &gt; T_INIT</td><td>Value must be an integer</td><td>0 </td><td>If User Custom is selected, any value can be set as this parameter </td></tr>
+<tr>
+<td>Input &gt; Timing Custom &gt; TCLK_MISS</td><td>Value must be an integer</td><td>0 </td><td>If User Custom is selected, any value can be set as this parameter </td></tr>
+<tr>
+<td>Input &gt; Timing Custom &gt; TCLK_SETTLE</td><td>Value must be an integer</td><td>0 </td><td>If User Custom is selected, any value can be set as this parameter </td></tr>
+<tr>
+<td>Input &gt; Timing Custom &gt; THS_SETTLE</td><td>Value must be an integer</td><td>0 </td><td>If User Custom is selected, any value can be set as this parameter </td></tr>
+<tr>
+<td>Input &gt; Timing Custom &gt; TCLK_PREPARE</td><td>Value must be an integer</td><td>0 </td><td>If User Custom is selected, any value can be set as this parameter </td></tr>
+<tr>
+<td>Input &gt; Timing Custom &gt; THS_PREPARE</td><td>Value must be an integer</td><td>0 </td><td>If User Custom is selected, any value can be set as this parameter </td></tr>
+<tr>
 <td>Input &gt; Color format</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 YUV420(8bit)</li>
@@ -320,6 +348,84 @@ Disable</li>
 <td>Interrupts &gt; Image Conversion &gt; Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>Set the callback function name for Image Conversion interrupt </td></tr>
 <tr>
 <td>Interrupts &gt; Image Conversion &gt; Interrupt Priority</td><td>Value must be between 0 and 31</td><td>24 </td><td>Select the Image Conversion interrupt priority. </td></tr>
+<tr>
+<td>Demosaic &gt; bit extension</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+repeat from the highest 4bits/2bits</li>
+<li>
+filled with 0</li>
+</ul>
+</td><td>repeat from the highest 4bits/2bits </td><td>Bit extension for demosaic(8bit/10bit -&gt; 12bit). </td></tr>
+<tr>
+<td>Demosaic &gt; RAW type</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+R (RGRG...)</li>
+<li>
+Gr(GRGR...)</li>
+<li>
+Gb(GBGB...)</li>
+<li>
+B (BGBG...)</li>
+</ul>
+</td><td>R (RGRG...) </td><td>The 1st pixel type of 1st line when used RAW data as input format </td></tr>
+<tr>
+<td>Linearmatrix &gt; Enable</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+enable</li>
+<li>
+disable</li>
+</ul>
+</td><td>disable </td><td>Enable or disable linearmatrix after demosaic.This function can be enabled if input format is RAW data </td></tr>
+<tr>
+<td>Linearmatrix &gt; Offset R</td><td>Value must be an integer between -128 and 127</td><td>0 </td><td>Offset R for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Offset G</td><td>Value must be an integer between -128 and 127</td><td>0 </td><td>Offset G for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Offset B</td><td>Value must be an integer between -128 and 127</td><td>0 </td><td>Offset B for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Rr</td><td>Value msut be -4 or more and less than 4 </td><td>1.0 </td><td>Coefficient Rr for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Rg</td><td>Value msut be -4 or more and less than 4 </td><td>0 </td><td>Coefficient Rg for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Rb</td><td>Value msut be -4 or more and less than 4 </td><td>0 </td><td>Coefficient Rb for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Gr</td><td>Value msut be -4 or more and less than 4 </td><td>0 </td><td>Coefficient Gr for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Gg</td><td>Value msut be -4 or more and less than 4 </td><td>1.0 </td><td>Coefficient Gg for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Gb</td><td>Value msut be -4 or more and less than 4 </td><td>0 </td><td>Coefficient Gb for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Br</td><td>Value msut be -4 or more and less than 4 </td><td>0 </td><td>Coefficient Br for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Bg</td><td>Value msut be -4 or more and less than 4 </td><td>0 </td><td>Coefficient Bg for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Linearmatrix &gt; Coefficient Bb</td><td>Value msut be -4 or more and less than 4 </td><td>1.0 </td><td>Coefficient Bb for Linear matrix calculation. Reference manual for details. </td></tr>
+<tr>
+<td>Statistics &gt; Enable</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+enable</li>
+<li>
+disable</li>
+</ul>
+</td><td>disable </td><td>Enable or disable statistics.This function can be enabled if input format is RAW data </td></tr>
+<tr>
+<td>Statistics &gt; Buffer num</td><td>Value must be an integer between 0 and 8</td><td>0 </td><td>Number of buffers for statistics.When user select 0,the buffer set in user application can be used. </td></tr>
+<tr>
+<td>Statistics &gt; Processing unit</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+16 x 16 </li>
+<li>
+32 x 32 </li>
+<li>
+64 x 64 </li>
+<li>
+128 x 128 </li>
+</ul>
+</td><td>16 x 16 </td><td>processing unit for statistics. </td></tr>
+<tr>
+<td>Statistics &gt; Input data bit position</td><td>Value must be an integer between 0 and 8</td><td>0 </td><td>Input data bit position for statistics.If input format is RAW16, [15-n:8-n:]data will be used </td></tr>
+<tr>
+<td>Statistics &gt; Horizontal start position</td><td>Value must be an integer between 0 and 376</td><td>0 </td><td>Horizontal start position for statistics </td></tr>
 </table>
 </p>
 <h1><a class="anchor" id="r-cru-usage_notes"></a>
@@ -344,6 +450,10 @@ Examples</h1>
 <div class="fragment"><div class="line"></div><div class="line"><span class="keywordtype">void</span> basic_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <span class="comment">/* Open the CRU driver */</span></div><div class="line">    g_cru_on_cru.<a class="code" href="group___c_a_m_e_r_a___a_p_i.html#a73f634ee32e35e757b8216d67a97ca32">open</a>(&amp;g_cru_ctrl, &amp;g_cru_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Start capture */</span></div><div class="line">    g_cru_on_cru.<a class="code" href="group___c_a_m_e_r_a___a_p_i.html#aaa787d6905681c86bc3e9adf876b6f24">captureStart</a>(&amp;g_cru_ctrl);</div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
+<tr class="memitem:structstatistics__cfg__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___c_r_u.html#structstatistics__cfg__t">statistics_cfg_t</a></td></tr>
+<tr class="separator:structstatistics__cfg__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structlinearmatrix__cfg__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___c_r_u.html#structlinearmatrix__cfg__t">linearmatrix_cfg_t</a></td></tr>
+<tr class="separator:structlinearmatrix__cfg__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structcru__extended__cfg__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___c_r_u.html#structcru__extended__cfg__t">cru_extended_cfg_t</a></td></tr>
 <tr class="separator:structcru__extended__cfg__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structcru__instance__ctrl__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___c_r_u.html#structcru__instance__ctrl__t">cru_instance_ctrl_t</a></td></tr>
@@ -363,6 +473,157 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga4b7a60525879813a907179b000d3cbd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
+<a name="structstatistics__cfg__t" id="structstatistics__cfg__t"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structstatistics__cfg__t">&#9670;&nbsp;</a></span>statistics_cfg_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct statistics_cfg_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"><p>Statistics configuration parameters </p>
+</div><table class="fieldtable">
+<tr><th colspan="3">Data Fields</th></tr>
+<tr><td class="fieldtype">
+<a id="aba5fa14283663d778f0909ae3af1837a"></a>uint8_t</td>
+<td class="fieldname">
+statistics</td>
+<td class="fielddoc">
+Setting for Statistics processing (0: execute, 1:through) </td></tr>
+<tr><td class="fieldtype">
+<a id="a16a8891b966b774a86326d2988edf9c8"></a>uint8_t *</td>
+<td class="fieldname">
+pp_buffer[8]</td>
+<td class="fielddoc">
+Pointer to array of buffer pointers. </td></tr>
+<tr><td class="fieldtype">
+<a id="a1da03dc03f1b7de9171c229d412c2a79"></a>uint8_t</td>
+<td class="fieldname">
+num_buffers</td>
+<td class="fielddoc">
+Number of buffers to use. </td></tr>
+<tr><td class="fieldtype">
+<a id="a7c488e418ae615eb8423ce471fed5244"></a>uint8_t</td>
+<td class="fieldname">
+stunit</td>
+<td class="fielddoc">
+(0:16x16, 1:32x32, 2:64x64, 3:128x128) <p>Selection of processing units for statistics processing(0-3) </p>
+</td></tr>
+<tr><td class="fieldtype">
+<a id="aaed8a0a93506d63164197e81c6a599f3"></a>uint8_t</td>
+<td class="fieldname">
+stsadpos</td>
+<td class="fielddoc">
+Input data bit position selection for adjacent pixel absolute value summation (0-8) </td></tr>
+<tr><td class="fieldtype">
+<a id="a0a65f4c23bbeaff1b41457eb04d96380"></a>uint16_t</td>
+<td class="fieldname">
+sthpos</td>
+<td class="fielddoc">
+horizontal start position for statistics processing (0-376) </td></tr>
+</table>
+
+</div>
+</div>
+<a name="structlinearmatrix__cfg__t" id="structlinearmatrix__cfg__t"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structlinearmatrix__cfg__t">&#9670;&nbsp;</a></span>linearmatrix_cfg_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct linearmatrix_cfg_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"><p>LenearMatrix configuration parameters </p>
+</div><table class="fieldtable">
+<tr><th colspan="3">Data Fields</th></tr>
+<tr><td class="fieldtype">
+<a id="a85ec994b719f127b5a66fbd186cd5a40"></a>uint8_t</td>
+<td class="fieldname">
+linearmatrix</td>
+<td class="fielddoc">
+Setting for Linear matrix processing (0: execute, 1:through) </td></tr>
+<tr><td class="fieldtype">
+<a id="a2a1dad21b291e02152286d5c5e999b7d"></a>int8_t</td>
+<td class="fieldname">
+rof</td>
+<td class="fielddoc">
+R offset value -128(8'h80)～127(8'h7F) </td></tr>
+<tr><td class="fieldtype">
+<a id="aa7e3287c0c014ec144e2894d0cac1599"></a>int8_t</td>
+<td class="fieldname">
+gof</td>
+<td class="fielddoc">
+G offset value -128(8'h80)～127(8'h7F) </td></tr>
+<tr><td class="fieldtype">
+<a id="a4384eae4f9b1d657129782c8a6cc2d79"></a>int8_t</td>
+<td class="fieldname">
+bof</td>
+<td class="fielddoc">
+B offset value -128(8'h80)～127(8'h7F) </td></tr>
+<tr><td class="fieldtype">
+<a id="a7175ddd231d1fbd307f09a30a74803fa"></a>int16_t</td>
+<td class="fieldname">
+rr</td>
+<td class="fielddoc">
+Coefficient R of R data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="a93d8ce60f5369f89919a0f76c841b53f"></a>int16_t</td>
+<td class="fieldname">
+rg</td>
+<td class="fielddoc">
+Coefficient G of R data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="ad1e5b72a4f6729769c794956fcef829d"></a>int16_t</td>
+<td class="fieldname">
+rb</td>
+<td class="fielddoc">
+Coefficient B of R data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="aea4d043abc01cde80fecf12349e12f94"></a>int16_t</td>
+<td class="fieldname">
+gr</td>
+<td class="fielddoc">
+Coefficient R of G data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="a6b7b6e98bd361220feac83a166651cc8"></a>int16_t</td>
+<td class="fieldname">
+gg</td>
+<td class="fielddoc">
+Coefficient G of G data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="a8746a3bb0cf44ebd6cd8c2d4c064e14d"></a>int16_t</td>
+<td class="fieldname">
+gb</td>
+<td class="fielddoc">
+Coefficient B of G data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="a129c08c1faa16152baa70084c439a495"></a>int16_t</td>
+<td class="fieldname">
+br</td>
+<td class="fielddoc">
+Coefficient R of B data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="a43c39ce4f19144e541e5173d5e2fde0d"></a>int16_t</td>
+<td class="fieldname">
+bg</td>
+<td class="fielddoc">
+Coefficient G of B data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+<tr><td class="fieldtype">
+<a id="a7017c1a2a2321c57eb2b3e58cf5a1082"></a>int16_t</td>
+<td class="fieldname">
+bb</td>
+<td class="fielddoc">
+Coefficient B of B data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF)) </td></tr>
+</table>
+
+</div>
+</div>
 <a name="structcru__extended__cfg__t" id="structcru__extended__cfg__t"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#structcru__extended__cfg__t">&#9670;&nbsp;</a></span>cru_extended_cfg_t</h2>
 
@@ -419,6 +680,68 @@ Image conversion interrupt priority. </td></tr>
 image_conv_int_irq</td>
 <td class="fielddoc">
 Image conversion IRQ number. </td></tr>
+<tr><td class="fieldtype">
+<a id="a4790e7d43ce521dfa21b9633f94d485b"></a><a class="el" href="group___c_r_u.html#structstatistics__cfg__t">statistics_cfg_t</a></td>
+<td class="fieldname">
+statistics_cfg</td>
+<td class="fielddoc">
+Statistics Configuration. </td></tr>
+<tr><td class="fieldtype">
+<a id="a409b883a39bc7c669cf934c2b1e4da0b"></a><a class="el" href="group___c_r_u.html#structlinearmatrix__cfg__t">linearmatrix_cfg_t</a></td>
+<td class="fieldname">
+linearmatrix_cfg</td>
+<td class="fielddoc">
+LinearMatrix Configuration. </td></tr>
+<tr><td class="fieldtype">
+<a id="accf9cc609aa9d1b355ecb80fc73cef4b"></a>uint8_t</td>
+<td class="fieldname">
+rgb_bit_extension</td>
+<td class="fielddoc">
+<p>Settings when RGB bit is extended (8bit/10bit -&gt; 12bit) 0: Lower 4bits/2bits are expanded repeatedly from the highest 4bits/2bits 1: Lower 4bits/2bits are filled with zeros </p>
+</td></tr>
+<tr><td class="fieldtype">
+<a id="adf4d2452807beaf18c60fefae605ab75"></a>uint8_t</td>
+<td class="fieldname">
+rawstarttype</td>
+<td class="fielddoc">
+0: R (RGRG...), 1: Gr (GRGR...), 2: Gb (GBGB...), 3: B (BGBG...) <p>Specify the type of the 1st pixel of the 1st line of RAW data </p>
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a6bc37ed1725e4885eb0c4398377c51c2"></a>uint32_t</td>
+<td class="fieldname">
+t_init</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a241902bdc7fb7ab7642c543a98339555"></a>uint32_t</td>
+<td class="fieldname">
+tclk_miss</td>
+<td class="fielddoc">
+timing parameter, register of CSIDPHYTIM0 </td></tr>
+<tr><td class="fieldtype">
+<a id="a8d9f0d07e2c9d5a594d979cd77cf0284"></a>uint32_t</td>
+<td class="fieldname">
+tclk_settle</td>
+<td class="fielddoc">
+timing parameter, register of CSIDPHYTIM0 </td></tr>
+<tr><td class="fieldtype">
+<a id="aff9a2cab89f81dcec68d25dea0d22c44"></a>uint32_t</td>
+<td class="fieldname">
+ths_settle</td>
+<td class="fielddoc">
+timing parameter, register of CSIDPHYTIM1 </td></tr>
+<tr><td class="fieldtype">
+<a id="a66f719f81e7c63022a97ac377bd04439"></a>uint32_t</td>
+<td class="fieldname">
+tclk_prepare</td>
+<td class="fielddoc">
+timing parameter, register of CSIDPHYTIM1 </td></tr>
+<tr><td class="fieldtype">
+<a id="aae61f3561b3a088500ccd892b5af7542"></a>uint32_t</td>
+<td class="fieldname">
+ths_prepare</td>
+<td class="fielddoc">
+timing parameter, register of CSIDPHYTIM1 </td></tr>
 </table>
 
 </div>
@@ -769,7 +1092,7 @@ void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.2.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v2.0.0 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

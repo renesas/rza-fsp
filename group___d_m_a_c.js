@@ -25,8 +25,7 @@ var group___d_m_a_c =
       [ "transfer_interval", "group___d_m_a_c.html#a3047f4912871cf9eb100800c9f296d87", null ],
       [ "channel_scheduling", "group___d_m_a_c.html#adcec47da500a02cb015f31beab5f6ddb", null ],
       [ "p_callback", "group___d_m_a_c.html#a1aa5df5a650e272348c4bd6c71ad4392", null ],
-      [ "p_context", "group___d_m_a_c.html#a179371bb68b6d1ae0f7c1da5a2c46d34", null ],
-      [ "p_peripheral_module_handler", "group___d_m_a_c.html#a5cb906a3f19518f818d39046fa9aae9a", null ]
+      [ "p_context", "group___d_m_a_c.html#a179371bb68b6d1ae0f7c1da5a2c46d34", null ]
     ] ],
     [ "dmac_extended_info_t", "group___d_m_a_c.html#structdmac__extended__info__t", [
       [ "src_size", "group___d_m_a_c.html#a4f8336fe0aa90e67cb63ecb7d827a934", null ],

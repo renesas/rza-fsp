@@ -11,6 +11,7 @@ var group___r_e_n_e_s_a_s___m_o_d_u_l_e_s =
     [ "External IRQ (r_intc_nmi)", "group___i_n_t_c___n_m_i.html", "group___i_n_t_c___n_m_i" ],
     [ "External IRQ (r_intc_tint)", "group___i_n_t_c___t_i_n_t.html", "group___i_n_t_c___t_i_n_t" ],
     [ "I/O Ports (r_ioport)", "group___i_o_p_o_r_t.html", "group___i_o_p_o_r_t" ],
+    [ "Image Scaling Unit (r_isu)", "group___i_s_u.html", "group___i_s_u" ],
     [ "LCD Controller (r_lcdc)", "group___l_c_d_c.html", "group___l_c_d_c" ],
     [ "Memory Managing Unit (r_mmu)", "group___m_m_u.html", "group___m_m_u" ],
     [ "Multi-Function Timer Pulse Unit 3 (r_mtu3)", "group___m_t_u3.html", "group___m_t_u3" ],
@@ -29,7 +30,12 @@ var group___r_e_n_e_s_a_s___m_o_d_u_l_e_s =
     [ "Watchdog (r_wdt)", "group___w_d_t.html", "group___w_d_t" ],
     [ "SD/MMC Block Media Implementation (rm_block_media_sdmmc)", "group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html", "group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c" ],
     [ "USB HMSC Block Media Implementation (rm_block_media_usb)", "group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html", "group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b" ],
+    [ "Azure RTOS FileX Block Media I/O Driver (rm_filex_block_media)", "group___r_m___f_i_l_e_x___b_l_o_c_k___m_e_d_i_a.html", "group___r_m___f_i_l_e_x___b_l_o_c_k___m_e_d_i_a" ],
     [ "FreeRTOS+FAT Port (rm_freertos_plus_fat)", "group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html", "group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t" ],
     [ "FreeRTOS Plus TCP (rm_freertos_plus_tcp)", "group___f_r_e_e_r_t_o_s___p_l_u_s___t_c_p.html", null ],
-    [ "FreeRTOS Port (rm_freertos_port)", "group___r_m___f_r_e_e_r_t_o_s___p_o_r_t.html", null ]
+    [ "FreeRTOS Port (rm_freertos_port)", "group___r_m___f_r_e_e_r_t_o_s___p_o_r_t.html", null ],
+    [ "Azure RTOS GUIX Port (rm_guix_port)", "group___r_m___g_u_i_x___p_o_r_t.html", "group___r_m___g_u_i_x___p_o_r_t" ],
+    [ "Azure RTOS NetX Duo Ether Driver (rm_netxduo_ether)", "group___r_m___n_e_t_x_d_u_o___e_t_h_e_r.html", null ],
+    [ "Azure RTOS ThreadX Port (rm_threadx_port)", "group___r_m___t_h_r_e_a_d_x___p_o_r_t.html", null ],
+    [ "USBX Porting Layer (rm_usbx_port)", "group___u_s_b_x.html", null ]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['gb',['gb',['../group___c_r_u.html#a8746a3bb0cf44ebd6cd8c2d4c064e14d',1,'linearmatrix_cfg_t']]],
   ['general_5fcall_5fenable',['general_call_enable',['../group___i2_c___s_l_a_v_e___a_p_i.html#a7b1c0bee47fa93f32b4466b72c30f68c',1,'i2c_slave_cfg_t']]],
   ['gether_5finstance_5frx_5fdescriptor_5ft',['gether_instance_rx_descriptor_t',['../group___g_e_t_h_e_r.html#structgether__instance__rx__descriptor__t',1,'']]],
   ['gether_5flink_5fchange_5flink_5fdown',['GETHER_LINK_CHANGE_LINK_DOWN',['../group___g_e_t_h_e_r.html#ggad25db89620eb5e345b358f6e855022a2aea4da24f910f2be9248226cf347c44c3',1,'r_gether.h']]],
@@ -12,10 +13,13 @@ var searchData=
   ['gether_5fprevious_5flink_5fstatus_5fdown',['GETHER_PREVIOUS_LINK_STATUS_DOWN',['../group___g_e_t_h_e_r.html#gga10835260a6b440f5a4b6c22b33f47daca2b7e32ec85ab3ba4ba3c551197edc611',1,'r_gether.h']]],
   ['gether_5fprevious_5flink_5fstatus_5ft',['gether_previous_link_status_t',['../group___g_e_t_h_e_r.html#ga10835260a6b440f5a4b6c22b33f47dac',1,'r_gether.h']]],
   ['gether_5fprevious_5flink_5fstatus_5fup',['GETHER_PREVIOUS_LINK_STATUS_UP',['../group___g_e_t_h_e_r.html#gga10835260a6b440f5a4b6c22b33f47dacacae2cd0407a465aa961cacde260ea540',1,'r_gether.h']]],
+  ['gg',['gg',['../group___c_r_u.html#a6b7b6e98bd361220feac83a166651cc8',1,'linearmatrix_cfg_t']]],
   ['global_5fconfig',['global_config',['../group___c_a_n_f_d.html#afd7545e297144152431f5b1f3628fff7',1,'canfd_global_cfg_t']]],
   ['global_5ferr_5fipl',['global_err_ipl',['../group___c_a_n_f_d.html#a6ce35aac50e44ac4353bfd20e12639a4',1,'canfd_global_cfg_t']]],
   ['global_5finterrupts',['global_interrupts',['../group___c_a_n_f_d.html#ac6305ab75909afd62029f3c76b235549',1,'canfd_global_cfg_t']]],
+  ['gof',['gof',['../group___c_r_u.html#aa7e3287c0c014ec144e2894d0cac1599',1,'linearmatrix_cfg_t']]],
   ['gpioint',['gpioint',['../group___i_n_t_c___t_i_n_t.html#a8066afa114318265d9fe96031434bbd3',1,'intc_tint_extended_cfg_t']]],
+  ['gr',['gr',['../group___c_r_u.html#aea4d043abc01cde80fecf12349e12f94',1,'linearmatrix_cfg_t']]],
   ['group_5fmask',['group_mask',['../group___a_d_c___a_p_i.html#a2e4f7b7ce1a5858b39f7a85ad16ab655',1,'adc_callback_args_t']]],
   ['general_20timer_20_28r_5fgtm_29',['General Timer (r_gtm)',['../group___g_t_m.html',1,'']]],
   ['gtm_5fextended_5fcfg_5ft',['gtm_extended_cfg_t',['../group___g_t_m.html#structgtm__extended__cfg__t',1,'']]],

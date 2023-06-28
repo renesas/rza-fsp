@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.2.1</span>
+   &#160;<span id="projectnumber">Release v2.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -377,6 +377,14 @@ RSPI_DELAY_COUNT_8</li>
 </ul>
 </td><td>RSPI_DELAY_COUNT_1 </td><td>Configure the number of RSPI clock cycles between each data frame. </td></tr>
 <tr>
+<td>Extra &gt; SSL Level Keep</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Disable</li>
+<li>
+Enable</li>
+</ul>
+</td><td>Disable </td><td>Select whether to negate the SSL level for each frame transfer. </td></tr>
+<tr>
 <td>Extra &gt; Receiver FIFO Trigger Level</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 1</li>
@@ -411,7 +419,11 @@ RSPI_DELAY_COUNT_8</li>
 <tr>
 <td>Interrupts &gt; Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback function can be provided. If this callback function is provided, it will be called from the interrupt service routine (ISR). </td></tr>
 <tr>
+<td>Interrupts &gt; Receive Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the receive interrupt. </td></tr>
+<tr>
 <td>Interrupts &gt; Receive Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for all RSPI interrupts(0-31). Note: If you specify the lowest priority (i.e.,31), no interrupt will occur. </td></tr>
+<tr>
+<td>Interrupts &gt; Transmit Buffer Empty Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the transmit buffer empty interrupt. </td></tr>
 <tr>
 <td>Interrupts &gt; Transmit Buffer Empty Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the interrupt priority for all RSPI interrupts(0-31). Note: If you specify the lowest priority (i.e.,31), no interrupt will occur. </td></tr>
 <tr>
@@ -480,6 +492,8 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga2342f44b16c4072b5e9302c4f05b4f94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae3deb1d097bc300a5ed42849ebb200c6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#gae3deb1d097bc300a5ed42849ebb200c6">rspi_mosi_idle_value_fixing_t</a> </td></tr>
 <tr class="separator:gae3deb1d097bc300a5ed42849ebb200c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaae19ba80f9290f4ad12e794cf1bac9f2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#gaae19ba80f9290f4ad12e794cf1bac9f2">rspi_ssl_level_keep_t</a> </td></tr>
+<tr class="separator:gaae19ba80f9290f4ad12e794cf1bac9f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8f68c8c6c98ee871ad72bbb94c559775"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#ga8f68c8c6c98ee871ad72bbb94c559775">rspi_delay_count_t</a> </td></tr>
 <tr class="separator:ga8f68c8c6c98ee871ad72bbb94c559775"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8e48fdc14874a5cba28661ae549203ab"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_s_p_i.html#ga8e48fdc14874a5cba28661ae549203ab">rspi_tx_trigger_level_t</a> </td></tr>
@@ -568,6 +582,12 @@ SPI Slave Select Negation Delay Register Setting. </td></tr>
 next_access_delay</td>
 <td class="fielddoc">
 SPI Next-Access Delay Register Setting. </td></tr>
+<tr><td class="fieldtype">
+<a id="ae3192998dbe33aee6614dd5f5850d289"></a><a class="el" href="group___r_s_p_i.html#gaae19ba80f9290f4ad12e794cf1bac9f2">rspi_ssl_level_keep_t</a></td>
+<td class="fieldname">
+ssl_level_keep</td>
+<td class="fielddoc">
+Select SSL signal level keep mode. </td></tr>
 <tr><td class="fieldtype">
 <a id="a4d6543f22a352c931855cd85e19cfe45"></a><a class="el" href="group___r_s_p_i.html#ga431fc619396f9d5cf2f1c495c2ed59ca">rspi_rx_trigger_level_t</a></td>
 <td class="fieldname">
@@ -686,6 +706,27 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <tr><td class="fieldname"><a id="ggae3deb1d097bc300a5ed42849ebb200c6a2a42bca9fb7a5f485d0c21c70d83c6bc"></a>RSPI_MOSI_IDLE_VALUE_FIXING_LOW&#160;</td><td class="fielddoc"><p>MOSIn level low during MOSI idling. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggae3deb1d097bc300a5ed42849ebb200c6a334fbae8188c8d89825231b5126c432d"></a>RSPI_MOSI_IDLE_VALUE_FIXING_HIGH&#160;</td><td class="fielddoc"><p>MOSIn level high during MOSI idling. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="gaae19ba80f9290f4ad12e794cf1bac9f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaae19ba80f9290f4ad12e794cf1bac9f2">&#9670;&nbsp;</a></span>rspi_ssl_level_keep_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group___r_s_p_i.html#gaae19ba80f9290f4ad12e794cf1bac9f2">rspi_ssl_level_keep_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>SSL Signal Level Keeping Enable/Disable. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaae19ba80f9290f4ad12e794cf1bac9f2ab841c4b6e56bf3a45f323d77f93b2d03"></a>RSPI_SSL_LEVEL_KEEP_DISABLE&#160;</td><td class="fielddoc"><p>Disable SSL Level Keep Mode. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaae19ba80f9290f4ad12e794cf1bac9f2aabdf42d404217b46fab49e661dc6f128"></a>RSPI_SSL_LEVEL_KEEP_ENABLE&#160;</td><td class="fielddoc"><p>Enable SSL Level Keep Mode. </p>
 </td></tr>
 </table>
 
@@ -1067,7 +1108,7 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Valid spbr and brdv values were calculated </td></tr>
-    <tr><td class="paramname">FSP_ERR_UNSUPPORTED</td><td>Bitrate is not achievable </td></tr>
+    <tr><td class="paramname">FSP_ERR_UNSUPPORTED</td><td>Bitrate is out of the settable range. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1130,7 +1171,7 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.2.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v2.0.0 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

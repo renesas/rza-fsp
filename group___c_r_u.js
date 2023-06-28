@@ -1,5 +1,28 @@
 var group___c_r_u =
 [
+    [ "statistics_cfg_t", "group___c_r_u.html#structstatistics__cfg__t", [
+      [ "statistics", "group___c_r_u.html#aba5fa14283663d778f0909ae3af1837a", null ],
+      [ "pp_buffer", "group___c_r_u.html#a16a8891b966b774a86326d2988edf9c8", null ],
+      [ "num_buffers", "group___c_r_u.html#a1da03dc03f1b7de9171c229d412c2a79", null ],
+      [ "stunit", "group___c_r_u.html#a7c488e418ae615eb8423ce471fed5244", null ],
+      [ "stsadpos", "group___c_r_u.html#aaed8a0a93506d63164197e81c6a599f3", null ],
+      [ "sthpos", "group___c_r_u.html#a0a65f4c23bbeaff1b41457eb04d96380", null ]
+    ] ],
+    [ "linearmatrix_cfg_t", "group___c_r_u.html#structlinearmatrix__cfg__t", [
+      [ "linearmatrix", "group___c_r_u.html#a85ec994b719f127b5a66fbd186cd5a40", null ],
+      [ "rof", "group___c_r_u.html#a2a1dad21b291e02152286d5c5e999b7d", null ],
+      [ "gof", "group___c_r_u.html#aa7e3287c0c014ec144e2894d0cac1599", null ],
+      [ "bof", "group___c_r_u.html#a4384eae4f9b1d657129782c8a6cc2d79", null ],
+      [ "rr", "group___c_r_u.html#a7175ddd231d1fbd307f09a30a74803fa", null ],
+      [ "rg", "group___c_r_u.html#a93d8ce60f5369f89919a0f76c841b53f", null ],
+      [ "rb", "group___c_r_u.html#ad1e5b72a4f6729769c794956fcef829d", null ],
+      [ "gr", "group___c_r_u.html#aea4d043abc01cde80fecf12349e12f94", null ],
+      [ "gg", "group___c_r_u.html#a6b7b6e98bd361220feac83a166651cc8", null ],
+      [ "gb", "group___c_r_u.html#a8746a3bb0cf44ebd6cd8c2d4c064e14d", null ],
+      [ "br", "group___c_r_u.html#a129c08c1faa16152baa70084c439a495", null ],
+      [ "bg", "group___c_r_u.html#a43c39ce4f19144e541e5173d5e2fde0d", null ],
+      [ "bb", "group___c_r_u.html#a7017c1a2a2321c57eb2b3e58cf5a1082", null ]
+    ] ],
     [ "cru_extended_cfg_t", "group___c_r_u.html#structcru__extended__cfg__t", [
       [ "num_datalane", "group___c_r_u.html#ac53e7112e4267e43f51e3ebfe805f8de", null ],
       [ "color_input", "group___c_r_u.html#a60fe0ee4e0a71f2830537c7668ee4d3c", null ],
@@ -7,7 +30,16 @@ var group___c_r_u =
       [ "interrupt_enable", "group___c_r_u.html#a20c9dc4b3193ff56ebc19f3d6801832a", null ],
       [ "scan_line_num", "group___c_r_u.html#aaf13d0851073f3b8de09e592d755b3dd", null ],
       [ "image_conv_int_ipl", "group___c_r_u.html#acf38115b653cbbb93099fab3ce8e0702", null ],
-      [ "image_conv_int_irq", "group___c_r_u.html#a72de7e81456c0b25d3e562d4bdc3a23c", null ]
+      [ "image_conv_int_irq", "group___c_r_u.html#a72de7e81456c0b25d3e562d4bdc3a23c", null ],
+      [ "statistics_cfg", "group___c_r_u.html#a4790e7d43ce521dfa21b9633f94d485b", null ],
+      [ "linearmatrix_cfg", "group___c_r_u.html#a409b883a39bc7c669cf934c2b1e4da0b", null ],
+      [ "rgb_bit_extension", "group___c_r_u.html#accf9cc609aa9d1b355ecb80fc73cef4b", null ],
+      [ "rawstarttype", "group___c_r_u.html#adf4d2452807beaf18c60fefae605ab75", null ],
+      [ "tclk_miss", "group___c_r_u.html#a241902bdc7fb7ab7642c543a98339555", null ],
+      [ "tclk_settle", "group___c_r_u.html#a8d9f0d07e2c9d5a594d979cd77cf0284", null ],
+      [ "ths_settle", "group___c_r_u.html#aff9a2cab89f81dcec68d25dea0d22c44", null ],
+      [ "tclk_prepare", "group___c_r_u.html#a66f719f81e7c63022a97ac377bd04439", null ],
+      [ "ths_prepare", "group___c_r_u.html#aae61f3561b3a088500ccd892b5af7542", null ]
     ] ],
     [ "cru_instance_ctrl_t", "group___c_r_u.html#structcru__instance__ctrl__t", [
       [ "p_cfg", "group___c_r_u.html#a36f2831a9052aeee91910bc779157f34", null ],

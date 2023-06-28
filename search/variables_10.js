@@ -1,11 +1,16 @@
 var searchData=
 [
+  ['tclk_5fmiss',['tclk_miss',['../group___c_r_u.html#a241902bdc7fb7ab7642c543a98339555',1,'cru_extended_cfg_t']]],
+  ['tclk_5fprepare',['tclk_prepare',['../group___c_r_u.html#a66f719f81e7c63022a97ac377bd04439',1,'cru_extended_cfg_t']]],
+  ['tclk_5fsettle',['tclk_settle',['../group___c_r_u.html#a8d9f0d07e2c9d5a594d979cd77cf0284',1,'cru_extended_cfg_t']]],
   ['tei_5fipl',['tei_ipl',['../group___s_p_i___a_p_i.html#a493a388c1b9907a10e54ab57021f5ea4',1,'spi_cfg_t::tei_ipl()'],['../group___u_a_r_t___a_p_i.html#aceec311122c92321f879530c32fc0e00',1,'uart_cfg_t::tei_ipl()']]],
   ['tei_5firq',['tei_irq',['../group___i2_c___m_a_s_t_e_r___a_p_i.html#ac2de0a7db69741ace3fd1e6995bddb57',1,'i2c_master_cfg_t::tei_irq()'],['../group___i2_c___s_l_a_v_e___a_p_i.html#ad1cc54031228e56ffcbf398278e39e98',1,'i2c_slave_cfg_t::tei_irq()'],['../group___s_p_i___a_p_i.html#a65879b76a785f6afaf3e295120de9bf2',1,'spi_cfg_t::tei_irq()'],['../group___u_a_r_t___a_p_i.html#a52fad103c0d9a1cc38510e74f7f1c198',1,'uart_cfg_t::tei_irq()']]],
   ['tgra_5fval',['tgra_val',['../group___m_t_u3.html#af508e14be5476f219620a30f14531871',1,'mtu3_extended_cfg_t']]],
   ['tgrb_5fval',['tgrb_val',['../group___m_t_u3.html#af66a345b2403fb4b16c0c69babd6f96e',1,'mtu3_extended_cfg_t']]],
   ['tgrc_5fval',['tgrc_val',['../group___m_t_u3.html#af23edbc49f7268ad12e61a783bbbf951',1,'mtu3_extended_cfg_t']]],
   ['tgrd_5fval',['tgrd_val',['../group___m_t_u3.html#ac5bc8f09109ce78912076db7b22ed9f5',1,'mtu3_extended_cfg_t']]],
+  ['ths_5fprepare',['ths_prepare',['../group___c_r_u.html#aae61f3561b3a088500ccd892b5af7542',1,'cru_extended_cfg_t']]],
+  ['ths_5fsettle',['ths_settle',['../group___c_r_u.html#aff9a2cab89f81dcec68d25dea0d22c44',1,'cru_extended_cfg_t']]],
   ['time_5fsegment_5f1',['time_segment_1',['../group___c_a_n___a_p_i.html#aafe4728b44b6abbb0f5d540e16d0be40',1,'can_bit_timing_cfg_t']]],
   ['time_5fsegment_5f2',['time_segment_2',['../group___c_a_n___a_p_i.html#a4157f4d2f2bd13acd53ebc43c557c4f8',1,'can_bit_timing_cfg_t']]],
   ['timeout',['timeout',['../group___w_d_t___a_p_i.html#a32ddaf9b3fd7bab2b654e660588ac680',1,'wdt_cfg_t']]],

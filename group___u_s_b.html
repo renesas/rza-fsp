@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v1.2.1</span>
+   &#160;<span id="projectnumber">Release v2.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -255,6 +255,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga628af921919f90a9232c8c1713cc6c48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b.html#ga628af921919f90a9232c8c1713cc6c48">R_USB_SetupGet</a> (usb_ctrl_t *const p_api_ctrl, usb_setup_t *setup)</td></tr>
 <tr class="memdesc:ga628af921919f90a9232c8c1713cc6c48"><td class="mdescLeft">&#160;</td><td class="mdescRight">This API gets the setup type.  <a href="#ga628af921919f90a9232c8c1713cc6c48">More...</a><br /></td></tr>
 <tr class="separator:ga628af921919f90a9232c8c1713cc6c48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga66b9f21c7fc7cce60388edeaf7861d0e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b.html#ga66b9f21c7fc7cce60388edeaf7861d0e">R_USB_OtgCallbackSet</a> (usb_ctrl_t *const p_api_ctrl, usb_otg_callback_t *p_callback)</td></tr>
+<tr class="memdesc:ga66b9f21c7fc7cce60388edeaf7861d0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set callback function to be called when the OTG role swap was completed on Azure RTOS.  <a href="#ga66b9f21c7fc7cce60388edeaf7861d0e">More...</a><br /></td></tr>
+<tr class="separator:ga66b9f21c7fc7cce60388edeaf7861d0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a52197abba908bdd990e9bca22d50a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b.html#ga1a52197abba908bdd990e9bca22d50a7">R_USB_OtgSRP</a> (usb_ctrl_t *const p_api_ctrl)</td></tr>
+<tr class="memdesc:ga1a52197abba908bdd990e9bca22d50a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the SRP processing for OTG on Azure RTOS.  <a href="#ga1a52197abba908bdd990e9bca22d50a7">More...</a><br /></td></tr>
+<tr class="separator:ga1a52197abba908bdd990e9bca22d50a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Driver for the USB peripheral on RZ MCUs. This module implements the <a class="el" href="group___u_s_b___a_p_i.html">USB Interface</a>. </p>
@@ -510,7 +516,7 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>ICU private control block. DO NOT MODIFY. Initialization occurs when R_ICU_ExternalIrqOpen is called. </p>
+<p>USB private control block. DO NOT MODIFY. Initialization occurs when R_USB_Open is called. </p>
 
 </div>
 </div>
@@ -1809,13 +1815,80 @@ Do not call this API in the following function. </dd>
 
 </div>
 </div>
+<a id="ga66b9f21c7fc7cce60388edeaf7861d0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga66b9f21c7fc7cce60388edeaf7861d0e">&#9670;&nbsp;</a></span>R_USB_OtgCallbackSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> R_USB_OtgCallbackSet </td>
+          <td>(</td>
+          <td class="paramtype">usb_ctrl_t *const&#160;</td>
+          <td class="paramname"><em>p_api_ctrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">usb_otg_callback_t *&#160;</td>
+          <td class="paramname"><em>p_callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set callback function to be called when the OTG role swap was completed on Azure RTOS. </p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FSP_SUCCESS</td><td>Successful completion. </td></tr>
+    <tr><td class="paramname">FSP_ERR_USB_FAILED</td><td>The function could not be completed successfully. </td></tr>
+    <tr><td class="paramname">FSP_ERR_ASSERTION</td><td>Parameter is NULL error. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga1a52197abba908bdd990e9bca22d50a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1a52197abba908bdd990e9bca22d50a7">&#9670;&nbsp;</a></span>R_USB_OtgSRP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> R_USB_OtgSRP </td>
+          <td>(</td>
+          <td class="paramtype">usb_ctrl_t *const&#160;</td>
+          <td class="paramname"><em>p_api_ctrl</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Start the SRP processing for OTG on Azure RTOS. </p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FSP_SUCCESS</td><td>Successful completion. </td></tr>
+    <tr><td class="paramname">FSP_ERR_USB_FAILED</td><td>The function could not be completed successfully. </td></tr>
+    <tr><td class="paramname">FSP_ERR_ASSERTION</td><td>Parameter is NULL error. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>Do not support the VBUS Pulsing since OTG 2.0 does not support the VBUS Pulsing.. </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.7-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v1.2.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v2.0.0 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

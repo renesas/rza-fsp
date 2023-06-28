@@ -10,6 +10,7 @@ var searchData=
   ['can_5fevent_5ferr_5fglobal',['CAN_EVENT_ERR_GLOBAL',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dba8adaa142ed94841f5f282232ce414333',1,'r_can_api.h']]],
   ['can_5fevent_5ferr_5fpassive',['CAN_EVENT_ERR_PASSIVE',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dbafd0c186a8462372ff19061f8ff97160f',1,'r_can_api.h']]],
   ['can_5fevent_5ferr_5fwarning',['CAN_EVENT_ERR_WARNING',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dba4cf2031ec5e169907edd2bd5d0caee00',1,'r_can_api.h']]],
+  ['can_5fevent_5ffifo_5fmessage_5flost',['CAN_EVENT_FIFO_MESSAGE_LOST',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dba4b9bfbf96c82d53ce3dd47e9a3237359',1,'r_can_api.h']]],
   ['can_5fevent_5fmailbox_5fmessage_5flost',['CAN_EVENT_MAILBOX_MESSAGE_LOST',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dbaacf601c286d90d108d59de289cdfd80c',1,'r_can_api.h']]],
   ['can_5fevent_5frx_5fcomplete',['CAN_EVENT_RX_COMPLETE',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dbaa0bc5e15cee037a1d102b517ef63e161',1,'r_can_api.h']]],
   ['can_5fevent_5ftx_5faborted',['CAN_EVENT_TX_ABORTED',['../group___c_a_n___a_p_i.html#ggacc2e5bc68e8b707c069ca27f521695dba973c55ab2a29a1554f488fedf29fea8a',1,'r_can_api.h']]],

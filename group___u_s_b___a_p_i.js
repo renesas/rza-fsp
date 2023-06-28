@@ -29,7 +29,9 @@ var group___u_s_b___a_p_i =
       [ "pipeNumberGet", "group___u_s_b___a_p_i.html#a25d98b97877550ba5c87cef179612387", null ],
       [ "deviceStateGet", "group___u_s_b___a_p_i.html#ac00188c075546f27f2b9ba3fc6f452b9", null ],
       [ "dataSizeGet", "group___u_s_b___a_p_i.html#ac2b9fd6871571a54b991b598cd5802a7", null ],
-      [ "setupGet", "group___u_s_b___a_p_i.html#a4071ec30a3255c3ea18f8554bd68da50", null ]
+      [ "setupGet", "group___u_s_b___a_p_i.html#a4071ec30a3255c3ea18f8554bd68da50", null ],
+      [ "otgCallbackSet", "group___u_s_b___a_p_i.html#a15d71759c0ca7e7b9e1381d29de14222", null ],
+      [ "otgSRP", "group___u_s_b___a_p_i.html#af15343382920023c7268b49f3720a605", null ]
     ] ],
     [ "usb_instance_t", "group___u_s_b___a_p_i.html#structusb__instance__t", [
       [ "p_ctrl", "group___u_s_b___a_p_i.html#ac8909c912596ac5e73604a533c526f90", null ],
@@ -165,6 +167,9 @@ var group___u_s_b___a_p_i =
       [ "USB_CLASS_PCDC2", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2a45f5c5efd523b3602a3e1239993da161", null ],
       [ "USB_CLASS_PCDCC2", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2ad0f97287712c5d6d1fc0013ed6ba5104", null ],
       [ "USB_CLASS_PHID", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2abf75ec21c7f480bc52e8f9b68701ef17", null ],
+      [ "USB_CLASS_PHID2", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2abe1e6620054470da8b98fd0e261642c2", null ],
+      [ "USB_CLASS_PPRN", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2a2056fb5548abac1e44fd4f9d356d974b", null ],
+      [ "USB_CLASS_DFU", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2ac1fe471dfd6edc739aa2d500a8634b08", null ],
       [ "USB_CLASS_PVND", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2af29ff035832b2ed9568dd3e674052265", null ],
       [ "USB_CLASS_HCDC", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2aa31d93178a24f042fb19db6da3b5a2d8", null ],
       [ "USB_CLASS_HCDCC", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2a849e5469fce2840fde1a475474f3ddc4", null ],
@@ -172,6 +177,8 @@ var group___u_s_b___a_p_i =
       [ "USB_CLASS_HVND", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2af8045de085f8312fc88985be178ea330", null ],
       [ "USB_CLASS_HMSC", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2afd9d59bc253fddb8b37cb089fc7f4e62", null ],
       [ "USB_CLASS_PMSC", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2a97a34755fa2c5bfcf5862fe25156e11c", null ],
+      [ "USB_CLASS_HPRN", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2ae145518d6f16d45ba75acded515f9fac", null ],
+      [ "USB_CLASS_HUVC", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2a44dd3f72ef101f5c1c15b5e78278b411", null ],
       [ "USB_CLASS_REQUEST", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2ac5ba0e58af39bb09ef467e27446a2d58", null ],
       [ "USB_CLASS_END", "group___u_s_b___a_p_i.html#ggab1dc4a2240edf1a50cca3945f31dc9f2ada9301f70f2342c0853a2d41486fcdd9", null ]
     ] ],
