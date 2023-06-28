@@ -897,6 +897,7 @@ uint8_t * usb_hstd_read_fifo (usb_utr_t * ptr, uint16_t count, uint16_t pipemode
 
             /* Condition compilation by the difference of the little endian */
    #if USB_CFG_ENDIAN == USB_CFG_LITTLE
+
             /* WAIT_LOOP */
             do
             {
@@ -998,6 +999,7 @@ void usb_hstd_forced_termination (usb_utr_t * ptr, uint16_t pipe, uint16_t statu
     }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
     /* Clear D0FIFO-port */
     buffer = hw_usb_read_fifosel(ptr, USB_D0USE);
     if ((buffer & USB_CURPIPE) == pipe)

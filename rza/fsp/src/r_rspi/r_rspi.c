@@ -37,12 +37,10 @@
 
 /** RSPI base register access macro.  */
 
-#define RSPI_CLK_N_DIV_MULTIPLIER         (512U)  ///< Maximum divider for N=0
-#define RSPI_CLK_MAX_DIV                  (4096U) ///< Maximum SPI CLK divider
-#define RSPI_CLK_MIN_DIV                  (2U)    ///< Minimum SPI CLK divider
+#define RSPI_CLK_N_DIV_MULTIPLIER         (512U) ///< Maximum divider for N=0
 
 /** RSPI parameter */
-#define RSPI_TX_FIFO_SIZE                 (8)     ///< TX FIFO size
+#define RSPI_TX_FIFO_SIZE                 (8)    ///< TX FIFO size
 #define RSPI_SPDCR_WIDTH_8BIT             (1 << R_RSPI0_SPDCR_SPLW_Pos)
 #define RSPI_SPDCR_WIDTH_16BIT            (2 << R_RSPI0_SPDCR_SPLW_Pos)
 #define RSPI_SPDCR_WIDTH_32BIT            (3 << R_RSPI0_SPDCR_SPLW_Pos)
@@ -110,8 +108,8 @@ static void r_rspi_call_callback(rspi_instance_ctrl_t * p_ctrl, spi_event_t even
 #if RSPI_CFG_DMAC_ENABLE
 
 static fsp_err_t r_rspi_transfer_config(rspi_instance_ctrl_t * p_ctrl, spi_cfg_t const * const p_cfg);
-void             rspi_txi_dmac_isr(IRQn_Type const irq);
-void             rspi_rxi_dmac_isr(IRQn_Type const irq);
+void             rspi_tx_dmac_callback(rspi_instance_ctrl_t * p_ctrl);
+void             rspi_rx_dmac_callback(rspi_instance_ctrl_t * p_ctrl);
 
 #endif
 
@@ -177,8 +175,6 @@ fsp_err_t R_RSPI_Open (spi_ctrl_t * p_api_ctrl, spi_cfg_t const * const p_cfg)
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_extend);
     FSP_ERROR_RETURN(BSP_FEATURE_RSPI_VALID_CHANNELS_MASK & (1 << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
-    FSP_ASSERT(p_cfg->rxi_irq >= 0);
-    FSP_ASSERT(p_cfg->txi_irq >= 0);
     FSP_ASSERT(p_cfg->eri_irq >= 0);
 #endif
 
@@ -368,8 +364,16 @@ fsp_err_t R_RSPI_Close (spi_ctrl_t * const p_api_ctrl)
 #endif
 
     /* Disable interrupts in GIC. */
-    R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
-    R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
+    if (p_ctrl->p_cfg->txi_irq >= 0)
+    {
+        R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
+    }
+
+    if (p_ctrl->p_cfg->rxi_irq >= 0)
+    {
+        R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
+    }
+
     R_BSP_IrqDisable(p_ctrl->p_cfg->eri_irq);
 
     /* Disable the SPI Transfer. */
@@ -380,6 +384,9 @@ fsp_err_t R_RSPI_Close (spi_ctrl_t * const p_api_ctrl)
     /* The status register must be read before cleared. */
     p_ctrl->p_regs->SPSR;
     p_ctrl->p_regs->SPSR = 0;
+
+    /* Remove power to the channel. */
+    R_BSP_MODULE_STOP(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
 
     return FSP_SUCCESS;
 }
@@ -393,7 +400,7 @@ fsp_err_t R_RSPI_Close (spi_ctrl_t * const p_api_ctrl)
  * @param[out] spck_div           Memory location to store bitrate register settings.
  *
  * @retval FSP_SUCCESS            Valid spbr and brdv values were calculated
- * @retval FSP_ERR_UNSUPPORTED    Bitrate is not achievable
+ * @retval FSP_ERR_UNSUPPORTED    Bitrate is out of the settable range.
  **********************************************************************************************************************/
 fsp_err_t R_RSPI_CalculateBitrate (uint32_t bitrate, rspi_rspck_div_setting_t * spck_div)
 {
@@ -401,18 +408,9 @@ fsp_err_t R_RSPI_CalculateBitrate (uint32_t bitrate, rspi_rspck_div_setting_t * 
     uint32_t desired_divider = (R_FSP_SystemClockHzGet(BSP_FEATURE_RSPI_CLOCK) + bitrate - 1) / bitrate;
 
     /* Can't achieve bitrate slower than desired. */
-    if (desired_divider > RSPI_CLK_MAX_DIV)
+    if ((desired_divider > BSP_FEATURE_RSPI_CLK_MAX_DIV) || (desired_divider < BSP_FEATURE_RSPI_CLK_MIN_DIV))
     {
         return FSP_ERR_UNSUPPORTED;
-    }
-
-    if (desired_divider < RSPI_CLK_MIN_DIV)
-    {
-        /* Configure max bitrate (SPI_CLK / 2) */
-        spck_div->brdv = 0;
-        spck_div->spbr = 0;
-
-        return FSP_SUCCESS;
     }
 
     /*
@@ -538,20 +536,18 @@ static void r_rspi_init_control_structure (rspi_instance_ctrl_t * p_ctrl, spi_cf
  **********************************************************************************************************************/
 static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
 {
-    uint32_t sslp  = 0;
-    uint32_t sppcr = 0;
+    uint32_t sslp   = 0;
+    uint32_t sppcr  = 0;
     uint32_t spdcr  = 0;
-    uint32_t spckd = 0;
-    uint32_t sslnd = 0;
-    uint32_t spnd  = 0;
+    uint32_t spckd  = 0;
+    uint32_t sslnd  = 0;
+    uint32_t spnd   = 0;
     uint32_t spcmd0 = 0;
     uint32_t spbfcr = 0;
     uint32_t spcr   = 0;
 
     /* Enable IP */
     R_BSP_MODULE_START(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
-    R_BSP_MODULE_CLKON(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
-    R_BSP_MODULE_RSTOFF(FSP_IP_RSPI, p_ctrl->p_cfg->channel);
 
     /* Reset SPI controller */
     p_ctrl->p_regs->SPCR = (uint8_t) spcr;
@@ -589,7 +585,8 @@ static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
     rspi_extended_cfg_t * p_extend = ((rspi_extended_cfg_t *) p_ctrl->p_cfg->p_extend);
 
     /* Configure SSL Level Keep Setting. */
-    spcmd0 |= R_RSPI0_SPCMD0_SSLKP_Msk;
+    spcmd0 |=
+        (uint32_t) (((!p_ctrl->p_cfg->operating_mode) & p_extend->ssl_level_keep) << R_RSPI0_SPCMD0_SSLKP_Pos);
 
     /* Configure SSLn polarity setting. */
     if (RSPI_SSLP_HIGH == p_extend->ssl_polarity)
@@ -626,7 +623,14 @@ static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
     }
 
     /* Pre-storing TX FIFO trigger level (not write at this time) */
-    spbfcr |= ((unsigned) p_extend->tx_trigger_level << R_RSPI0_SPBFCR_TXTRG_Pos);
+    if (p_ctrl->p_cfg->p_transfer_tx)
+    {
+        spbfcr |= ((unsigned) RSPI_TX_TRIGGER_0 << R_RSPI0_SPBFCR_TXTRG_Pos);
+    }
+    else
+    {
+        spbfcr |= ((unsigned) p_extend->tx_trigger_level << R_RSPI0_SPBFCR_TXTRG_Pos);
+    }
 
     /* Reset FIFOs */
     p_ctrl->p_regs->SPBFCR = (uint8_t) (spbfcr | R_RSPI0_SPBFCR_RXRST_Msk | R_RSPI0_SPBFCR_TXRST_Msk);
@@ -656,8 +660,16 @@ static void r_rspi_hw_config (rspi_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void r_rspi_nvic_config (rspi_instance_ctrl_t * p_ctrl)
 {
-    R_BSP_IrqCfgEnable(p_ctrl->p_cfg->txi_irq, p_ctrl->p_cfg->txi_ipl, p_ctrl);
-    R_BSP_IrqCfgEnable(p_ctrl->p_cfg->rxi_irq, p_ctrl->p_cfg->rxi_ipl, p_ctrl);
+    if (p_ctrl->p_cfg->txi_irq >= 0)
+    {
+        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->txi_irq, p_ctrl->p_cfg->txi_ipl, p_ctrl);
+    }
+
+    if (p_ctrl->p_cfg->rxi_irq >= 0)
+    {
+        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->rxi_irq, p_ctrl->p_cfg->rxi_ipl, p_ctrl);
+    }
+
     R_BSP_IrqCfgEnable(p_ctrl->p_cfg->eri_irq, p_ctrl->p_cfg->eri_ipl, p_ctrl);
 }
 
@@ -675,7 +687,7 @@ static void r_rspi_bit_width_config (rspi_instance_ctrl_t * p_ctrl)
     uint32_t spdcr  = p_ctrl->p_regs->SPDCR;
     uint32_t spcmd0 = p_ctrl->p_regs->SPCMD0;
 
-    spdcr &= (uint32_t) (~R_RSPI0_SPDCR_SPLW_Msk);
+    spdcr  &= (uint32_t) (~R_RSPI0_SPDCR_SPLW_Msk);
     spcmd0 &= (uint32_t) (~R_RSPI0_SPCMD0_SPB_Msk);
     if (SPI_BIT_WIDTH_8_BITS == p_ctrl->bit_width)
     {
@@ -817,6 +829,11 @@ static void r_rspi_set_rx_fifo_hint (rspi_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void r_rspi_set_rxtrg (rspi_instance_ctrl_t * p_ctrl, rspi_rx_trigger_level_t level)
 {
+    if (p_ctrl->p_cfg->p_transfer_rx)
+    {
+        level = RSPI_RX_TRIGGER_1;
+    }
+
     p_ctrl->p_regs->SPBFCR &= (uint8_t) (~R_RSPI0_SPBFCR_RXTRG_Msk);
     p_ctrl->p_regs->SPBFCR |= (uint8_t) (level << R_RSPI0_SPBFCR_RXTRG_Pos);
 }
@@ -950,14 +967,16 @@ static fsp_err_t r_rspi_write_read_common (spi_ctrl_t * const    p_api_ctrl,
             p_extend_info->dest_size = DMAC_TRANSFER_SIZE_2_BYTE;
         }
 
-        p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
-        p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->p_dest         = p_dest;
+        p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->transfer_settings_word_b.dest_addr_mode =
+            TRANSFER_ADDR_MODE_INCREMENTED;
+        p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->p_dest = p_dest;
 
         if (NULL == p_dest)
         {
             static uint32_t dummy_rx;
-            p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
-            p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->p_dest         = &dummy_rx;
+            p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->transfer_settings_word_b.dest_addr_mode =
+                TRANSFER_ADDR_MODE_FIXED;
+            p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->p_dest = &dummy_rx;
         }
 
         fsp_err_t err = p_ctrl->p_cfg->p_transfer_rx->p_api->reconfigure(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
@@ -998,15 +1017,20 @@ static fsp_err_t r_rspi_write_read_common (spi_ctrl_t * const    p_api_ctrl,
             p_extend_info->dest_size = DMAC_TRANSFER_SIZE_2_BYTE;
         }
 
-        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
-        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_src         = p_src;
+        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->transfer_settings_word_b.src_addr_mode =
+            TRANSFER_ADDR_MODE_INCREMENTED;
+        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_src = p_src;
 
         if (NULL == p_src)
         {
             static uint32_t dummy_tx = 0;
-            p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->src_addr_mode = TRANSFER_ADDR_MODE_FIXED;
-            p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_src         = &dummy_tx;
+            p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->transfer_settings_word_b.src_addr_mode =
+                TRANSFER_ADDR_MODE_FIXED;
+            p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_src = &dummy_tx;
         }
+
+        /* Disable the TX buffer empty interrupt before enabling transfer. */
+        p_ctrl->p_regs->SPCR_b.SPTIE = 0;
 
         fsp_err_t err = p_ctrl->p_cfg->p_transfer_tx->p_api->reconfigure(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
                                                                          p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info);
@@ -1300,8 +1324,8 @@ static void r_rspi_call_callback (rspi_instance_ctrl_t * p_ctrl, spi_event_t eve
 void rspi_rxi_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE;
-
+    FSP_CONTEXT_SAVE
+    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
 
     rspi_instance_ctrl_t * p_ctrl = (rspi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
@@ -1309,7 +1333,7 @@ void rspi_rxi_isr (IRQn_Type const irq)
     r_rspi_receive(p_ctrl);
 
     /* Restore context if RTOS is used */
-    FSP_CONTEXT_RESTORE;
+    FSP_CONTEXT_RESTORE
 }
 
 /*******************************************************************************************************************//**
@@ -1318,8 +1342,8 @@ void rspi_rxi_isr (IRQn_Type const irq)
 void rspi_txi_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE;
-
+    FSP_CONTEXT_SAVE
+    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
 
     rspi_instance_ctrl_t * p_ctrl = (rspi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
@@ -1327,7 +1351,7 @@ void rspi_txi_isr (IRQn_Type const irq)
     r_rspi_transmit(p_ctrl);
 
     /* Restore context if RTOS is used */
-    FSP_CONTEXT_RESTORE;
+    FSP_CONTEXT_RESTORE
 }
 
 /*******************************************************************************************************************//**
@@ -1336,7 +1360,7 @@ void rspi_txi_isr (IRQn_Type const irq)
 void rspi_eri_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE;
+    FSP_CONTEXT_SAVE
 
     rspi_instance_ctrl_t * p_ctrl = (rspi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
@@ -1364,7 +1388,7 @@ void rspi_eri_isr (IRQn_Type const irq)
     R_BSP_IrqStatusClear(irq);
 
     /* Restore context if RTOS is used */
-    FSP_CONTEXT_RESTORE;
+    FSP_CONTEXT_RESTORE
 }
 
 #if RSPI_CFG_DMAC_ENABLE
@@ -1372,20 +1396,16 @@ void rspi_eri_isr (IRQn_Type const irq)
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of transmission.
  **********************************************************************************************************************/
-void rspi_txi_dmac_isr (IRQn_Type const irq)
+void rspi_tx_dmac_callback (rspi_instance_ctrl_t * p_ctrl)
 {
-    rspi_instance_ctrl_t * p_ctrl = (rspi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     r_rspi_transmit(p_ctrl);
 }
 
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of reception.
  **********************************************************************************************************************/
-void rspi_rxi_dmac_isr (IRQn_Type const irq)
+void rspi_rx_dmac_callback (rspi_instance_ctrl_t * p_ctrl)
 {
-    rspi_instance_ctrl_t * p_ctrl = (rspi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     r_rspi_receive(p_ctrl);
 }
 

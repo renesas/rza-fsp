@@ -336,8 +336,7 @@ typedef struct
             uint32_t             : 3;
             __IOM uint32_t ADDRE : 1;
             uint32_t             : 3;
-            __IOM uint32_t HYPE  : 3;
-            uint32_t             : 17;
+            uint32_t             : 20;
         } DRDRENR_b;
     };
 
@@ -362,8 +361,7 @@ typedef struct
             uint32_t              : 3;
             __IOM uint32_t ADDRE  : 1;
             uint32_t              : 3;
-            __IOM uint32_t HYPE   : 3;
-            uint32_t              : 17;
+            uint32_t              : 20;
         } SMDRENR_b;
     };
 
@@ -392,20 +390,15 @@ typedef struct
         __IOM uint32_t PHYCNT;
         struct
         {
-            __IOM uint32_t PHYMEM    : 2;
-            __IOM uint32_t WBUF      : 1;
-            uint32_t                 : 1;
-            __IOM uint32_t WBUF2     : 1;
-            uint32_t                 : 11;
-            __IOM uint32_t CKSEL     : 2;
-            __IOM uint32_t HS        : 1;
-            uint32_t                 : 1;
-            __IOM uint32_t OCT       : 1;
-            __IOM uint32_t EXDS      : 1;
-            __IOM uint32_t OCTA      : 2;
-            uint32_t                 : 6;
-            __IOM uint32_t ALT_ALIGN : 1;
-            __OM uint32_t  CAL       : 1;
+            __IOM uint32_t PHYMEM : 2;
+            __IOM uint32_t WBUF   : 1;
+            uint32_t              : 1;
+            __IOM uint32_t WBUF2  : 1;
+            uint32_t              : 11;
+            __IOM uint32_t CKSEL  : 2;
+            __IOM uint32_t HS     : 1;
+            uint32_t              : 12;
+            __OM uint32_t CAL     : 1;
         } PHYCNT_b;
     };
 

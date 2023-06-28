@@ -66,6 +66,7 @@
   #define USB_VALUE_50                   (50)
   #define USB_VALUE_32                   (32)
   #define USB_VALUE_60                   (60)
+  #define USB_VALUE_3000                 (3000)
 
 /* HUB down port */
   #define USB_HUBDOWNPORT                (4U) /* HUB down port (MAX15) */
@@ -251,7 +252,7 @@ void usb_hhub_open (usb_utr_t * ptr, uint16_t devaddr, uint16_t data2)
         {
             mp          = (usb_mgrinfo_t *) p_blf;
             mp->msghead = (usb_mh_t) USB_NULL;
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
             mp->msginfo = USB_MSG_HUB_START;
   #else                                /* (BSP_CFG_RTOS == 2) */
             mp->msginfo = USB_MSG_CLS_INIT;
@@ -451,7 +452,7 @@ uint16_t usb_hhub_get_hub_information (usb_utr_t * ptr, uint16_t hubaddr, usb_cb
     g_usb_shhub_ctrl_mess[ptr->ip].ip  = ptr->ip;
 
     /* Transfer start */
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
    #if USB_IP_EHCI_OHCI == 1
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
@@ -529,7 +530,7 @@ uint16_t usb_hhub_get_port_information (usb_utr_t * ptr, uint16_t hubaddr, uint1
     g_usb_shhub_ctrl_mess[ptr->ip].ip  = ptr->ip;
 
     /* Transfer start */
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -542,6 +543,27 @@ uint16_t usb_hhub_get_port_information (usb_utr_t * ptr, uint16_t hubaddr, uint1
             qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
         } while (USB_QOVR == qerr);
     }
+
+   #if (BSP_CFG_RTOS == 2)
+    qerr        = class_trans_wait_tmo(ptr, (uint16_t) USB_VALUE_3000);
+    ptr->status = (uint16_t) qerr;     /* Record the result of the request */
+    switch (qerr)
+    {
+        case USB_OK:                   /* Send CBW */
+        {
+    #if USB_IP_EHCI_OHCI == 0
+            g_usb_hmsc_out_pipectr[ptr->ip][side] = hw_usb_read_pipectr(ptr, pipe);
+    #endif /* #if USB_IP_EHCI_OHCI == 0 */
+            break;
+        }
+
+        default:
+        {
+            USB_PRINTF1("### CBW Transfer ERROR(drive:%d) !\n", side);
+            break;
+        }
+    }
+   #endif
 
     if (USB_OK == qerr)
     {
@@ -574,7 +596,7 @@ uint16_t usb_hhub_get_port_information (usb_utr_t * ptr, uint16_t hubaddr, uint1
  ******************************************************************************/
 void usb_hhub_task (void)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     usb_utr_t * mess;
     usb_utr_t * ptr;
     usb_er_t    err;
@@ -589,7 +611,7 @@ void usb_hhub_task (void)
     while (1)
     {
         /* Receive message */
-   #if (BSP_CFG_RTOS == 2)
+   #if (BSP_CFG_RTOS == 1)
         err = USB_RTOS_RCV_MSG(USB_HUB_MBX, (usb_msg_t **) &mess);
    #else
         err = USB_TRCV_MSG(USB_HUB_MBX, (usb_msg_t **) &mess, (usb_tm_t) 0);
@@ -600,7 +622,9 @@ void usb_hhub_task (void)
             continue;
         }
 
+   #if (BSP_CFG_RTOS == 1)
         g_usb_msg_check &= (uint16_t) ~(1 << USB_HUB_TSK);
+   #endif
 
         ptr = mess;
 
@@ -1069,10 +1093,11 @@ static void usb_hhub_enumeration (usb_clsinfo_t * ptr)
                 {
                     if (USB_FSCONNECT == g_usb_shhub_speed[ptr->ip])
                     {
-                        retval = usb_hhub_pipe_info(ptr,
-                                                    g_p_usb_shhub_interface_table[ptr->ip],
-                                                    g_usb_shhub_speed[ptr->ip],
-                                                    (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
+                        retval =
+                            usb_hhub_pipe_info(ptr,
+                                               g_p_usb_shhub_interface_table[ptr->ip],
+                                               g_usb_shhub_speed[ptr->ip],
+                                               (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
                         if (USB_ERROR == retval)
                         {
                             USB_PRINTF0("### Device information error(HUB) !\n");
@@ -1092,10 +1117,11 @@ static void usb_hhub_enumeration (usb_clsinfo_t * ptr)
                 {
                     if (USB_HSCONNECT == g_usb_shhub_speed[ptr->ip])
                     {
-                        retval = usb_hhub_pipe_info(ptr,
-                                                    g_p_usb_shhub_interface_table[ptr->ip],
-                                                    g_usb_shhub_speed[ptr->ip],
-                                                    (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
+                        retval =
+                            usb_hhub_pipe_info(ptr,
+                                               g_p_usb_shhub_interface_table[ptr->ip],
+                                               g_usb_shhub_speed[ptr->ip],
+                                               (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
                         if (USB_ERROR == retval)
                         {
                             USB_PRINTF0("### Device information error(HUB) !\n");
@@ -1116,10 +1142,11 @@ static void usb_hhub_enumeration (usb_clsinfo_t * ptr)
                     if (USB_HSCONNECT == g_usb_shhub_speed[ptr->ip])
                     {
                         /* Set pipe information */
-                        retval = usb_hhub_pipe_info(ptr,
-                                                    g_p_usb_shhub_interface_table[ptr->ip],
-                                                    g_usb_shhub_speed[ptr->ip],
-                                                    (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
+                        retval =
+                            usb_hhub_pipe_info(ptr,
+                                               g_p_usb_shhub_interface_table[ptr->ip],
+                                               g_usb_shhub_speed[ptr->ip],
+                                               (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
                         if (USB_ERROR == retval)
                         {
                             USB_PRINTF0("### Device information error(HUB) !\n");
@@ -1127,10 +1154,11 @@ static void usb_hhub_enumeration (usb_clsinfo_t * ptr)
                         }
 
                         /* Set pipe information */
-                        retval = usb_hhub_pipe_info(ptr,
-                                                    g_p_usb_shhub_interface_table[ptr->ip],
-                                                    g_usb_shhub_speed[ptr->ip],
-                                                    (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
+                        retval =
+                            usb_hhub_pipe_info(ptr,
+                                               g_p_usb_shhub_interface_table[ptr->ip],
+                                               g_usb_shhub_speed[ptr->ip],
+                                               (uint16_t) g_p_usb_shhub_config_table[ptr->ip][2]);
                         if (USB_ERROR == retval)
                         {
                             USB_PRINTF0("### Device information error(HUB) !\n");
@@ -1214,7 +1242,7 @@ static void usb_hhub_enumeration (usb_clsinfo_t * ptr)
  ******************************************************************************/
 static void usb_hhub_init_down_port (usb_utr_t * ptr, uint16_t hubaddr, usb_clsinfo_t * mess)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     uint16_t portnum;
     uint16_t retval;
     uint32_t port_status;
@@ -1442,7 +1470,7 @@ static void usb_hhub_init_down_port (usb_utr_t * ptr, uint16_t hubaddr, usb_clsi
  ******************************************************************************/
 static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t * mess)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     uint16_t    devaddr;
     uint16_t    rootport;
     usb_utr_t * ptr;
@@ -1511,15 +1539,16 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
         g_usb_hstd_enum_seq[ptr->ip]  = 0;
 
         /* Set Device address of the HUB port to HCI */
-        r_usb_hstd_hci_set_device_address_of_hub_port(g_usb_shhub_hub_addr[ptr->ip],
-                                                      g_usb_hstd_device_addr[ptr->ip]);
+        r_usb_hstd_hci_set_device_address_of_hub_port(g_usb_shhub_hub_addr[ptr->ip], g_usb_hstd_device_addr[ptr->ip]);
 
         if (USB_NOCONNECT != g_usb_hstd_device_speed[ptr->ip])
         {
             (*g_usb_hstd_enumaration_process[0])(ptr, (uint16_t) USB_DEVICE_0, (uint16_t) 0);
 
+   #if (BSP_CFG_RTOS == 1)
             /* return to MGR */
             usb_hstd_return_enu_mgr(ptr, USB_OK);
+   #endif
 
             /* WAIT_LOOP */
             while (1)
@@ -1811,6 +1840,8 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
     {
         case USB_SEQ_0:                /* Hub port SetFeature(RESET) */
         {
+            USB_REL_BLK(USB_HUB_MPL, (usb_mh_t) mess);
+
             usb_hhub_port_set_feature(ptr,
                                       g_usb_shhub_hub_addr[ptr->ip],
                                       portnum,
@@ -1823,6 +1854,8 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
 
         case USB_SEQ_1:                /* GetStatus */
         {
+            USB_REL_BLK(USB_HUB_MPL, (usb_mh_t) mess);
+
             /* Keep Reset */
             R_USB_HstdDelayXms((uint16_t) 20);
 
@@ -1834,6 +1867,8 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
 
         case USB_SEQ_2:                /* Check Reset Change */
         {
+            USB_REL_BLK(USB_HUB_MPL, (usb_mh_t) mess);
+
             port_status  = (uint32_t) g_usb_hhub_data[ptr->ip][hubaddr][0];
             port_status |= ((uint32_t) g_usb_hhub_data[ptr->ip][hubaddr][1] << 8);
             port_status |= ((uint32_t) g_usb_hhub_data[ptr->ip][hubaddr][2] << 16);
@@ -1873,6 +1908,8 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
 
         case USB_SEQ_3:                /* Device Enumeration */
         {
+            USB_REL_BLK(USB_HUB_MPL, (usb_mh_t) mess);
+
             /* Now downport device search */
             g_usb_hstd_device_addr[ptr->ip] = usb_hhub_get_cnn_devaddr(ptr, g_usb_shhub_hub_addr[ptr->ip], portnum);
 
@@ -2275,7 +2312,7 @@ static void usb_hhub_event (usb_clsinfo_t * mess)
  ******************************************************************************/
 static void usb_hhub_port_reset (usb_utr_t * ptr, uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t * mess)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     uint16_t retval;
     uint32_t port_status;
 
@@ -2459,7 +2496,7 @@ static void usb_hhub_port_reset (usb_utr_t * ptr, uint16_t hubaddr, uint16_t por
  ******************************************************************************/
 static void usb_hhub_check_class (usb_utr_t * ptr, uint16_t ** table)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     uint16_t retval;
     uint8_t  string;
    #if USB_IP_EHCI_OHCI == 1
@@ -2701,6 +2738,7 @@ static void usb_hhub_check_class (usb_utr_t * ptr, uint16_t ** table)
     {
         cp          = p_blf;
         cp->msginfo = USB_MSG_CLS_CHECKREQUEST;
+        cp->result  = USB_OK;
 
         cp->ipp = ptr->ipp;
         cp->ip  = ptr->ip;
@@ -2809,7 +2847,7 @@ static uint16_t usb_hhub_port_set_feature (usb_utr_t * ptr,
     g_usb_shhub_ctrl_mess[ptr->ip].ip  = ptr->ip;
 
     /* Transfer start */
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -2882,7 +2920,7 @@ static uint16_t usb_hhub_port_clr_feature (usb_utr_t * ptr,
     g_usb_shhub_ctrl_mess[ptr->ip].ip  = ptr->ip;
 
     /* Transfer start */
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -2895,6 +2933,28 @@ static uint16_t usb_hhub_port_clr_feature (usb_utr_t * ptr,
             qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
         } while (USB_QOVR == qerr);
     }
+
+   #if (BSP_CFG_RTOS == 2)
+    qerr        = class_trans_wait_tmo(ptr, (uint16_t) USB_VALUE_3000);
+    ptr->status = (uint16_t) qerr;     /* Record the result of the request */
+    switch (qerr)
+    {
+        case USB_OK:                   /* Send CBW */
+        {
+    #if USB_IP_EHCI_OHCI == 0
+            g_usb_hmsc_out_pipectr[ptr->ip][side] = hw_usb_read_pipectr(ptr, pipe);
+    #endif /* #if USB_IP_EHCI_OHCI == 0 */
+
+            break;
+        }
+
+        default:
+        {
+            USB_PRINTF1("### CBW Transfer ERROR(drive:%d) !\n", side);
+            break;
+        }
+    }
+   #endif                              /*    #if (BSP_CFG_RTOS == 1) */
 
     if (USB_OK == qerr)
     {
@@ -2972,7 +3032,7 @@ static uint16_t usb_hhub_request_result (uint16_t errcheck)
  ******************************************************************************/
 static void usb_hhub_trans_complete (usb_utr_t * mess, uint16_t data1, uint16_t data2)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     usb_er_t err;
     uint16_t pipenum;
     uint16_t hubaddr;
@@ -3121,8 +3181,6 @@ static void usb_hhub_class_request_complete (usb_utr_t * ptr, uint16_t data1, ui
             /* Send message failure */
             USB_PRINTF0("### CheckResult function snd_msg error\n");
         }
-
-        USB_REL_BLK(USB_HUB_MPL, (usb_mh_t) p_blf);
     }
     else
     {
@@ -3507,7 +3565,7 @@ static uint16_t usb_hhub_chk_interface (uint16_t ** table, uint16_t spec)
  ******************************************************************************/
 static void usb_hhub_new_connect (usb_utr_t * ptr, uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t * mess)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     uint16_t devaddr;
     uint16_t result;
 
@@ -3722,7 +3780,7 @@ static void usb_hhub_selective_detach (usb_utr_t * ptr, uint16_t devaddr)
  ******************************************************************************/
 uint16_t usb_hhub_get_string_descriptor1 (usb_utr_t * ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     FSP_PARAMETER_NOT_USED(complete);
     FSP_PARAMETER_NOT_USED(index);
     usb_hstd_get_string_desc(ptr, devaddr, (uint16_t) 0);
@@ -3749,7 +3807,7 @@ uint16_t usb_hhub_get_string_descriptor1 (usb_utr_t * ptr, uint16_t devaddr, uin
  ******************************************************************************/
 uint16_t usb_hhub_get_string_descriptor2 (usb_utr_t * ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete)
 {
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     FSP_PARAMETER_NOT_USED(complete);
     usb_hstd_get_string_desc(ptr, devaddr, index);
   #else                                /* (BSP_CFG_RTOS == 2) */

@@ -47,7 +47,7 @@ FSP_HEADER
 typedef uint8_t intc_tint_gpioint_t;
 
 /** TINT trigger condition. */
-typedef enum e_intc_tint_trigger_t
+typedef enum e_intc_tint_trigger
 {
     INTC_TINT_TRIGGER_RISING     = 0,  ///< Rising edge trigger
     INTC_TINT_TRIGGER_FALLING    = 1,  ///< Falling edge trigger

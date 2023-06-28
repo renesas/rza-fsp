@@ -321,12 +321,6 @@ fsp_err_t R_SSI_Open (i2s_ctrl_t * const p_ctrl, i2s_cfg_t const * const p_cfg)
     /* Enable PCLK to SSI. */
     R_BSP_MODULE_START(FSP_IP_SSI, p_cfg->channel);
 
-    /* Supply clock to all SSI channels. */
-    R_BSP_MODULE_CLKON(FSP_IP_SSI, p_cfg->channel);
-
-    /* Negate reset signal for all SSI channels. */
-    R_BSP_MODULE_RSTOFF(FSP_IP_SSI, p_cfg->channel);
-
     /* Configure master/slave mode and associated clock settings for master mode. */
     p_instance_ctrl->p_reg->SSICR = ssicr;
 
@@ -378,7 +372,6 @@ fsp_err_t R_SSI_Write (i2s_ctrl_t * const p_ctrl, void const * const p_src, uint
 
     /* bytes must be a non-zero multiple of the FIFO access size multiplied by 2 (for the left and right channel). */
     FSP_ASSERT(bytes > 0U);
-    FSP_ASSERT(0U == (bytes % (2U << p_instance_ctrl->fifo_access_size)));
 #endif
 
     /* If a transfer instance is provided for write, reset the transfer. Otherwise store data to transmit in the
@@ -428,7 +421,6 @@ fsp_err_t R_SSI_Read (i2s_ctrl_t * const p_ctrl, void * const p_dest, uint32_t c
 
     /* bytes must be a non-zero multiple of the FIFO access size multiplied by 2 (for the left and right channel). */
     FSP_ASSERT(bytes > 0U);
-    FSP_ASSERT(0U == (bytes % (2U << p_instance_ctrl->fifo_access_size)));
 #endif
 
     /* If a transfer instance is provided for read, reset the transfer. Otherwise store data to receive in the receive
@@ -483,7 +475,6 @@ fsp_err_t R_SSI_WriteRead (i2s_ctrl_t * const p_ctrl,
 
     /* bytes must be a non-zero multiple of the FIFO access size multiplied by 2 (for the left and right channel). */
     FSP_ASSERT(bytes > 0U);
-    FSP_ASSERT(0U == (bytes % (2U << p_instance_ctrl->fifo_access_size)));
 #endif
 
     /* If a transfer instance is provided for write, reset the transfer. Reset the transmit FIFO first since the
@@ -633,8 +624,6 @@ fsp_err_t R_SSI_Close (i2s_ctrl_t * const p_ctrl)
 #endif
 
     /* Remove power to the channel. */
-    R_BSP_MODULE_CLKOFF(FSP_IP_SSI, (p_instance_ctrl->p_cfg->channel) * 2);
-    R_BSP_MODULE_CLKOFF(FSP_IP_SSI, (p_instance_ctrl->p_cfg->channel) * 2 + 1);
     R_BSP_MODULE_STOP(FSP_IP_SSI, p_instance_ctrl->p_cfg->channel);
 
     return FSP_SUCCESS;
@@ -846,6 +835,10 @@ static void r_ssi_stop_sub (ssi_instance_ctrl_t * const p_instance_ctrl)
     ssicr |= (1U << SSI_PRV_SSICR_IIEN_BIT);
 
     p_instance_ctrl->p_reg->SSICR = ssicr;
+
+    uint32_t ssifcr = p_instance_ctrl->p_reg->SSIFCR;
+    ssifcr &= ~(uint32_t) (R_SSI_SSIFCR_TIE_Msk | R_SSI_SSIFCR_RIE_Msk);
+    p_instance_ctrl->p_reg->SSIFCR = ssifcr;
 
 #if SSI_CFG_DMAC_ENABLE
 

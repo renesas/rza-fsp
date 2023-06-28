@@ -54,6 +54,7 @@
  #define USB_VALUE_FE21H        (0xFE21)
  #define USB_ALL_PAGES          (0x3F)
  #define USB_VALUE_ALL_PAGES    (44)
+ #define USB_HMSC_MAX_DEVICE    (4)
 
 /******************************************************************************
  * Private global variables and functions
@@ -93,7 +94,7 @@ static void usb_hmsc_enumeration(usb_utr_t * mess);
  #endif                                /* (BSP_CFG_RTOS == 2) */
 static void usb_hmsc_configured(usb_utr_t * ptr, uint16_t devadr, uint16_t data2);
 static void usb_hmsc_detach(usb_utr_t * ptr, uint16_t addr, uint16_t data2);
-uint8_t     usb_hmsc_convert_epnum(uint16_t pipe_id, uint8_t dir);
+uint8_t     usb_hmsc_convert_epnum(uint16_t device_id, uint8_t dir);
 uint8_t     R_USB_HMSC_ConvertEndpointNum(uint16_t pipe, uint8_t dir);
 void        usb_hmsc_clr_pipe_table(uint16_t side, uint16_t dir);
 
@@ -102,7 +103,7 @@ static usb_utr_t usb_hmsc_trans_data[USB_NUM_USBIP][USB_MAXSTRAGE] USB_BUFFER_PL
 static usb_utr_t usb_hmsc_receive_data[USB_NUM_USBIP][USB_MAXSTRAGE] USB_BUFFER_PLACE_IN_SECTION; /* Receive data transfer message */
 static uint32_t  usb_hmsc_trans_size[USB_NUM_USBIP];
  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
-uint16_t g_usb_hmsc_num_endpoint[USB_NUM_USBIP][USB_MAXDEVADDR];                                  /* Num Endpoints */
+uint16_t g_usb_hmsc_num_endpoint[USB_NUM_USBIP][USB_MAXDEVADDR + 1];                              /* Num Endpoints */
  #endif /* define(BSP_MCU_GROUP_RZT2M)|| define(BSP_MCU_GROUP_RZA3UL) */
 static uint8_t const * pusb_hmsc_buff[USB_NUM_USBIP] USB_BUFFER_PLACE_IN_SECTION;
 static uint16_t        usb_shmsc_process[USB_NUM_USBIP] USB_BUFFER_PLACE_IN_SECTION;
@@ -1286,8 +1287,6 @@ static void usb_hmsc_specified_path (usb_utr_t * mess)
         {
             USB_PRINTF0("### SpecifiedPass function snd_msg error\n");
         }
-
-        USB_REL_BLK(USB_HMSC_MPL, (usb_mh_t) pblf);
     }
     else
     {
@@ -1389,7 +1388,6 @@ static uint16_t usb_hmsc_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16
     uint16_t i;
 
  #if (BSP_CFG_RTOS == 2)
-    usb_er_t err;
     uint16_t hmsc_retval;
  #endif                                /* (BSP_CFG_RTOS == 2) */
 
@@ -1427,8 +1425,11 @@ static uint16_t usb_hmsc_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16
     g_usb_hmsc_class_control[ptr->ip].ipp = ptr->ipp;
 
  #if (BSP_CFG_RTOS == 2)
-    err = usb_hstd_transfer_start_req(&g_usb_hmsc_class_control[ptr->ip]);
-    if (USB_OK == err)
+  #if USB_IP_EHCI_OHCI == 1
+    if (USB_OK == usb_hstd_transfer_start(&g_usb_hmsc_class_control[ptr->ip]))
+  #else                                /* USB_IP_EHCI_OHCI == 1 */
+    if (USB_OK == usb_hstd_transfer_start_req(&g_usb_hmsc_class_control[ptr->ip]))
+  #endif
     {
         hmsc_retval = usb_hmsc_req_trans_wait_tmo((uint16_t) USB_VALUE_3000);
         if (USB_DATA_STALL == hmsc_retval)
@@ -2386,7 +2387,11 @@ static usb_er_t usb_hmsc_clear_stall (usb_utr_t * ptr, uint16_t pipe, usb_cb_t c
         usb_cstd_clr_stall(ptr, (uint16_t) USB_PIPE0);
 
         /* SQCLR */
-        usb_hstd_change_device_state(ptr, usb_hstd_dummy_function, USB_DO_CLR_SQTGL, (uint16_t) USB_PIPE0);
+  #if USB_IP_EHCI_OHCI == 0
+        err = usb_hstd_change_device_state(ptr, usb_hstd_dummy_function, USB_DO_CLR_SQTGL, (uint16_t) USB_PIPE0);
+  #else
+        err = R_USB_HstdChangeDeviceState(ptr, usb_hstd_dummy_function, USB_DO_CLR_SQTGL, (uint16_t) USB_PIPE0);
+  #endif
     }
  #else
   #if USB_IP_EHCI_OHCI == 0
@@ -2633,7 +2638,7 @@ static void usb_hmsc_detach (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
     uint16_t            que_cnt;
     usb_instance_ctrl_t ctrl;
     uint16_t            ipno_devaddr;
-    usb_cfg_t         * p_cfg = NULL;
+    usb_cfg_t         * p_cfg = USB_NULL;
     (void) data2;
 
     /* Get Context info */
@@ -2706,15 +2711,19 @@ static void usb_hmsc_detach (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
         g_usb_hmsc_csw_tag_no[ptr->ip][side] = 1;
     }
 
-    ctrl.module_number  = ptr->ip;           /* Module number setting */
+    ctrl.module_number  = ptr->ip;     /* Module number setting */
     ctrl.device_address = (uint8_t) addr;
-    ctrl.p_context      = (void *) p_cfg->p_context;
+    if ((void *) USB_NULL != p_cfg)
+    {
+        ctrl.p_context = (void *) p_cfg->p_context;
+    }
+
     usb_set_event(USB_STATUS_DETACH, &ctrl); /* Set Event()  */
  #else  /* BSP_CFG_RTOS == 0 */
     usb_instance_ctrl_t ctrl;
     uint16_t            side;
     uint16_t            ipno_devaddr;
-    usb_cfg_t         * p_cfg = NULL;
+    usb_cfg_t         * p_cfg = USB_NULL;
     (void) data2;
 
     /* Get Context info */
@@ -2755,10 +2764,12 @@ static void usb_hmsc_detach (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
 
     ctrl.module_number  = ptr->ip;            /* Module number setting */
     ctrl.device_address = (uint8_t) addr;
-    ctrl.p_context      = (void *) p_cfg->p_context;
-    ctrl.p_transfer_rx  = p_cfg->p_transfer_rx;
-    ctrl.p_transfer_rx  = p_cfg->p_transfer_tx;
-
+    if ((void *) USB_NULL != p_cfg)
+    {
+        ctrl.p_context     = (void *) p_cfg->p_context;
+        ctrl.p_transfer_rx = p_cfg->p_transfer_rx;
+        ctrl.p_transfer_tx = p_cfg->p_transfer_tx;
+    }
     usb_set_event(USB_STATUS_DETACH, &ctrl); /* Set Event()  */
  #endif /* BSP_CFG_RTOS == 0 */
 }
@@ -2778,7 +2789,7 @@ static void usb_hmsc_detach (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
 void usb_hmsc_drive_complete (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
 {
     usb_instance_ctrl_t ctrl;
-    usb_cfg_t         * p_cfg = NULL;
+    usb_cfg_t         * p_cfg = USB_NULL;
     (void) data2;
 
     /* Get Context info */
@@ -2823,11 +2834,14 @@ void usb_hmsc_drive_complete (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
         g_drive_search_que_cnt--;
     }
     g_drive_search_lock = USB_FALSE;
- #endif                                          /* BSP_CFG_RTOS == 0 */
+ #endif                                /* BSP_CFG_RTOS == 0 */
 
-    ctrl.module_number  = ptr->ip;               /* Module number setting */
+    ctrl.module_number  = ptr->ip;     /* Module number setting */
     ctrl.device_address = (uint8_t) addr;
-    ctrl.p_context      = (void *) p_cfg->p_context;
+    if ((void *) USB_NULL != p_cfg)
+    {
+        ctrl.p_context = (void *) p_cfg->p_context;
+    }
 
     usb_set_event(USB_STATUS_CONFIGURED, &ctrl); /* Set Event()  */
 } /* End of function usb_hmsc_drive_complete() */
@@ -3073,6 +3087,8 @@ uint16_t usb_hmsc_get_string_info (usb_utr_t * mess, uint16_t addr, uint16_t str
     {
         return USB_ERROR;
     }
+
+    usb_hstd_return_enu_mgr(mess, retval);
 
     return USB_OK;
 }                                      /* End of function usb_hmsc_get_string_info() */
@@ -3673,7 +3689,11 @@ usb_er_t usb_hmsc_get_max_unit (usb_utr_t * ptr, uint16_t addr, uint8_t * buff, 
     /* WAIT_LOOP */
     while (1)
     {
+  #if USB_IP_EHCI_OHCI == 1
+        err = usb_hstd_transfer_start(&g_usb_hmsc_class_control[ptr->ip]);
+  #else
         err = usb_hstd_transfer_start_req(&g_usb_hmsc_class_control[ptr->ip]);
+  #endif
         if (USB_QOVR != err)
         {
             break;                     /* Control Transfer not overlaps */
@@ -4125,13 +4145,13 @@ void usb_hhub_task (void * stacd)
  * Arguments       : uint16_t pipe_id  : Pipe Number
  * Return value    : uint16_t endpoint number
  ***********************************************************************************************************************/
-uint8_t usb_hmsc_convert_epnum (uint16_t pipe_id, uint8_t dir)
+uint8_t usb_hmsc_convert_epnum (uint16_t device_id, uint8_t dir)
 {
     uint8_t result;
 
-    if (1 >= pipe_id)
+    if (USB_HMSC_MAX_DEVICE >= device_id)
     {
-        result = (uint8_t) (g_usb_hmsc_pipe_table[pipe_id - 1][dir].pipe_cfg & 0x000F);
+        result = (uint8_t) (g_usb_hmsc_pipe_table[device_id - 1][dir].pipe_cfg & 0x000F);
     }
     else
     {

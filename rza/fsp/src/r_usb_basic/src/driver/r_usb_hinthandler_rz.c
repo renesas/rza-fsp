@@ -17,11 +17,13 @@
  * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
  * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
  **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * File Name    : r_usb_hinthandler.c
  * Version      : 1.0
  * Description  : This module solves all the world's problems
  **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * History : DD.MM.YYYY Version  Description
  *         : 15.01.2007 1.00     First Release
@@ -50,7 +52,15 @@
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)
  **********************************************************************************************************************/
+
+ #if (BSP_CFG_RTOS == 1)
+extern void _ux_hcd_ohci_interrupt_handler(void);
+extern void _ux_hcd_ehci_interrupt_handler(void);
+
+ #else
 extern void usb_hstd_hci_interrupt_handler(usb_utr_t * ptr);
+
+ #endif
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -69,6 +79,7 @@ void R_USB_isr_port1(IRQn_Type const irq);
  **********************************************************************************************************************/
 void usb_hstd_int_enable (void)
 {
+    usb_cpu_int_enable();
 }                                      /* End of function usb_hstd_int_enable() */
 
 /***********************************************************************************************************************
@@ -79,6 +90,7 @@ void usb_hstd_int_enable (void)
  **********************************************************************************************************************/
 void usb_hstd_int_disable (void)
 {
+    usb_cpu_int_disable();
 }                                      /* End of function usb_hstd_int_disable() */
 
 /***********************************************************************************************************************
@@ -114,11 +126,19 @@ void R_USB_isr (IRQn_Type const irq)
     }
     else if (USB_USBH_INTA == (int_state & USB_USBH_INTA)) /* OHCI interrupt */
     {
+ #if (BSP_CFG_RTOS == 1)
+        _ux_hcd_ohci_interrupt_handler();
+ #else
         usb_hstd_hci_interrupt_handler(ptr);
+ #endif
     }
     else if (USB_USBH_INTB == (int_state & USB_USBH_INTB)) /* EHCI interrupt */
     {
+ #if (BSP_CFG_RTOS == 1)
+        _ux_hcd_ehci_interrupt_handler();
+ #else
         usb_hstd_hci_interrupt_handler(ptr);
+ #endif
     }
     else if (USB_UCOM_INT == (int_state & USB_UCOM_INT))
     {
@@ -162,11 +182,19 @@ void R_USB_isr_port1 (IRQn_Type const irq)
     }
     else if (USB_USBH_INTA == (int_state & USB_USBH_INTA)) /* OHCI interrupt */
     {
+ #if (BSP_CFG_RTOS == 1)
+        _ux_hcd_ohci_interrupt_handler();
+ #else
         usb_hstd_hci_interrupt_handler(ptr);
+ #endif
     }
     else if (USB_USBH_INTB == (int_state & USB_USBH_INTB)) /* EHCI interrupt */
     {
+ #if (BSP_CFG_RTOS == 1)
+        _ux_hcd_ehci_interrupt_handler();
+ #else
         usb_hstd_hci_interrupt_handler(ptr);
+ #endif
     }
     else if (USB_UCOM_INT == (int_state & USB_UCOM_INT))
     {

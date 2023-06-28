@@ -244,6 +244,7 @@ void usb_pstd_send_start (uint16_t pipe)
         }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
         /* D0FIFO DMA */
         case USB_D0USE:
 
@@ -501,6 +502,7 @@ void usb_pstd_receive_start (uint16_t pipe)
         }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
         /* D0FIFO DMA */
         case USB_D0USE:
 
@@ -720,6 +722,7 @@ void usb_pstd_data_end (uint16_t pipe, uint16_t status, usb_utr_t * p_utr)
         }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
         /* D0FIFO DMA */
         case USB_D0USE:
         {
@@ -782,9 +785,11 @@ void usb_pstd_data_end (uint16_t pipe, uint16_t status, usb_utr_t * p_utr)
         vPortFree(g_p_usb_pstd_pipe[pipe]);
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
         usb_cstd_pipe_msg_re_forward(USB_IP0, pipe); /* Get PIPE Transfer wait que and Message send to PCD */
+ #elif (BSP_CFG_RTOS == 1)
+        USB_REL_BLK(1, g_p_usb_pstd_pipe[pipe]);
  #else  /* (BSP_CFG_RTOS == 2) */
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
- #endif /* (BSP_CFG_RTOS == 2) */
+ #endif                                /* (BSP_CFG_RTOS == 2) */
     }
 }
 
@@ -872,6 +877,7 @@ void usb_pstd_brdy_pipe_process (usb_utr_t * p_utr, uint16_t bitsts)
   #endif                               /* BSP_MCU_GROUP_RZT2M */
 
   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+
                     /* Get D0fifo Receive Data Length */
                     g_usb_cstd_dma_size[p_utr->ip][dma_ch] = (uint32_t) (buffer & USB_DTLN);
   #endif                               /* BSP_MCU_GROUP_RZT2M */

@@ -57,6 +57,13 @@ typedef enum e_rspi_mosi_idle_value_fixing
     RSPI_MOSI_IDLE_VALUE_FIXING_HIGH     ///< MOSIn level high during MOSI idling
 } rspi_mosi_idle_value_fixing_t;
 
+/** SSL Signal Level Keeping Enable/Disable. */
+typedef enum e_rspi_ssl_level_keep
+{
+    RSPI_SSL_LEVEL_KEEP_DISABLE = 0,   ///< Disable SSL Level Keep Mode
+    RSPI_SSL_LEVEL_KEEP_ENABLE         ///< Enable SSL Level Keep Mode
+} rspi_ssl_level_keep_t;
+
 /** Delay count for SPI delay settings. */
 typedef enum e_rspi_delay_count
 {
@@ -108,6 +115,7 @@ typedef struct st_rspi_extended_cfg
     rspi_delay_count_t            spck_delay;         ///< SPI Clock Delay Register Setting
     rspi_delay_count_t            ssl_negation_delay; ///< SPI Slave Select Negation Delay Register Setting
     rspi_delay_count_t            next_access_delay;  ///< SPI Next-Access Delay Register Setting
+    rspi_ssl_level_keep_t         ssl_level_keep;     ///< Select SSL signal level keep mode
     rspi_rx_trigger_level_t       rx_trigger_level;   ///< Receiver FIFO trigger level
     rspi_tx_trigger_level_t       tx_trigger_level;   ///< Transmitter FIFO trigger level
 } rspi_extended_cfg_t;

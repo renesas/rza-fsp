@@ -57,6 +57,8 @@
 
 #define SCIF_REG_SIZE                          (R_SCIFA1_BASE - R_SCIFA0_BASE)
 
+#define SCI_UART_INVALID_16BIT_PARAM           (0xFFFFU)
+
 #define SCIF_UART_DMAC_RX_TRIGGER_LEVEL        (1U)
 
 #define SCIF_UART_DMAC_MAX_TRANSFER            (0xFFFFFFFFU)
@@ -102,6 +104,8 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile scif_uart_prv_ns_callback)(uart_
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
+static void r_scif_negate_de_pin(scif_uart_instance_ctrl_t const * const p_ctrl);
+
 #if (SCIF_UART_CFG_PARAM_CHECKING_ENABLE)
 
 static fsp_err_t r_scif_read_write_param_check(scif_uart_instance_ctrl_t const * const p_ctrl,
@@ -149,8 +153,8 @@ static fsp_err_t r_scif_uart_transfer_open(scif_uart_instance_ctrl_t * const p_c
 
 static void r_scif_uart_transfer_close(scif_uart_instance_ctrl_t * p_ctrl);
 
-void scif_uart_txi_dmac_isr(IRQn_Type const irq);
-void scif_uart_rxi_dmac_isr(IRQn_Type const irq);
+void scif_uart_tx_dmac_callback(scif_uart_instance_ctrl_t * p_ctrl);
+void scif_uart_rx_dmac_callback(scif_uart_instance_ctrl_t * p_ctrl);
 
 #endif
 
@@ -222,6 +226,7 @@ const uart_api_t g_uart_on_scif =
  * @retval  FSP_ERR_IP_CHANNEL_NOT_PRESENT The requested channel does not exist on this MPU.
  * @retval  FSP_ERR_ALREADY_OPEN           Control block has already been opened or channel is being used by another
  *                                         instance. Call close() then open() to reconfigure.
+ * @retval  FSP_ERR_INVALID_ARGUMENT       Setting for RS485 DE Control pin is invalid
  *
  * @return                       See @ref RENESAS_ERROR_CODES
  **********************************************************************************************************************/
@@ -246,6 +251,14 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     FSP_ASSERT(p_cfg->tei_irq >= 0);
     FSP_ASSERT(p_cfg->eri_irq >= 0);
     FSP_ASSERT(((scif_uart_extended_cfg_t *) p_cfg->p_extend)->bri_irq >= 0);
+ #if (SCIF_UART_CFG_FLOW_CONTROL_SUPPORT)
+    if (((scif_uart_extended_cfg_t *) p_cfg->p_extend)->uart_mode != SCIF_UART_MODE_RS232)
+    {
+        FSP_ERROR_RETURN(
+            ((scif_uart_extended_cfg_t *) p_cfg->p_extend)->rs485_setting.de_control_pin != SCI_UART_INVALID_16BIT_PARAM,
+            FSP_ERR_INVALID_ARGUMENT);
+    }
+ #endif
 #endif
 
     p_ctrl->p_reg = ((R_SCIFA0_Type *) ((uintptr_t) R_SCIFA0_BASE + ((uintptr_t) SCIF_REG_SIZE * p_cfg->channel)));
@@ -267,10 +280,10 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
 
+    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
     /* Enable the SCIF channel and reset the registers to their initial state. */
     R_BSP_MODULE_START(FSP_IP_SCIF, p_cfg->channel);
-    R_BSP_MODULE_CLKON(FSP_IP_SCIF, p_cfg->channel);
-    R_BSP_MODULE_RSTOFF(FSP_IP_SCIF, p_cfg->channel);
 
     /* Initialize registers as defined in section "SCIFA Initialization in Asynchronous Mode" in the user's
      * manual or the relevant section for the MPU being used. */
@@ -284,7 +297,7 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     p_ctrl->p_reg->LSR = 0;
 
     uint32_t scr = 0;
-    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_cfg->p_extend;
+
     switch (p_extend->clock)
     {
         case SCIF_UART_CLOCK_INT:
@@ -352,6 +365,29 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
         p_ctrl->p_reg->FCR_b.MCE = 0;
     }
 
+#if SCIF_UART_CFG_FLOW_CONTROL_SUPPORT
+    if ((p_extend->rs485_setting.de_control_pin != SCIF_UART_INVALID_16BIT_PARAM) &&
+        (p_extend->uart_mode != SCIF_UART_MODE_RS232))
+    {
+        if (p_extend->uart_mode == SCIF_UART_MODE_RS485_FD)
+        {
+            R_BSP_PinAccessEnable();
+
+            /* Assert driver enable if RS-485 FullDuplex mode is enabled. */
+            bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+                                   p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
+            R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
+
+            R_BSP_PinAccessDisable();
+        }
+        else
+        {
+            /* Negate driver enable if RS-485 HalfDuplex mode is enabled. */
+            r_scif_negate_de_pin(p_ctrl);
+        }
+    }
+#endif
+
     p_ctrl->p_reg->SPTR = p_ctrl->sptr;
 
     p_ctrl->open = SCIF_UART_OPEN;
@@ -403,8 +439,10 @@ fsp_err_t R_SCIF_UART_Close (uart_ctrl_t * const p_api_ctrl)
 #endif
 
     /* Remove power to the channel. */
-    R_BSP_MODULE_CLKOFF(FSP_IP_SCIF, p_ctrl->p_cfg->channel);
     R_BSP_MODULE_STOP(FSP_IP_SCIF, p_ctrl->p_cfg->channel);
+
+    /* Negate driver enable if RS-485 mode is enabled. */
+    r_scif_negate_de_pin(p_ctrl);
 
     return FSP_SUCCESS;
 }
@@ -523,6 +561,22 @@ fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * con
         err = p_ctrl->p_cfg->p_transfer_tx->p_api->reconfigure(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
                                                                p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    }
+ #endif
+
+ #if (SCIF_UART_CFG_FLOW_CONTROL_SUPPORT)
+    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
+    /* If RS-485 is enabled, then assert the driver enable pin at the start of a write transfer. */
+    if (p_extend->uart_mode == SCIF_UART_MODE_RS485_HD)
+    {
+        R_BSP_PinAccessEnable();
+
+        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+                               p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
+        R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
+
+        R_BSP_PinAccessDisable();
     }
  #endif
 
@@ -738,6 +792,9 @@ fsp_err_t R_SCIF_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communic
         /* Clear the TFRST bit */
         p_ctrl->p_reg->FCR_b.TFRST = 0U;
 
+        /* Negate driver enable if RS-485 mode is enabled. */
+        r_scif_negate_de_pin(p_ctrl);
+
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     }
 #endif
@@ -846,13 +903,13 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
 #if (SCIF_UART_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(p_api_ctrl);
     FSP_ASSERT(p_baud_setting);
-    FSP_ERROR_RETURN(SCIF_UART_MAX_BAUD_RATE_ERROR_X_1000 > baud_rate_error_x_1000, FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN(SCIF_UART_MAX_BAUD_RATE_ERROR_X_1000 >= baud_rate_error_x_1000, FSP_ERR_INVALID_ARGUMENT);
     FSP_ERROR_RETURN((0U != baudrate), FSP_ERR_INVALID_ARGUMENT);
 #endif
     scif_uart_instance_ctrl_t const * p_ctrl = (scif_uart_instance_ctrl_t const *) p_api_ctrl;
 
-    p_baud_setting->brr  = SCIF_UART_BRR_MAX;
-    p_baud_setting->brme = 0U;
+    p_baud_setting->brr = SCIF_UART_BRR_MAX;
+    p_baud_setting->semr_baudrate_bits_b.brme = 0U;
     p_baud_setting->mddr = SCIF_UART_MDDR_MIN;
 
     /* Find the best BRR (bit rate register) value.
@@ -958,19 +1015,19 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
                      */
                     if (bit_err < hit_bit_err)
                     {
-                        p_baud_setting->bgdm = g_async_baud[i].bgdm;
-                        p_baud_setting->abcs = g_async_baud[i].abcs;
-                        p_baud_setting->cks  = g_async_baud[i].cks;
-                        p_baud_setting->brr  = (uint8_t) temp_brr;
-                        hit_bit_err          = bit_err;
+                        p_baud_setting->semr_baudrate_bits_b.bgdm = g_async_baud[i].bgdm;
+                        p_baud_setting->semr_baudrate_bits_b.abcs = g_async_baud[i].abcs;
+                        p_baud_setting->semr_baudrate_bits_b.cks  = g_async_baud[i].cks;
+                        p_baud_setting->brr = (uint8_t) temp_brr;
+                        hit_bit_err         = bit_err;
                         if (SCIF_UART_MDDR_MAX <= mddr)
                         {
-                            p_baud_setting->brme = 0U;
+                            p_baud_setting->semr_baudrate_bits_b.brme = 0U;
                             p_baud_setting->mddr = SCIF_UART_MDDR_MAX - 1;
                         }
                         else
                         {
-                            p_baud_setting->brme = 1U;
+                            p_baud_setting->semr_baudrate_bits_b.brme = 1U;
                             p_baud_setting->mddr = (uint8_t) mddr;
                         }
 
@@ -997,6 +1054,33 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
+
+/*******************************************************************************************************************//**
+ * Negate the DE pin if it is enabled.
+ *
+ * @param[in] p_ctrl Pointer to the control block for the channel.
+ **********************************************************************************************************************/
+static void r_scif_negate_de_pin (scif_uart_instance_ctrl_t const * const p_ctrl)
+{
+#if (SCIF_UART_CFG_FLOW_CONTROL_SUPPORT)
+    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
+    /* If RS-485 is enabled, then negate the driver enable pin at the end of a write transfer. */
+    if (p_extend->uart_mode == SCIF_UART_MODE_RS485_HD)
+    {
+        R_BSP_PinAccessEnable();
+
+        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+                               p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_LOW : BSP_IO_LEVEL_HIGH;
+        R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
+
+        R_BSP_PinAccessDisable();
+    }
+
+#else
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+#endif
+}
 
 #if (SCIF_UART_CFG_PARAM_CHECKING_ENABLE)
 
@@ -1544,10 +1628,10 @@ static void r_scif_uart_baud_set (R_SCIFA0_Type * p_scif_reg, scif_baud_setting_
     p_scif_reg->BRR  = p_baud_setting->brr;
 
     /* Set clock source for the on-chip baud rate generator. */
-    p_scif_reg->SMR_b.CKS = p_baud_setting->cks;
+    p_scif_reg->SMR_b.CKS = p_baud_setting->semr_baudrate_bits_b.cks;
 
     /* Set MDDR register value. */
-    if (p_baud_setting->brme && (p_baud_setting->mddr >= SCIF_UART_MDDR_MIN))
+    if (p_baud_setting->semr_baudrate_bits_b.brme && (p_baud_setting->mddr >= SCIF_UART_MDDR_MIN))
     {
         p_scif_reg->SEMR = (uint8_t) semr | R_SCIFA0_SEMR_MDDRS_Msk;
         p_scif_reg->MDDR = p_baud_setting->mddr;
@@ -1555,8 +1639,8 @@ static void r_scif_uart_baud_set (R_SCIFA0_Type * p_scif_reg, scif_baud_setting_
     }
 
     /* Set clock divisor settings. */
-    semr            |= ((unsigned) p_baud_setting->abcs << R_SCIFA0_SEMR_ABCS0_Pos);
-    semr            |= ((unsigned) p_baud_setting->bgdm << R_SCIFA0_SEMR_BGDM_Pos);
+    semr            |= ((unsigned) p_baud_setting->semr_baudrate_bits_b.abcs << R_SCIFA0_SEMR_ABCS0_Pos);
+    semr            |= ((unsigned) p_baud_setting->semr_baudrate_bits_b.bgdm << R_SCIFA0_SEMR_BGDM_Pos);
     p_scif_reg->SEMR = (uint8_t) semr;
 }
 
@@ -1632,7 +1716,6 @@ void scif_uart_txi_isr (IRQn_Type const irq)
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
 
-    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
 
     /* Recover ISR context saved in open. */
@@ -1671,7 +1754,10 @@ void scif_uart_txi_isr (IRQn_Type const irq)
         p_ctrl->p_reg->SCR = (uint16_t) scr_temp;
 
         p_ctrl->p_tx_src = NULL;
-        r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_DATA_EMPTY);
+        if (NULL != p_ctrl->p_callback)
+        {
+            r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_DATA_EMPTY);
+        }
     }
 
     /* Restore context if RTOS is used */
@@ -1719,13 +1805,19 @@ static void scif_uart_receive_sub (scif_uart_instance_ctrl_t * const p_ctrl)
                 event |= UART_EVENT_RX_CHAR;
             }
 
-            r_scif_uart_call_callback(p_ctrl, (uint32_t) data, event);
+            if (NULL != p_ctrl->p_callback)
+            {
+                r_scif_uart_call_callback(p_ctrl, (uint32_t) data, event);
+            }
         }
         else
         {
             if (event)
             {
-                r_scif_uart_call_callback(p_ctrl, (uint32_t) data, event);
+                if (NULL != p_ctrl->p_callback)
+                {
+                    r_scif_uart_call_callback(p_ctrl, (uint32_t) data, event);
+                }
             }
             else
             {
@@ -1735,7 +1827,10 @@ static void scif_uart_receive_sub (scif_uart_instance_ctrl_t * const p_ctrl)
 
                 if (0 == p_ctrl->rx_dest_bytes)
                 {
-                    r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_RX_COMPLETE);
+                    if (NULL != p_ctrl->p_callback)
+                    {
+                        r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_RX_COMPLETE);
+                    }
                 }
             }
         }
@@ -1826,11 +1921,17 @@ void scif_uart_tei_isr (IRQn_Type const irq)
 
         p_ctrl->p_reg->SCR = (uint16_t) scr;
 
-        r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_COMPLETE);
+        if (NULL != p_ctrl->p_callback)
+        {
+            r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_COMPLETE);
+        }
     }
 
     /* Clear pending IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
+
+    /* Negate driver enable if RS-485 mode is enabled. */
+    r_scif_negate_de_pin(p_ctrl);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE;
@@ -1907,7 +2008,10 @@ void scif_uart_bri_isr (IRQn_Type const irq)
     /* Call callback. */
     if (event)
     {
-        r_scif_uart_call_callback(p_ctrl, data, event);
+        if (NULL != p_ctrl->p_callback)
+        {
+            r_scif_uart_call_callback(p_ctrl, data, event);
+        }
     }
 
     /* Clear pending IRQ to make sure it doesn't fire again after exiting */
@@ -1924,11 +2028,8 @@ void scif_uart_bri_isr (IRQn_Type const irq)
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of transmission.
  **********************************************************************************************************************/
-void scif_uart_txi_dmac_isr (IRQn_Type const irq)
+void scif_uart_tx_dmac_callback (scif_uart_instance_ctrl_t * p_ctrl)
 {
-    /* Recover ISR context saved in open. */
-    scif_uart_instance_ctrl_t * p_ctrl = (scif_uart_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     /* After all data has been transmitted, disable transmit interrupts and enable the transmit end interrupt. */
     uint32_t scr_temp;
     scr_temp           = p_ctrl->p_reg->SCR;
@@ -1937,23 +2038,26 @@ void scif_uart_txi_dmac_isr (IRQn_Type const irq)
     p_ctrl->p_reg->SCR = (uint16_t) scr_temp;
 
     p_ctrl->p_tx_src = NULL;
-    r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_DATA_EMPTY);
+    if (NULL != p_ctrl->p_callback)
+    {
+        r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_DATA_EMPTY);
+    }
 }
 
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of receptions.
  **********************************************************************************************************************/
-void scif_uart_rxi_dmac_isr (IRQn_Type const irq)
+void scif_uart_rx_dmac_callback (scif_uart_instance_ctrl_t * p_ctrl)
 {
-    /* Recover ISR context saved in open. */
-    scif_uart_instance_ctrl_t * p_ctrl = (scif_uart_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     p_ctrl->rx_dest_bytes = 0;
 
     p_ctrl->p_rx_dest = NULL;
 
     /* Call callback */
-    r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_RX_COMPLETE);
+    if (NULL != p_ctrl->p_callback)
+    {
+        r_scif_uart_call_callback(p_ctrl, 0U, UART_EVENT_RX_COMPLETE);
+    }
 }
 
 #endif

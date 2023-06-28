@@ -512,6 +512,7 @@ static inline void setICC_EOIR1 (uint64_t interrupt)
 }
 
 st_gic_info g_gic_info[CPU_CORE_NUMBER];
+
 void rm_freertos_port_sleep_preserving_lpm(uint32_t xExpectedIdleTime);
 
 void rm_freertos_port_sleep_preserving_lpm (uint32_t xExpectedIdleTime)
@@ -524,20 +525,31 @@ void rm_freertos_port_sleep_preserving_lpm (uint32_t xExpectedIdleTime)
     configPRE_SLEEP_PROCESSING(xExpectedIdleTime);
     if (xExpectedIdleTime > 0)
     {
-        /**
-         * DSB should be last instruction executed before WFI
-         * infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dai0321a/BIHICBGB.html
-         *//*__DSB();*/
-        __asm volatile ("dsb 0xF" ::: "memory");
+        /*
+         * (1) Set the STBYCTL bit of the SYS_LP_CTL2 register to 1 to start the Cortex-A55 Sleep Mode.
+         */
+        R_SYSC->SYS_LP_CTL2_b.CA55_STBYCTL = 1;
 
-        /* If there is a pending interrupt (wake up condition for WFI is true), the MCU does not enter low power mode:
-         * http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABHHGEB.html
-         * Note that interrupt will bring the CPU out of the low power mode.  After exiting from low power mode,
-         * interrupt will be re-enabled. *//*__WFI();*/
+        /*
+         * (2) Set the return factor to GIC. Enables only the interrupts used for return from the sleep mode and disables the
+         * interrupts used for the normal operation.
+         *//* all the enabled interrupts are the triggers of waking up *//*
+         * (3) Issue Barrier instruction.
+         * Issue the WFI instruction for Cortex-A55 core0. The Cortex-A55 core0 is put into the sleep mode.
+         */
+        __asm volatile ("dsb 0xF" ::: "memory");
         __asm volatile ("wfi" ::: "memory");
 
-        /* Instruction Synchronization Barrier. */
-        /*__ISB();*/
+        /*
+         * (4) Return from the sleep mode when the event occurs or the interrupt set in GIC occurs.
+         */
+
+        /*
+         * (5) Confirm the interrupt cause and perform the processing required for returning from the sleep mode.
+         * And then clear the interrupt cause.
+         * Set the end of interrupt to GIC.
+         * Set the interrupt causes for the normal operation to GIC.
+         *//* Instruction Synchronization Barrier. *//*__ISB();*/
         __asm volatile ("isb 0xF" ::: "memory");
 
         /* Re-enable interrupts to allow the interrupt that brought the MCU
@@ -550,6 +562,11 @@ void rm_freertos_port_sleep_preserving_lpm (uint32_t xExpectedIdleTime)
 
         /* Disable interrupts again to restore the LPM state. */
         __disable_fiq();
+
+        /*
+         * (6) Clear the STBYCTL bit of the SYS_LP_CTL2 register.
+         */
+        R_SYSC->SYS_LP_CTL2_b.CA55_STBYCTL = 0;
     }
 
     configPOST_SLEEP_PROCESSING(xExpectedIdleTime);

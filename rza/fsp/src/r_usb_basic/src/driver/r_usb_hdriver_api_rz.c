@@ -36,7 +36,7 @@
 
 #include "r_usb_hhci.h"
 
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
  #include "r_usb_cstd_rtos.h"
 #endif
 
@@ -65,9 +65,9 @@ static st_usb_hci_cb_info_t cb =
     &usb_hstd_transfer_end_cb
 };
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
   #if defined(USB_CFG_HMSC_USE)
-extern SemaphoreHandle_t SemaphoreHandleRead;
+extern rtos_sem_id_t SemaphoreHandleRead;
   #endif                               /*  #if defined(USB_CFG_HMSC_USE) */
  #endif                                /* #if (BSP_CFG_RTOS == 2) */
 
@@ -384,13 +384,20 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
     uint16_t       i;
 
     /* Scheduler init */
+ #if (BSP_CFG_RTOS == 1)
     usb_hstd_sche_init();
- #if (BSP_CFG_RTOS == 2)
-  #if defined(USB_CFG_HMSC_USE)
+ #else                                 /* #if (BSP_CFG_RTOS == 1) */
+    usb_cstd_sche_init();
+ #endif /* #if (BSP_CFG_RTOS == 1) */
+
+ #if defined(USB_CFG_HMSC_USE)
+  #if (BSP_CFG_RTOS == 2)
     /* create access control semaphore */
     vSemaphoreCreateBinary(SemaphoreHandleRead);
-  #endif                               /* #if defined(USB_CFG_HMSC_USE) */
- #endif                                /* #if (BSP_CFG_RTOS == 2) */
+  #elif BSP_CFG_RTOS == 1
+    tx_semaphore_create(&SemaphoreHandleRead, "USB_FSP_SEM_READ", 0);
+  #endif                               /* #if (BSP_CFG_RTOS == 2) */
+ #endif                                /* #if defined(USB_CFG_HMSC_USE) */
 
     /* Manager Mode */
     g_usb_hstd_mgr_mode[ptr->ip]     = USB_DETACHED;
@@ -408,8 +415,13 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
         p_driver->ifclass  = (uint16_t) USB_IFCLS_NOT; /* Interface Class : NO class */
     }
 
+ #if (BSP_CFG_RTOS == 1)
     R_USB_CstdSetTaskPri(USB_HCI_TSK, USB_PRI_1);
     R_USB_CstdSetTaskPri(USB_MGR_TSK, USB_PRI_2);
+ #else
+    usb_cstd_set_task_pri(USB_HCI_TSK, USB_PRI_1);
+    usb_cstd_set_task_pri(USB_MGR_TSK, USB_PRI_2);
+ #endif
 
     /* EHCI/OHCI init */
     r_usb_hstd_hci_init(ptr, &cb);
@@ -417,7 +429,11 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
     /* HUB Open */
  #if USB_CFG_HUB == USB_CFG_ENABLE
     usb_hhub_registration(ptr, USB_NULL);
+  #if (BSP_CFG_RTOS == 1)
     R_USB_CstdSetTaskPri(USB_HUB_TSK, USB_PRI_3);
+  #else
+    usb_cstd_set_task_pri(USB_HUB_TSK, USB_PRI_3);
+  #endif
  #else
     FSP_PARAMETER_NOT_USED(ptr);
  #endif                                /* USB_CFG_HUB == USB_CFG_ENABLE */
@@ -433,14 +449,16 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
  ***********************************************************************************************************************/
 void r_usb_hstd_mgr_task (void)
 {
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
     st_usb_utr_t * p_mess;
     while (1)
     {
         USB_RTOS_RCV_MSG(USB_MGR_MBX, (usb_msg_t **) &p_mess);
         usb_hstd_mgr_task(0);
+  #if (BSP_CFG_RTOS == 1)
         g_usb_msg_check &= (uint16_t) ~(1 << USB_MGR_TSK);
         g_usb_msg_check &= (uint16_t) ~(1 << USB_HCI_TSK);
+  #endif
     }
  #else                                 /* (BSP_CFG_RTOS == 2) */
     usb_hstd_mgr_task(0);
@@ -466,38 +484,15 @@ void R_USB_HstdDelayXms (uint32_t ms)
  ***********************************************************************************************************************/
 void R_USB_HstdMgrClose (void)
 {
- #if (BSP_CFG_RTOS == 2)
+ #if defined(USB_CFG_HMSC_USE)
+  #if (BSP_CFG_RTOS == 2)
     /* create access control semaphore */
     vSemaphoreDelete(&g_usb_sem);
- #endif
+  #elif (BSP_CFG_RTOS == 1)
+    tx_semaphore_delete(&SemaphoreHandleRead);
+  #endif
+ #endif                                /*  #if defined(USB_CFG_HMSC_USE) */
 }                                      /* End of function R_USB_HstdMgrOpen() */
-
- #if 0
-
-/***********************************************************************************************************************
- * Function Name   : R_USB_Init
- * Description     :
- * Arguments       : none
- * Return          : none
- ***********************************************************************************************************************/
-void R_USB_Init (void)
-{
-    usb_module_init();                            /* Start USB Port0 module */
-
-    R_USB_HstdMgrOpen();                          /* USB0 MGR Open */
-
-    R_USB_CstdSetTaskPri(USB_HUB_TSK, USB_PRI_3); /* USB0 HUB Open */
-    R_USB_HstdDriverRegistration(USB_NULL);
-
-  #if (BSP_CFG_RTOS == 2)
-    r_usb_rtos_configration();                    /* USB0 FreeRTOS Setting */
-  #endif /* (BSP_CFG_RTOS == 2) */
-    R_BSP_IrqCfg(284, 1, (void *) &R_USB_isr);
-    R_BSP_IrqEnable(284);
-    g_usb_msg_check = 0;
-}                                      /* End of function R_USB_HstdMgrOpen() */
-
- #endif
 
 /***********************************************************************************************************************
  * Function Name   : R_USB_HstdGetMaxPacketSize

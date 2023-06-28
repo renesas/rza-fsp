@@ -59,7 +59,7 @@
 #define USB_VAL_X2000     (0x00002000U)
 #define USB_VAL_1F010     (0x0001F010U)
 #define USB_VAL_1F004     (0x0001F004U)
-#define USB_VAL_1F0002    (0x0001F0002U)
+#define USB_VAL_1F002     (0x0001F002U)
 #define USB_VAL_1F008     (0x0001F008U)
 #define USB_VAL_1F001     (0x0001F001U)
 #define USB_VAL_SC_WK     (0x00700000U)
@@ -2188,7 +2188,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
 
                 /* ptr->ipp.USBSTS.BIT.USBERRINT = 1; */
-                ptr->ipp->USBSTS &= USB_VAL_1F0002;
+                ptr->ipp->USBSTS &= USB_VAL_1F002;
             }
  #else
             if ((1 == ptr->ipp->USBSTS_b.USBERRINT) && (1 == ptr->ipp->USBINTR_b.USBEIE))
@@ -2196,7 +2196,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
 
                 /* ptr->ipp->USBSTS_b.USBERRINT = 1; */
-                ptr->ipp->USBSTS &= USB_VAL_1F0002;
+                ptr->ipp->USBSTS &= USB_VAL_1F002;
             }
  #endif
  #if defined(BSP_MCU_GROUP_RZA3UL)
@@ -2309,7 +2309,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
 
                 /* ptr->ipp1.USBSTS.BIT.USBERRINT = 1; */
-                ptr->ipp1->USBSTS &= USB_VAL_1F0002;
+                ptr->ipp1->USBSTS &= USB_VAL_1F002;
             }
  #else
             if ((1 == ptr->ipp1->USBSTS_b.USBERRINT) && (1 == ptr->ipp1->USBINTR_b.USBEIE))
@@ -2317,7 +2317,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
 
                 /* ptr->ipp1->USBSTS_b.USBERRINT = 1; */
-                ptr->ipp1->USBSTS &= USB_VAL_1F0002;
+                ptr->ipp1->USBSTS &= USB_VAL_1F002;
             }
  #endif
  #if defined(BSP_MCU_GROUP_RZA3UL)

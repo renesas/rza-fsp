@@ -238,6 +238,8 @@ typedef enum e_canfd_txmb_merge_mode
 /* CAN Instance Control Block   */
 typedef struct st_canfd_instance_ctrl
 {
+    R_CANFD_Type       * p_reg;                 // Pointer to register base address
+
     /* Parameters to control CAN peripheral device */
     can_cfg_t const    * p_cfg;                 // Pointer to the configuration structure
     uint32_t             open;                  // Open status of channel.
@@ -252,7 +254,7 @@ typedef struct st_canfd_instance_ctrl
 } canfd_instance_ctrl_t;
 
 /** AFL Entry (based on R_CANFD_CFDGAFL_Type in renesas.h) */
-typedef struct st_canfd_afl_entry_t
+typedef struct st_canfd_afl_entry
 {
     union
     {

@@ -257,6 +257,8 @@ void usb_pstd_stand_req3 (usb_utr_t * p_utr)
         ctrl.module_number        = p_utr->ip;
  #if (BSP_CFG_RTOS == 2)
         ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
+ #elif (BSP_CFG_RTOS == 1)
+        ctrl.p_data = (void *) tx_thread_identify();
  #endif                                /* (BSP_CFG_RTOS == 2) */
         usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
 
@@ -331,6 +333,8 @@ void usb_pstd_stand_req4 (usb_utr_t * p_utr)
         ctrl.module_number        = p_utr->ip;
  #if (BSP_CFG_RTOS == 2)
         ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
+ #elif (BSP_CFG_RTOS == 1)
+        ctrl.p_data = (void *) tx_thread_identify();
  #endif                                /* (BSP_CFG_RTOS == 2) */
         usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
 
@@ -378,6 +382,8 @@ void usb_pstd_stand_req5 (usb_utr_t * p_utr)
         ctrl.module_number = p_utr->ip;
  #if (BSP_CFG_RTOS == 2)
         ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
+ #elif (BSP_CFG_RTOS == 1)
+        ctrl.p_data = (void *) tx_thread_identify();
  #endif                                /* (BSP_CFG_RTOS == 2) */
 
         usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
@@ -1542,6 +1548,7 @@ void usb_peri_class_request_rwds (usb_setup_t * req, usb_utr_t * p_utr)
     usb_instance_ctrl_t ctrl;
 
  #if defined(USB_CFG_PMSC_USE)
+
     /* Is a request receive target Interface? */
     if (USB_INTERFACE == (req->request_type & USB_BMREQUESTTYPERECIP))
     {
@@ -1605,6 +1612,7 @@ void usb_peri_class_request_wnss (usb_setup_t * req, usb_utr_t * p_utr)
     usb_instance_ctrl_t ctrl;
 
  #if defined(USB_CFG_PMSC_USE)
+
     /* Is a request receive target Interface? */
     if (USB_INTERFACE == (req->request_type & USB_BMREQUESTTYPERECIP))
     {
@@ -1653,6 +1661,7 @@ void usb_peri_class_request_wnss (usb_setup_t * req, usb_utr_t * p_utr)
 void usb_peri_class_request_rss (usb_setup_t * req, usb_utr_t * p_utr)
 {
  #if defined(USB_CFG_PMSC_USE)
+
     /* Is a request receive target Interface? */
     usb_instance_ctrl_t ctrl;
 
@@ -1670,6 +1679,8 @@ void usb_peri_class_request_rss (usb_setup_t * req, usb_utr_t * p_utr)
         ctrl.type          = USB_CLASS_REQUEST;
   #if (BSP_CFG_RTOS == 2)
         ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
+  #elif (BSP_CFG_RTOS == 1)
+        ctrl.p_data = (void *) tx_thread_identify();
   #endif                               /* (BSP_CFG_RTOS == 2) */
         usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
         g_usb_pstd_std_request = USB_NO;
@@ -1688,6 +1699,8 @@ void usb_peri_class_request_rss (usb_setup_t * req, usb_utr_t * p_utr)
     ctrl.type          = USB_CLASS_REQUEST;
   #if (BSP_CFG_RTOS == 2)
     ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
+  #elif (BSP_CFG_RTOS == 1)
+    ctrl.p_data = (void *) tx_thread_identify();
   #endif                                               /* (BSP_CFG_RTOS == 2) */
     usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
     g_usb_pstd_std_request = USB_NO;
@@ -1714,6 +1727,8 @@ void usb_peri_class_request_wss (usb_setup_t * req, usb_utr_t * p_utr)
     ctrl.type          = USB_CLASS_REQUEST;
  #if (BSP_CFG_RTOS == 2)
     ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
+ #elif (BSP_CFG_RTOS == 1)
+    ctrl.p_data = (void *) tx_thread_identify();
  #endif                                /* (BSP_CFG_RTOS == 2) */
     usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
     g_usb_pstd_std_request = USB_NO;

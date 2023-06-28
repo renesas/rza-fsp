@@ -335,37 +335,27 @@ static const uint32_t drear_init_value =
         0U << R_SPIBSC_DREAR_EAV_Pos;
 
 static const uint32_t drdrenr_init_mask =
-    R_SPIBSC_DRDRENR_HYPE_Msk |
     R_SPIBSC_DRDRENR_ADDRE_Msk |
     R_SPIBSC_DRDRENR_OPDRE_Msk |
     R_SPIBSC_DRDRENR_DRDRE_Msk;
 
 static const uint32_t drdrenr_init_value =
-    0U << R_SPIBSC_DRDRENR_HYPE_Pos |
-        0U << R_SPIBSC_DRDRENR_ADDRE_Pos |
+    0U << R_SPIBSC_DRDRENR_ADDRE_Pos |
         0U << R_SPIBSC_DRDRENR_OPDRE_Pos |
         0U << R_SPIBSC_DRDRENR_DRDRE_Pos;
 
 static const uint32_t phycnt_init_mask =
-    R_SPIBSC_PHYCNT_ALT_ALIGN_Msk |
     R_SPIBSC_PHYCNT_CAL_Msk |
     R_SPIBSC_PHYCNT_CKSEL_Msk |
-    R_SPIBSC_PHYCNT_EXDS_Msk |
     R_SPIBSC_PHYCNT_HS_Msk |
-    R_SPIBSC_PHYCNT_OCT_Msk |
-    R_SPIBSC_PHYCNT_OCTA_Msk |
     R_SPIBSC_PHYCNT_PHYMEM_Msk |
     R_SPIBSC_PHYCNT_WBUF2_Msk |
     R_SPIBSC_PHYCNT_WBUF_Msk;
 
 static const uint32_t phycnt_init_value =
-    0U << R_SPIBSC_PHYCNT_ALT_ALIGN_Pos |
-        0U << R_SPIBSC_PHYCNT_CAL_Pos |
-        3U << R_SPIBSC_PHYCNT_CKSEL_Pos |
-        0U << R_SPIBSC_PHYCNT_EXDS_Pos |
+    0U << R_SPIBSC_PHYCNT_CAL_Pos |
+        0U << R_SPIBSC_PHYCNT_CKSEL_Pos |
         0U << R_SPIBSC_PHYCNT_HS_Pos |
-        0U << R_SPIBSC_PHYCNT_OCT_Pos |
-        0U << R_SPIBSC_PHYCNT_OCTA_Pos |
         0U << R_SPIBSC_PHYCNT_PHYMEM_Pos |
         0U << R_SPIBSC_PHYCNT_WBUF2_Pos |
         0U << R_SPIBSC_PHYCNT_WBUF_Pos;
@@ -398,7 +388,6 @@ static const uint32_t smenr_clearmask =
 static const uint32_t smdrenr_clearmask =
     R_SPIBSC_SMDRENR_ADDRE_Msk |
     R_SPIBSC_SMDRENR_SPIDRE_Msk |
-    R_SPIBSC_SMDRENR_HYPE_Msk |
     R_SPIBSC_SMDRENR_OPDRE_Msk;
 
 static const uint32_t smdmcr_clearmask =
@@ -499,7 +488,6 @@ static const uint32_t drenr_clearmask =
 static const uint32_t drdrenr_clearmask =
     R_SPIBSC_DRDRENR_ADDRE_Msk |
     R_SPIBSC_DRDRENR_DRDRE_Msk |
-    R_SPIBSC_DRDRENR_HYPE_Msk |
     R_SPIBSC_DRDRENR_OPDRE_Msk;
 
 static const uint32_t drdmcr_clearmask =
@@ -1295,11 +1283,7 @@ fsp_err_t R_SPIBSC_Close (spi_flash_ctrl_t * p_api_ctrl)
 
     if (SPIBSC_CFG_STOP_ON_CLOSE)
     {
-        /* Reset SPIM controller */
-        R_BSP_MODULE_RSTON(FSP_IP_SPI_MULTI, 0);
-
         /* Stop SPIM clock */
-        R_BSP_MODULE_CLKOFF(FSP_IP_SPI_MULTI, 0);
         R_BSP_MODULE_STOP(FSP_IP_SPI_MULTI, 0);
     }
 
@@ -1362,11 +1346,8 @@ static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
          *//* Assert reset line */
         R_OCTA->RSTCNT_b.RSTVAL = 0;
 
-        /* Reset OCTA controller */
-        R_BSP_MODULE_RSTON(FSP_IP_OCTA, 0);
-
-        /* Stop OCTA clock */
-        R_BSP_MODULE_CLKOFF(FSP_IP_OCTA, 0);
+        /* Stop OCTA */
+        R_BSP_MODULE_STOP(FSP_IP_OCTA, 0);
     }
 
     /* Wait for reset SPI device */
@@ -1381,10 +1362,6 @@ static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 
     /* Supply SPIM clock */
     R_BSP_MODULE_START(FSP_IP_SPI_MULTI, 0);
-    R_BSP_MODULE_CLKON(FSP_IP_SPI_MULTI, 0);
-
-    /* Resume SPIM controller */
-    R_BSP_MODULE_RSTOFF(FSP_IP_SPI_MULTI, 0);
 
     /* Select SPIM for SPI controller */
     ipcont_spi_octa                &= (uint32_t) ~R_SYSC_SYS_IPCONT_SEL_SPI_OCTA_SEL_SPI_OCTA_Msk;

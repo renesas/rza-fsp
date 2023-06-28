@@ -184,7 +184,7 @@ i2c_slave_api_t const g_i2c_slave_on_iic =
  *********************************************************************************************************************/
 fsp_err_t R_RIIC_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg_t const * const p_cfg)
 {
-    iic_slave_instance_ctrl_t * p_ctrl = (iic_slave_instance_ctrl_t *) p_api_ctrl;
+    iic_slave_instance_ctrl_t * p_ctrl   = (iic_slave_instance_ctrl_t *) p_api_ctrl;
     riic_slave_extended_cfg_t * p_extend = (riic_slave_extended_cfg_t *) p_cfg->p_extend;
 
 #if RIIC_SLAVE_CFG_PARAM_CHECKING_ENABLE
@@ -204,7 +204,6 @@ fsp_err_t R_RIIC_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg_
 
     FSP_ERROR_RETURN(IIC_SLAVE_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
     FSP_ERROR_RETURN(p_cfg->eri_ipl <= p_cfg->ipl, FSP_ERR_INVALID_ARGUMENT);
-
 #endif
     p_ctrl->p_reg =
         (R_RIIC0_Type *) ((uintptr_t) R_RIIC0 + (p_cfg->channel * ((uintptr_t) R_RIIC1 - (uintptr_t) R_RIIC0)));
@@ -216,12 +215,6 @@ fsp_err_t R_RIIC_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg_
     p_ctrl->p_callback_memory = NULL;
 
     R_BSP_MODULE_START(FSP_IP_RIIC, p_cfg->channel);
-
-    /* Supply clock to all I2C channels. */
-    R_BSP_MODULE_CLKON(FSP_IP_RIIC, p_cfg->channel);
-
-    /* Negate reset signal for all I2C channels. */
-    R_BSP_MODULE_RSTOFF(FSP_IP_RIIC, p_cfg->channel);
 
     /* Indicate that restart and stop condition detection yet to be enabled */
     p_ctrl->start_interrupt_enabled = false;
@@ -310,9 +303,9 @@ fsp_err_t R_RIIC_SLAVE_Write (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * con
  * @retval  FSP_ERR_NO_CALLBACK_MEMORY   p_callback is non-secure and p_callback_memory is either secure or NULL.
  **********************************************************************************************************************/
 fsp_err_t R_RIIC_SLAVE_CallbackSet (i2c_slave_ctrl_t * const          p_api_ctrl,
-                                   void (                          * p_callback)(i2c_slave_callback_args_t *),
-                                   void const * const                p_context,
-                                   i2c_slave_callback_args_t * const p_callback_memory)
+                                    void (                          * p_callback)(i2c_slave_callback_args_t *),
+                                    void const * const                p_context,
+                                    i2c_slave_callback_args_t * const p_callback_memory)
 {
     iic_slave_instance_ctrl_t * p_ctrl = (iic_slave_instance_ctrl_t *) p_api_ctrl;
 
@@ -387,7 +380,6 @@ fsp_err_t R_RIIC_SLAVE_Close (i2c_slave_ctrl_t * const p_api_ctrl)
     R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
 
     /* Remove power to the channel. */
-    R_BSP_MODULE_CLKOFF(FSP_IP_RIIC, p_ctrl->p_cfg->channel);
     R_BSP_MODULE_STOP(FSP_IP_RIIC, p_ctrl->p_cfg->channel);
 
     return FSP_SUCCESS;
@@ -565,13 +557,13 @@ static void iic_open_hw_slave (iic_slave_instance_ctrl_t * const p_ctrl)
     /*7 bit mode selected, clear SAR. */
     if (I2C_SLAVE_ADDR_MODE_7BIT == p_ctrl->p_cfg->addr_mode)
     {
-        p_ctrl->p_reg->ICSAR0 = 0U;
+        p_ctrl->p_reg->ICSAR0       = 0U;
         p_ctrl->p_reg->ICSAR0_b.SVA = (uint8_t) p_ctrl->p_cfg->slave;
     }
     /* 10 bit mode selected, set SARx. */
     else
     {
-        p_ctrl->p_reg->ICSAR0 = (uint16_t) (p_ctrl->p_cfg->slave << R_RIIC0_ICSAR0_SVA0_Pos);
+        p_ctrl->p_reg->ICSAR0       = (uint16_t) (p_ctrl->p_cfg->slave << R_RIIC0_ICSAR0_SVA0_Pos);
         p_ctrl->p_reg->ICSAR0_b.FS0 = 1;
     }
 
@@ -1156,6 +1148,7 @@ void riic_slave_rxi_isr (IRQn_Type const irq)
     FSP_CONTEXT_SAVE
     /* Clear the IR flag */
     R_BSP_IrqStatusClear(irq);
+
     iic_slave_instance_ctrl_t * p_ctrl = (iic_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
     iic_rxi_slave(p_ctrl);
 
@@ -1175,6 +1168,7 @@ void riic_slave_txi_isr (IRQn_Type const irq)
     FSP_CONTEXT_SAVE
     /* Clear the IR flag */
     R_BSP_IrqStatusClear(irq);
+
     iic_slave_instance_ctrl_t * p_ctrl = (iic_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
     iic_txi_slave(p_ctrl);
 
@@ -1308,4 +1302,3 @@ void riic_slave_tmoi_isr (IRQn_Type const irq)
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
 }
-

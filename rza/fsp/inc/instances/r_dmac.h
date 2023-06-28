@@ -58,7 +58,7 @@ typedef enum e_dmac_event
 } dmac_event_t;
 
 /** Callback function parameter data. */
-typedef struct st_dmac_callback_args_t
+typedef struct st_dmac_callback_args
 {
     dmac_event_t event;                ///< Event code
     void const * p_context;            ///< Placeholder for user data.  Set in r_transfer_t::open function in ::transfer_cfg_t.
@@ -155,23 +155,20 @@ typedef struct st_dmac_extended_cfg
     /** The interrupt ID number that corresponds to the Activation Source. */
     IRQn_Type activation_irq_number;
 
-    dmac_ack_mode_t  ack_mode;                         ///< DACK output mode
-    dmac_detection_t detection_mode;                   ///< DMAC request detection method
-    dmac_request_direction_t  activation_request_source_select; ///< DMAC activation request source
+    dmac_ack_mode_t          ack_mode;                         ///< DACK output mode
+    dmac_detection_t         detection_mode;                   ///< DMAC request detection method
+    dmac_request_direction_t activation_request_source_select; ///< DMAC activation request source
 
-    dmac_mode_select_t dmac_mode;                      ///< DMAC Mode
-    dmac_continuous_setting_t continuous_setting;      ///< Next register operation settings
-    uint16_t transfer_interval;                        ///< DMA transfer interval
-    dmac_channel_scheduling_t channel_scheduling;      ///< DMA channel scheduling
+    dmac_mode_select_t        dmac_mode;                       ///< DMAC Mode
+    dmac_continuous_setting_t continuous_setting;              ///< Next register operation settings
+    uint16_t transfer_interval;                                ///< DMA transfer interval
+    dmac_channel_scheduling_t channel_scheduling;              ///< DMA channel scheduling
 
     /** Callback for transfer end interrupt. */
     void (* p_callback)(dmac_callback_args_t * cb_data);
 
     /** Placeholder for user data.  Passed to the user p_callback in ::dmac_callback_args_t. */
     void const * p_context;
-
-    /** Communication module handler that is called when a transfer end interrupt. */
-    void (* p_peripheral_module_handler)(IRQn_Type irq);
 } dmac_extended_cfg_t;
 
 /** DMAC transfer configuration extension. This extension is required. */

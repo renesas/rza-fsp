@@ -49,161 +49,12 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-/* Private definition to set enumeration values. */
-#define IOPORT_PRV_PFS_PSEL_OFFSET    (24)
-
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** IO port type used with ports */
 typedef uint16_t ioport_size_t;        ///< IO port size on this device
-
-/** Superset of all peripheral functions.  */
-typedef enum e_ioport_peripheral
-{
-    /** Pin will function as a Mode0 peripheral pin */
-    IOPORT_PERIPHERAL_MODE0 = (0x0UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode1 peripheral pin */
-    IOPORT_PERIPHERAL_MODE1 = (0x1UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode2 peripheral pin */
-    IOPORT_PERIPHERAL_MODE2 = (0x2UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode3 peripheral pin */
-    IOPORT_PERIPHERAL_MODE3 = (0x3UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode4 peripheral pin */
-    IOPORT_PERIPHERAL_MODE4 = (0x4UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode5 peripheral pin */
-    IOPORT_PERIPHERAL_MODE5 = (0x5UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode6 peripheral pin */
-    IOPORT_PERIPHERAL_MODE6 = (0x6UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Pin will function as a Mode7 peripheral pin */
-    IOPORT_PERIPHERAL_MODE7 = (0x7UL << IOPORT_PRV_PFS_PSEL_OFFSET),
-
-    /** Marks end of enum - used by parameter checking */
-    IOPORT_PERIPHERAL_END
-} ioport_peripheral_t;
-
-/** Superset of SD channels. */
-typedef enum e_ioport_sd_ch
-{
-    IOPORT_SD_CHANNEL_0 = 0x10,        ///< Used to select SD channel 0
-    IOPORT_SD_CHANNEL_1 = 0x20,        ///< Used to select SD channel 1
-    IOPORT_SD_CHANNEL_END              ///< Marks end of enum - used by parameter checking
-} ioport_sd_channel_t;
-
-/** Superset of QSPI channels. */
-typedef enum e_ioport_qspi_ch
-{
-    IOPORT_QSPI_CHANNEL_0 = 0x10,      ///< Used to select QSPI channel 0
-    IOPORT_QSPI_CHANNEL_1 = 0x20,      ///< Used to select QSPI channel 1
-    IOPORT_QSPI_CHANNEL_END            ///< Marks end of enum - used by parameter checking
-} ioport_qspi_channel_t;
-
-/* DEPRECATED Superset of Ethernet channels. */
-typedef enum e_ioport_eth_ch
-{
-    IOPORT_ETHERNET_CHANNEL_0 = 0x10,  ///< Used to select Ethernet channel 0
-    IOPORT_ETHERNET_CHANNEL_1 = 0x20,  ///< Used to select Ethernet channel 1
-    IOPORT_ETHERNET_CHANNEL_END        ///< Marks end of enum - used by parameter checking
-} ioport_ethernet_channel_t;
-
-/** Superset of SD voltages. */
-typedef enum e_ioport_sd_voltage
-{
-    IOPORT_SD_VOLTAGE_33 = 0x00,       ///< SD voltage set to 3.3V
-    IOPORT_SD_VOLTAGE_18 = 0x01,       ///< SD voltage set to 1.8V
-    IOPORT_SD_VOLTAGE_END              ///< Marks end of enum - used by parameter checking
-} ioport_sd_voltage_t;
-
-/** Superset of QSPI voltages. */
-typedef enum e_ioport_qspi_voltage
-{
-    IOPORT_QSPI_VOLTAGE_33 = 0x00,     ///< QSPI voltage set to 3.3V
-    IOPORT_QSPI_VOLTAGE_18 = 0x01,     ///< QSPI voltage set to 1.8V
-    IOPORT_QSPI_VOLTAGE_END            ///< Marks end of enum - used by parameter checking
-} ioport_qspi_voltage_t;
-
-/** Superset of Ethernet voltages. */
-typedef enum e_ioport_eth_voltage
-{
-    IOPORT_ETHERNET_VOLTAGE_33 = 0x00, ///< Ethernet voltage set to 3.3V
-    IOPORT_ETHERNET_VOLTAGE_18 = 0x01, ///< Ethernet voltage set to 1.8V
-    IOPORT_ETHERNET_VOLTAGE_25 = 0x02, ///< Ethernet voltage set to 2.5V
-    RESERVED,
-    IOPORT_ETHERNET_VOLTAGE_END        ///< Marks end of enum - used by parameter checking
-} ioport_ethernet_voltage_t;
-
-/* DEPRECATED Superset of Ethernet PHY modes. */
-typedef enum e_ioport_eth_mode
-{
-    IOPORT_ETHERNET_MODE_RMII = 0x00,  ///< Ethernet PHY mode set to MII
-    IOPORT_ETHERNET_MODE_MII  = 0x01,  ///< Ethernet PHY mode set to RMII
-    IOPORT_ETHERNET_MODE_END           ///< Marks end of enum - used by parameter checking
-} ioport_ethernet_mode_t;
-
-/** Options to configure pin functions  */
-typedef enum e_ioport_cfg_options
-{
-    /* For PM Register */
-    IOPORT_CFG_PORT_DIRECTION_HIZ          = 0x00000000,        ///< Sets the pin direction to Hi-Z (default)
-    IOPORT_CFG_PORT_DIRECTION_INPUT        = 0x00000004,        ///< Sets the pin direction to input
-    IOPORT_CFG_PORT_DIRECTION_OUTPUT       = 0x00000008,        ///< Sets the pin direction to output (input disable)
-    IOPORT_CFG_PORT_DIRECTION_OUTPUT_INPUT = 0x0000000C,        ///< Sets the pin direction to output (input enable)
-
-    /* For P Register */
-    IOPORT_CFG_PORT_OUTPUT_LOW  = 0x00000000,                   ///< Sets the pin level to low
-    IOPORT_CFG_PORT_OUTPUT_HIGH = 0x00000001,                   ///< Sets the pin level to high
-
-    /* For PUPD Register */
-    IOPORT_CFG_PULLUP_PULLDOWN_DISABLE = 0x00000000,            ///< Disable the pin's internal pull-up and pull-down
-    IOPORT_CFG_PULLUP_ENABLE           = 0x00000010,            ///< Enables the pin's internal pull-up
-    IOPORT_CFG_PULLDOWN_ENABLE         = 0x00000020,            ///< Enables the pin's internal pull-down
-
-    /* For IOLH Register */
-    IOPORT_CFG_DRIVE_B00 = 0x00000000,                          ///< Sets the IOLH register value to b'00
-    IOPORT_CFG_DRIVE_B01 = 0x00000400,                          ///< Sets the IOLH register value to b'01
-    IOPORT_CFG_DRIVE_B10 = 0x00000800,                          ///< Sets the IOLH register value to b'10
-    IOPORT_CFG_DRIVE_B11 = 0x00000C00,                          ///< Sets the IOLH register value to b'11
-
-    /* For ISEL Register */
-    IOPORT_CFG_TINT_DISABLE = 0x00000000,                       ///< Disable IRQ functionality for a pin
-    IOPORT_CFG_TINT_ENABLE  = 0x00004000,                       ///< Sets pin as an IRQ pin
-
-    /* For SR Register */
-    IOPORT_CFG_SLEW_RATE_SLOW = 0x00000000,                     ///< Sets the pin slew-rate to slow
-    IOPORT_CFG_SLEW_RATE_FAST = 0x00020000,                     ///< Sets the pin slew-rate to fast
-    IOPORT_CFG_SLEW_RATE_FLAT = 0x00020000,                     ///< DEPRECATED Sets the pin slew-rate to flat
-
-    /* For IEN Register */
-    IOPORT_CFG_SPECIAL_PURPOSE_PORT_INPUT_DISABLE = 0x00000000, ///< Disable input the pin of special purpose port
-    IOPORT_CFG_SPECIAL_PURPOSE_PORT_INPUT_ENABLE  = 0x00040000, ///< Sets the pin of special purpose port to input
-
-    /* For FILONOFF Register */
-    IOPORT_CFG_NOISE_FILTER_OFF = 0x00000000,                   ///< Noise filter disable
-    IOPORT_CFG_NOISE_FILTER_ON  = 0x00080000,                   ///< Noise filter enable
-
-    /* For FILNUM Register */
-    IOPORT_CFG_NOISE_FILTER_NUM_4STAGE  = 0x00000000,           ///< Sets the pin noise filter to 4-stage filter
-    IOPORT_CFG_NOISE_FILTER_NUM_8STAGE  = 0x00100000,           ///< Sets the pin noise filter to 8-stage filter
-    IOPORT_CFG_NOISE_FILTER_NUM_12STAGE = 0x00200000,           ///< Sets the pin noise filter to 12-stage filter
-    IOPORT_CFG_NOISE_FILTER_NUM_16STAGE = 0x00300000,           ///< Sets the pin noise filter to 16-stage filter
-
-    /* For FILCLKSEL Register */
-    IOPORT_CFG_NOISE_FILTER_NOT_DIVIDED   = 0x00000000,         ///< Noise filter not divided
-    IOPORT_CFG_NOISE_FILTER_DIVIDED_9000  = 0x00400000,         ///< Noise filter divided by 9000
-    IOPORT_CFG_NOISE_FILTER_DIVIDED_18000 = 0x00800000,         ///< Noise filter divided by 18000
-    IOPORT_CFG_NOISE_FILTER_DIVIDED_36000 = 0x00C00000,         ///< Noise filter divided by 36000
-
-    /* For PMC Register */
-    IOPORT_CFG_PERIPHERAL_PIN = 0x00010000                      ///< Enables pin to operate as a peripheral pin
-} ioport_cfg_options_t;
 
 /** PFS writing enable/disable. */
 typedef enum e_ioport_pwpr
@@ -224,6 +75,7 @@ typedef struct st_ioport_cfg
 {
     uint16_t                 number_of_pins; ///< Number of pins for which there is configuration data
     ioport_pin_cfg_t const * p_pin_cfg_data; ///< Pin configuration data
+    const void             * p_extend;       ///< Pointer to hardware extend configuration
 } ioport_cfg_t;
 
 /** IOPORT control block.  Allocate an instance specific control block to pass into the IOPORT API calls.
@@ -282,42 +134,6 @@ typedef struct st_ioport_api
      * @param[in]  pin_value            Level to be written to pin output event.
      */
     fsp_err_t (* pinEventOutputWrite)(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t pin_value);
-
-    /** Configure the SD voltage of the SD channels.
-     * @par Implemented as
-     * - @ref R_IOPORT_SDVoltageModeCfg()
-     * @param[in]  channel              Channel configuration will be set for.
-     * @param[in]  voltage              Voltage to set the channel to.
-     */
-    fsp_err_t (* pinSDVoltageModeCfg)(ioport_ctrl_t * const p_ctrl, ioport_sd_channel_t channel,
-                                      ioport_sd_voltage_t voltage);
-
-    /** Configure the QSPI voltage of the QSPI channels.
-     * @par Implemented as
-     * - @ref R_IOPORT_QSPIVoltageModeCfg()
-     * @param[in]  channel              Channel configuration will be set for.
-     * @param[in]  voltage              Voltage to set the channel to.
-     */
-    fsp_err_t (* pinQSPIVoltageModeCfg)(ioport_ctrl_t * const p_ctrl, ioport_qspi_channel_t channel,
-                                        ioport_qspi_voltage_t voltage);
-
-    /** Configure the Ethernet voltage of the Ethernet channels.
-     * @par Implemented as
-     * - @ref R_IOPORT_EthernetVoltageModeCfg()
-     * @param[in]  channel              Channel configuration will be set for.
-     * @param[in]  voltage              Voltage to set the channel to.
-     */
-    fsp_err_t (* pinEthernetVoltageModeCfg)(ioport_ctrl_t * const p_ctrl, ioport_ethernet_channel_t channel,
-                                            ioport_ethernet_voltage_t voltage);
-
-    /* DEPRECATED Configure the PHY mode of the Ethernet channels.
-     * @par Implemented as
-     * - @ref R_IOPORT_EthernetModeCfg()
-     * @param[in]  channel              Channel configuration will be set for.
-     * @param[in]  mode                 PHY mode to set the channel to.
-     */
-    fsp_err_t (* pinEthernetModeCfg)(ioport_ctrl_t * const p_ctrl, ioport_ethernet_channel_t channel,
-                                     ioport_ethernet_mode_t mode);
 
     /** Read level of a pin.
      * @par Implemented as

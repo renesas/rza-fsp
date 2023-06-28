@@ -50,7 +50,7 @@
 #define DMAC_PRV_CHCFG_DDS_VALUE_MASK            (0x0FU)
 #define DMAC_PRV_CHCFG_SAD_VALUE_MASK            (0x01U)
 #define DMAC_PRV_CHCFG_DAD_VALUE_MASK            (0x01U)
-#define DMAC_PRV_CHCFG_TM_VALUE_MASK             (0x01U)
+#define DMAC_PRV_CHCFG_TM_VALUE_MASK             (0x02U)
 #define DMAC_PRV_NEXT_REG_VALUE_MASK             (0x03U)
 
 /* DMA Control Register Bit Field Definitions */
@@ -60,6 +60,8 @@
 /* DMAC Resource Select Register Bit Field Definitions */
 #define DMAC_PRV_DMARS_MID_RID_OFFSET            (16U)
 #define DMAC_PRV_DMARS_MID_RID_MASK              (0x3FFU)
+#define DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK    (0xFFFU)
+#define DMAC_PRV_CHCFG_TM_VALUE_POS              (0x01U)
 
 /***********************************************************************************************************************
  * Private function prototypes
@@ -75,7 +77,7 @@ static void      r_dmac_activation_trigger_disable(dmac_extended_cfg_t const * c
 
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
 static fsp_err_t r_dma_open_parameter_checking(dmac_instance_ctrl_t * const p_ctrl, transfer_cfg_t const * const p_cfg);
-static fsp_err_t r_dmac_info_paramter_checking(transfer_info_t const * const p_info);
+static fsp_err_t r_dmac_reconfigure_paramter_checking(transfer_info_t const * const p_info);
 static fsp_err_t r_dmac_enable_parameter_checking(dmac_instance_ctrl_t * const p_ctrl);
 
 #endif
@@ -150,8 +152,6 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
 
     /* Supply clock to DMAC module. */
     R_BSP_MODULE_START(FSP_IP_DMAC_NS, p_extend->channel);
-    R_BSP_MODULE_CLKON(FSP_IP_DMAC_NS, p_extend->channel);
-    R_BSP_MODULE_RSTOFF(FSP_IP_DMAC_NS, p_extend->channel);
 
     /* Configure the transfer settings. */
     r_dmac_config_transfer_info(p_ctrl, p_cfg->p_info);
@@ -178,7 +178,7 @@ fsp_err_t R_DMAC_Reconfigure (transfer_ctrl_t * const p_api_ctrl, transfer_info_
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
     FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
-    err = r_dmac_info_paramter_checking(p_info);
+    err = r_dmac_reconfigure_paramter_checking(p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     FSP_ASSERT(p_ctrl->p_cfg->p_extend != NULL);
     FSP_ASSERT(p_info->p_extend_info != NULL);
@@ -401,8 +401,8 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
 {
     dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) p_api_ctrl;
 
-    uint32_t             * p_src_cast;
-    uint32_t             * p_dest_cast;
+    uint32_t * p_src_cast;
+    uint32_t * p_dest_cast;
 
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_ctrl);
@@ -410,8 +410,8 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
 #endif
 
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
 
     if ((1 == p_ctrl->p_reg->CHSTAT_b.EN) && (0 == p_ctrl->p_reg->CHCFG_b.REN))
@@ -424,7 +424,7 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
             va = *p_src_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N1SA = (uint32_t) pa;
-        
+
             va = *p_dest_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N1DA = (uint32_t) pa;
@@ -440,7 +440,7 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
             va = *p_src_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N0SA = (uint32_t) pa;
-        
+
             va = *p_dest_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N0DA = (uint32_t) pa;
@@ -518,7 +518,7 @@ static fsp_err_t r_dmac_prv_enable (dmac_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void r_dmac_prv_disable (dmac_instance_ctrl_t * p_ctrl)
 {
-    dmac_extended_cfg_t  * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
 
     /* Disable DMA transfer. */
     p_ctrl->p_reg->CHCTRL = R_DMA_CHCTRL_CLREN_Msk;
@@ -547,12 +547,12 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     dmac_extended_cfg_t  * p_extend      = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
     dmac_extended_info_t * p_extend_info = (dmac_extended_info_t *) p_info->p_extend_info;
 
-    uint32_t             * p_src_cast;
-    uint32_t             * p_dest_cast;
+    uint32_t * p_src_cast;
+    uint32_t * p_dest_cast;
 
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
-    uint64_t pa;   /* Physical Address */
-    uint64_t va;   /* Virtual Address */
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
 #endif
 
     uint32_t dctrl = DMAC_PRV_DCTRL_DEFAULT_VALUE;
@@ -571,9 +571,21 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
             ((p_extend->ack_mode & DMAC_PRV_CHCFG_AM_VALUE_MASK) << R_DMA_CHCFG_AM_Pos) |
             ((p_extend_info->src_size & DMAC_PRV_CHCFG_SDS_VALUE_MASK) << R_DMA_CHCFG_SDS_Pos) |
             ((p_extend_info->dest_size & DMAC_PRV_CHCFG_DDS_VALUE_MASK) << R_DMA_CHCFG_DDS_Pos) |
-            ((p_info->src_addr_mode & DMAC_PRV_CHCFG_SAD_VALUE_MASK) << R_DMA_CHCFG_SAD_Pos) |
-            ((p_info->dest_addr_mode & DMAC_PRV_CHCFG_DAD_VALUE_MASK) << R_DMA_CHCFG_DAD_Pos) |
-            ((p_info->mode & DMAC_PRV_CHCFG_TM_VALUE_MASK) << R_DMA_CHCFG_TM_Pos);
+            (((p_info->transfer_settings_word_b.mode & DMAC_PRV_CHCFG_TM_VALUE_MASK) >> DMAC_PRV_CHCFG_TM_VALUE_POS) <<
+             R_DMA_CHCFG_TM_Pos);
+    if (0 == (p_info->transfer_settings_word_b.src_addr_mode & p_info->transfer_settings_word_b.dest_addr_mode))
+    {
+        /* src or dest address mode is "address fixed mode" */
+        if (TRANSFER_ADDR_MODE_FIXED == p_info->transfer_settings_word_b.src_addr_mode)
+        {
+            chcfg |= DMAC_PRV_CHCFG_SAD_VALUE_MASK << R_DMA_CHCFG_SAD_Pos;
+        }
+
+        if (TRANSFER_ADDR_MODE_FIXED == p_info->transfer_settings_word_b.dest_addr_mode)
+        {
+            chcfg |= DMAC_PRV_CHCFG_DAD_VALUE_MASK << R_DMA_CHCFG_DAD_Pos;
+        }
+    }
 
     if (DMAC_CONTINUOUS_SETTING_TRANSFER_NEXT0_ONCE != p_extend->continuous_setting)
     {
@@ -605,10 +617,10 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     va = *p_dest_cast;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
     p_ctrl->p_reg->N0DA = (uint32_t) pa;
-#else                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     p_ctrl->p_reg->N0SA = *p_src_cast;
     p_ctrl->p_reg->N0DA = *p_dest_cast;
-#endif                         
+#endif
 
     p_ctrl->p_reg->N0TB = p_info->length;
 
@@ -627,7 +639,7 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
         va = *p_src_cast;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         p_ctrl->p_reg->N1SA = (uint32_t) pa;
-    
+
         va = *p_dest_cast;
         R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
         p_ctrl->p_reg->N1DA = (uint32_t) pa;
@@ -674,7 +686,7 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
         FSP_ERROR_RETURN(p_extend->dmac_int_irq >= 0, FSP_ERR_IRQ_BSP_DISABLED);
     }
 
-    fsp_err_t err = r_dmac_info_paramter_checking(p_cfg->p_info);
+    fsp_err_t err = r_dmac_reconfigure_paramter_checking(p_cfg->p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
     return FSP_SUCCESS;
@@ -688,7 +700,7 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
  * @retval FSP_SUCCESS              The transfer info is valid.
  * @retval FSP_ERR_ASSERTION        A transfer info setting is invalid.
  **********************************************************************************************************************/
-static fsp_err_t r_dmac_info_paramter_checking (transfer_info_t const * const p_info)
+static fsp_err_t r_dmac_reconfigure_paramter_checking (transfer_info_t const * const p_info)
 {
     FSP_ASSERT(p_info != NULL);
 
@@ -733,67 +745,75 @@ static fsp_err_t r_dmac_enable_parameter_checking (dmac_instance_ctrl_t * const 
 
 #endif
 
-static void r_dmac_activation_trigger_enable(dmac_extended_cfg_t const * const p_extend)
+static void r_dmac_activation_trigger_enable (dmac_extended_cfg_t const * const p_extend)
 {
     if ((0 == p_extend->channel) || (1 == p_extend->channel))
     {
         p_reg_ex->DMARS0 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS0 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else if ((2 == p_extend->channel) || (3 == p_extend->channel))
     {
         p_reg_ex->DMARS1 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS1 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else if ((4 == p_extend->channel) || (5 == p_extend->channel))
     {
         p_reg_ex->DMARS2 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS2 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else if ((6 == p_extend->channel) || (7 == p_extend->channel))
     {
         p_reg_ex->DMARS3 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS3 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else if ((8 == p_extend->channel) || (9 == p_extend->channel))
     {
         p_reg_ex->DMARS4 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS4 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else if ((10 == p_extend->channel) || (11 == p_extend->channel))
     {
         p_reg_ex->DMARS5 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS5 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else if ((12 == p_extend->channel) || (13 == p_extend->channel))
     {
         p_reg_ex->DMARS6 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS6 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
     else
     {
         p_reg_ex->DMARS7 &=
             (uint32_t) ~(DMAC_PRV_DMARS_MID_RID_MASK << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
         p_reg_ex->DMARS7 |=
-            (uint32_t) ((p_extend->activation_source) << (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
+            (uint32_t) ((p_extend->activation_source & DMAC_PRV_ACTIVATION_SOURCE_VALUE_MASK) <<
+                        (DMAC_PRV_DMARS_MID_RID_OFFSET * (p_extend->channel % 2)));
     }
 }
 
-static void r_dmac_activation_trigger_disable(dmac_extended_cfg_t const * const p_extend)
+static void r_dmac_activation_trigger_disable (dmac_extended_cfg_t const * const p_extend)
 {
     if ((0 == p_extend->channel) || (1 == p_extend->channel))
     {
@@ -851,15 +871,9 @@ void dmac_int_isr (IRQn_Type const irq)
     if (p_extend->activation_source)
     {
         /* Activation source disabled */
-        if(1 != p_ctrl->p_reg->CHSTAT_b.EN)
+        if (1 != p_ctrl->p_reg->CHSTAT_b.EN)
         {
             r_dmac_activation_trigger_disable(p_extend);
-        }
-
-        /* Call peripheral module handler */
-        if (p_extend->p_peripheral_module_handler)
-        {
-            p_extend->p_peripheral_module_handler(p_extend->activation_irq_number);
         }
     }
 

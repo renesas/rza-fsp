@@ -65,8 +65,9 @@ typedef struct
         {
             __IOM uint32_t DALEN  : 8;
             __IOM uint32_t DMLEN  : 8;
-            uint32_t              : 6;
-            __IOM uint32_t CMDLEN : 1;
+            uint32_t              : 3;
+            __IOM uint32_t ACDV   : 1;
+            __IOM uint32_t CMDLEN : 3;
             __IOM uint32_t DAOR   : 1;
             __IOM uint32_t ADLEN  : 3;
             __IOM uint32_t DOPI   : 1;
@@ -151,13 +152,28 @@ typedef struct
         __IOM uint32_t DWCSTR;
         struct
         {
-            uint32_t               : 24;
+            uint32_t               : 8;
+            __IOM uint32_t DVWCMD0 : 3;
+            __IOM uint32_t DVWHI0  : 3;
+            __IOM uint32_t DVWLO0  : 2;
+            uint32_t               : 8;
             __IOM uint32_t DVWCMD1 : 3;
             __IOM uint32_t DVWHI1  : 3;
             __IOM uint32_t DVWLO1  : 2;
         } DWCSTR_b;
     };
-    __IOM uint32_t DCSTR;
+    union
+    {
+        __IOM uint32_t DCSTR;
+        struct
+        {
+            uint32_t                : 8;
+            __IOM uint32_t DVSELCMD : 3;
+            __IOM uint32_t DVSELHI  : 3;
+            __IOM uint32_t DVSELLO  : 2;
+            uint32_t                : 16;
+        } DCSTR_b;
+    };
     union
     {
         __IOM uint32_t CDSR;
@@ -167,7 +183,10 @@ typedef struct
             __IOM uint32_t DV1TTYP : 2;
             __IOM uint32_t DV0PC   : 1;
             __IOM uint32_t DV1PC   : 1;
-            uint32_t               : 25;
+            uint32_t               : 4;
+            __IOM uint32_t ACMEME  : 2;
+            __IOM uint32_t ACMODE  : 2;
+            uint32_t               : 17;
             __IOM uint32_t DLFT    : 1;
         } CDSR_b;
     };
@@ -212,15 +231,16 @@ typedef struct
             __IOM uint32_t MRAL0 : 3;
             __IOM uint32_t MRCL0 : 3;
             __IOM uint32_t MRO0  : 1;
-            uint32_t             : 4;
+            uint32_t             : 1;
+            __IOM uint32_t MWAL0 : 3;
             __IOM uint32_t MWCL0 : 3;
             __IOM uint32_t MWO0  : 1;
-            uint32_t             : 3;
-            __IOM uint32_t MRAL1 : 1;
+            uint32_t             : 1;
+            __IOM uint32_t MRAL1 : 3;
             __IOM uint32_t MRCL1 : 3;
             __IOM uint32_t MRO1  : 1;
-            uint32_t             : 2;
-            __IOM uint32_t MWAL1 : 2;
+            uint32_t             : 1;
+            __IOM uint32_t MWAL1 : 3;
             __IOM uint32_t MWCL1 : 3;
             __IOM uint32_t MWO1  : 1;
             uint32_t             : 1;

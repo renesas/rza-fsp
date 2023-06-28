@@ -75,10 +75,13 @@ void fsp_error_log_internal(fsp_err_t err, const char * file, int32_t line); ///
 /* FSP pack version structure. */
 static BSP_DONT_REMOVE const fsp_pack_version_t g_fsp_version BSP_PLACE_IN_SECTION (FSP_SECTION_VERSION) =
 {
-    .minor = FSP_VERSION_MINOR,
-    .major = FSP_VERSION_MAJOR,
-    .build = FSP_VERSION_BUILD,
-    .patch = FSP_VERSION_PATCH
+    .version_id_b =
+    {
+        .minor = FSP_VERSION_MINOR,
+        .major = FSP_VERSION_MAJOR,
+        .build = FSP_VERSION_BUILD,
+        .patch = FSP_VERSION_PATCH
+    }
 };
 
 /* Public FSP version name. */

@@ -90,6 +90,36 @@ typedef enum e_cru_event_image_conv_int
     CRU_EVENT_SCAN_LINE   = 0x0004,    ///< Interrupt for Scan Line
 } cru_event_image_conv_int_t;
 
+/** Statistics configuration parameters */
+typedef struct st_cru_statsistics_cfg
+{
+    uint8_t   statistics;              ///< Setting for Statistics processing (0: execute, 1:through)
+    uint8_t * pp_buffer[8];            ///< Pointer to array of buffer pointers
+    uint8_t   num_buffers;             ///< Number of buffers to use
+    uint8_t   stunit;                  ///< Selection of processing units for statistics processing(0-3)
+    ///< (0:16x16, 1:32x32, 2:64x64, 3:128x128)
+    uint8_t  stsadpos;                 ///< Input data bit position selection for adjacent pixel absolute value summation (0-8)
+    uint16_t sthpos;                   ///< horizontal start position for statistics processing (0-376)
+} statistics_cfg_t;
+
+/** LenearMatrix configuration parameters */
+typedef struct st_cru_linearmatrix_cfg
+{
+    uint8_t linearmatrix;              ///< Setting for Linear matrix processing (0: execute, 1:through)
+    int8_t  rof;                       ///< R offset value -128(8'h80)～127(8'h7F)
+    int8_t  gof;                       ///< G offset value -128(8'h80)～127(8'h7F)
+    int8_t  bof;                       ///< B offset value -128(8'h80)～127(8'h7F)
+    int16_t rr;                        ///< Coefficient R of R data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t rg;                        ///< Coefficient G of R data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t rb;                        ///< Coefficient B of R data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t gr;                        ///< Coefficient R of G data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t gg;                        ///< Coefficient G of G data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t gb;                        ///< Coefficient B of G data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t br;                        ///< Coefficient R of B data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t bg;                        ///< Coefficient G of B data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+    int16_t bb;                        ///< Coefficient B of B data for Linear Matrix calculation (-4096(13'h1000)～4095(13'h0FFF))
+} linearmatrix_cfg_t;
+
 /** CRU hardware specific configuration */
 typedef struct st_cru_extended_cfg
 {
@@ -100,6 +130,20 @@ typedef struct st_cru_extended_cfg
     uint16_t  scan_line_num;                    ///< Line specification for generating a scan line interrupt
     uint8_t   image_conv_int_ipl;               ///< Image conversion interrupt priority
     IRQn_Type image_conv_int_irq;               ///< Image conversion IRQ number
+
+    statistics_cfg_t   statistics_cfg;          ///< Statistics Configuration
+    linearmatrix_cfg_t linearmatrix_cfg;        ///< LinearMatrix Configuration
+    uint8_t            rgb_bit_extension;       ///< Settings when RGB bit is extended (8bit/10bit -> 12bit)
+    ///< 0: Lower 4bits/2bits are expanded repeatedly from the highest 4bits/2bits
+    ///< 1: Lower 4bits/2bits are filled with zeros
+    uint8_t rawstarttype;                       ///< Specify the type of the 1st pixel of the 1st line of RAW data
+    ///< 0: R (RGRG...), 1: Gr (GRGR...), 2: Gb (GBGB...), 3: B (BGBG...)
+    uint32_t t_init;                            /// timing parameter, register of CSIDPHYTIM0
+    uint32_t tclk_miss;                         /// timing parameter, register of CSIDPHYTIM0
+    uint32_t tclk_settle;                       /// timing parameter, register of CSIDPHYTIM1
+    uint32_t ths_settle;                        /// timing parameter, register of CSIDPHYTIM1
+    uint32_t tclk_prepare;                      /// timing parameter, register of CSIDPHYTIM1
+    uint32_t ths_prepare;                       /// timing parameter, register of CSIDPHYTIM1
 } cru_extended_cfg_t;
 
 /** CRU instance control block. */

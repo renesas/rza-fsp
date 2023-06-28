@@ -176,8 +176,7 @@ typedef struct
         struct
         {
             __IM uint32_t STAT_MD_BOOT   : 3;
-            uint32_t                     : 5;
-            uint32_t                     : 1;
+            uint32_t                     : 6;
             __IM uint32_t STAT_DEBUGEN   : 1;
             uint32_t                     : 2;
             __IM uint32_t STAT_MD_CLKS   : 1;

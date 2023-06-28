@@ -138,6 +138,7 @@ typedef enum e_sdmmc_r1_state
 typedef union u_sdmmc_response
 {
     uint32_t status;
+    /** SDIO Card Status Register. */
     struct
     {
         uint32_t                : 3;
@@ -169,7 +170,7 @@ typedef union u_sdmmc_response
         uint32_t block_len_error           : 1; // The transferred block length is not allowed for this card, or the number of transferred bytes does not match the block length.
         uint32_t address_error             : 1; // A misaligned address which did not match the block length was used in the command.
         uint32_t out_of_range              : 1; // The command's argument was out of the allowed range for this card.
-    };
+    } status_b;
 
     struct
     {
@@ -271,6 +272,37 @@ typedef struct st_sdmmc_callback_args
     sdmmc_response_t response;         ///< Response from card, only valid if SDMMC_EVENT_RESPONSE is set in event.
     void const     * p_context;        ///< Placeholder for user data.
 } sdmmc_callback_args_t;
+
+/** Non-secure arguments for writeIo guard function */
+typedef struct st_sdmmc_write_io_args_t
+{
+    uint8_t * const       p_data;
+    uint32_t              function;
+    uint32_t              address;
+    sdmmc_io_write_mode_t read_after_write;
+} sdmmc_write_io_args_t;
+
+/** Non-secure arguments for readIoExt guard function */
+typedef struct st_sdmmc_read_io_ext_args_t
+{
+    uint8_t * const          p_dest;
+    uint32_t                 function;
+    uint32_t                 address;
+    uint32_t * const         count;
+    sdmmc_io_transfer_mode_t transfer_mode;
+    sdmmc_io_address_mode_t  address_mode;
+} sdmmc_read_io_ext_args_t;
+
+/** Non-secure arguments for writeIoExt guard function */
+typedef struct st_sdmmc_write_io_ext_args_t
+{
+    uint8_t const * const    p_source;
+    uint32_t                 function;
+    uint32_t                 address;
+    uint32_t                 count;
+    sdmmc_io_transfer_mode_t transfer_mode;
+    sdmmc_io_address_mode_t  address_mode;
+} sdmmc_write_io_ext_args_t;
 
 /** SD/MMC Configuration */
 typedef struct st_sdmmc_cfg

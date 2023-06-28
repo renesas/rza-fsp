@@ -58,7 +58,10 @@
 /***********************************************************************************************************************
  * Exported global function
  ***********************************************************************************************************************/
-void            gether_phy_targets_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
+void gether_phy_targets_ksz9131rnxi_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
+bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(
+    ether_phy_instance_ctrl_t * p_instance_ctrl,
+    uint32_t                    line_speed_duplex);
 extern uint32_t gether_phy_read(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr);
 extern void     gether_phy_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr, uint32_t data);
 
@@ -123,7 +126,7 @@ static void gether_phy_mmd_write (ether_phy_instance_ctrl_t * p_instance_ctrl,
  * Arguments    : p_instance_ctrl - instance of Ehter PHY
  * Return Value : none
  ***********************************************************************************************************************/
-void gether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
+void gether_phy_targets_ksz9131rnxi_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
 {
     uint32_t reg;
 
@@ -137,5 +140,24 @@ void gether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
     reg &= (uint32_t) ~GETHER_PHY_REG_TX_DDL_CONTROL_BYPASS;
     gether_phy_mmd_write(p_instance_ctrl, GETHER_PHY_DEV_TX_DDL_CONTROL, GETHER_PHY_REG_TX_DDL_CONTROL, reg);
 }                                      /* End of function gether_phy_targets_initialize() */
+
+/***********************************************************************************************************************
+ * Function Name: gether_phy_targets_is_support_link_partner_ability
+ * Description  : Check if the PHY-LSI connected Ethernet controller supports link ability
+ * Arguments    : p_instance_ctrl -
+ *                    Ethernet control block
+ *                line_speed_duplex -
+ *                    Line speed duplex of link partner PHY-LSI
+ * Return Value : bool
+ ***********************************************************************************************************************/
+bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability (ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                                    uint32_t                    line_speed_duplex)
+{
+    FSP_PARAMETER_NOT_USED(p_instance_ctrl);
+    FSP_PARAMETER_NOT_USED(line_speed_duplex);
+
+    /* This PHY-LSI supports half and full duplex mode. */
+    return true;
+}                                      /* End of function ether_phy_targets_is_support_link_partner_ability() */
 
 #endif /* GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI */

@@ -43,7 +43,7 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
-/** ICU private control block. DO NOT MODIFY.  Initialization occurs when R_ICU_ExternalIrqOpen is called. */
+/** USB private control block. DO NOT MODIFY.  Initialization occurs when R_USB_Open is called. */
 
 typedef usb_event_info_t usb_instance_ctrl_t;
 
@@ -127,6 +127,10 @@ fsp_err_t R_USB_DeviceStateGet(usb_ctrl_t * const p_api_ctrl, uint16_t * state);
 fsp_err_t R_USB_DataSizeGet(usb_ctrl_t * const p_api_ctrl, uint32_t * data_size);
 
 fsp_err_t R_USB_SetupGet(usb_ctrl_t * const p_api_ctrl, usb_setup_t * setup);
+
+fsp_err_t R_USB_OtgCallbackSet(usb_ctrl_t * const p_api_ctrl, usb_otg_callback_t * p_callback);
+
+fsp_err_t R_USB_OtgSRP(usb_ctrl_t * const p_api_ctrl);
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

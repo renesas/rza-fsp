@@ -37,12 +37,25 @@ FSP_HEADER
  **********************************************************************************************************************/
 
 /* Private definition to set enumeration values. */
-#define BSP_IO_PRV_8BIT_MASK        (0xFF)
-#define BSP_IO_PRV_PIN_MASK         (1U)
-#define BSP_IO_PRV_PORT_OFFSET      (8U)
-#define BSP_IO_PWPR_B0WI_OFFSET     (7U)
-#define BSP_IO_PWPR_PFSWE_OFFSET    (6U)
-#define BSP_IO_PM_PM_OUTPUT         (3U)
+#define BSP_IO_PRV_8BIT_MASK            (0xFF)
+#define BSP_IO_PRV_PIN_MASK             (1U)
+#define BSP_IO_PRV_PORT_OFFSET          (8U)
+#define BSP_IO_PRV_PFCWE_MASK           (0xFFFFFFBF)
+#define BSP_IO_PRV_OENWE_MASK           (0xFFFFFFDF)
+#define BSP_IO_PRV_SET_OEN_ENABLE       (0U)
+#define BSP_IO_PRV_SET_SSEL0_SELCTL2    (0x1000U)
+#define BSP_IO_PRV_SET_SSEL1_SELCTL0    (0x0100U)
+#define BSP_IO_PWPR_B0WI_OFFSET         (7U)
+#define BSP_IO_PWPR_PFSWE_OFFSET        (6U)
+#define BSP_IO_PWPR_OENWE_OFFSET        (5U)
+#define BSP_IO_PM_PM_OUTPUT             (3U)
+
+#define BSP_IO_PRV_P_REG_BASE_SET(base)      BSP_IO_PRV_P_REG_BASE(base)
+#define BSP_IO_PRV_P_REG_BASE(base)          (&R_GPIO->P ## base)
+#define BSP_IO_PRV_PM_REG_BASE_SET(base)     BSP_IO_PRV_PM_REG_BASE(base)
+#define BSP_IO_PRV_PM_REG_BASE(base)         (&R_GPIO->PM ## base)
+#define BSP_IO_PRV_PIN_REG_BASE_SET(base)    BSP_IO_PRV_PIN_REG_BASE(base)
+#define BSP_IO_PRV_PIN_REG_BASE(base)        (&R_GPIO->PIN ## base)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -63,6 +76,8 @@ typedef enum e_bsp_io_dir
     BSP_IO_DIRECTION_OUTPUT = 0x8,                  ///< Output (Input disable)
     BSP_IO_DIRECTION_OUTPUT_WITH_INPUT_ENABLE = 0xC ///< Output (Input enable)
 } bsp_io_direction_t;
+
+#ifndef BSP_OVERRIDE_BSP_PORT_T
 
 /** Superset list of all possible IO ports. */
 typedef enum e_bsp_io_port
@@ -87,6 +102,10 @@ typedef enum e_bsp_io_port
     BSP_IO_PORT_17 = 0x1100,           ///< IO port 17
     BSP_IO_PORT_18 = 0x1200,           ///< IO port 18
 } bsp_io_port_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_BSP_PIN_T
 
 /** Superset list of all possible IO port pins. */
 typedef enum e_bsp_io_port_pin_t
@@ -248,6 +267,98 @@ typedef enum e_bsp_io_port_pin_t
     BSP_IO_RIIC1_SCL = 0xFFFF0E03,        ///< RIIC1_SCL
 } bsp_io_port_pin_t;
 
+#endif
+
+/** Superset of SD channels. */
+typedef enum e_bsp_sd_ch
+{
+    BSP_SD_CHANNEL_0 = 0x00,           ///< Used to select SD channel 0
+    BSP_SD_CHANNEL_1 = 0x01,           ///< Used to select SD channel 1
+} bsp_sd_channel_t;
+
+/** Superset of Ethernet channels. */
+typedef enum e_bsp_eth_ch
+{
+    BSP_ETHERNET_CHANNEL_0 = 0x00,     ///< Used to select Ethernet channel 0
+    BSP_ETHERNET_CHANNEL_1 = 0x01,     ///< Used to select Ethernet channel 1
+} bsp_ethernet_channel_t;
+
+/** Superset of SD voltages. */
+typedef enum e_bsp_sd_voltage
+{
+    BSP_SD_VOLTAGE_33 = 0x00,          ///< SD voltage set to 3.3V
+    BSP_SD_VOLTAGE_18 = 0x01,          ///< SD voltage set to 1.8V
+} bsp_sd_voltage_t;
+
+/** Superset of QSPI voltages. */
+typedef enum e_bsp_qspi_voltage
+{
+    BSP_QSPI_VOLTAGE_33 = 0x00,        ///< QSPI voltage set to 3.3V
+    BSP_QSPI_VOLTAGE_18 = 0x01,        ///< QSPI voltage set to 1.8V
+} bsp_qspi_voltage_t;
+
+/** Superset of XSPI voltages. */
+typedef enum e_bsp_xspi_voltage
+{
+    BSP_XSPI_VOLTAGE_33 = 0x00,        ///< XSPI voltage set to 3.3V
+    BSP_XSPI_VOLTAGE_18 = 0x01,        ///< XSPI voltage set to 1.8V
+    BSP_XSPI_VOLTAGE_25 = 0x02,        ///< XSPI voltage set to 2.5V
+} bsp_xspi_voltage_t;
+
+/** Superset of Ethernet voltages. */
+typedef enum e_bsp_eth_voltage
+{
+    BSP_ETHERNET_VOLTAGE_33 = 0x00,    ///< Ethernet voltage set to 3.3V
+    BSP_ETHERNET_VOLTAGE_18 = 0x01,    ///< Ethernet voltage set to 1.8V
+    BSP_ETHERNET_VOLTAGE_25 = 0x02,    ///< Ethernet voltage set to 2.5V
+} bsp_ethernet_voltage_t;
+
+/** Superset of I3C voltages. */
+typedef enum e_bsp_i3c_voltage
+{
+    BSP_I3C_VOLTAGE_18 = 0x00,         ///< I3C voltage set to 1.8V
+    BSP_I3C_VOLTAGE_12 = 0x01,         ///< I3C voltage set to 1.2V
+} bsp_i3c_voltage_t;
+
+/** Superset of Ethernet PHY modes. */
+typedef enum e_bsp_eth_mode
+{
+    BSP_ETHERNET_MODE_RMII = 0x00,     ///< Ethernet PHY mode set to RMII
+    BSP_ETHERNET_MODE_MII  = 0x01,     ///< Ethernet PHY mode set to MII
+} bsp_ethernet_mode_t;
+
+/** Superset of Standby modes for I3C. */
+typedef enum e_bsp_i3c_mode
+{
+    BSP_I3C_MODE_STB = 0x00,           ///< Standby mode set to Standby mode
+    BSP_I3C_MODE_NOR = 0x01,           ///< Standby mode set to Normal mode
+} bsp_i3c_mode_t;
+
+/** Superset of oscillator for bypass mode. */
+typedef enum e_bsp_bypass_oscillator
+{
+    BSP_BYPASS_OSCILLATOR_RTC   = 0x00, ///< Oscillator set to RTC
+    BSP_BYPASS_OSCILLATOR_AUDIO = 0x01, ///< Oscillator set to Audio
+    BSP_BYPASS_OSCILLATOR_EMCLK = 0x02, ///< Oscillator set to EMCLK
+} bsp_bypass_oscillator_t;
+
+/** Superset of bypass modes. */
+typedef enum e_bsp_bypass_mode
+{
+    BSP_BYPASS_MODE_CRYSTAL_OSC  = 0x00, ///< Bypass mode set to Crystal oscillator
+    BSP_BYPASS_MODE_EXTERNAL_CLK = 0x01, ///< Bypass mode set to External clock receive
+    BSP_BYPASS_MODE_POWER_DOWN   = 0x02, ///< Bypass mode set to Power-down
+} bsp_bypass_mode_t;
+
+/** Superset of frequency range for bypass mode. */
+typedef enum e_bsp_bypass_freq_range
+{
+    BSP_BYPASS_FREQ_RANGE_1MHZ  = 0x00, ///< Frequency range set to 32KHz to 1MHz
+    BSP_BYPASS_FREQ_RANGE_12MHZ = 0x02, ///< Frequency range set to 1.1MHz to 12MHz
+    BSP_BYPASS_FREQ_RANGE_24MHZ = 0x01, ///< Frequency range set to 12.1MHz to 24MHz
+    BSP_BYPASS_FREQ_RANGE_48MHZ = 0x03, ///< Frequency range set to 24.1MHz to 48MHz
+} bsp_bypass_freq_range_t;
+
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
@@ -268,7 +379,8 @@ __STATIC_INLINE uint32_t R_BSP_PinRead (bsp_io_port_pin_t pin)
 {
     /* Read pin level. */
     volatile const uint8_t * p_pin;
-    p_pin = &R_GPIO->PIN10;
+
+    p_pin = BSP_IO_PRV_PIN_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
     p_pin = &p_pin[pin >> BSP_IO_PRV_PORT_OFFSET];
 
     return (uint32_t) ((*p_pin) >> (pin & BSP_IO_PRV_8BIT_MASK)) & BSP_IO_PRV_PIN_MASK;
@@ -292,8 +404,9 @@ __STATIC_INLINE void R_BSP_PinWrite (bsp_io_port_pin_t pin, bsp_io_level_t level
     uint16_t            write_value_pm;
     uint8_t             write_value_p;
 
-    p_pm         = &R_GPIO->PM10;
-    p_p          = &R_GPIO->P10;
+    p_pm = BSP_IO_PRV_PM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_p  = BSP_IO_PRV_P_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+
     reg_value_pm = p_pm[pin >> BSP_IO_PRV_PORT_OFFSET];
     reg_value_p  = p_p[pin >> BSP_IO_PRV_PORT_OFFSET];
 
@@ -322,8 +435,12 @@ __STATIC_INLINE void R_BSP_PinAccessEnable (void)
     /** If this is first entry then allow writing of PFS. */
     if (0 == g_protect_pfswe_counter)
     {
+ #if BSP_FEATURE_BSP_SUPPORT_PFCWE_PROTECT
         R_GPIO->PWPR = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
         R_GPIO->PWPR = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #else
+        R_GPIO->PWPR = (uint32_t) ((BSP_IO_PRV_PFCWE_MASK & R_GPIO->PWPR) | (1U << BSP_IO_PWPR_PFSWE_OFFSET));
+ #endif
     }
 
     /** Increment the protect counter */
@@ -356,12 +473,275 @@ __STATIC_INLINE void R_BSP_PinAccessDisable (void)
     /** Is it safe to disable writing of PFS? */
     if (0 == g_protect_pfswe_counter)
     {
+ #if BSP_FEATURE_BSP_SUPPORT_PFCWE_PROTECT
         R_GPIO->PWPR = 0;                             ///< Clear PFSWE bit - writing to PFS register disabled
         R_GPIO->PWPR = 1U << BSP_IO_PWPR_B0WI_OFFSET; ///< Set BOWI bit - writing to PFSWE bit disabled
+ #else
+        R_GPIO->PWPR = (uint32_t) (BSP_IO_PRV_PFCWE_MASK & R_GPIO->PWPR);
+ #endif
     }
 
     /** Restore the interrupt state */
     FSP_CRITICAL_SECTION_EXIT;
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Enable access to the OEN registers.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_OENAccessEnable (void)
+{
+#if BSP_FEATURE_BSP_SUPPORT_OEN_PROTECT
+ #if BSP_CFG_PFS_PROTECT
+
+    /** Get the current state of interrupts */
+    FSP_CRITICAL_SECTION_DEFINE;
+    FSP_CRITICAL_SECTION_ENTER;
+
+    R_GPIO->PWPR = (uint32_t) ((BSP_IO_PRV_OENWE_MASK & R_GPIO->PWPR) | (1U << BSP_IO_PWPR_OENWE_OFFSET));
+
+    /** Restore the interrupt state */
+    FSP_CRITICAL_SECTION_EXIT;
+ #endif
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Disable access to the OEN registers.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_OENAccessDisable (void)
+{
+#if BSP_FEATURE_BSP_SUPPORT_OEN_PROTECT
+ #if BSP_CFG_PFS_PROTECT
+
+    /** Get the current state of interrupts */
+    FSP_CRITICAL_SECTION_DEFINE;
+    FSP_CRITICAL_SECTION_ENTER;
+
+    R_GPIO->PWPR = (uint32_t) (BSP_IO_PRV_OENWE_MASK & R_GPIO->PWPR);
+
+    /** Restore the interrupt state */
+    FSP_CRITICAL_SECTION_EXIT;
+ #endif
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures Ethernet channel PHY mode.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_EthernetModeCfg (bsp_ethernet_channel_t channel, bsp_ethernet_mode_t mode)
+{
+#if BSP_FEATURE_BSP_SUPPORT_ETHER_MODE
+ #if BSP_FEATURE_BSP_HAS_PFC_OEN_REG
+    if (mode == BSP_ETHERNET_MODE_RMII)
+    {
+        if (channel == BSP_ETHERNET_CHANNEL_0)
+        {
+            R_CPG->CPG_SSEL0 |= BSP_IO_PRV_SET_SSEL0_SELCTL2;
+        }
+        else
+        {
+            R_CPG->CPG_SSEL1 |= BSP_IO_PRV_SET_SSEL1_SELCTL0;
+        }
+    }
+
+    R_BSP_OENAccessEnable();
+
+    if (BSP_ETHERNET_CHANNEL_0 == channel)
+    {
+        R_GPIO->PFC_OEN_b.OEN0 = mode;
+    }
+    else if (BSP_ETHERNET_CHANNEL_1 == channel)
+    {
+        R_GPIO->PFC_OEN_b.OEN1 = mode;
+    }
+
+    R_BSP_OENAccessDisable();
+ #elif BSP_FEATURE_BSP_HAS_ETHER_MODE_REG
+    uint32_t reg_value = R_GPIO->ETH_MODE;
+
+    reg_value = (uint32_t) ((reg_value & (uint32_t) (~(1 << channel))) | (mode << channel));
+
+    R_GPIO->ETH_MODE = reg_value;
+ #else
+    uint8_t reg_value = R_GPIO->ETH_MII_RGMII;
+
+    reg_value = (uint8_t) ((reg_value & (uint8_t) (~(1 << channel))) | (mode << channel));
+
+    R_GPIO->ETH_MII_RGMII = reg_value;
+ #endif
+#else
+    FSP_PARAMETER_NOT_USED(channel);
+    FSP_PARAMETER_NOT_USED(mode);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures SD channel voltage mode.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_SDVoltageModeCfg (bsp_sd_channel_t channel, bsp_sd_voltage_t voltage)
+{
+#if BSP_FEATURE_BSP_SUPPORT_SD_VOLT
+    if (BSP_SD_CHANNEL_0 == channel)
+    {
+ #if BSP_FEATURE_BSP_HAS_SD_CH_POC_REG
+        R_GPIO->SD_CH0_POC = voltage;
+ #else
+        R_GPIO->SD_ch0 = voltage;
+ #endif
+    }
+    else if (BSP_SD_CHANNEL_1 == channel)
+    {
+ #if BSP_FEATURE_BSP_HAS_SD_CH_POC_REG
+        R_GPIO->SD_CH1_POC = voltage;
+ #else
+        R_GPIO->SD_ch1 = voltage;
+ #endif
+    }
+    else
+    {
+        /* Do nothing. */
+        FSP_PARAMETER_NOT_USED(voltage);
+    }
+
+#else
+    FSP_PARAMETER_NOT_USED(channel);
+    FSP_PARAMETER_NOT_USED(voltage);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures QSPI channel voltage mode.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_QSPIVoltageModeCfg (bsp_qspi_voltage_t voltage)
+{
+#if BSP_FEATURE_BSP_SUPPORT_QSPI_VOLT
+    R_GPIO->QSPI = voltage;
+#else
+    FSP_PARAMETER_NOT_USED(voltage);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures XSPI channel voltage mode.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_XSPIVoltageModeCfg (bsp_xspi_voltage_t voltage)
+{
+#if BSP_FEATURE_BSP_SUPPORT_XSPI_VOLT
+    R_GPIO->XSPI_POC = voltage;
+#else
+    FSP_PARAMETER_NOT_USED(voltage);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures Ethernet channel voltage mode.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_EthernetVoltageModeCfg (bsp_ethernet_channel_t channel, bsp_ethernet_voltage_t voltage)
+{
+#if BSP_FEATURE_BSP_SUPPORT_ETHER_VOLT
+    if (BSP_ETHERNET_CHANNEL_0 == channel)
+    {
+ #if BSP_FEATURE_BSP_HAS_ETH_POC_REG
+        R_GPIO->ETH0_POC = voltage;
+ #else
+        R_GPIO->ETH_ch0 = voltage;
+ #endif
+    }
+    else if (BSP_ETHERNET_CHANNEL_1 == channel)
+    {
+ #if BSP_FEATURE_BSP_HAS_ETH_POC_REG
+        R_GPIO->ETH1_POC = voltage;
+ #else
+        R_GPIO->ETH_ch1 = voltage;
+ #endif
+    }
+    else
+    {
+        /* Do nothing. */
+        FSP_PARAMETER_NOT_USED(voltage);
+    }
+
+#else
+    FSP_PARAMETER_NOT_USED(channel);
+    FSP_PARAMETER_NOT_USED(voltage);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures I3C control.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_I3CControlCfg (bsp_i3c_voltage_t voltage, bsp_i3c_mode_t mode)
+{
+#if BSP_FEATURE_BSP_SUPPORT_I3C
+    R_GPIO->I3C_SET_b.POC  = voltage;
+    R_GPIO->I3C_SET_b.STBN = mode;
+#else
+    FSP_PARAMETER_NOT_USED(voltage);
+    FSP_PARAMETER_NOT_USED(mode);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures bypass mode for RTC, Audio and EMCLK oscillator.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_BypassModeCfg (bsp_bypass_oscillator_t oscillator,
+                                          bsp_bypass_mode_t       mode,
+                                          bsp_bypass_freq_range_t freq_range)
+{
+#if BSP_FEATURE_BSP_SUPPORT_BYPASS
+    switch (oscillator)
+    {
+        case BSP_BYPASS_OSCILLATOR_AUDIO:
+        {
+            R_GPIO->PFC_OSCBYPS_b.OSCBYPS1 = mode & 1U;
+            R_GPIO->PFC_OSCBYPS_b.OSCPW1   = ((mode >> 1U) & 1U);
+            R_GPIO->PFC_OSCBYPS_b.OSCSF1   = freq_range;
+            break;
+        }
+
+        case BSP_BYPASS_OSCILLATOR_EMCLK:
+        {
+            R_GPIO->PFC_OSCBYPS_b.OSCBYPS2 = mode & 1U;
+            R_GPIO->PFC_OSCBYPS_b.OSCPW2   = ((mode >> 1U) & 1U);
+            R_GPIO->PFC_OSCBYPS_b.OSCSF2   = freq_range;
+            break;
+        }
+
+        case BSP_BYPASS_OSCILLATOR_RTC:
+        {
+            R_GPIO->PFC_OSCBYPS_b.OSCBYPS0 = mode & 1U;
+            R_GPIO->PFC_OSCBYPS_b.OSCPW0   = ((mode >> 1U) & 1U);
+            FSP_PARAMETER_NOT_USED(freq_range);
+            break;
+        }
+
+        default:
+
+            /* Do nothing. */
+            FSP_PARAMETER_NOT_USED(mode);
+            FSP_PARAMETER_NOT_USED(freq_range);
+    }
+
+#else
+    FSP_PARAMETER_NOT_USED(oscillator);
+    FSP_PARAMETER_NOT_USED(mode);
+    FSP_PARAMETER_NOT_USED(freq_range);
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Configures XSPI output Enable.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_XSPIOutputEnableCfg (void)
+{
+#if BSP_FEATURE_BSP_SUPPORT_XSPI_OUTPUT
+    R_BSP_OENAccessEnable();
+    R_GPIO->PFC_OEN_b.OEN2 = BSP_IO_PRV_SET_OEN_ENABLE;
+    R_GPIO->PFC_OEN_b.OEN3 = BSP_IO_PRV_SET_OEN_ENABLE;
+    R_GPIO->PFC_OEN_b.OEN4 = BSP_IO_PRV_SET_OEN_ENABLE;
+    R_GPIO->PFC_OEN_b.OEN5 = BSP_IO_PRV_SET_OEN_ENABLE;
+    R_BSP_OENAccessDisable();
 #endif
 }
 

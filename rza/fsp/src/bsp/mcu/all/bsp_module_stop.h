@@ -35,7 +35,7 @@ FSP_HEADER
  * @param      ip       fsp_ip_t enum value for the module to be started
  * @param      channel  The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
-#define R_BSP_MODULE_START(ip, channel)           {FSP_CRITICAL_SECTION_DEFINE;                                      \
+#define R_BSP_MSTP_START(ip, channel)             {FSP_CRITICAL_SECTION_DEFINE;                                      \
                                                    FSP_CRITICAL_SECTION_ENTER;                                       \
                                                    BSP_MSTP_REG_ ## ip(channel) = 0x00000000U                        \
                                                                                   | (BSP_MSTP_BIT_ ## ip(channel) << \
@@ -49,7 +49,7 @@ FSP_HEADER
  * @param      ip       fsp_ip_t enum value for the module to be stopped
  * @param      channel  The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
-#define R_BSP_MODULE_STOP(ip, channel)            {FSP_CRITICAL_SECTION_DEFINE;                                      \
+#define R_BSP_MSTP_STOP(ip, channel)              {FSP_CRITICAL_SECTION_DEFINE;                                      \
                                                    FSP_CRITICAL_SECTION_ENTER;                                       \
                                                    BSP_MSTP_REG_ ## ip(channel) = 0x0000FFFFU                        \
                                                                                   | (BSP_MSTP_BIT_ ## ip(channel) << \

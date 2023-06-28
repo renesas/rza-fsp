@@ -257,6 +257,15 @@ void hw_usb_hset_usbindx(usb_utr_t * ptr, uint16_t data);
 /************/
 void hw_usb_hset_usbleng(usb_utr_t * ptr, uint16_t data);
 
+ #if defined(USB_CFG_HUVC_USE)
+
+/************/
+/* USBREQ   */
+/************/
+uint16_t hw_usb_read_usbreq(uint8_t usb_ip);
+
+ #endif
+
 #endif                                 /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)

@@ -124,8 +124,6 @@ fsp_err_t R_GTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_c
 
     /* Power on the GTM channel. */
     R_BSP_MODULE_START(FSP_IP_GTM, p_cfg->channel);
-    R_BSP_MODULE_CLKON(FSP_IP_GTM, p_cfg->channel);
-    R_BSP_MODULE_RSTOFF(FSP_IP_GTM, p_cfg->channel);
 
     /* Forcibly stop timer. */
     p_instance_ctrl->p_reg->OSTMnTT = 1;
@@ -430,8 +428,6 @@ fsp_err_t R_GTM_Close (timer_ctrl_t * const p_ctrl)
 
     /* Remove power to the channel. */
     R_BSP_MODULE_STOP(FSP_IP_GTM, p_instance_ctrl->p_cfg->channel);
-    R_BSP_MODULE_RSTON(FSP_IP_GTM, p_instance_ctrl->p_cfg->channel);
-    R_BSP_MODULE_CLKOFF(FSP_IP_GTM, p_instance_ctrl->p_cfg->channel);
 
     return FSP_SUCCESS;
 }

@@ -1194,7 +1194,9 @@ typedef struct
             __IOM uint8_t CFE    : 1;
             __IOM uint8_t CFRXIE : 1;
             __IOM uint8_t CFTXIE : 1;
-            uint8_t              : 5;
+            uint8_t              : 1;
+            __IOM uint8_t CFPLS  : 3;
+            uint8_t              : 1;
             __IOM uint8_t CFDC   : 3;
             uint8_t              : 1;
             __IOM uint8_t CFIM   : 1;
@@ -1226,7 +1228,9 @@ typedef struct
             __IOM uint8_t CFE    : 1;
             __IOM uint8_t CFRXIE : 1;
             __IOM uint8_t CFTXIE : 1;
-            uint8_t              : 5;
+            uint8_t              : 1;
+            __IOM uint8_t CFPLS  : 3;
+            uint8_t              : 1;
             __IOM uint8_t CFDC   : 3;
             uint8_t              : 1;
             __IOM uint8_t CFIM   : 1;
@@ -1258,7 +1262,9 @@ typedef struct
             __IOM uint8_t CFE    : 1;
             __IOM uint8_t CFRXIE : 1;
             __IOM uint8_t CFTXIE : 1;
-            uint8_t              : 5;
+            uint8_t              : 1;
+            __IOM uint8_t CFPLS  : 3;
+            uint8_t              : 1;
             __IOM uint8_t CFDC   : 3;
             uint8_t              : 1;
             __IOM uint8_t CFIM   : 1;
@@ -1290,7 +1296,9 @@ typedef struct
             __IOM uint8_t CFE    : 1;
             __IOM uint8_t CFRXIE : 1;
             __IOM uint8_t CFTXIE : 1;
-            uint8_t              : 5;
+            uint8_t              : 1;
+            __IOM uint8_t CFPLS  : 3;
+            uint8_t              : 1;
             __IOM uint8_t CFDC   : 3;
             uint8_t              : 1;
             __IOM uint8_t CFIM   : 1;
@@ -1322,7 +1330,9 @@ typedef struct
             __IOM uint8_t CFE    : 1;
             __IOM uint8_t CFRXIE : 1;
             __IOM uint8_t CFTXIE : 1;
-            uint8_t              : 5;
+            uint8_t              : 1;
+            __IOM uint8_t CFPLS  : 3;
+            uint8_t              : 1;
             __IOM uint8_t CFDC   : 3;
             uint8_t              : 1;
             __IOM uint8_t CFIM   : 1;
@@ -1354,7 +1364,9 @@ typedef struct
             __IOM uint8_t CFE    : 1;
             __IOM uint8_t CFRXIE : 1;
             __IOM uint8_t CFTXIE : 1;
-            uint8_t              : 5;
+            uint8_t              : 1;
+            __IOM uint8_t CFPLS  : 3;
+            uint8_t              : 1;
             __IOM uint8_t CFDC   : 3;
             uint8_t              : 1;
             __IOM uint8_t CFIM   : 1;
@@ -2946,7 +2958,7 @@ typedef struct
             __IOM uint8_t THLELT : 1;
             __IOM uint8_t THLIF  : 1;
             uint8_t              : 4;
-            __IOM uint8_t THLMC  : 5;
+            __IM uint8_t THLMC   : 5;
             uint8_t              : 3;
             uint8_t              : 8;
             uint8_t              : 8;
@@ -3205,19 +3217,19 @@ typedef struct
         } RSCFDnCFDCDTSTS_byte;
         struct
         {
-            __IOM uint8_t RFDMASTS0 : 1;
-            __IOM uint8_t RFDMASTS1 : 1;
-            __IOM uint8_t RFDMASTS2 : 1;
-            __IOM uint8_t RFDMASTS3 : 1;
-            __IOM uint8_t RFDMASTS4 : 1;
-            __IOM uint8_t RFDMASTS5 : 1;
-            __IOM uint8_t RFDMASTS6 : 1;
-            __IOM uint8_t RFDMASTS7 : 1;
-            __IOM uint8_t CFDMASTS0 : 1;
-            __IOM uint8_t CFDMASTS1 : 1;
-            uint8_t                 : 6;
-            uint8_t                 : 8;
-            uint8_t                 : 8;
+            __IM uint8_t RFDMASTS0 : 1;
+            __IM uint8_t RFDMASTS1 : 1;
+            __IM uint8_t RFDMASTS2 : 1;
+            __IM uint8_t RFDMASTS3 : 1;
+            __IM uint8_t RFDMASTS4 : 1;
+            __IM uint8_t RFDMASTS5 : 1;
+            __IM uint8_t RFDMASTS6 : 1;
+            __IM uint8_t RFDMASTS7 : 1;
+            __IM uint8_t CFDMASTS0 : 1;
+            __IM uint8_t CFDMASTS1 : 1;
+            uint8_t                : 6;
+            uint8_t                : 8;
+            uint8_t                : 8;
         } RSCFDnCFDCDTSTS_b;
     };
     __IM uint8_t RESERVED23[100];

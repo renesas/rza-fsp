@@ -17,6 +17,7 @@
  * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
  * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
  **********************************************************************************************************************/
+
 /******************************************************************************
  * Includes   <System Includes> , "Project Includes"
  ******************************************************************************/
@@ -272,6 +273,13 @@ void usb_hstd_status_start (usb_utr_t * ptr)
         /* NoData Control */
         case USB_SETUPNDC:
         {
+  #if defined(USB_CFG_HUVC_USE)
+            if ((USB_SET_INTERFACE | USB_HOST_TO_DEV | USB_STANDARD | USB_INTERFACE) == hw_usb_read_usbreq(ptr->ip))
+            {
+                usb_cpu_delay_xms((uint16_t) 50);
+            }
+  #endif
+
             /* Control Read Status */
             usb_hstd_ctrl_read_start(ptr, (uint32_t) 0, (uint8_t *) &buf1);
 
@@ -321,6 +329,7 @@ void usb_hstd_ctrl_end (usb_utr_t * ptr, uint16_t status)
         hw_usb_set_mbw(ptr, USB_CUSE, USB1_CFIFO_MBW);
 
   #if defined(BSP_MCU_GROUP_RA6M3)
+
         /* CSCLR=1, SUREQ=1, SQCLR=1, PID=NAK */
         hw_usb_hwrite_dcpctr(ptr, (uint16_t) ((USB_CSCLR | USB_SUREQCLR) | USB_SQCLR));
   #else                                /* defined(BSP_MCU_GROUP_RA6M3) */
@@ -359,23 +368,26 @@ void usb_hstd_ctrl_end (usb_utr_t * ptr, uint16_t status)
         if (USB_NULL != (g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]->complete))
         {
             /* Process Done Callback */
-            (g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]->complete)(g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0],
-                                                              USB_NULL,
+            (g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]->complete)(g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0], USB_NULL,
                                                               USB_NULL);
         }
     }
 
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
+   #if (BSP_CFG_RTOS == 1)
+    USB_REL_BLK(1, g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]);
+   #elif (BSP_CFG_RTOS == 2)
     vPortFree(g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]);
+   #endif                                   /* #if (BSP_CFG_RTOS == 1) */
     g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0] = (usb_utr_t *) USB_NULL;
     usb_cstd_pipe0_msg_re_forward(ptr->ip); /* Get PIPE0 Transfer wait que and Message send to HCD */
-  #else /* #if (BSP_CFG_RTOS == 2) */
+  #else /* #if (BSP_CFG_RTOS != 0) */
     g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0] = (usb_utr_t *) USB_NULL;
-  #endif /* #if (BSP_CFG_RTOS == 2) */
+  #endif                                    /* #if (BSP_CFG_RTOS != 0) */
 
   #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
     hw_usb_clear_enb_sofe(ptr);
-  #endif                               /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
+  #endif                                    /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
 }
 
 /******************************************************************************

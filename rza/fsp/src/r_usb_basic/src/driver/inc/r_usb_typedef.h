@@ -184,16 +184,16 @@ typedef struct
 
 typedef struct
 {
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
     uint16_t type;
     uint16_t status;
     uint16_t ip;
     uint16_t fifo_type;
-#else                                    /* #if (BSP_CFG_RTOS == 2) */
+#else                                    /* #if (BSP_CFG_RTOS != 0) */
     usb_int_info_t buf[USB_INT_BUFSIZE]; /* Interrupt Info */
     uint8_t        wp;                   /* Write pointer */
     uint8_t        rp;                   /* Read pointer */
-#endif /* #if (BSP_CFG_RTOS == 2) */
+#endif /* #if (BSP_CFG_RTOS != 0) */
 } usb_int_t;
 
 typedef struct
@@ -205,29 +205,29 @@ typedef struct
 
 typedef struct
 {
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
     uint16_t type;
     uint16_t status;
     uint16_t ip;
     uint16_t fifo_type;
-#else                                     /* #if (BSP_CFG_RTOS == 2) */
+#else                                     /* #if (BSP_CFG_RTOS != 0) */
     usb_fifo_type_t buf[USB_INT_BUFSIZE]; /* Complete DMA Info */
     uint8_t         wp;                   /* Write pointer */
     uint8_t         rp;                   /* Read pointer */
-#endif /* #if (BSP_CFG_RTOS == 2) */
+#endif /* #if (BSP_CFG_RTOS != 0) */
 } usb_dma_int_t;
 
 typedef struct usb_event
 {
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
     usb_instance_ctrl_t ctrl;                /* Control Information */
     uint8_t             code;
-#else /* #if (BSP_CFG_RTOS == 2) */
+#else /* #if (BSP_CFG_RTOS != 0) */
     uint8_t             write_pointer;       /* Write pointer */
     uint8_t             read_pointer;        /* Read pointer */
     usb_status_t        code[USB_EVENT_MAX]; /* Event code */
     usb_instance_ctrl_t ctrl[USB_EVENT_MAX]; /* Control Information */
-#endif /* #if (BSP_CFG_RTOS == 2) */
+#endif /* #if (BSP_CFG_RTOS != 0) */
 } usb_event_t;
 
 typedef struct usb_pipe_table
@@ -249,20 +249,25 @@ typedef struct usb_pipe_reg
 
 typedef enum e_usb_class_internal
 {
-    USB_CLASS_INTERNAL_PCDC = 0,       ///< PCDC Class
-    USB_CLASS_INTERNAL_PCDCC,          ///< PCDCC Class
-    USB_CLASS_INTERNAL_PCDC2,          ///< PCDC2 Class
-    USB_CLASS_INTERNAL_PCDCC2,         ///< PCDCC2 Class
-    USB_CLASS_INTERNAL_PHID,           ///< PHID Class
-    USB_CLASS_INTERNAL_PVND,           ///< PVND Class
-    USB_CLASS_INTERNAL_HCDC,           ///< HCDC Class
-    USB_CLASS_INTERNAL_HCDCC,          ///< HCDCC Class
-    USB_CLASS_INTERNAL_HHID,           ///< HHID Class
-    USB_CLASS_INTERNAL_HVND,           ///< HVND Class
-    USB_CLASS_INTERNAL_HMSC,           ///< HMSC Class
-    USB_CLASS_INTERNAL_PMSC,           ///< PMSC Class
-    USB_CLASS_INTERNAL_REQUEST,        ///< PMSC Class
-    USB_CLASS_INTERNAL_END,            ///< USB Class
+    USB_CLASS_INTERNAL_PCDC = 0,       ///< PCDC Class      0
+    USB_CLASS_INTERNAL_PCDCC,          ///< PCDCC Class     1
+    USB_CLASS_INTERNAL_PCDC2,          ///< PCDC2 Class     2
+    USB_CLASS_INTERNAL_PCDCC2,         ///< PCDCC2 Class    3
+    USB_CLASS_INTERNAL_PHID,           ///< PHID Class      4
+    USB_CLASS_INTERNAL_PHID2,          ///< PHID2 Class     5
+    USB_CLASS_INTERNAL_PPRN,           ///< PPRN Class      6
+    USB_CLASS_INTERNAL_DFU,            ///< DFU Class       7
+    USB_CLASS_INTERNAL_PVND,           ///< PVND Class      8
+    USB_CLASS_INTERNAL_HCDC,           ///< HCDC Class      9
+    USB_CLASS_INTERNAL_HCDCC,          ///< HCDCC Class     10
+    USB_CLASS_INTERNAL_HHID,           ///< HHID Class      11
+    USB_CLASS_INTERNAL_HVND,           ///< HVND Class      12
+    USB_CLASS_INTERNAL_HMSC,           ///< HMSC Class      13
+    USB_CLASS_INTERNAL_PMSC,           ///< PMSC Class      14
+    USB_CLASS_INTERNAL_HPRN,           ///< HPRN Class      15
+    USB_CLASS_INTERNAL_HUVC,           ///< HUVC Class      16
+    USB_CLASS_INTERNAL_REQUEST,        ///< USB Class Request      17
+    USB_CLASS_INTERNAL_END,            ///< USB Class       18
     USB_CLASS_INTERNAL_HUB
 } usb_class_internal_t;
 

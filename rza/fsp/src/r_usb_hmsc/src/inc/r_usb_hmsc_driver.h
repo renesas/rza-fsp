@@ -26,6 +26,8 @@
  ******************************************************************************/
 #include "r_usb_basic.h"
 #include "../../../r_usb_basic/src/driver/inc/r_usb_typedef.h" /* type define */
+/* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
 
 /*****************************************************************************
  * Macro definitions
@@ -301,6 +303,9 @@ uint16_t usb_hmsc_write10(usb_utr_t           * ptr,
 uint16_t usb_hmsc_prevent_allow(usb_utr_t * ptr, uint16_t side, uint8_t * buff);
 uint16_t usb_hmsc_mode_select10(usb_utr_t * ptr, uint16_t side, uint8_t * buff);
 uint16_t usb_hmsc_mode_sense10(usb_utr_t * ptr, uint16_t side, uint8_t * buff);
+
+/** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+FSP_FOOTER
 
 #endif                                 /* R_USB_HMSC_LOCAL_H */
 

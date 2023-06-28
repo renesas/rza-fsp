@@ -2685,6 +2685,36 @@ uint16_t hw_usb_read_usbleng (uint8_t usb_ip)
 /******************************************************************************
  * End of function hw_usb_read_usbleng
  ******************************************************************************/
+ #else                                 /*  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)  */
+  #if defined(USB_CFG_HUVC_USE)
+
+/******************************************************************************
+ * Function Name   : hw_usb_read_usbreq
+ * Description     : Returns USBREQ register content.
+ * Arguments       : none
+ * Return value    : USBREQ content
+ ******************************************************************************/
+uint16_t hw_usb_read_usbreq (uint8_t usb_ip)
+{
+    uint16_t result = 0;
+
+    if (USB_CFG_IP0 == usb_ip)
+    {
+        result = USB_M0->USBREQ;
+    }
+    else
+    {
+        result = USB_M1->USBREQ;
+    }
+
+    return result;
+}
+
+/******************************************************************************
+ * End of function hw_usb_read_usbreg
+ ******************************************************************************/
+  #endif                               /* #if defined(USB_CFG_HUVC_USE) */
+
  #endif                                /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_REPI */
 
 /******************************************************************************

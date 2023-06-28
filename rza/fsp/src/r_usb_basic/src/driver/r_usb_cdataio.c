@@ -52,10 +52,15 @@
  #include "r_usb_hhid_cfg.h"
 #endif                                 /* defined(USB_CFG_HHID_USE) */
 
-#if defined(USB_CFG_HMSC_USE)
- #include "r_usb_hmsc.h"
-#endif                                 /* defined(USB_CFG_HMSC_USE) */
+#if defined(USB_CFG_HUVC_USE)
+ #include "r_usb_huvc_cfg.h"
+#endif                                 /* defined(USB_CFG_HUVC_USE) */
 
+#if defined(USB_CFG_HMSC_USE)
+ #if (BSP_CFG_RTOS != 1)
+  #include "r_usb_hmsc.h"
+ #endif
+#endif                                 /* defined(USB_CFG_HMSC_USE) */
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
  #include "../hw/inc/r_usb_dmac.h"
 #endif                                 /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
@@ -107,7 +112,18 @@ static const uint8_t g_usb_pipe_host[] =
     USB_NULL,              USB_NULL,
     USB_NULL,              USB_NULL,
     USB_NULL,              USB_NULL,
- #endif                                /* defined(USB_CFG_HHID_USE) */
+ #endif                                          /* defined(USB_CFG_HHID_USE) */
+ #if defined(USB_CFG_HUVC_USE)
+    USB_CFG_HUVC_ISO_IN,   USB_CFG_HUVC_ISO_OUT, /* HUVC: Address 1 */
+    USB_CFG_HUVC_ISO_IN,   USB_CFG_HUVC_ISO_OUT, /* HUVC: Address 2 using Hub */
+    USB_NULL,              USB_NULL,             /* HUVC: Address 3 using Hub */
+    USB_NULL,              USB_NULL,             /* HUVC: Address 4 using Hub */
+ #else                                           /* defined(USB_CFG_HUVC_USE) */
+    USB_NULL,              USB_NULL,
+    USB_NULL,              USB_NULL,
+    USB_NULL,              USB_NULL,
+    USB_NULL,              USB_NULL,
+ #endif                                /* defined(USB_CFG_HUVC_USE) */
 };
 #endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
@@ -379,7 +395,9 @@ usb_er_t usb_ctrl_write (usb_instance_ctrl_t * p_ctrl, uint8_t * buf, uint32_t s
             ctrl.data_size     = 0;
             ctrl.status        = USB_SETUP_STATUS_ACK;
             ctrl.type          = USB_CLASS_REQUEST;
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS == 1)
+            ctrl.p_data = (void *) tx_thread_identify();
+  #elif (BSP_CFG_RTOS == 2)
             ctrl.p_data = (void *) xTaskGetCurrentTaskHandle();
   #endif                               /* #if (BSP_CFG_RTOS == 2) */
             usb_set_event(USB_STATUS_REQUEST_COMPLETE, &ctrl);
@@ -447,7 +465,7 @@ usb_er_t usb_data_read (usb_instance_ctrl_t * p_ctrl, uint8_t * buf, uint32_t si
     uint8_t     pipe;
     usb_er_t    err = USB_OK;
     usb_utr_t * p_tran_data;
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
     usb_utr_t tran_data;
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
@@ -506,7 +524,7 @@ usb_er_t usb_data_read (usb_instance_ctrl_t * p_ctrl, uint8_t * buf, uint32_t si
     else
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
         p_tran_data = &tran_data;
  #else                                                                        /* #if (BSP_CFG_RTOS == 2) */
         p_tran_data = &g_usb_pdata[pipe];
@@ -558,7 +576,7 @@ usb_er_t usb_data_write (usb_instance_ctrl_t * p_ctrl, uint8_t const * const buf
     uint8_t     pipe;
     usb_er_t    err = USB_OK;
     usb_utr_t * p_tran_data;
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
     usb_utr_t tran_data;
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
@@ -612,7 +630,7 @@ usb_er_t usb_data_write (usb_instance_ctrl_t * p_ctrl, uint8_t const * const buf
     else
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
         p_tran_data = &tran_data;
  #else                                 /* #if (BSP_CFG_RTOS == 2) */
         p_tran_data = &g_usb_pdata[pipe];
@@ -724,6 +742,7 @@ uint8_t usb_get_usepipe (usb_instance_ctrl_t * p_ctrl, usb_transfer_t dir)
     if (USB_CLASS_INTERNAL_PVND < (usb_class_internal_t) (p_ctrl->type))
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+
         /* Host */
         idx =
             (uint8_t) (((uint8_t) (((usb_class_internal_t) p_ctrl->type - USB_CLASS_INTERNAL_HCDC) * 8) +
@@ -734,6 +753,7 @@ uint8_t usb_get_usepipe (usb_instance_ctrl_t * p_ctrl, usb_transfer_t dir)
     else
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+
         /* Peripheral */
         idx  = (uint8_t) ((p_ctrl->type * 2) + dir);
         pipe = g_usb_pipe_peri[idx];

@@ -34,8 +34,7 @@
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
  #include "../hw/inc/r_usb_dmac.h"
 #endif                                 /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
-
-#if defined(USB_CFG_HMSC_USE)
+#if (defined(USB_CFG_HMSC_USE) && (BSP_CFG_RTOS != 1))
  #include "../../../r_usb_hmsc/src/inc/r_usb_hmsc_driver.h"
 #endif                                 /* defined(USB_CFG_HMSC_USE) */
 
@@ -46,6 +45,10 @@
 #if defined(USB_CFG_HHID_USE)
  #include "r_usb_hhid_cfg.h"
 #endif                                 /* defined(USB_CFG_HHID_USE) */
+
+#if defined(USB_CFG_HUVC_USE)
+ #include "r_usb_huvc_cfg.h"
+#endif                                 /* defined(USB_CFG_HUVC_USE) */
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 
@@ -252,9 +255,11 @@ uint16_t usb_hstd_chk_dev_addr (usb_utr_t * ptr, uint16_t addr)
     buffer = hw_usb_hread_devadd(ptr, addr);
     if (USB_ERROR != buffer)
     {
+
         /* Return Address check result */
         return (uint16_t) (buffer & USB_USBSPD);
     }
+
  #else
     FSP_PARAMETER_NOT_USED(ptr);
     FSP_PARAMETER_NOT_USED(addr);
@@ -285,6 +290,7 @@ uint16_t usb_hstd_get_dev_speed (usb_utr_t * ptr, uint16_t addr)
     buffer = hw_usb_hread_devadd(ptr, addr);
     if (USB_ERROR != buffer)
     {
+
         /* Return device speed */
         return (uint16_t) (buffer & USB_USBSPD);
     }
@@ -372,6 +378,7 @@ uint16_t usb_hstd_pipe2fport (usb_utr_t * ptr, uint16_t pipe)
             }
         }
     }
+
   #else                                /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
     (void) *ptr;
   #endif
@@ -610,6 +617,7 @@ uint16_t usb_hstd_write_data (usb_utr_t * ptr, uint16_t pipe, uint16_t pipemode)
     /* Check error */
     if (USB_FIFOERROR == buffer)
     {
+
         /* FIFO access error */
         return USB_FIFOERROR;
     }
@@ -769,6 +777,7 @@ void usb_hstd_receive_start (usb_utr_t * ptr, uint16_t pipe)
         }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
         /* D1FIFO DMA */
         case USB_D1USE:
 
@@ -839,6 +848,7 @@ uint16_t usb_hstd_read_data (usb_utr_t * ptr, uint16_t pipe, uint16_t pipemode)
     buffer = usb_cstd_is_set_frdy(ptr, pipe, pipemode, USB_FALSE);
     if (USB_FIFOERROR == buffer)
     {
+
         /* FIFO access error */
         return USB_FIFOERROR;
     }
@@ -950,6 +960,7 @@ void usb_hstd_data_end (usb_utr_t * ptr, uint16_t pipe, uint16_t status)
         }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
         /* D0FIFO DMA */
         case USB_D0USE:
         {
@@ -1464,6 +1475,7 @@ void usb_hstd_set_pipe_reg (usb_utr_t * ptr, uint16_t pipe_no)
         /* PIPE Setting */
         usb_cstd_pipe_init(ptr, pipe_no);
     }
+
  #else
     FSP_PARAMETER_NOT_USED(ptr);
     FSP_PARAMETER_NOT_USED(pipe_no);
@@ -1667,6 +1679,8 @@ uint8_t usb_hstd_get_pipe_no (uint16_t ip_no, uint16_t address, uint16_t usb_cla
  #if defined(USB_CFG_HMSC_USE)
             if (USB_EP_BULK == type)
             {
+  #if (BSP_CFG_RTOS != 1)
+
                 /* Add USB IP no. for USB Device address */
                 if (USB_IP1 == ip_no)
                 {
@@ -1682,8 +1696,56 @@ uint8_t usb_hstd_get_pipe_no (uint16_t ip_no, uint16_t address, uint16_t usb_cla
                     /* Calculate the pipe number corresponding to the drive number */
                     pipe_no = (uint8_t) (USB_PIPE1 + side);
                 }
+
+  #else                                /* #if (BSP_CFG_RTOS != 1) */
+                pipe_no = USB_PIPE1;
+  #endif /* #if (BSP_CFG_RTOS != 1) */
             }
  #endif                                /* defined(USB_CFG_HMSC_USE) */
+            break;
+        }
+
+        case USB_CLASS_INTERNAL_HUVC:
+        {
+ #if defined(USB_CFG_HUVC_USE)
+            if (USB_EP_ISO == type)
+            {
+                if (USB_PIPE_DIR_IN == dir)
+                {
+                    switch (address)
+                    {
+                        case 1:        /* Root port device1 */
+                        case 2:        /* Hub downport device1 */
+                        {
+                            pipe_no = USB_CFG_HUVC_ISO_IN;
+                            break;
+                        }
+
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    switch (address)
+                    {
+                        case 1:        /* Root port device1 */
+                        case 2:        /* Hub downport device1 */
+                        {
+                            pipe_no = USB_CFG_HUVC_ISO_OUT;
+                            break;
+                        }
+
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+ #endif                                /* defined(USB_CFG_HUVC_USE) */
             break;
         }
 
@@ -1826,6 +1888,20 @@ uint16_t usb_hstd_get_pipe_buf_value (uint16_t pipe_no)
         }
   #endif /* defined(USB_CFG_HMSC_USE) */
     }
+
+  #if defined(USB_CFG_HUVC_USE)
+    case USB_CFG_HUVC_ISO_IN:
+    {
+        pipe_buf = (USB_BUF_SIZE(2048u) | USB_BUF_NUMB(8u));
+        break;
+    }
+
+    case USB_CFG_HUVC_ISO_OUT:
+    {
+        pipe_buf = (USB_BUF_SIZE(2048u) | USB_BUF_NUMB(72u));
+        break;
+    }
+  #endif
 
     return pipe_buf;
 }                                      /* End of function usb_hstd_get_pipe_buf_value() */

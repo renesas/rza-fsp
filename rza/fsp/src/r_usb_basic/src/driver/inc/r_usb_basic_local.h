@@ -23,6 +23,7 @@
  * Version      : 1.0
  * Description  : Header file USB basic
  **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * History : DD.MM.YYYY Version  Description
  *         : 15.01.2017 1.00     First Release
@@ -36,7 +37,7 @@
  **********************************************************************************************************************/
 #include "r_usb_basic_if.h"
 
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
  #include "r_usb_rtos_config.h"
  #include "r_usb_cstd_rtos.h"
 #endif
@@ -144,9 +145,11 @@ typedef struct
 
 /* r_usb_hDriver.c */
 extern st_usb_pipe_t g_usb_hstd_pipe[USB_MAXPIPE + 1U]; /* pipe information */
-extern uint16_t      g_usb_msg_check;
+#if (BSP_CFG_RTOS == 1)
+extern uint16_t g_usb_msg_check;
+#endif
 
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
 
 /* RTOS semaphore */
 extern uint32_t g_usb_sem;

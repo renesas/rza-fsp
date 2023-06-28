@@ -43,7 +43,7 @@
  **********************************************************************************************************************/
 
 /** System Clock Frequency (Core Clock) */
-uint32_t SystemCoreClock = 0U;
+uint32_t SystemCoreClock BSP_SECTION_EARLY_INIT;
 
 /* Initialize static constructors */
 #if defined(__ARMCC_VERSION)
@@ -89,6 +89,11 @@ void R_BSP_HardwareInit(void) __attribute__((weak));
 
 #endif
 
+#if BSP_CFG_EARLY_INIT
+static void bsp_init_uninitialized_vars(void);
+
+#endif
+
 /*******************************************************************************************************************//**
  * Initialize the MCU and the runtime environment.
  **********************************************************************************************************************/
@@ -99,6 +104,19 @@ void SystemInit (void)
     /* Initialize clock variables to be used with R_BSP_SoftwareDelay. */
     bsp_clock_freq_var_init();
 #else
+
+#if BSP_FEATURE_TFU_SUPPORTED
+    R_BSP_MODULE_START(FSP_IP_TFU, 0U);
+#endif
+
+#if BSP_CFG_EARLY_INIT
+
+    /* Initialize uninitialized BSP variables early for use in R_BSP_WarmStart. */
+    bsp_init_uninitialized_vars();
+#endif
+
+    /* Call pre clock initialization hook. */
+    R_BSP_WarmStart(BSP_WARM_START_RESET);
 
     /* Configure system clocks. */
     bsp_clock_init();
@@ -194,5 +212,35 @@ void R_BSP_HardwareInit (void)
 {
     /* Do nothing */
 }
+
+#if BSP_CFG_EARLY_INIT
+
+/*******************************************************************************************************************//**
+ * Initialize BSP variables not handled by C runtime startup.
+ **********************************************************************************************************************/
+static void bsp_init_uninitialized_vars (void)
+{
+    g_protect_pfswe_counter = 0;
+
+    extern volatile uint16_t g_protect_counters[];
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        g_protect_counters[i] = 0;
+    }
+
+    extern bsp_grp_irq_cb_t g_bsp_group_irq_sources[];
+    for (uint32_t i = 0; i < 16; i++)
+    {
+        g_bsp_group_irq_sources[i] = 0;
+    }
+
+ #if BSP_CFG_EARLY_INIT
+
+    /* Set SystemCoreClock to I2CLK */
+    SystemCoreClock = BSP_CFG_CLOCK_I2CLK_HZ;
+ #endif
+}
+
+#endif
 
 /** @} (end addtogroup BSP_MCU) */

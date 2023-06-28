@@ -152,7 +152,7 @@ static const uint32_t display_format_table[] =
     0x0000C147,                        /* YCbCr422 interleaved type0 YVYU, 16 bits */
     0x00000148,                        /* YCbCr420 interleaved type1,      16 bits */
     0x00000149,                        /* YCbCr420 interleaved,            16 bits */
-    0x0000004C,                        /* YCbCr420 Planar                  16 bits */
+    0x0000014C,                        /* YCbCr420 Planar                  16 bits */
 };
 
 static lcdc_ctrl_t r_lcdc_blk =
@@ -207,9 +207,7 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
         return err;
     }
 #endif
-    R_BSP_MODULE_CLKON(FSP_IP_LCDC, 0);
-    R_BSP_MODULE_CLKON(FSP_IP_LCDC, 1);
-    R_BSP_MODULE_RSTOFF(FSP_IP_LCDC, 0);
+    R_BSP_MODULE_START(FSP_IP_LCDC, 0);
 
     /* FCPVD processing mode */
     R_LCDC->FCP_CFG0_b.FCPVSEL = 0;
@@ -222,10 +220,10 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
 
     /* Display IRQ Setting */
     /* Interrupt Enable for Display Start */
-    R_LCDC->VI6_DISP0_IRQ_STA_b.MAE = 0b1;
+    R_LCDC->VI6_DISP0_IRQ_STA_b.MAE = 1;
 
     /* Interrupt Enable for Display Read Data End */
-    R_LCDC->VI6_DISP0_IRQ_STA_b.DST = 0b1;
+    R_LCDC->VI6_DISP0_IRQ_STA_b.DST = 1;
 
     /* Enable LCDC Interrupt */
     r_lcdc_interrupt_enable(p_cfg, p_api_ctrl);
@@ -253,13 +251,13 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
     R_LCDC->VI6_LIF0_CTRL_b.OBTH = LCDC_VSPD_LIF_CTRL_OBTH;
 
     /* DU is selected as the destination external display module */
-    R_LCDC->VI6_LIF0_CTRL_b.REQSEL = 0b1;
+    R_LCDC->VI6_LIF0_CTRL_b.REQSEL = 1;
 
     /* Data output to the external display module is enabled */
-    R_LCDC->VI6_LIF0_CTRL_b.LIF_EN = 0b1;
+    R_LCDC->VI6_LIF0_CTRL_b.LIF_EN = 1;
 
     /* Always specify 1 */
-    R_LCDC->VI6_LIF0_LBA_b.LBA0 = 0b1;
+    R_LCDC->VI6_LIF0_LBA_b.LBA0 = 1;
 
     /* Always specify 1536 */
     R_LCDC->VI6_LIF0_LBA_b.LBA1 = LCDC_VSPD_LIF_CTRL_LBA1;
@@ -271,7 +269,7 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
     r_lcdc_brs_set();
 
     /* Start WPF */
-    R_LCDC->VI6_CMD0_b.STRCMD = 0b1;
+    R_LCDC->VI6_CMD0_b.STRCMD = 1;
     while (R_LCDC->VI6_DISP0_IRQ_STA_b.DST == 0)
     {
         /*
@@ -279,7 +277,7 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
          */
     }
 
-    R_LCDC->DU_MCR0_b.DI_EN = 0b1;
+    R_LCDC->DU_MCR0_b.DI_EN = 1;
 
     p_ctrl->state = DISPLAY_STATE_OPENED;
 
@@ -687,18 +685,18 @@ static void r_lcdc_dl_set (void)
     R_LCDC->VI6_DL_CTRL_b.AR_WAIT = LCDC_VSPD_DL_CTRL;
 
     /* These bits doesn’t affect anything to VSPD */
-    R_LCDC->VI6_DL_CTRL_b.DC2  = 0b1;
-    R_LCDC->VI6_DL_CTRL_b.DC1  = 0b1;
-    R_LCDC->VI6_DL_CTRL_b.DLE1 = 0b1;
+    R_LCDC->VI6_DL_CTRL_b.DC2  = 1;
+    R_LCDC->VI6_DL_CTRL_b.DC1  = 1;
+    R_LCDC->VI6_DL_CTRL_b.DLE1 = 1;
 
     /* The next frame is automatically started */
-    R_LCDC->VI6_DL_CTRL_b.CFM0 = 0b1;
+    R_LCDC->VI6_DL_CTRL_b.CFM0 = 1;
 
     /* Don’t use Display List Header (Header-less Mode) */
-    R_LCDC->VI6_DL_CTRL_b.NH0 = 0b1;
+    R_LCDC->VI6_DL_CTRL_b.NH0 = 1;
 
     /* The display list function is enabled */
-    R_LCDC->VI6_DL_CTRL_b.DLE0 = 0b1;
+    R_LCDC->VI6_DL_CTRL_b.DLE0 = 1;
 
     /* Display lsit body size setting */
     R_LCDC->VI6_DL_BODY_SIZE0_b.BS0 = LCDC_VSPD_DL_BODY_SIZE;
@@ -707,7 +705,7 @@ static void r_lcdc_dl_set (void)
     R_LCDC->VI6_DL_EXT_CTRL0_b.POLINT = 0x02;
 
     /* Always specify 1. */
-    R_LCDC->VI6_DL_EXT_CTRL0_b.DLPRI = 0b1;
+    R_LCDC->VI6_DL_EXT_CTRL0_b.DLPRI = 1;
 
     /* Display List Header Address */
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
@@ -719,7 +717,7 @@ static void r_lcdc_dl_set (void)
 #endif
 
     /* Data swapping in long word (32-bit) units is enabled */
-    R_LCDC->VI6_DL_SWAP0_b.LWS = 0b1;
+    R_LCDC->VI6_DL_SWAP0_b.LWS = 1;
 }
 
 /*******************************************************************************************************************//**
@@ -915,7 +913,7 @@ static void r_lcdc_layer1_set (display_cfg_t const * const p_cfg)
 #endif
 
     /* Alpha Setting (RPF0 Alpha data is 0x00) */
-    R_LCDC->VI6_RPF0_ALPH_SEL_b.ASEL = 0x0;
+    R_LCDC->VI6_RPF0_ALPH_SEL_b.ASEL = 0;
 
     /* Swap Setting */
     R_LCDC->VI6_RPF0_DSWAP = p_cfg->input[0].data_swap;
@@ -988,7 +986,7 @@ static void r_lcdc_layer2_set (display_cfg_t const * const p_cfg)
 #endif
 
     /* Alpha Setting */
-    R_LCDC->VI6_RPF1_ALPH_SEL_b.ASEL = 0x0;
+    R_LCDC->VI6_RPF1_ALPH_SEL_b.ASEL = 0;
 
     /* Swap Setting */
     R_LCDC->VI6_RPF1_DSWAP = p_cfg->input[1].data_swap;
@@ -1017,8 +1015,8 @@ static void r_lcdc_output_set (display_cfg_t const * const p_cfg)
     static uint32_t vsize;
 
     /* WPF IRQ Setting */
-    R_LCDC->VI6_WPF0_IRQ_ENB_b.DFEE = 0b0;
-    R_LCDC->VI6_WPF0_IRQ_ENB_b.FREE = 0b1;
+    R_LCDC->VI6_WPF0_IRQ_ENB_b.DFEE = 0;
+    R_LCDC->VI6_WPF0_IRQ_ENB_b.FREE = 1;
 
     /*Background layer Setting */
     R_LCDC->VI6_WPF0_SRCRPF = LAYER_DISABLE_ALL;
@@ -1040,7 +1038,7 @@ static void r_lcdc_output_set (display_cfg_t const * const p_cfg)
     R_LCDC->VI6_BRS_VIRRPF_COL = p_cfg->output.bg_color.argb;
 
     /* Write Back setting */
-    R_LCDC->VI6_WPF0_WRBCK_CTRL_b.WBMD = 0b0;
+    R_LCDC->VI6_WPF0_WRBCK_CTRL_b.WBMD = 0;
 }
 
 /*******************************************************************************************************************//**
@@ -1086,7 +1084,7 @@ static void r_lcdc_brs_set (void)
     R_LCDC->VI6_BRSA_CTRL_b.SRCSEL = 0x0;
 
     /* ROP (raster operation) */
-    R_LCDC->VI6_BRSB_CTRL_b.RBC = 0b0;
+    R_LCDC->VI6_BRSB_CTRL_b.RBC = 0;
 
     /* BRS input 0 (BRSin0) is input to DST */
     R_LCDC->VI6_BRSB_CTRL_b.DSTSEL = 0x1;
@@ -1095,7 +1093,7 @@ static void r_lcdc_brs_set (void)
     R_LCDC->VI6_BRSB_CTRL_b.SRCSEL = LCDC_VSPD_BRSB_CTRL_SRCSEL;
 
     /* Blending Expression :  */
-    R_LCDC->VI6_BRSA_BLD_b.CBES = 0x0;
+    R_LCDC->VI6_BRSA_BLD_b.CBES = 0;
 
     /* (blending coefficient X) = (DST α data) */
     R_LCDC->VI6_BRSA_BLD_b.CCMDX = LCDC_VSPD_BRSA_BLD_CCMDX;
@@ -1104,7 +1102,7 @@ static void r_lcdc_brs_set (void)
     R_LCDC->VI6_BRSA_BLD_b.CCMDY = LCDC_VSPD_BRSA_BLD_CCMDY;
 
     /* Blending α Creation Expression : X * (DST α data) + Y * (SRC α data) */
-    R_LCDC->VI6_BRSA_BLD_b.ABES = 0x0;
+    R_LCDC->VI6_BRSA_BLD_b.ABES = 0;
 
     /* (α creation coefficient X) = 255 - (DST α data) */
     R_LCDC->VI6_BRSA_BLD_b.ACMDX = LCDC_VSPD_BRSB_BLD_CCMDX;
@@ -1269,24 +1267,10 @@ static void r_lcdc_interrupt_enable (display_cfg_t const * const p_cfg, lcdc_ins
 
     /* LCDC Interrupt Setting */
     /* Interrupt Enable (or disable) for Frame End */
-    if (pextend->frame_end_ipl != BSP_IRQ_DISABLED)
-    {
-        R_LCDC->VI6_WPF0_IRQ_ENB_b.FREE = 0b1;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
+    R_LCDC->VI6_WPF0_IRQ_ENB_b.FREE = 1;
 
     /* Interrupt Enable (or disable) for DU Connection UnderRun Error */
-    if (pextend->underrun_ipl != BSP_IRQ_DISABLED)
-    {
-        R_LCDC->VI6_WPF0_IRQ_ENB_b.UNDE = 0b1;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
+    R_LCDC->VI6_WPF0_IRQ_ENB_b.UNDE = 1;
 
     if (pextend->frame_end_irq >= 0)
     {
@@ -1315,7 +1299,7 @@ void lcdc_vspd_int (IRQn_Type const irq)
     event_flag = 0;
 
     /* Check which interrupt is generated */
-    if (R_LCDC->VI6_WPF0_IRQ_STA_b.FRE == 0b1)
+    if (1 == R_LCDC->VI6_WPF0_IRQ_STA_b.FRE)
     {
         event_flag = DISPLAY_EVENT_FRAME_END;
     }
@@ -1324,7 +1308,7 @@ void lcdc_vspd_int (IRQn_Type const irq)
         /* Do Nothing */
     }
 
-    if (R_LCDC->VI6_WPF0_IRQ_STA_b.UND == 0b1)
+    if (1 == R_LCDC->VI6_WPF0_IRQ_STA_b.UND)
     {
         event_flag = DISPLAY_EVENT_UNDERFLOW;
     }
@@ -1440,7 +1424,7 @@ static fsp_err_t r_lcdc_open_param_check_layer_setting (display_cfg_t const * co
             FSP_ERROR_RETURN((p_cfg->input[layer_num].hsize <= LAYER_MAX_HSIZE), FSP_ERR_INVALID_LAYER_SETTING);
             FSP_ERROR_RETURN((p_cfg->input[layer_num].vsize <= LAYER_MAX_VSIZE), FSP_ERR_INVALID_LAYER_SETTING);
             FSP_ERROR_RETURN((p_cfg->input[layer_num].coordinate_x <= LAYER_MAX_HCOOR), FSP_ERR_INVALID_LAYER_SETTING);
-            FSP_ERROR_RETURN((p_cfg->input[layer_num].coordinate_y <= LAYER_MAX_HCOOR), FSP_ERR_INVALID_LAYER_SETTING);
+            FSP_ERROR_RETURN((p_cfg->input[layer_num].coordinate_y <= LAYER_MAX_VCOOR), FSP_ERR_INVALID_LAYER_SETTING);
         }
         else
         {

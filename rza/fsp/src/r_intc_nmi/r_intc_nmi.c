@@ -83,10 +83,7 @@ const external_irq_api_t g_external_irq_on_intc_nmi =
  *                                          - p_ctrl or p_cfg is NULL.
  * @retval FSP_ERR_ALREADY_OPEN           The channel specified has already been opened. No configurations were changed.
  *                                        Call the associated Close function to reconfigure the channel.
- * @retval FSP_ERR_INVALID_ARGUMENT       One of the following is invalid:
- *                                          - p_cfg->trigger is invalid.
- *                                          - p_cfg->p_callback is not NULL, but ISR is not enabled. ISR must be enabled
- *                                            to use callback function.
+ * @retval FSP_ERR_INVALID_ARGUMENT       p_cfg->trigger is invalid.
  *
  * @note This function is reentrant for different channels. It is not reentrant for the same channel.
  **********************************************************************************************************************/
@@ -100,12 +97,6 @@ fsp_err_t R_INTC_NMI_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     FSP_ASSERT(NULL != p_cfg);
     FSP_ERROR_RETURN(EXTERNAL_IRQ_TRIG_BOTH_EDGE != p_cfg->trigger, FSP_ERR_INVALID_ARGUMENT);
     FSP_ERROR_RETURN(EXTERNAL_IRQ_TRIG_LEVEL_LOW != p_cfg->trigger, FSP_ERR_INVALID_ARGUMENT);
-
-    /* Callback must be used with a valid interrupt priority otherwise it will never be called. */
-    if (p_cfg->p_callback)
-    {
-        FSP_ERROR_RETURN(BSP_IRQ_DISABLED != p_cfg->ipl, FSP_ERR_INVALID_ARGUMENT);
-    }
 #endif
 
     p_ctrl->irq = p_cfg->irq;

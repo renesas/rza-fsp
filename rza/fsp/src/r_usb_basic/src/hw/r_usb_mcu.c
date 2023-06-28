@@ -31,9 +31,9 @@
 #include "inc/r_usb_bitdefine.h"
 #include "inc/r_usb_reg_access.h"
 
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
  #include "../driver/inc/r_usb_cstd_rtos.h"
-#endif                                 /* #if (BSP_CFG_RTOS == 2) */
+#endif                                 /* #if (BSP_CFG_RTOS != 0) */
 
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
  #include "inc/r_usb_dmac.h"
@@ -154,14 +154,10 @@ fsp_err_t usb_module_start (uint8_t ip_type)
 {
  #if USB_CFG_MODE == USB_CFG_PERI
     R_BSP_MODULE_START(FSP_IP_USBPHY, 0);
-    R_BSP_MODULE_CLKON(FSP_IP_USBPHY, 0);
-    R_BSP_MODULE_RSTOFF(FSP_IP_USBPHY, 0);
 
     if (USB_IP0 == ip_type)
     {
         R_BSP_MODULE_START(FSP_IP_USB0, 0);
-        R_BSP_MODULE_CLKON(FSP_IP_USB0, 0);
-        R_BSP_MODULE_RSTOFF(FSP_IP_USB0, 0);
 
         USB00->COMMCTRL_b.OTG_PERI = 1;             /* Operation mode setting (0 : Host, 1 : Peri) */
         USB00->USBCTR_b.PLL_RST    = 0;             /* UTMI+PHY reset OFF */
@@ -217,14 +213,10 @@ fsp_err_t usb_module_start (uint8_t ip_type)
 
   #if defined(BSP_MCU_GROUP_RZA3UL)
     R_BSP_MODULE_START(FSP_IP_USBPHY, 0);
-    R_BSP_MODULE_CLKON(FSP_IP_USBPHY, 0);
-    R_BSP_MODULE_RSTOFF(FSP_IP_USBPHY, 0);
 
     if (USB_IP0 == ip_type)
     {
         R_BSP_MODULE_START(FSP_IP_USB0, 0);
-        R_BSP_MODULE_CLKON(FSP_IP_USB0, 0);
-        R_BSP_MODULE_RSTOFF(FSP_IP_USB0, 0);
 
         USB00->COMMCTRL_b.OTG_PERI = 0;             /* Operation mode setting (0 : Host, 1 : Peri) */
         USB00->USBCTR_b.PLL_RST    = 0;             /* UTMI+PHY reset OFF */
@@ -248,8 +240,6 @@ fsp_err_t usb_module_start (uint8_t ip_type)
     else
     {
         R_BSP_MODULE_START(FSP_IP_USB1, 0);
-        R_BSP_MODULE_CLKON(FSP_IP_USB1, 0);
-        R_BSP_MODULE_RSTOFF(FSP_IP_USB1, 0);
 
         USB10->COMMCTRL_b.OTG_PERI = 0;             /* Operation mode setting (0 : Host, 1 : Peri) */
         USB10->USBCTR_b.PLL_RST    = 0;             /* UTMI+PHY reset OFF */
@@ -345,8 +335,6 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
         else
         {
             R_BSP_MODULE_STOP(FSP_IP_USB1, 0);
-            R_BSP_MODULE_RSTON(FSP_IP_USB1, 0);
-            R_BSP_MODULE_CLKOFF(FSP_IP_USB1, 0);
             result = FSP_SUCCESS;
         }
     }
@@ -360,8 +348,6 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
         else
         {
             R_BSP_MODULE_STOP(FSP_IP_USB0, 0);
-            R_BSP_MODULE_RSTON(FSP_IP_USB0, 0);
-            R_BSP_MODULE_CLKOFF(FSP_IP_USB0, 0);
             result = FSP_SUCCESS;
         }
     }
@@ -369,8 +355,6 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
     if ((R_MSTP->PERI_COM_b.MHUSB2H == 1) && (R_MSTP->PERI_COM_b.MHUSB2F == 1) && (R_MSTP->PERI_COM_b.MHUSB21 == 1))
     {
         R_BSP_MODULE_STOP(FSP_IP_USBPHY, 0);
-        R_BSP_MODULE_RSTON(FSP_IP_USB1, 0);
-        R_BSP_MODULE_CLKOFF(FSP_IP_USBPHY, 0);
     }
 
     return result;
@@ -563,6 +547,8 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
         USB_M0->DPUSR0R_FS_b.FIXPHY0 = 0U; /* USB0 Transceiver Output fixed */
 #endif /* (!defined(BSP_MCU_GROUP_RA4M1)) && (!defined(BSP_MCU_GROUP_RA2A1)) */
 
+        host_cfg = (usb_cfg_t *) cfg;
+
         /* Interrupt enable register
          * b0 IEN0 Interrupt enable bit
          * b1 IEN1 Interrupt enable bit
@@ -586,12 +572,13 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
 #if defined(BSP_MCU_GROUP_RZA3UL)
         R_BSP_IrqCfgEnable(USB_VAL_124, cfg->ipl, (void *) cfg);    /* USBI enable */
 #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
-        host_cfg = (usb_cfg_t *) cfg;
     }
 
     if (ip_type == USB_IP1)
     {
 #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZA3UL)
+        host_cfg = (usb_cfg_t *) cfg;
+
         /* Interrupt enable register
          * b0 IEN0 Interrupt enable bit
          * b1 IEN1 Interrupt enable bit
@@ -612,7 +599,6 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
  #if defined(BSP_MCU_GROUP_RZA3UL)
         R_BSP_IrqCfgEnable(USB_VAL_129, cfg->hsipl, (void *) cfg);      /* USBI enable */
  #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
-        host_cfg = (usb_cfg_t *) cfg;
 #endif /* defined(BSP_MCU_GROUP_RA6M3) */
     }
 }
@@ -651,6 +637,8 @@ void usb_cpu_delay_1us (uint16_t time)
 void usb_cpu_delay_xms (uint16_t time)
 {
 #if (BSP_CFG_RTOS == 0)
+    R_BSP_SoftwareDelay((uint32_t) time, BSP_DELAY_UNITS_MILLISECONDS);
+#elif (BSP_CFG_RTOS == 1)
     R_BSP_SoftwareDelay((uint32_t) time, BSP_DELAY_UNITS_MILLISECONDS);
 #endif                                 /* (BSP_CFG_RTOS == 0) */
 

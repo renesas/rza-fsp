@@ -34,7 +34,7 @@
 
 #include "r_usb_basic.h"
 #include "r_usb_basic_local.h"
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
  #include "r_usb_cstd_rtos.h"
 #endif                                 /* (BSP_CFG_RTOS == 2) */
 #if  USB_IP_EHCI_OHCI == 1
@@ -80,7 +80,7 @@ static uint8_t     gs_usb_hstd_id_use;
 static usb_msg_t * gsp_usb_hstd_wait_add[USB_IDMAX];
 static uint16_t    gs_usb_hstd_wait_counter[USB_IDMAX];
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
 
 /** Declare an array of mailbox handlers. **/
  #endif                                /* (BSP_CFG_RTOS == 2) */
@@ -453,7 +453,7 @@ void R_USB_CstdScheduler (void)
     uint8_t usb_pri;                   /* Priority Counter */
     uint8_t usb_read;                  /* Priority Table read pointer */
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS == 1)
     if (0 == g_usb_msg_check)
     {
  #endif                                /* (BSP_CFG_RTOS == 2) */
@@ -483,7 +483,7 @@ void R_USB_CstdScheduler (void)
 
             usb_pri = USB_PRIMAX;
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS == 1)
             g_usb_msg_check |= (uint16_t) (1 << gs_usb_hstd_id_use);
             if (0 == gs_usb_hstd_id_use)
             {
@@ -501,10 +501,10 @@ void R_USB_CstdScheduler (void)
         }
     }
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS == 1)
 }
- #endif                                /* (BSP_CFG_RTOS == 2) */
-} /* End of function R_USB_CstdScheduler() */
+ #endif                                /* (BSP_CFG_RTOS == 1) */
+}                                      /* End of function R_USB_CstdScheduler() */
 
 /***********************************************************************************************************************
  * Function Name   : R_USB_CstdSetTaskPri

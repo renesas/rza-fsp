@@ -83,14 +83,14 @@ typedef enum e_transfer_mode
      *  transfer repeats only transfer_info_t::num_blocks times.  After the transfer repeats
      *  transfer_info_t::num_blocks times, transfer requests will not cause any further transfers.  If DTC is
      *  used, the transfer repeats continuously (no limit to the number of repeat transfers). */
-    TRANSFER_MODE_REPEAT = 2,
+    TRANSFER_MODE_REPEAT = 1,
 
     /** In block mode, each transfer request causes transfer_info_t::length transfers of @ref transfer_size_t.
      *  After each individual transfer, the source and destination pointers are updated according to
      *  @ref transfer_addr_mode_t.  After the block transfer is complete, transfer_info_t::num_blocks is
      *  decremented.  After the transfer_info_t::num_blocks reaches 0, transfer requests will not cause any
      *  further transfers. */
-    TRANSFER_MODE_BLOCK = 1,
+    TRANSFER_MODE_BLOCK = 2,
 
     /** In addition to block mode features, repeat-block mode supports a ring buffer of blocks and offsets
      *  within a block (to split blocks into arrays of their first data, second data, etc.) */
@@ -111,13 +111,13 @@ typedef enum e_transfer_size
 typedef enum e_transfer_addr_mode
 {
     /** Address pointer remains fixed after each transfer. */
-    TRANSFER_ADDR_MODE_FIXED = 1,
+    TRANSFER_ADDR_MODE_FIXED = 0,
 
     /** Offset is added to the address pointer after each transfer. */
-    TRANSFER_ADDR_MODE_OFFSET = 2,
+    TRANSFER_ADDR_MODE_OFFSET = 1,
 
     /** Address pointer is incremented by associated @ref transfer_size_t after each transfer. */
-    TRANSFER_ADDR_MODE_INCREMENTED = 0,
+    TRANSFER_ADDR_MODE_INCREMENTED = 2,
 
     /** Address pointer is decremented by associated @ref transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_DECREMENTED = 3
@@ -212,7 +212,7 @@ typedef struct st_transfer_info
 
             /** Select mode from @ref transfer_mode_t. */
             transfer_mode_t mode : 2;
-        };
+        }        transfer_settings_word_b;
         uint32_t transfer_settings_word;
     };
 

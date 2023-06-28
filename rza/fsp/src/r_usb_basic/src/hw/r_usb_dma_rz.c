@@ -93,6 +93,7 @@ void usb_cstd_dma_send_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
     uint16_t  ch;
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
+
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -177,6 +178,7 @@ void usb_cstd_dma_rcv_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
   #endif
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
+
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -375,6 +377,7 @@ void usb_dma_send_complete (usb_utr_t * ptr, uint16_t useport)
     bool       cpu_write = false;
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
+
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -504,6 +507,7 @@ void usb_dma_rcv_setting (usb_utr_t * ptr, uint32_t des_addr, uint16_t useport, 
     uint16_t transfer_count;
 
    #if USB_CFG_USE_USBIP == USB_CFG_IP0
+
     /* USB01 */
     ip = USB_IP0;
    #else                               /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -599,6 +603,7 @@ void usb_dma_send_setting (usb_utr_t * ptr, uint32_t src_adr, uint16_t useport, 
     uint16_t pipe_no;
 
    #if USB_CFG_USE_USBIP == USB_CFG_IP0
+
     /* USB01 */
     ip = USB_IP0;
    #else                               /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -705,6 +710,7 @@ uint16_t usb_dma_get_dxfifo_ir_vect (usb_utr_t * ptr, uint16_t use_port)
     uint16_t vect;
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
+
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */

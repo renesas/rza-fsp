@@ -759,6 +759,7 @@ uint8_t * usb_pstd_read_fifo (uint16_t count, uint16_t pipemode, uint8_t * read_
 
             /* Condition compilation by the difference of the endian */
   #if USB_CFG_ENDIAN == USB_CFG_LITTLE
+
             /* WAIT_LOOP */
             do
             {
@@ -837,6 +838,7 @@ uint8_t * usb_pstd_read_fifo (uint16_t count, uint16_t pipemode, uint8_t * read_
 
             /* Condition compilation by the difference of the endian */
    #if USB_CFG_ENDIAN == USB_CFG_LITTLE
+
             /* WAIT_LOOP */
             do
             {
@@ -906,6 +908,7 @@ void usb_pstd_forced_termination (uint16_t pipe, uint16_t status, usb_utr_t * p_
     }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
     /* Clear D0FIFO-port */
     buffer = hw_usb_read_fifosel(p_utr, USB_D0USE);
     if ((buffer & USB_CURPIPE) == pipe)
@@ -944,6 +947,10 @@ void usb_pstd_forced_termination (uint16_t pipe, uint16_t status, usb_utr_t * p_
 
  #if (BSP_CFG_RTOS == 2)
         vPortFree(g_p_usb_pstd_pipe[pipe]);
+        g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
+        usb_cstd_pipe_msg_re_forward(USB_IP0, pipe);
+ #elif (BSP_CFG_RTOS == 1)
+        USB_REL_BLK(1, g_p_usb_pstd_pipe[pipe]);
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
         usb_cstd_pipe_msg_re_forward(USB_IP0, pipe);
  #else                                 /* (BSP_CFG_RTOS == 2) */

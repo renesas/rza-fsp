@@ -55,6 +55,14 @@ typedef enum e_scif_clk_src
     SCIF_UART_CLOCK_EXT16X                    ///< Use external clock 16x baud rate
 } scif_clk_src_t;
 
+/** UART communication mode definition */
+typedef enum e_scif_uart_mode
+{
+    SCIF_UART_MODE_RS232,              ///< Enables RS232 communication mode
+    SCIF_UART_MODE_RS485_HD,           ///< Enables RS485 half duplex communication mode
+    SCIF_UART_MODE_RS485_FD,           ///< Enables RS485 full duplex communication mode
+} scif_uart_mode_t;
+
 /** UART automatic flow control definition */
 typedef enum e_scif_uart_flow_control
 {
@@ -68,6 +76,20 @@ typedef enum e_scif_uart_noise_cancellation
     SCIF_UART_NOISE_CANCELLATION_DISABLE, ///< Disable noise cancellation
     SCIF_UART_NOISE_CANCELLATION_ENABLE,  ///< Enable noise cancellation
 } scif_uart_noise_cancellation_t;
+
+/** RS-485 Enable/Disable. */
+typedef enum e_sci_uart_rs485_enable
+{
+    SCI_UART_RS485_DISABLE = 0,        ///< RS-485 disabled.
+    SCI_UART_RS485_ENABLE  = 1,        ///< RS-485 enabled.
+} sci_uart_rs485_enable_t;
+
+/** The polarity of the RS-485 DE signal. */
+typedef enum e_sci_uart_rs485_de_polarity
+{
+    SCI_UART_RS485_DE_POLARITY_HIGH = 0, ///< The DE signal is high when a write transfer is in progress.
+    SCI_UART_RS485_DE_POLARITY_LOW  = 1, ///< The DE signal is low when a write transfer is in progress.
+} sci_uart_rs485_de_polarity_t;
 
 /** Receive FIFO trigger configuration. */
 typedef enum e_scif_uart_receive_trigger
@@ -112,6 +134,8 @@ typedef struct st_scif_uart_instance_ctrl
     /* Parameters to control UART peripheral device */
     uint32_t open;                     // Used to determine if the channel is configured
 
+    bsp_io_port_pin_t driver_enable_pin;
+
     /* Source buffer pointer used to fill hardware FIFO from transmit ISR. */
     uint8_t const * p_tx_src;
 
@@ -141,7 +165,7 @@ typedef struct st_scif_uart_instance_ctrl
 } scif_uart_instance_ctrl_t;
 
 /** Register settings to achieve a desired baud rate and modulation duty. */
-typedef struct st_scif_baud_setting_t
+typedef struct st_scif_baud_setting
 {
     struct
     {
@@ -149,10 +173,18 @@ typedef struct st_scif_baud_setting_t
         uint8_t brme : 1;              ///< Bit Rate Modulation Enable
         uint8_t bgdm : 1;              ///< Baud Rate Generator Double-Speed Mode Select
         uint8_t cks  : 2;              ///< CKS  value to get divisor (CKS = N)
-    };
+    }       semr_baudrate_bits_b;
     uint8_t brr;                       ///< Bit Rate Register setting
     uint8_t mddr;                      ///< Modulation Duty Register setting
 } scif_baud_setting_t;
+
+/** Configuration settings for controlling the DE signal for RS-485. */
+typedef struct st_sci_uart_rs485_setting
+{
+    sci_uart_rs485_enable_t      enable;         ///< Enable the DE signal.
+    sci_uart_rs485_de_polarity_t polarity;       ///< DE signal polarity.
+    bsp_io_port_pin_t            de_control_pin; ///< UART Driver Enable pin.
+} sci_uart_rs485_setting_t;
 
 /** UART on SCIF device Configuration */
 typedef struct st_scif_uart_extended_cfg
@@ -167,7 +199,9 @@ typedef struct st_scif_uart_extended_cfg
     scif_uart_receive_trigger_t rx_fifo_trigger;  ///< Receive FIFO trigger level.
     scif_uart_rts_trigger_t     rts_fifo_trigger; ///< RTS trigger level.
 
+    scif_uart_mode_t         uart_mode;           ///< UART communication mode selection
     scif_uart_flow_control_t flow_control;        ///< CTS/RTS function
+    sci_uart_rs485_setting_t rs485_setting;       ///< RS-485 settings.
 } scif_uart_extended_cfg_t;
 
 /**********************************************************************************************************************

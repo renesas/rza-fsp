@@ -923,9 +923,7 @@ typedef struct
         struct
         {
             __IOM uint16_t CURPIPE : 4;
-            uint16_t               : 4;
-            __IOM uint16_t BIGEND  : 1;
-            uint16_t               : 1;
+            uint16_t               : 6;
             __IOM uint16_t MBW     : 2;
             __IOM uint16_t DREQE   : 1;
             __IOM uint16_t DCLRM   : 1;
@@ -1301,7 +1299,7 @@ typedef struct
         __IOM uint16_t PIPE6CTR;
         struct
         {
-            __IM uint16_t PID    : 2;
+            __IOM uint16_t PID   : 2;
             uint16_t             : 3;
             __IM uint16_t  PBUSY : 1;
             __IM uint16_t  SQMON : 1;
@@ -1317,7 +1315,7 @@ typedef struct
         __IOM uint16_t PIPE7CTR;
         struct
         {
-            __IM uint16_t PID    : 2;
+            __IOM uint16_t PID   : 2;
             uint16_t             : 3;
             __IM uint16_t  PBUSY : 1;
             __IM uint16_t  SQMON : 1;
@@ -1333,7 +1331,7 @@ typedef struct
         __IOM uint16_t PIPE8CTR;
         struct
         {
-            __IM uint16_t PID    : 2;
+            __IOM uint16_t PID   : 2;
             uint16_t             : 3;
             __IM uint16_t  PBUSY : 1;
             __IM uint16_t  SQMON : 1;
@@ -1549,10 +1547,10 @@ typedef struct
     };
     union
     {
-        __IM uint32_t N0DA_0;
+        __IOM uint32_t N0DA_0;
         struct
         {
-            __IM uint32_t DA : 32;
+            __IOM uint32_t DA : 32;
         } N0DA_0_b;
     };
     union
@@ -1863,7 +1861,7 @@ typedef struct
             __IOM uint32_t DDS   : 4;
             __IOM uint32_t SAD   : 1;
             __IOM uint32_t DAD   : 1;
-            __IM uint32_t  TM    : 1;
+            uint32_t             : 1;
             __IOM uint32_t WONLY : 1;
             __IOM uint32_t DEM   : 1;
             __IOM uint32_t TCM   : 1;
@@ -2035,22 +2033,22 @@ typedef struct
     };
     union
     {
-        __IOM uint32_t DST_TC;
+        __IM uint32_t DST_TC;
         struct
         {
-            __IOM uint32_t TC0 : 1;
-            __IOM uint32_t TC1 : 1;
-            uint32_t           : 30;
+            __IM uint32_t TC0 : 1;
+            __IM uint32_t TC1 : 1;
+            uint32_t          : 30;
         } DST_TC_b;
     };
     union
     {
-        __IOM uint32_t DST_SUS;
+        __IM uint32_t DST_SUS;
         struct
         {
-            __IOM uint32_t SUS0 : 1;
-            __IOM uint32_t SUS1 : 1;
-            uint32_t            : 30;
+            __IM uint32_t SUS0 : 1;
+            __IM uint32_t SUS1 : 1;
+            uint32_t           : 30;
         } DST_SUS_b;
     };
 } R_USB01_Type;
@@ -2079,7 +2077,7 @@ typedef struct
         __IOM uint32_t HCCOMMANDSTATUS;
         struct
         {
-            __IOM uint32_t HCR : 1;
+            __OM uint32_t  HCR : 1;
             __IOM uint32_t CLF : 1;
             __IOM uint32_t BLF : 1;
             uint32_t           : 13;
@@ -2252,10 +2250,10 @@ typedef struct
         __IOM uint32_t HCRHDESCRIPTORA;
         struct
         {
-            __IOM uint32_t NDP    : 8;
+            __IM uint32_t  NDP    : 8;
             __IOM uint32_t PSM    : 1;
             __IOM uint32_t NPS    : 1;
-            __IOM uint32_t DT     : 1;
+            __IM uint32_t  DT     : 1;
             __IOM uint32_t OCPM   : 1;
             __IOM uint32_t NOCP   : 1;
             uint32_t              : 11;
@@ -2372,7 +2370,7 @@ typedef struct
         struct
         {
             __IOM uint32_t RS                                 : 1;
-            __IOM uint32_t HCRESET                            : 1;
+            __OM uint32_t  HCRESET                            : 1;
             __IOM uint32_t FrameListSize                      : 2;
             __IOM uint32_t PeriodicScheduleEnable             : 1;
             __IOM uint32_t AsynchronousScheduleEnable         : 1;

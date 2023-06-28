@@ -17,11 +17,13 @@
  * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
  * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
  **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * File Name    : r__basic_config.h
  * Version      : 1.0
  * Description  : USB Host Ch0 User definition
  **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * History : DD.MM.YYYY Version  Description
  *         : 15.01.2017 1.00     First Release

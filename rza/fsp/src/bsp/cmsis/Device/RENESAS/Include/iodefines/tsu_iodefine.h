@@ -82,7 +82,9 @@ typedef struct
         __IM uint32_t OTPTSUTRIM0_REG;
         struct
         {
-            __IM uint32_t OTPTSUTRIM0 : 32;
+            __IM uint32_t OTPTSUTRIM0    : 12;
+            uint32_t                     : 19;
+            __IM uint32_t OTPTSUTRIM0_EN : 1;
         } OTPTSUTRIM0_REG_b;
     };
     union
@@ -90,7 +92,9 @@ typedef struct
         __IM uint32_t OTPTSUTRIM1_REG;
         struct
         {
-            __IM uint32_t OTPTSUTRIM1 : 32;
+            __IM uint32_t OTPTSUTRIM1    : 12;
+            uint32_t                     : 19;
+            __IM uint32_t OTPTSUTRIM1_EN : 1;
         } OTPTSUTRIM1_REG_b;
     };
 } R_TSU_Type;

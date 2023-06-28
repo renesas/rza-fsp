@@ -491,9 +491,7 @@ static uint16_t usb_hhid_cmd_submit (usb_utr_t * ptr, usb_cb_t complete)
 {
     usb_er_t err;
 #if (BSP_CFG_RTOS)
- #if USB_IP_EHCI_OHCI == 0
     uint16_t hhid_retval;
- #endif                                /* #if USB_IP_EHCI_OHCI == 0 */
     uint16_t ret = USB_OK;
 #endif                                 /* (BSP_CFG_RTOS) */
 
@@ -515,7 +513,6 @@ static uint16_t usb_hhid_cmd_submit (usb_utr_t * ptr, usb_cb_t complete)
  #endif /* #if USB_IP_EHCI_OHCI == 0 */
     if (USB_OK == err)
     {
- #if USB_IP_EHCI_OHCI == 0
         hhid_retval = usb_hhid_req_trans_wait_tmo((uint16_t) USB_VALUE_3000);
         if (USB_DATA_STALL == hhid_retval)
         {
@@ -539,9 +536,6 @@ static uint16_t usb_hhid_cmd_submit (usb_utr_t * ptr, usb_cb_t complete)
         {
             ret = USB_OK;
         }
- #else                                 /* #if USB_IP_EHCI_OHCI == 0 */
-        ret = USB_OK;
- #endif /* #if USB_IP_EHCI_OHCI == 0 */
     }
     else
     {
@@ -931,9 +925,14 @@ uint8_t usb_hhid_get_hid_protocol (uint16_t ipno, uint16_t devadr)
  ******************************************************************************/
 void usb_hhid_class_check (usb_utr_t * ptr, uint16_t ** table)
 {
+#if (BSP_CFG_RTOS)
+    uint16_t retval;
+    uint16_t iproduct;
+#else                                  /* (BSP_CFG_RTOS) */
     usb_mh_t        p_blf;
     usb_er_t        err;
     usb_clsinfo_t * cp;
+#endif /* (BSP_CFG_RTOS) */
 
     g_p_usb_hhid_device_table[ptr->ip]    = (uint8_t *) table[0];        /* Device Descriptor Table */
     g_p_usb_hhid_config_table[ptr->ip]    = (uint8_t *) table[1];        /* Configuration Descriptor Table */
@@ -956,6 +955,18 @@ void usb_hhid_class_check (usb_utr_t * ptr, uint16_t ** table)
     /* Descriptor check result */
     *table[3] = USB_OK;
 
+#if (BSP_CFG_RTOS)
+    /* Get String Descriptors */
+    iproduct = g_p_usb_hhid_device_table[ptr->ip][USB_DEV_I_PRODUCT];
+    retval   = usb_hhid_get_string_info(ptr, g_usb_hhid_devaddr[ptr->ip], iproduct);
+    if (USB_OK != retval)
+    {
+        USB_PRINTF0("   GetDescriptor(String) failed!     \n");
+        *table[3] = USB_ERROR;
+
+        return;
+    }
+#else                                  /* (BSP_CFG_RTOS) */
     /* Get mem block from pool. */
     if (USB_PGET_BLK(USB_HHID_MPL, &p_blf) == USB_OK)
     {
@@ -985,6 +996,7 @@ void usb_hhid_class_check (usb_utr_t * ptr, uint16_t ** table)
             /* error */
         }
     }
+#endif                                 /* (BSP_CFG_RTOS) */
 }
 
 /******************************************************************************
@@ -1065,6 +1077,9 @@ uint16_t usb_hhid_get_string_info (usb_utr_t * mess, uint16_t addr, uint16_t str
         retval = USB_OK;
     }
 
+    /* return to MGR */
+    usb_hstd_return_enu_mgr(mess, retval);
+
     return retval;
 }
 
@@ -1124,27 +1139,6 @@ uint16_t usb_hhid_req_trans_wait_tmo (uint16_t tmo)
 /******************************************************************************
  * End of function usb_hhid_req_trans_wait_tmo
  ******************************************************************************/
-
-/******************************************************************************
- * Function Name   : r_usb_hhid_task
- * Description     : USB HHID Task
- * Arguments       : none
- * Return value    : none
- ******************************************************************************/
-void r_usb_hhid_task (void)
-{
- #if (BSP_CFG_RTOS == 2)               // * not DEL *//
-    st_usb_utr_t * p_mess;
-    while (1)
-    {
-        USB_RTOS_RCV_MSG(USB_HHID_MBX, (usb_msg_t **) &p_mess);
-        usb_hhid_task(0);
-        g_usb_msg_check &= (uint16_t) ~(1 << USB_HHID_TSK);
-    }
- #else                                 /* (BSP_CFG_RTOS_USED == 1) */
-    usb_hhid_task();
- #endif /* (BSP_CFG_RTOS_USED == 1) */
-}                                      /* eof r_usb_hhid_task() */
 
 #endif                                 /* (BSP_CFG_RTOS) */
 

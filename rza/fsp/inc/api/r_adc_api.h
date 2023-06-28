@@ -206,13 +206,13 @@ typedef struct st_adc_callback_args
 /** ADC Information Structure for Transfer Interface */
 typedef struct st_adc_info
 {
-    __IM void * p_address;                 ///< The address to start reading the data from
-    uint32_t   length;                    ///< The total number of transfers to read
+    __IM void * p_address;                                                  ///< The address to start reading the data from
+    uint32_t    length;                                                     ///< The total number of transfers to read
 
-    transfer_size_t  transfer_size;       ///< The size of each transfer
-    uint32_t         calibration_data;    ///< Temperature sensor calibration data (0xFFFFFFFF if unsupported) for reference voltage
-    int16_t          slope_microvolts;    ///< Temperature sensor slope in microvolts/degrees C
-    bool             calibration_ongoing; ///< Calibration is in progress.
+    transfer_size_t transfer_size;                                          ///< The size of each transfer
+    uint32_t        calibration_data[BSP_FEATURE_ADC_NUM_CALIBRATION_DATA]; ///< Temperature sensor calibration data (0xFFFFFFFF if unsupported) for reference voltage
+    int16_t         slope_microvolts;                                       ///< Temperature sensor slope in microvolts/degrees C
+    bool            calibration_ongoing;                                    ///< Calibration is in progress.
 } adc_info_t;
 
 /** ADC general configuration  */
@@ -271,7 +271,7 @@ typedef struct st_adc_api
     /** Start the scan group (in case of a software trigger), or enable the hardware trigger.
      * @par Implemented as
      * - @ref R_ADC_C_ScanGroupStart()
-    *
+     *
      * @param[in]  p_ctrl     Pointer to control handle structure
      * @param[in]  group_mask Mask of groups to start
      */

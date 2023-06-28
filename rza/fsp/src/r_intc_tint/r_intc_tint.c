@@ -98,8 +98,6 @@ const external_irq_api_t g_external_irq_on_intc_tint =
  *                                        Call the associated Close function to reconfigure the channel.
  * @retval FSP_ERR_IP_CHANNEL_NOT_PRESENT The channel requested in p_cfg is not available on the device selected in
  *                                        r_bsp_cfg.h.
- * @retval FSP_ERR_INVALID_ARGUMENT       p_cfg->p_callback is not NULL, but ISR is not enabled. ISR must be enabled to
- *                                        use callback function.
  *
  * @note This function is reentrant for different channels. It is not reentrant for the same channel.
  **********************************************************************************************************************/
@@ -113,12 +111,6 @@ fsp_err_t R_INTC_TINT_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, e
     FSP_ASSERT(NULL != p_cfg);
     FSP_ERROR_RETURN(0 != ((1ULL << p_cfg->channel) & BSP_FEATURE_INTC_TINT_VALID_CHANNEL_MASK),
                      FSP_ERR_IP_CHANNEL_NOT_PRESENT);
-
-    /* Callback must be used with a valid interrupt priority otherwise it will never be called. */
-    if (p_cfg->p_callback)
-    {
-        FSP_ERROR_RETURN(BSP_IRQ_DISABLED != p_cfg->ipl, FSP_ERR_INVALID_ARGUMENT);
-    }
 #endif
 
     p_ctrl->irq = p_cfg->irq;

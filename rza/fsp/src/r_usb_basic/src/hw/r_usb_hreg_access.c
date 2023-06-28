@@ -812,6 +812,7 @@ void hw_usb_hmodule_init (usb_ctrl_t * p_api_ctrl)
         USB_M1->LPSTS |= USB_SUSPENDM;
 
     #if ((USB_CFG_CLKSEL == USB_CFG_12MHZ) || (USB_CFG_CLKSEL == USB_CFG_20MHZ) || (USB_CFG_CLKSEL == USB_CFG_24MHZ))
+
         /* WAIT_LOOP */
         while (USB_PLLLOCK != (USB_M1->PLLSTA & USB_PLLLOCK))
         {

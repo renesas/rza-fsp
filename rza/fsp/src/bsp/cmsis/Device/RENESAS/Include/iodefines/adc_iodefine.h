@@ -92,8 +92,8 @@ typedef struct
         __IOM uint32_t ADINT;
         struct
         {
-            __IOM uint32_t INTEN : 8;
-            uint32_t             : 8;
+            __IOM uint32_t INTEN : 4;
+            uint32_t             : 12;
             __IOM uint32_t CSEEN : 1;
             uint32_t             : 14;
             __IM uint32_t INTS   : 1;
@@ -104,8 +104,8 @@ typedef struct
         __IOM uint32_t ADSTS;
         struct
         {
-            __IOM uint32_t INTST : 8;
-            uint32_t             : 8;
+            __IOM uint32_t INTST : 4;
+            uint32_t             : 12;
             __IOM uint32_t CSEST : 1;
             uint32_t             : 14;
             __IOM uint32_t TRGS  : 1;

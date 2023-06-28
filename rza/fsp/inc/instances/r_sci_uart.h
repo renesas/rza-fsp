@@ -107,11 +107,11 @@ typedef enum e_sci_uart_rx_fifo_trigger
 } sci_uart_rx_fifo_trigger_t;
 
 /** Asynchronous Start Bit Edge Detection configuration. */
-typedef enum e_sci_uart_start_bit_detect
+typedef enum e_sci_uart_start_bit_t
 {
     SCI_UART_START_BIT_LOW_LEVEL    = 0x0, ///< Detect low level on RXDn pin as start bit
     SCI_UART_START_BIT_FALLING_EDGE = 0x1, ///< Detect falling level on RXDn pin as start bit
-} sci_uart_start_bit_detect_t;
+} sci_uart_start_bit_t;
 
 /** Noise cancellation configuration. */
 typedef enum e_sci_uart_noise_cancellation
@@ -121,7 +121,7 @@ typedef enum e_sci_uart_noise_cancellation
 } sci_uart_noise_cancellation_t;
 
 /** Register settings to acheive a desired baud rate and modulation duty. */
-typedef struct st_baud_setting_t
+typedef struct st_baud_setting
 {
     union
     {
@@ -136,8 +136,9 @@ typedef struct st_baud_setting_t
             uint8_t       : 1;
             uint8_t bgdm  : 1;         ///< Baud Rate Generator Double-Speed Mode Select
             uint8_t       : 1;
-        };
+        } semr_baudrate_bits_b;
     };
+
     uint8_t cks : 2;                   ///< CKS  value to get divisor (CKS = N)
     uint8_t brr;                       ///< Bit Rate Register setting
     uint8_t mddr;                      ///< Modulation Duty Register setting
@@ -147,7 +148,7 @@ typedef struct st_baud_setting_t
 typedef struct st_sci_uart_extended_cfg
 {
     sci_clk_src_t                 clock;            ///< The source clock for the baud-rate generator. If internal optionally output baud rate on SCK
-    sci_uart_start_bit_detect_t   rx_edge_start;    ///< Start reception on falling edge
+    sci_uart_start_bit_t          rx_edge_start;    ///< Start reception on falling edge
     sci_uart_noise_cancellation_t noise_cancel;     ///< Noise cancellation setting
     baud_setting_t              * p_baud_setting;   ///< Register settings for a desired baud rate.
     sci_uart_rx_fifo_trigger_t    rx_fifo_trigger;  ///< Receive FIFO trigger level, unused if channel has no FIFO or if DTC is used.
@@ -177,7 +178,7 @@ fsp_err_t R_SCI_UART_BaudCalculate(uint32_t               baudrate,
                                    uint32_t               baud_rate_error_x_1000,
                                    baud_setting_t * const p_baud_setting);
 fsp_err_t R_SCI_UART_CallbackSet(uart_ctrl_t * const          p_api_ctrl,
-                                 void (                     * p_callback)(uart_callback_args_t *),
+                                 void (                     * p_callback ) (uart_callback_args_t *),
                                  void const * const           p_context,
                                  uart_callback_args_t * const p_callback_memory);
 fsp_err_t R_SCI_UART_ReadStop(uart_ctrl_t * const p_api_ctrl, uint32_t * remaining_bytes);

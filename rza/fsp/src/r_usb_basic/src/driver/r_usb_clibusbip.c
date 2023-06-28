@@ -31,30 +31,32 @@
 #include "../hw/inc/r_usb_reg_access.h"
 #include "r_usb_basic_local.h"
 
-#if defined(USB_CFG_HCDC_USE)
- #include "r_usb_hcdc_api.h"
+#if (BSP_CFG_RTOS != 1)
+ #if defined(USB_CFG_HCDC_USE)
+  #include "r_usb_hcdc_api.h"
 
-#endif                                 /* defined(USB_CFG_HCDC_USE) */
+ #endif                                /* defined(USB_CFG_HCDC_USE) */
 
-#if defined(USB_CFG_HHID_USE)
- #include "r_usb_hhid_api.h"
+ #if defined(USB_CFG_HHID_USE)
+  #include "r_usb_hhid_api.h"
 
-#endif                                 /* defined(USB_CFG_HHID_USE) */
+ #endif                                /* defined(USB_CFG_HHID_USE) */
 
-#if defined(USB_CFG_HMSC_USE)
- #include "r_usb_hmsc_api.h"
+ #if defined(USB_CFG_HMSC_USE)
+  #include "r_usb_hmsc_api.h"
 
-#endif                                 /* defined(USB_CFG_HMSC_USE) */
+ #endif                                /* defined(USB_CFG_HMSC_USE) */
 
-#if defined(USB_CFG_PCDC_USE)
- #include "r_usb_pcdc_api.h"
+ #if defined(USB_CFG_PCDC_USE)
+  #include "r_usb_pcdc_api.h"
 
-#endif                                 /* defined(USB_CFG_PCDC_USE) */
+ #endif                                /* defined(USB_CFG_PCDC_USE) */
 
-#if defined(USB_CFG_PMSC_USE)
- #include "r_usb_pmsc_api.h"
+ #if defined(USB_CFG_PMSC_USE)
+  #include "r_usb_pmsc_api.h"
 
-#endif                                 /* defined(USB_CFG_PMSC_USE) */
+ #endif                                /* defined(USB_CFG_PMSC_USE) */
+#endif                                 /* #if (BSP_CFG_RTOS != 1) */
 
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
  #include "../hw/inc/r_usb_dmac.h"
@@ -118,6 +120,7 @@ uint16_t usb_cstd_get_pid (usb_utr_t * ptr, uint16_t pipe)
     }
 
 #if USB_IP_EHCI_OHCI == 0
+
     /* PIPE control reg read */
     buf = hw_usb_read_pipectr(ptr, pipe);
 #else
@@ -192,6 +195,7 @@ uint16_t usb_cstd_get_pipe_dir (usb_utr_t * ptr, uint16_t pipe)
     }
 
 #if USB_IP_EHCI_OHCI == 0
+
     /* Pipe select */
     hw_usb_write_pipesel(ptr, pipe);
 
@@ -227,6 +231,7 @@ uint16_t usb_cstd_get_pipe_type (usb_utr_t * ptr, uint16_t pipe)
     }
 
  #if USB_IP_EHCI_OHCI == 0
+
     /* Pipe select */
     hw_usb_write_pipesel(ptr, pipe);
 
@@ -283,6 +288,7 @@ void usb_cstd_set_buf (usb_utr_t * ptr, uint16_t pipe)
     }
 
 #if USB_IP_EHCI_OHCI == 0
+
     /* PIPE control reg set */
     hw_usb_set_pid(ptr, pipe, USB_PID_BUF);
 #else
@@ -404,7 +410,7 @@ uint16_t usb_cstd_port_speed (usb_utr_t * ptr)
  ******************************************************************************/
 void usb_set_event (usb_status_t event, usb_instance_ctrl_t * p_ctrl)
 {
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
     static uint16_t count = 0;
 
     p_ctrl->event           = event;
@@ -455,8 +461,7 @@ void usb_set_event (usb_status_t event, usb_instance_ctrl_t * p_ctrl)
             if (USB_MODE_HOST == g_usb_usbmode[p_ctrl->module_number])
             {
   #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-                (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count],
-                                                             (usb_hdl_t) p_ctrl->p_data,
+                (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count], (usb_hdl_t) p_ctrl->p_data,
                                                              USB_OFF);
   #endif                               /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
             }
@@ -466,15 +471,13 @@ void usb_set_event (usb_status_t event, usb_instance_ctrl_t * p_ctrl)
                 if (0 == p_ctrl->setup.request_length)
                 {
                     /* Processing for USB request has the no data stage */
-                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count],
-                                                                 (usb_hdl_t) USB_NULL,
+                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count], (usb_hdl_t) USB_NULL,
                                                                  USB_OFF);
                 }
                 else
                 {
                     /* Processing for USB request has the data state */
-                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count],
-                                                                 (usb_hdl_t) p_ctrl->p_data,
+                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count], (usb_hdl_t) p_ctrl->p_data,
                                                                  USB_OFF);
                 }
   #endif                               /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
@@ -512,7 +515,7 @@ void usb_set_event (usb_status_t event, usb_instance_ctrl_t * p_ctrl)
 
 #endif                                 /* #if(!(USB_UT_MODE == 1 && BSP_CFG_RTOS == 2)) */
 
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
 
 /***************************************************************************//**
  * @brief Getting semaphore processing for the thread safe function
@@ -614,9 +617,9 @@ void usb_cstd_usb_task (void)
             usb_class_task();
         }
     }
-
     /* WAIT_LOOP */
     while (USB_FALSE != g_drive_search_lock);
+
   #else                                          /* defined(USB_CFG_HMSC_USE) */
     usb_cstd_scheduler();                        /* Scheduler */
 
@@ -708,6 +711,7 @@ uint16_t usb_cstd_remote_wakeup (usb_utr_t * p_utr)
     }
     else
     {
+
         /* ret_code = FSP_ERR_USB_FAILED; */
         return USB_ERROR;
     }

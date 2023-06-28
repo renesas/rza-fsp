@@ -131,7 +131,6 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Open (rm_block_media_ctrl_t * const p_ctrl, rm_bloc
     p_instance_ctrl->device_address = RM_BLOCK_MEDIA_USB_INVALID_DEVICE_ADDRESS;
 
 #if 2 == BSP_CFG_RTOS
-
     /* Event group create */
     p_instance_ctrl->event_group = xEventGroupCreate();
 #endif
@@ -186,12 +185,27 @@ fsp_err_t RM_BLOCK_MEDIA_USB_MediaInit (rm_block_media_ctrl_t * const p_ctrl)
 #else
     usb_event_info_t event_info;
     usb_status_t     event;
+    usb_info_t       state_info;
+
     while (1)
     {
         R_USB_EventGet(&event_info, &event);
         if (USB_STATUS_MSC_CMD_COMPLETE == event)
         {
             break;
+        }
+        else
+        {
+            usb_set_event(event, &event_info);
+        }
+
+        err = R_USB_InfoGet(&event_info, &state_info, event_info.device_address);
+        if (FSP_SUCCESS == err)
+        {
+            if (USB_STATUS_CONFIGURED != state_info.device_status)
+            {
+                return FSP_ERR_USB_FAILED;
+            }
         }
     }
 #endif
@@ -266,7 +280,6 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Read (rm_block_media_ctrl_t * const p_ctrl,
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
 #if BSP_CFG_RTOS == 0
-
     /* Wait USB read sequence(READ10) */
     do
     {
@@ -361,7 +374,6 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Write (rm_block_media_ctrl_t * const p_ctrl,
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
 #if BSP_CFG_RTOS == 0
-
     /* Wait USB write sequence(WRITE10) */
     do
     {
@@ -452,7 +464,6 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Erase (rm_block_media_ctrl_t * const p_ctrl,
         err = R_USB_HMSC_StorageWriteSector(p_drive, &g_block_media_usb_erase_data[0], block_address + i, 1U);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #if BSP_CFG_RTOS == 0
-
         /* Wait USB write sequence(WRITE10) */
         do
         {
@@ -505,8 +516,8 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Erase (rm_block_media_ctrl_t * const p_ctrl,
  *
  * @retval  FSP_ERR_UNSUPPORTED          CallbackSet is not currently supported for Block Media over USB.
  **********************************************************************************************************************/
-fsp_err_t RM_BLOCK_MEDIA_USB_CallbackSet (rm_block_media_ctrl_t * const p_ctrl,
-                                          void (                      * p_callback)(
+fsp_err_t RM_BLOCK_MEDIA_USB_CallbackSet (rm_block_media_ctrl_t * const          p_ctrl,
+                                          void (                               * p_callback ) (
                                               rm_block_media_callback_args_t *),
                                           void const * const                     p_context,
                                           rm_block_media_callback_args_t * const p_callback_memory)
@@ -622,7 +633,6 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Close (rm_block_media_ctrl_t * const p_ctrl)
     usb_instance_t * p_usb = (usb_instance_t *) p_extended_cfg->p_usb;
 
 #if 2 == BSP_CFG_RTOS
-
     /* Event group delete */
     vEventGroupDelete(p_instance_ctrl->event_group);
 #endif

@@ -137,7 +137,13 @@
  ***********************************************************************************************************************/
 uint32_t gether_phy_read(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr);
 void     gether_phy_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr, uint32_t data);
-void     gether_phy_targets_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl) __attribute__((weak));
+
+#if (GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+extern void gether_phy_targets_ksz9131rnxi_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
+extern bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                                          uint32_t                    line_speed_duplex);
+
+#endif
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -148,8 +154,13 @@ static void gether_phy_reg_read(ether_phy_instance_ctrl_t * p_instance_ctrl, uin
 static void gether_phy_reg_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t data);
 static void gether_phy_trans_zto0(ether_phy_instance_ctrl_t * p_instance_ctrl);
 static void gether_phy_trans_1to0(ether_phy_instance_ctrl_t * p_instance_ctrl);
+static void gether_phy_trans_idle(ether_phy_instance_ctrl_t * p_instance_ctrl);
 static void gether_phy_mii_write1(ether_phy_instance_ctrl_t * p_instance_ctrl);
 static void gether_phy_mii_write0(ether_phy_instance_ctrl_t * p_instance_ctrl);
+static void gether_phy_mii_writez(ether_phy_instance_ctrl_t * p_instance_ctrl);
+static void gether_phy_targets_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
+static bool gether_phy_targets_is_support_link_partner_ability(ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                               uint32_t                    line_speed_duplex);
 
 /** GETHER_PHY HAL API mapping for Ethernet PHY Controller interface */
 /*LDRA_INSPECTED 27 D This structure must be accessible in user code. It cannot be static. */
@@ -374,30 +385,36 @@ fsp_err_t R_GETHER_PHY_LinkPartnerAbilityGet (ether_phy_ctrl_t * const p_ctrl,
     }
 
     /* Establish the line speed and the duplex */
-    if (GETHER_PHY_AN_LINK_PARTNER_10H == (reg & GETHER_PHY_AN_LINK_PARTNER_10H))
+    if ((GETHER_PHY_AN_LINK_PARTNER_10H == (reg & GETHER_PHY_AN_LINK_PARTNER_10H)) &&
+        gether_phy_targets_is_support_link_partner_ability(p_instance_ctrl, ETHER_PHY_LINK_SPEED_10H))
     {
         (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_10H;
     }
 
-    if (GETHER_PHY_AN_LINK_PARTNER_10F == (reg & GETHER_PHY_AN_LINK_PARTNER_10F))
+    if ((GETHER_PHY_AN_LINK_PARTNER_10F == (reg & GETHER_PHY_AN_LINK_PARTNER_10F)) &&
+        gether_phy_targets_is_support_link_partner_ability(p_instance_ctrl, ETHER_PHY_LINK_SPEED_10F))
     {
         (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_10F;
     }
 
-    if (GETHER_PHY_AN_LINK_PARTNER_100H == (reg & GETHER_PHY_AN_LINK_PARTNER_100H))
+    if ((GETHER_PHY_AN_LINK_PARTNER_100H == (reg & GETHER_PHY_AN_LINK_PARTNER_100H)) &&
+        gether_phy_targets_is_support_link_partner_ability(p_instance_ctrl, ETHER_PHY_LINK_SPEED_100H))
     {
         (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_100H;
     }
 
-    if (GETHER_PHY_AN_LINK_PARTNER_100F == (reg & GETHER_PHY_AN_LINK_PARTNER_100F))
+    if ((GETHER_PHY_AN_LINK_PARTNER_100F == (reg & GETHER_PHY_AN_LINK_PARTNER_100F)) &&
+        gether_phy_targets_is_support_link_partner_ability(p_instance_ctrl, ETHER_PHY_LINK_SPEED_100F))
     {
         (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_100F;
     }
 
 #if (GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+
     /* Check if the link partner has 1000BASE-T full duplex capability */
     reg = gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_AN_MASTER_SLAVE_STATUS);
-    if (GETHER_PHY_AN_LINK_PARTNER_1000F == (reg & GETHER_PHY_AN_LINK_PARTNER_1000F)) {
+    if (GETHER_PHY_AN_LINK_PARTNER_1000F == (reg & GETHER_PHY_AN_LINK_PARTNER_1000F))
+    {
         /* Get the link partner response */
         reg = gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_EXSTATUS);
         if (GETHER_PHY_EXSTATUS_1000FX == (reg & GETHER_PHY_EXSTATUS_1000FX))
@@ -482,7 +499,7 @@ uint32_t gether_phy_read (ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t 
     gether_phy_reg_set(p_instance_ctrl, reg_addr, GETHER_PHY_MII_READ);
     gether_phy_trans_zto0(p_instance_ctrl);
     gether_phy_reg_read(p_instance_ctrl, &data);
-    gether_phy_trans_zto0(p_instance_ctrl);
+    gether_phy_trans_idle(p_instance_ctrl);
 
     return data;
 }                                      /* End of function gether_phy_read() */
@@ -508,7 +525,7 @@ void gether_phy_write (ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg
     gether_phy_reg_set(p_instance_ctrl, reg_addr, GETHER_PHY_MII_WRITE);
     gether_phy_trans_1to0(p_instance_ctrl);
     gether_phy_reg_write(p_instance_ctrl, data);
-    gether_phy_trans_zto0(p_instance_ctrl);
+    gether_phy_trans_idle(p_instance_ctrl);
 }                                      /* End of function gether_phy_write() */
 
 /***********************************************************************************************************************
@@ -620,14 +637,13 @@ static void gether_phy_reg_read (ether_phy_instance_ctrl_t * p_instance_ctrl, ui
             (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_LOW);
         }
 
+        reg_data  = (reg_data << 1);
+        reg_data |= (uint32_t) (((*petherc_cxr23) & GETHER_PHY_CXR23_MDI_MASK) >> 3); /* MDI read  */
+
         for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
         {
             (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_HIGH);
         }
-
-        reg_data = (reg_data << 1);
-
-        reg_data |= (uint32_t) (((*petherc_cxr23) & GETHER_PHY_CXR23_MDI_MASK) >> 3); /* MDI read  */
 
         for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
         {
@@ -689,35 +705,11 @@ static void gether_phy_reg_write (ether_phy_instance_ctrl_t * p_instance_ctrl, u
  ***********************************************************************************************************************/
 static void gether_phy_trans_zto0 (ether_phy_instance_ctrl_t * p_instance_ctrl)
 {
-    int32_t j;
+    /* Release the bus by writing z. */
+    gether_phy_mii_writez(p_instance_ctrl);
 
-    volatile uint32_t * petherc_cxr23;
-
-    petherc_cxr23 = p_instance_ctrl->p_reg_cxr23;
-
-    /*
-     * The processing of TA (turnaround) about reading of the frame format of MII Management Interface which is
-     * provided by "Table 22-12" of "22.2.4.5" of "IEEE 802.3-2008_section2".
-     */
-    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
-    {
-        (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_LOW);
-    }
-
-    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
-    {
-        (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_HIGH);
-    }
-
-    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
-    {
-        (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_HIGH);
-    }
-
-    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
-    {
-        (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_LOW);
-    }
+    /* The PHY will drive the bus to 0. */
+    gether_phy_mii_writez(p_instance_ctrl);
 }                                      /* End of function gether_phy_trans_zto0() */
 
 /***********************************************************************************************************************
@@ -737,6 +729,28 @@ static void gether_phy_trans_1to0 (ether_phy_instance_ctrl_t * p_instance_ctrl)
     gether_phy_mii_write1(p_instance_ctrl);
     gether_phy_mii_write0(p_instance_ctrl);
 }                                      /* End of function gether_phy_trans_1to0() */
+
+/***********************************************************************************************************************
+ * Function Name: gether_phy_trans_idle
+ * Description  : Switches data bus to IDLE state to prepare for the next transfer.
+ * Arguments    : ether_channel -
+ *                    Ethernet channel number
+ * Return Value : none
+ ***********************************************************************************************************************/
+static void gether_phy_trans_idle (ether_phy_instance_ctrl_t * p_instance_ctrl)
+{
+    volatile uint32_t * petherc_pir;
+
+    petherc_pir = p_instance_ctrl->p_reg_cxr23;
+
+    int64_t count = (int64_t) p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time * 4;
+
+    /* Release the bus for one MDC period. */
+    for (int64_t j = count; j > 0; j--)
+    {
+        (*petherc_pir) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_LOW);
+    }
+}
 
 /***********************************************************************************************************************
  * Function Name: gether_phy_mii_write1
@@ -817,3 +831,103 @@ static void gether_phy_mii_write0 (ether_phy_instance_ctrl_t * p_instance_ctrl)
         (*petherc_cxr23) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_WRITE | GETHER_PHY_CXR23_MDC_LOW);
     }
 }                                      /* End of function gether_phy_mii_write0() */
+
+/***********************************************************************************************************************
+ * Function Name: gether_phy_mii_writez
+ * Description  : Outputs z to the MII interface
+ * Arguments    : ether_channel -
+ *                    Ethernet channel number
+ * Return Value : none
+ ***********************************************************************************************************************/
+static void gether_phy_mii_writez (ether_phy_instance_ctrl_t * p_instance_ctrl)
+{
+    int32_t j;
+
+    volatile uint32_t * petherc_pir;
+
+    petherc_pir = p_instance_ctrl->p_reg_cxr23;
+
+    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
+    {
+        (*petherc_pir) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_LOW);
+    }
+
+    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
+    {
+        (*petherc_pir) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_HIGH);
+    }
+
+    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
+    {
+        (*petherc_pir) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_HIGH);
+    }
+
+    for (j = p_instance_ctrl->p_gether_phy_cfg->mii_bit_access_wait_time; j > 0; j--)
+    {
+        (*petherc_pir) = (GETHER_PHY_CXR23_MDO_LOW | GETHER_PHY_CXR23_MMD_READ | GETHER_PHY_CXR23_MDC_LOW);
+    }
+}
+
+/***********************************************************************************************************************
+ * Function Name: gether_phy_targets_initialize
+ * Description  : PHY-LSI specific initialization processing
+ * Arguments    : p_instance_ctrl -
+ *                    Ethernet control block
+ * Return Value : none
+ ***********************************************************************************************************************/
+static void gether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
+{
+    switch (p_instance_ctrl->p_gether_phy_cfg->phy_lsi_type)
+    {
+        /* Use KSZ9131RNXI */
+#if (GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+        case ETHER_PHY_LSI_TYPE_KSZ9131RNXI:
+        {
+            gether_phy_targets_ksz9131rnxi_initialize(p_instance_ctrl);
+            break;
+        }
+#endif
+
+        /* If module is configured for default LSI */
+        default:
+        {
+            break;
+        }
+    }
+}                                      /* End of function ether_phy_targets_initialize() */
+
+/***********************************************************************************************************************
+ * Function Name: gether_phy_targets_is_support_link_partner_ability
+ * Description  : Check if the PHY-LSI connected Ethernet controller supports link ability
+ * Arguments    : p_instance_ctrl -
+ *                    Ethernet control block
+ *                line_speed_duplex -
+ *                    Line speed duplex of link partner PHY-LSI
+ * Return Value : bool
+ ***********************************************************************************************************************/
+static bool gether_phy_targets_is_support_link_partner_ability (ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                                uint32_t                    line_speed_duplex)
+{
+    bool result = false;
+    FSP_PARAMETER_NOT_USED(line_speed_duplex);
+    switch (p_instance_ctrl->p_gether_phy_cfg->phy_lsi_type)
+    {
+        /* Use KSZ8091RNB */
+#if (GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+        case ETHER_PHY_LSI_TYPE_KSZ9131RNXI:
+        {
+            result = gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(p_instance_ctrl, line_speed_duplex);
+            break;
+        }
+#endif
+
+        /* If module is configured for default LSI, always return true */
+        default:
+        {
+            result = true;
+            break;
+        }
+    }
+
+    return result;
+}                                      /* End of function ether_phy_targets_is_support_link_partner_ability() */

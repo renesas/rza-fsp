@@ -2191,23 +2191,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_RSTMON_OCTA_b;
     };
-    __IM uint8_t RESERVED60[136];
-    union
-    {
-        __IOM uint32_t CPG_EN_GTM;
-        struct
-        {
-            __IOM uint32_t EN0_ON : 1;
-            __IOM uint32_t EN1_ON : 1;
-            __IOM uint32_t EN2_ON : 1;
-            uint32_t              : 13;
-            __IOM uint32_t EN0WEN : 1;
-            __IOM uint32_t EN1WEN : 1;
-            __IOM uint32_t EN2WEN : 1;
-            uint32_t              : 13;
-        } CPG_EN_GTM_b;
-    };
-    __IM uint8_t RESERVED61[12];
+    __IM uint8_t RESERVED60[152];
     union
     {
         __IOM uint32_t CPG_WDTOVF_RST;

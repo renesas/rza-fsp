@@ -433,6 +433,7 @@ void usb_hstd_OhciMainRoutine (usb_utr_t * ptr, uint32_t context_info, uint32_t 
                         (void *) (uintptr_t) ED->hc_ed.next_ed);
                     temp = (uint32_t) usb_hstd_ohci_physical_address_of((void *) (uintptr_t) ED->hc_ed.next_ed);
                 }
+
  #else
                 ptr->ipp->HCCONTROLCURRENTED = temp = ED->hc_ed.next_ed;
  #endif
@@ -452,6 +453,7 @@ void usb_hstd_OhciMainRoutine (usb_utr_t * ptr, uint32_t context_info, uint32_t 
                         (void *) (uintptr_t) ED->hc_ed.next_ed);
                     temp2 = (uint32_t) usb_hstd_ohci_physical_address_of((void *) (uintptr_t) ED->hc_ed.next_ed);
                 }
+
  #else
                 ptr->ipp->HCBULKCURRENTED = temp2 = ED->hc_ed.next_ed;
  #endif
@@ -707,6 +709,7 @@ uint16_t usb_hstd_ohci_set_device_address_of_rootpoot (uint16_t rootport, uint16
 
     if (0 != usb_hstd_ohci_device_data->root_device[rootport])
     {
+
         /* USB_HCI_PRINTF1_R("Error: The device address has already been allocated to the route port %d.\n", rootport); */
         return USB_HCI_NODEVICE;
     }
@@ -1140,6 +1143,7 @@ void usb_hstd_ohci_remove_list_entry (st_usb_ohci_list_entry_p_t list)
         {
             tmp_f_link->b_link = (uint32_t) r_usb_pa_to_va((uint64_t) list->b_link);
         }
+
  #else
         if (NULL != tmp_b_link)
         {
@@ -1352,6 +1356,7 @@ void usb_hstd_ohci_pause_ed (usb_utr_t * ptr, st_usb_ohci_hcd_endpoint_p_t endpo
 
     if (ed->paused_flag)
     {
+
         /* already awaiting pause processing */
         return;
     }
@@ -1459,6 +1464,7 @@ uint32_t usb_hstd_ohci_set_frame_interval (usb_utr_t                     * ptr,
     {
         interval |= USB_VAL_X8000U & (USB_VAL_X8000U ^ (ptr->ipp1->HCFMREMAINING));
     }
+
  #else
     interval |= USB_VAL_X8000U & (USB_VAL_X8000U ^ (ptr->ipp->HCFNREMAINING));
  #endif
@@ -1495,6 +1501,7 @@ uint32_t usb_hstd_ohci_set_frame_interval (usb_utr_t                     * ptr,
             frame_number = usb_hstd_ohci_get_32bit_frame_number(device_data);
         }
     }
+
  #else
     if (USB_VAL_X8000U & (ptr->ipp->HCFNREMAINING ^ interval))
     {
@@ -1674,6 +1681,7 @@ static void usb_hstd_ohci_hw_setup (usb_utr_t * ptr)
         ptr->ipp1->HCFMINTERVAL      = USB_VAL_FMINTVL;
         ptr->ipp1->HCPERIODICSTART   = USB_VAL_2A2F;
     }
+
  #else
     ptr->ipp->HCINTERRUPTSTATUS = USB_VAL_FF32U;
     ptr->ipp->HCFMINTERVAL      = USB_VAL_FMINTVL;

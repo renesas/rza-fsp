@@ -142,7 +142,7 @@
 #define SDHI_PRV_DATA_TIMEOUT_US                           (500000U)
 
 /* Delay up to 100 ms before timing out waiting for access end flag after receiving data during initialization. */
-#define SDHI_PRV_ACCESS_TIMEOUT_US                         (100000U)
+#define SDHI_PRV_ACCESS_TIMEOUT_US                         (200000U)
 
 /* 400 kHz maximum clock required for initialization. */
 #define SDHI_PRV_INIT_MAX_CLOCK_RATE_HZ                    (400000U)
@@ -192,7 +192,7 @@
 #define SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_VAL            (0x80)
 #define SDHI_PRV_SD_CLK_CTRLEN_TIMEOUT                     (8U * 512U)
 #define SDHI_PRV_SD_INFO1_MASK_MASK_ALL                    (0x31DU)
-#define SDHI_PRV_SD_INFO1_MASK_MASK_ACEND_ENABLE           (0x319U)  // Added mask data to detect only end of access.
+#define SDHI_PRV_SD_INFO1_MASK_ACEND_ENABLE_BIT            (2U)
 #define SDHI_PRV_SD_INFO1_MASK_CD_ENABLE                   (0x305U)
 #define SDHI_PRV_SD_STOP_SD_SECCNT_ENABLE                  (0x100U)
 #define SDHI_PRV_SD_DMAEN_DMAEN_SET                        (0x1012U) // In RZ/A3UL, 1 must always be written to bit 4 and 12 of CC_EXT_MODE.
@@ -397,6 +397,7 @@ fsp_err_t R_SDHI_Open (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_cfg_t const * cons
 #endif
     p_ctrl->p_cfg = p_cfg;
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
     /* Obtaining transfer buffer */
     p_ctrl->p_buff = &uncached_buf[p_cfg->channel][0];
     err            = R_MMU_VAtoPA(NULL, (uintptr_t) p_ctrl->p_buff, &p_ctrl->buff_physical_address);
@@ -404,13 +405,13 @@ fsp_err_t R_SDHI_Open (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_cfg_t const * cons
     {
         return err;
     }
+
 #else
     p_ctrl->buff_physical_address = p_ctrl->p_buff;
 #endif
+
     /* Enable the SDHI channel and reset the registers to their initial state. */
     R_BSP_MODULE_START(FSP_IP_SDHI, p_cfg->channel);
-    R_BSP_MODULE_CLKON(FSP_IP_SDHI, p_cfg->channel);
-    R_BSP_MODULE_RSTOFF(FSP_IP_SDHI, p_cfg->channel);
 
     /* Reset stale interrupt flags */
     p_ctrl->p_reg->SD_INFO1_long.L = 0U;
@@ -461,7 +462,8 @@ fsp_err_t R_SDHI_Open (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_cfg_t const * cons
  *                                       be 512 bytes for SD cards and eMMC devices.  It is configurable for SDIO only.
  * @retval     FSP_ERR_NOT_OPEN          Driver has not been initialized.
  * @retval     FSP_ERR_CARD_INIT_FAILED  Device was not identified as an SD card, eMMC device, or SDIO card.
- * @retval     FSP_ERR_RESPONSE          Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE          Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT           Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY       Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 fsp_err_t R_SDHI_MediaInit (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_device_t * const p_device)
@@ -519,7 +521,8 @@ fsp_err_t R_SDHI_MediaInit (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_device_t * co
  * @retval     FSP_ERR_ASSERTION             NULL pointer.
  * @retval     FSP_ERR_NOT_OPEN              Driver has not been initialized.
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY           Driver is busy with a previous operation.
  **********************************************************************************************************************/
 fsp_err_t R_SDHI_Read (sdmmc_ctrl_t * const p_api_ctrl,
@@ -584,7 +587,8 @@ fsp_err_t R_SDHI_Read (sdmmc_ctrl_t * const p_api_ctrl,
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
  * @retval     FSP_ERR_DEVICE_BUSY           Driver is busy with a previous operation.
  * @retval     FSP_ERR_CARD_WRITE_PROTECTED  SD card is Write Protected.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  **********************************************************************************************************************/
 fsp_err_t R_SDHI_Write (sdmmc_ctrl_t * const  p_api_ctrl,
                         uint8_t const * const p_source,
@@ -646,7 +650,8 @@ fsp_err_t R_SDHI_Write (sdmmc_ctrl_t * const  p_api_ctrl,
  * @retval     FSP_ERR_NOT_OPEN              Driver has not been initialized.
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
  * @retval     FSP_ERR_UNSUPPORTED           SDIO support disabled in SDHI_CFG_SDIO_SUPPORT_ENABLE.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY           Device is holding DAT0 low (device is busy) or another operation is
  *                                           ongoing.
  **********************************************************************************************************************/
@@ -695,7 +700,8 @@ fsp_err_t R_SDHI_ReadIo (sdmmc_ctrl_t * const p_api_ctrl,
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
  * @retval     FSP_ERR_WRITE_FAILED          Write operation failed.
  * @retval     FSP_ERR_UNSUPPORTED           SDIO support disabled in SDHI_CFG_SDIO_SUPPORT_ENABLE.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY           Device is holding DAT0 low (device is busy) or another operation is
  *                                           ongoing.
  **********************************************************************************************************************/
@@ -743,7 +749,8 @@ fsp_err_t R_SDHI_WriteIo (sdmmc_ctrl_t * const        p_api_ctrl,
  *                                           1-511 for block mode.
  * @retval     FSP_ERR_NOT_OPEN              Driver has not been initialized.
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY           Driver is busy with a previous operation.
  * @retval     FSP_ERR_UNSUPPORTED           SDIO support disabled in SDHI_CFG_SDIO_SUPPORT_ENABLE.
  **********************************************************************************************************************/
@@ -813,7 +820,7 @@ fsp_err_t R_SDHI_ReadIoExt (sdmmc_ctrl_t * const     p_api_ctrl,
         /* Copy driver buffer data to caller buffer */
         memcpy(p_dest + (p_ctrl->p_cfg->block_size * i), p_ctrl->p_buff, p_ctrl->p_cfg->block_size);
     }
- 
+
     return err;
 #else
     FSP_PARAMETER_NOT_USED(p_api_ctrl);
@@ -839,7 +846,8 @@ fsp_err_t R_SDHI_ReadIoExt (sdmmc_ctrl_t * const     p_api_ctrl,
  *                                           1-511 for block mode.
  * @retval     FSP_ERR_NOT_OPEN              Driver has not been initialized.
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY           Driver is busy with a previous operation.
  * @retval     FSP_ERR_UNSUPPORTED           SDIO support disabled in SDHI_CFG_SDIO_SUPPORT_ENABLE.
  **********************************************************************************************************************/
@@ -1020,7 +1028,8 @@ fsp_err_t R_SDHI_StatusGet (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_status_t * co
  * @retval     FSP_ERR_NOT_OPEN              Driver has not been initialized.
  * @retval     FSP_ERR_CARD_NOT_INITIALIZED  Card was unplugged.
  * @retval     FSP_ERR_CARD_WRITE_PROTECTED  SD card is Write Protected.
- * @retval     FSP_ERR_RESPONSE              Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE              Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT               Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY           Device is holding DAT0 low (device is busy) or another operation is
  *                                           ongoing.
  **********************************************************************************************************************/
@@ -1150,10 +1159,11 @@ fsp_err_t R_SDHI_Close (sdmmc_ctrl_t * const p_api_ctrl)
 
     /* Disable SDHI interrupts. */
     const sdhi_extended_cfg_t * p_extend = (const sdhi_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-    r_sdhi_irq_disable(p_extend->oxmnirq_ipl);
+    r_sdhi_irq_disable(p_extend->oxmnirq_irq);
 #if SDHI_CFG_SDIO_SUPPORT_ENABLE
-    r_sdhi_irq_disable(p_extend->oxasioirq_ipl);
+    r_sdhi_irq_disable(p_extend->oxasioirq_irq);
 #endif
+
     /* Put the card in idle state (CMD0). */
     r_sdhi_command_send_no_wait(p_ctrl, SDHI_PRV_CMD_GO_IDLE_STATE, 0);
 
@@ -1161,8 +1171,6 @@ fsp_err_t R_SDHI_Close (sdmmc_ctrl_t * const p_api_ctrl)
      * the card could be unplugged and waiting for the response timeout in this function is not desireable. */
 
     /* Remove power to the channel. */
-    R_BSP_MODULE_RSTON(FSP_IP_SDHI, p_ctrl->p_cfg->channel);
-    R_BSP_MODULE_CLKOFF(FSP_IP_SDHI, p_ctrl->p_cfg->channel);
     R_BSP_MODULE_STOP(FSP_IP_SDHI, p_ctrl->p_cfg->channel);
 
     return FSP_SUCCESS;
@@ -1250,6 +1258,9 @@ static fsp_err_t r_sdhi_erase_error_check (sdhi_instance_ctrl_t * const p_ctrl,
                                            uint32_t const               start_sector,
                                            uint32_t const               sector_count)
 {
+    fsp_err_t err = r_sdhi_common_error_check(p_ctrl);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
 #if SDHI_CFG_PARAM_CHECKING_ENABLE && SDHI_CFG_SD_SUPPORT_ENABLE
 
     /* Check for valid sector count.  Must be a non-zero multiple of erase_sector_count. */
@@ -1263,9 +1274,6 @@ static fsp_err_t r_sdhi_erase_error_check (sdhi_instance_ctrl_t * const p_ctrl,
     FSP_PARAMETER_NOT_USED(start_sector);
     FSP_PARAMETER_NOT_USED(sector_count);
 #endif
-
-    fsp_err_t err = r_sdhi_common_error_check(p_ctrl);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
     /* Check for write protection */
     FSP_ERROR_RETURN(!p_ctrl->device.write_protected, FSP_ERR_CARD_WRITE_PROTECTED);
@@ -1508,7 +1516,8 @@ static void r_sdhi_command_send_no_wait (sdhi_instance_ctrl_t * p_ctrl, uint32_t
  * @param[in]  argument             Argument to send with the command.
  *
  * @retval     FSP_SUCCESS          Command sent and response received, no errors in response.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_command_send (sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument)
@@ -1640,7 +1649,8 @@ static fsp_err_t r_sdhi_hw_cfg (sdhi_instance_ctrl_t * const p_ctrl)
  * @retval     FSP_SUCCESS               Operation completed successfully.
  * @retval     FSP_ERR_CARD_INIT_FAILED  Device could not be identified.
  * @retval     FSP_ERR_ASSERTION         Card detection configured but not supported.
- * @retval     FSP_ERR_RESPONSE          Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE          Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT           Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY       Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_card_identify (sdhi_instance_ctrl_t * const p_ctrl)
@@ -1723,7 +1733,8 @@ static fsp_err_t r_sdhi_card_identify (sdhi_instance_ctrl_t * const p_ctrl)
  *
  * @retval     FSP_SUCCESS               Operation completed successfully.
  * @retval     FSP_ERR_CARD_INIT_FAILED  Operation failed.
- * @retval     FSP_ERR_RESPONSE          Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE          Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT           Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY       Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_bus_cfg (sdhi_instance_ctrl_t * const p_ctrl)
@@ -1812,7 +1823,8 @@ static fsp_err_t r_sdhi_bus_cfg (sdhi_instance_ctrl_t * const p_ctrl)
  * @param[in]  argument        Argument
  *
  * @retval     FSP_SUCCESS          Operation completed successfully.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_read_write_common (sdhi_instance_ctrl_t * const p_ctrl,
@@ -1852,7 +1864,8 @@ static fsp_err_t r_sdhi_read_write_common (sdhi_instance_ctrl_t * const p_ctrl,
  * @param[in]  command              Command (read or write)
  *
  * @retval     FSP_SUCCESS          CMD52 sent and response received with no error.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_cmd52 (sdhi_instance_ctrl_t * const p_ctrl,
@@ -1892,7 +1905,8 @@ static fsp_err_t r_sdhi_cmd52 (sdhi_instance_ctrl_t * const p_ctrl,
  * @param[in]  p_ctrl               Pointer to the instance control block.
  *
  * @retval     FSP_SUCCESS          Card type is set if the device is an SDIO card.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_sdio_check (sdhi_instance_ctrl_t * const p_ctrl)
@@ -1949,7 +1963,8 @@ static fsp_err_t r_sdhi_sdio_check (sdhi_instance_ctrl_t * const p_ctrl)
  * @param[in]  p_ctrl               Pointer to the instance control block.
  *
  * @retval     FSP_SUCCESS          Card type is set if the device is an SD card.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_sd_card_check (sdhi_instance_ctrl_t * const p_ctrl)
@@ -1958,13 +1973,17 @@ static fsp_err_t r_sdhi_sd_card_check (sdhi_instance_ctrl_t * const p_ctrl)
      * in the SD Physical Layer Specification Version 6.00. */
     uint32_t  argument = ((SDHI_PRV_IF_COND_VOLTAGE << 8) | SDHI_PRV_IF_COND_CHECK_PATTERN);
     fsp_err_t err      = r_sdhi_command_send(p_ctrl, SDHI_PRV_CMD_IF_COND, argument);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    if (FSP_ERR_TIMEOUT == err)
+    {
+        FSP_RETURN(err);
+    }
 
     /* An SD card responds to CMD8 by echoing the argument in the R7 response. An eMMC device responds to CMD8 with the
      * extended CSD. If the response does not match the argument, return to check if this is an eMMC device. */
     sdmmc_response_t response;
     response.status = p_ctrl->p_reg->SD_RSP10_long.L;
-    if (response.status == argument)
+    /* CMD8 is not supported by spec V1.X so we have to try CMD41. */
+    if ((FSP_ERR_RESPONSE == err) || (response.status == argument))
     {
         /* Try to send ACMD41 for up to 1 second as long as the card is responding and initialization is not complete.
          * Returns immediately if the card fails to respond to ACMD41. */
@@ -2014,7 +2033,8 @@ static fsp_err_t r_sdhi_sd_card_check (sdhi_instance_ctrl_t * const p_ctrl)
  * @param[in]  p_ctrl               Pointer to the instance control block.
  *
  * @retval     FSP_SUCCESS          Card type is set if the device is an eMMC card.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_emmc_check (sdhi_instance_ctrl_t * const p_ctrl)
@@ -2110,7 +2130,8 @@ static fsp_err_t r_sdhi_wait_for_device (sdhi_instance_ctrl_t * const p_ctrl)
  * @param[in]  p_csd_reg                 Pointer to card specific data.
  *
  * @retval     FSP_SUCCESS               Clock rate adjusted to the maximum speed allowed by both device and MCU.
- * @retval     FSP_ERR_RESPONSE          Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE          Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT           Device did not respond.
  * @retval     FSP_ERR_CARD_INIT_FAILED  Timeout setting divider or operation is still too fast at maximum divider
  *                                       (unlikely).
  * @retval     FSP_ERR_DEVICE_BUSY       Device is holding DAT0 low (device is busy) or another operation is ongoing.
@@ -2180,7 +2201,8 @@ static fsp_err_t r_sdhi_clock_optimize (sdhi_instance_ctrl_t * const p_ctrl,
  * @param[in]  p_ctrl                    Pointer to the instance control block.
  *
  * @retval     FSP_SUCCESS               Clock settings applied for SDIO.
- * @retval     FSP_ERR_RESPONSE          Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE          Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT           Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY       Device is holding DAT0 low (device is busy) or another operation is ongoing.
  * @retval     FSP_ERR_CARD_INIT_FAILED  Timeout setting divider or operation is still too fast at maximum divider
  *                                       (unlikely).
@@ -2225,7 +2247,8 @@ static fsp_err_t r_sdhi_sdio_clock_optimize (sdhi_instance_ctrl_t * const p_ctrl
  * @param[in]  timeout_us        Number of loops to check bit (at least 1 us per loop).
  *
  * @retval     FSP_SUCCESS       Requested bit (access end or response end) is set.
- * @retval     FSP_ERR_RESPONSE  Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE  Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT   Device did not respond.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_wait_for_event (sdhi_instance_ctrl_t * const p_ctrl, uint32_t bit, uint32_t timeout_us)
 {
@@ -2253,7 +2276,7 @@ static fsp_err_t r_sdhi_wait_for_event (sdhi_instance_ctrl_t * const p_ctrl, uin
         timeout_us--;
         if (0U == timeout_us)
         {
-            FSP_RETURN(FSP_ERR_RESPONSE);
+            FSP_RETURN(FSP_ERR_TIMEOUT);
         }
 
         /* Wait 1 us for consistent loop timing. */
@@ -2269,7 +2292,8 @@ static fsp_err_t r_sdhi_wait_for_event (sdhi_instance_ctrl_t * const p_ctrl, uin
  * @param[in]  p_ctrl               Pointer to the instance control block.
  *
  * @retval     FSP_SUCCESS          SD clock set to the maximum supported by both host and device.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_INTERNAL     Error in response from card during switch to high speed mode.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
@@ -2317,7 +2341,8 @@ static fsp_err_t r_sdhi_sd_high_speed (sdhi_instance_ctrl_t * const p_ctrl)
  * @param[out] p_csd_reg            Pointer to card specific data.
  *
  * @retval     FSP_SUCCESS          Card specific data stored in provided pointer.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_csd_save (sdhi_instance_ctrl_t * const p_ctrl,
@@ -2400,7 +2425,8 @@ static fsp_err_t r_sdhi_csd_save (sdhi_instance_ctrl_t * const p_ctrl,
  *
  * @retval     FSP_SUCCESS          Device type obtained from eMMC extended CSD.  Sector count is also calculated here
  *                                  if it was not determined previously.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Driver is busy with a previous operation.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_csd_extended_get (sdhi_instance_ctrl_t * const p_ctrl, uint32_t rca, uint8_t * p_device_type)
@@ -2435,7 +2461,8 @@ static fsp_err_t r_sdhi_csd_extended_get (sdhi_instance_ctrl_t * const p_ctrl, u
  * @param[in]  byte_count           Expected number of bytes to read.
  *
  * @retval     FSP_SUCCESS          Requested data read into internal buffer.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Driver is busy with a previous operation.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_read_and_block (sdhi_instance_ctrl_t * const p_ctrl,
@@ -2472,7 +2499,8 @@ static fsp_err_t r_sdhi_read_and_block (sdhi_instance_ctrl_t * const p_ctrl,
  * @param[out] p_rca                Pointer to store relative card address.
  *
  * @retval     FSP_SUCCESS          Relative card address is assigned and device is in standby state.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_rca_get (sdhi_instance_ctrl_t * const p_ctrl, uint32_t * p_rca)
@@ -2507,7 +2535,8 @@ static fsp_err_t r_sdhi_rca_get (sdhi_instance_ctrl_t * const p_ctrl, uint32_t *
  * @param[in]  rca                  Relative card address
  *
  * @retval     FSP_SUCCESS          Bus width updated on device.
- * @retval     FSP_ERR_RESPONSE     Device did not respond or responded with an error.
+ * @retval     FSP_ERR_RESPONSE     Device responded with an error.
+ * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
 static fsp_err_t r_sdhi_bus_width_set (sdhi_instance_ctrl_t * const p_ctrl, uint32_t rca)
@@ -2646,9 +2675,9 @@ static void r_sdhi_transfer_end (sdhi_instance_ctrl_t * const p_ctrl)
  **********************************************************************************************************************/
 static void r_sdhi_dma_prepare (sdhi_instance_ctrl_t * p_ctrl, bool is_write, uint64_t pa)
 {
-    p_ctrl->p_reg->SD_INFO1_MASK_long.L = SDHI_PRV_SD_INFO1_MASK_MASK_ACEND_ENABLE;
-    p_ctrl->p_reg->SD_INFO2_MASK_long.L = SDHI_PRV_SDHI_INFO2_MASK;
-    p_ctrl->p_reg->CC_EXT_MODE_long.L   = SDHI_PRV_SD_DMAEN_DMAEN_SET;
+    p_ctrl->p_reg->SD_INFO1_MASK_long.L &= ~(1U << SDHI_PRV_SD_INFO1_MASK_ACEND_ENABLE_BIT);
+    p_ctrl->p_reg->SD_INFO2_MASK_long.L  = SDHI_PRV_SDHI_INFO2_MASK;
+    p_ctrl->p_reg->CC_EXT_MODE_long.L    = SDHI_PRV_SD_DMAEN_DMAEN_SET;
     if (is_write)
     {
         p_ctrl->p_reg->DM_CM_INFO1_MASK_long.L = ~(SDHI_PRV_SDHI_DM_CM_INFO1_SEQEND |

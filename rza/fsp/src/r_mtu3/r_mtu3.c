@@ -29,145 +29,145 @@
  **********************************************************************************************************************/
 
 /* "MTU3" in ASCII, used to determine if channel is open. */
-#define MTU3_OPEN                          (0x4D545533ULL)
+#define MTU3_OPEN                           (0x4D545533ULL)
 
-#define MTU3_TOERA_MSK                     (R_MTU_TOERA_OE4D_Msk | R_MTU_TOERA_OE4C_Msk | R_MTU_TOERA_OE3D_Msk | \
-                                            R_MTU_TOERA_OE4B_Msk | R_MTU_TOERA_OE4A_Msk | R_MTU_TOERA_OE3B_Msk)
+#define MTU3_TOERA_MSK                      (R_MTU_TOERA_OE4D_Msk | R_MTU_TOERA_OE4C_Msk | R_MTU_TOERA_OE3D_Msk | \
+                                             R_MTU_TOERA_OE4B_Msk | R_MTU_TOERA_OE4A_Msk | R_MTU_TOERA_OE3B_Msk)
 
-#define MTU3_TOERB_MSK                     (R_MTU_TOERB_OE7D_Msk | R_MTU_TOERB_OE7C_Msk | R_MTU_TOERB_OE6D_Msk | \
-                                            R_MTU_TOERB_OE7B_Msk | R_MTU_TOERB_OE7A_Msk | R_MTU_TOERB_OE6B_Msk)
+#define MTU3_TOERB_MSK                      (R_MTU_TOERB_OE7D_Msk | R_MTU_TOERB_OE7C_Msk | R_MTU_TOERB_OE6D_Msk | \
+                                             R_MTU_TOERB_OE7B_Msk | R_MTU_TOERB_OE7A_Msk | R_MTU_TOERB_OE6B_Msk)
 
-#define MTU3_TCR_TPSC_POS                  (3U) /* MTUx.TCR.TPSC bit2-0 */
+#define MTU3_TCR_TPSC_POS                   (3U) /* MTUx.TCR.TPSC bit2-0 */
 
-#define MTU3_PCLK_DIV_1                    (1U)
-#define MTU3_PCLK_DIV_2                    (2U)
-#define MTU3_PCLK_DIV_4                    (4U)
-#define MTU3_PCLK_DIV_8                    (8U)
-#define MTU3_PCLK_DIV_16                   (16U)
-#define MTU3_PCLK_DIV_32                   (32U)
-#define MTU3_PCLK_DIV_64                   (64U)
-#define MTU3_PCLK_DIV_256                  (256U)
-#define MTU3_PCLK_DIV_1024                 (1024U)
+#define MTU3_PCLK_DIV_1                     (1U)
+#define MTU3_PCLK_DIV_2                     (2U)
+#define MTU3_PCLK_DIV_4                     (4U)
+#define MTU3_PCLK_DIV_8                     (8U)
+#define MTU3_PCLK_DIV_16                    (16U)
+#define MTU3_PCLK_DIV_32                    (32U)
+#define MTU3_PCLK_DIV_64                    (64U)
+#define MTU3_PCLK_DIV_256                   (256U)
+#define MTU3_PCLK_DIV_1024                  (1024U)
 
-#define MTU3_TPSC_OFS_ARRAY                (8U)  /* MTUxTCR.TPSC bit2-0(The value is 0-7) */
+#define MTU3_TPSC_OFS_ARRAY                 (8U)  /* MTUxTCR.TPSC bit2-0(The value is 0-7) */
 
-#define MTU3_CLK_TPSC_NUM                  (15U) /* TPSC and TPSC2 setting range */
-#define MTU3_MAX_COUNT                     (UINT16_MAX + 1U)
+#define MTU3_CLK_TPSC_NUM                   (15U) /* TPSC and TPSC2 setting range */
+#define MTU3_MAX_COUNT                      (UINT16_MAX + 1U)
 
 /* Noise fileter offset address */
-#define MTU0_NOISEFILTER_OFFSET_ADDRESS    (0x0000U)
-#define MTU1_NOISEFILTER_OFFSET_ADDRESS    (0x0001U)
-#define MTU2_NOISEFILTER_OFFSET_ADDRESS    (0x0002U)
-#define MTU3_NOISEFILTER_OFFSET_ADDRESS    (0x0003U)
-#define MTU4_NOISEFILTER_OFFSET_ADDRESS    (0x0004U)
-#define MTU5_NOISEFILTER_OFFSET_ADDRESS    (0x0805U)
-#define MTU6_NOISEFILTER_OFFSET_ADDRESS    (0x0803U)
-#define MTU7_NOISEFILTER_OFFSET_ADDRESS    (0x0804U)
-#define MTU8_NOISEFILTER_OFFSET_ADDRESS    (0x0008U)
-#define MTU_NOISEFILTER_C_OFFSET_ADDRESS   (0x0009U)
+#define MTU0_NOISEFILTER_OFFSET_ADDRESS     (0x0000U)
+#define MTU1_NOISEFILTER_OFFSET_ADDRESS     (0x0001U)
+#define MTU2_NOISEFILTER_OFFSET_ADDRESS     (0x0002U)
+#define MTU3_NOISEFILTER_OFFSET_ADDRESS     (0x0003U)
+#define MTU4_NOISEFILTER_OFFSET_ADDRESS     (0x0004U)
+#define MTU5_NOISEFILTER_OFFSET_ADDRESS     (0x0805U)
+#define MTU6_NOISEFILTER_OFFSET_ADDRESS     (0x0803U)
+#define MTU7_NOISEFILTER_OFFSET_ADDRESS     (0x0804U)
+#define MTU8_NOISEFILTER_OFFSET_ADDRESS     (0x0008U)
+#define MTU_NOISEFILTER_C_OFFSET_ADDRESS    (0x0009U)
 
 /* MTUx.TCR offset address */
-#define MTU0_TCR_OFFSET_ADDRESS            (0x0070U)
-#define MTU1_TCR_OFFSET_ADDRESS            (0x00F0U)
-#define MTU2_TCR_OFFSET_ADDRESS            (0x016EU)
-#define MTU3_TCR_OFFSET_ADDRESS            (0x0000U)
-#define MTU4_TCR_OFFSET_ADDRESS            (0x0001U)
-#define MTU5_TCR_OFFSET_ADDRESS            (0x01F0U)
-#define MTU6_TCR_OFFSET_ADDRESS            (0x0000U)
-#define MTU7_TCR_OFFSET_ADDRESS            (0x0001U)
-#define MTU8_TCR_OFFSET_ADDRESS            (0x0368U)
+#define MTU0_TCR_OFFSET_ADDRESS             (0x0070U)
+#define MTU1_TCR_OFFSET_ADDRESS             (0x00F0U)
+#define MTU2_TCR_OFFSET_ADDRESS             (0x016EU)
+#define MTU3_TCR_OFFSET_ADDRESS             (0x0000U)
+#define MTU4_TCR_OFFSET_ADDRESS             (0x0001U)
+#define MTU5_TCR_OFFSET_ADDRESS             (0x01F0U)
+#define MTU6_TCR_OFFSET_ADDRESS             (0x0000U)
+#define MTU7_TCR_OFFSET_ADDRESS             (0x0001U)
+#define MTU8_TCR_OFFSET_ADDRESS             (0x0368U)
 
 /* MTUx.TCR2 offset address */
-#define MTU0_TCR2_OFFSET_ADDRESS           (0x0098U)
-#define MTU1_TCR2_OFFSET_ADDRESS           (0x0104U)
-#define MTU2_TCR2_OFFSET_ADDRESS           (0x017AU)
-#define MTU3_TCR2_OFFSET_ADDRESS           (0x004CU)
-#define MTU4_TCR2_OFFSET_ADDRESS           (0x004DU)
-#define MTU5_TCR2_OFFSET_ADDRESS           (0x01F1U)
-#define MTU6_TCR2_OFFSET_ADDRESS           (0x004CU)
-#define MTU7_TCR2_OFFSET_ADDRESS           (0x004DU)
-#define MTU8_TCR2_OFFSET_ADDRESS           (0x036EU)
+#define MTU0_TCR2_OFFSET_ADDRESS            (0x0098U)
+#define MTU1_TCR2_OFFSET_ADDRESS            (0x0104U)
+#define MTU2_TCR2_OFFSET_ADDRESS            (0x017AU)
+#define MTU3_TCR2_OFFSET_ADDRESS            (0x004CU)
+#define MTU4_TCR2_OFFSET_ADDRESS            (0x004DU)
+#define MTU5_TCR2_OFFSET_ADDRESS            (0x01F1U)
+#define MTU6_TCR2_OFFSET_ADDRESS            (0x004CU)
+#define MTU7_TCR2_OFFSET_ADDRESS            (0x004DU)
+#define MTU8_TCR2_OFFSET_ADDRESS            (0x036EU)
 
 /* MTUx.TMDR1 offset address */
-#define MTU0_TMDR1_OFFSET_ADDRESS          (0x0071U)
-#define MTU1_TMDR1_OFFSET_ADDRESS          (0x00F1U)
-#define MTU2_TMDR1_OFFSET_ADDRESS          (0x016FU)
-#define MTU3_TMDR1_OFFSET_ADDRESS          (0x0002U)
-#define MTU4_TMDR1_OFFSET_ADDRESS          (0x0003U)
-#define MTU5_TMDR1_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU6_TMDR1_OFFSET_ADDRESS          (0x0002U)
-#define MTU7_TMDR1_OFFSET_ADDRESS          (0x0003U)
-#define MTU8_TMDR1_OFFSET_ADDRESS          (0x0369U)
+#define MTU0_TMDR1_OFFSET_ADDRESS           (0x0071U)
+#define MTU1_TMDR1_OFFSET_ADDRESS           (0x00F1U)
+#define MTU2_TMDR1_OFFSET_ADDRESS           (0x016FU)
+#define MTU3_TMDR1_OFFSET_ADDRESS           (0x0002U)
+#define MTU4_TMDR1_OFFSET_ADDRESS           (0x0003U)
+#define MTU5_TMDR1_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU6_TMDR1_OFFSET_ADDRESS           (0x0002U)
+#define MTU7_TMDR1_OFFSET_ADDRESS           (0x0003U)
+#define MTU8_TMDR1_OFFSET_ADDRESS           (0x0369U)
 
 /* MTUx.TIOR offset address */
-#define MTU0_TIOR_OFFSET_ADDRESS           (0x0072U)
-#define MTU1_TIOR_OFFSET_ADDRESS           (0x00F2U)
-#define MTU2_TIOR_OFFSET_ADDRESS           (0x0170U)
-#define MTU3_TIOR_OFFSET_ADDRESS           (0x0004U)
-#define MTU4_TIOR_OFFSET_ADDRESS           (0x0006U)
-#define MTU5_TIOR_OFFSET_ADDRESS           (0x01F2U)
-#define MTU6_TIOR_OFFSET_ADDRESS           (0x0004U)
-#define MTU7_TIOR_OFFSET_ADDRESS           (0x0006U)
-#define MTU8_TIOR_OFFSET_ADDRESS           (0x036AU)
+#define MTU0_TIOR_OFFSET_ADDRESS            (0x0072U)
+#define MTU1_TIOR_OFFSET_ADDRESS            (0x00F2U)
+#define MTU2_TIOR_OFFSET_ADDRESS            (0x0170U)
+#define MTU3_TIOR_OFFSET_ADDRESS            (0x0004U)
+#define MTU4_TIOR_OFFSET_ADDRESS            (0x0006U)
+#define MTU5_TIOR_OFFSET_ADDRESS            (0x01F2U)
+#define MTU6_TIOR_OFFSET_ADDRESS            (0x0004U)
+#define MTU7_TIOR_OFFSET_ADDRESS            (0x0006U)
+#define MTU8_TIOR_OFFSET_ADDRESS            (0x036AU)
 
 /* MTUx.TIER offset address */
-#define MTU0_TIER_OFFSET_ADDRESS           (0x0074U)
-#define MTU1_TIER_OFFSET_ADDRESS           (0x00F4U)
-#define MTU2_TIER_OFFSET_ADDRESS           (0x0172U)
-#define MTU3_TIER_OFFSET_ADDRESS           (0x0008U)
-#define MTU4_TIER_OFFSET_ADDRESS           (0x0009U)
-#define MTU5_TIER_OFFSET_ADDRESS           (0x021EU)
-#define MTU6_TIER_OFFSET_ADDRESS           (0x0008U)
-#define MTU7_TIER_OFFSET_ADDRESS           (0x0009U)
-#define MTU8_TIER_OFFSET_ADDRESS           (0x036CU)
+#define MTU0_TIER_OFFSET_ADDRESS            (0x0074U)
+#define MTU1_TIER_OFFSET_ADDRESS            (0x00F4U)
+#define MTU2_TIER_OFFSET_ADDRESS            (0x0172U)
+#define MTU3_TIER_OFFSET_ADDRESS            (0x0008U)
+#define MTU4_TIER_OFFSET_ADDRESS            (0x0009U)
+#define MTU5_TIER_OFFSET_ADDRESS            (0x021EU)
+#define MTU6_TIER_OFFSET_ADDRESS            (0x0008U)
+#define MTU7_TIER_OFFSET_ADDRESS            (0x0009U)
+#define MTU8_TIER_OFFSET_ADDRESS            (0x036CU)
 
 /* MTUx.TCNT offset address */
-#define MTU0_TCNT_OFFSET_ADDRESS           (0x0076U)
-#define MTU1_TCNT_OFFSET_ADDRESS           (0x00F6U)
-#define MTU2_TCNT_OFFSET_ADDRESS           (0x0174U)
-#define MTU3_TCNT_OFFSET_ADDRESS           (0x0010U)
-#define MTU4_TCNT_OFFSET_ADDRESS           (0x0012U)
-#define MTU5_TCNT_OFFSET_ADDRESS           (0x01ECU)
-#define MTU6_TCNT_OFFSET_ADDRESS           (0x0010U)
-#define MTU7_TCNT_OFFSET_ADDRESS           (0x0012U)
-#define MTU8_TCNT_OFFSET_ADDRESS           (0x0370U)
+#define MTU0_TCNT_OFFSET_ADDRESS            (0x0076U)
+#define MTU1_TCNT_OFFSET_ADDRESS            (0x00F6U)
+#define MTU2_TCNT_OFFSET_ADDRESS            (0x0174U)
+#define MTU3_TCNT_OFFSET_ADDRESS            (0x0010U)
+#define MTU4_TCNT_OFFSET_ADDRESS            (0x0012U)
+#define MTU5_TCNT_OFFSET_ADDRESS            (0x01ECU)
+#define MTU6_TCNT_OFFSET_ADDRESS            (0x0010U)
+#define MTU7_TCNT_OFFSET_ADDRESS            (0x0012U)
+#define MTU8_TCNT_OFFSET_ADDRESS            (0x0370U)
 
 /* MTUx.TGRA offset address */
-#define MTU0_TGRA_OFFSET_ADDRESS           (0x0078U)
-#define MTU1_TGRA_OFFSET_ADDRESS           (0x00F8U)
-#define MTU2_TGRA_OFFSET_ADDRESS           (0x0176U)
-#define MTU3_TGRA_OFFSET_ADDRESS           (0x0018U)
-#define MTU4_TGRA_OFFSET_ADDRESS           (0x001CU)
-#define MTU5_TGRA_OFFSET_ADDRESS           (0x01EEU)
-#define MTU6_TGRA_OFFSET_ADDRESS           (0x0018U)
-#define MTU7_TGRA_OFFSET_ADDRESS           (0x001CU)
-#define MTU8_TGRA_OFFSET_ADDRESS           (0x0374U)
+#define MTU0_TGRA_OFFSET_ADDRESS            (0x0078U)
+#define MTU1_TGRA_OFFSET_ADDRESS            (0x00F8U)
+#define MTU2_TGRA_OFFSET_ADDRESS            (0x0176U)
+#define MTU3_TGRA_OFFSET_ADDRESS            (0x0018U)
+#define MTU4_TGRA_OFFSET_ADDRESS            (0x001CU)
+#define MTU5_TGRA_OFFSET_ADDRESS            (0x01EEU)
+#define MTU6_TGRA_OFFSET_ADDRESS            (0x0018U)
+#define MTU7_TGRA_OFFSET_ADDRESS            (0x001CU)
+#define MTU8_TGRA_OFFSET_ADDRESS            (0x0374U)
 
 /* MTUx.TGRC offset address */
-#define MTU0_TGRC_OFFSET_ADDRESS           (0x007CU)
-#define MTU1_TGRC_OFFSET_ADDRESS           (0x000AU) /* Nothing */
-#define MTU2_TGRC_OFFSET_ADDRESS           (0x000AU) /* Nothing */
-#define MTU3_TGRC_OFFSET_ADDRESS           (0x0024U)
-#define MTU4_TGRC_OFFSET_ADDRESS           (0x0028U)
-#define MTU5_TGRC_OFFSET_ADDRESS           (0x0082U) /* Nothing */
-#define MTU6_TGRC_OFFSET_ADDRESS           (0x0024U)
-#define MTU7_TGRC_OFFSET_ADDRESS           (0x0028U)
-#define MTU8_TGRC_OFFSET_ADDRESS           (0x037CU)
+#define MTU0_TGRC_OFFSET_ADDRESS            (0x007CU)
+#define MTU1_TGRC_OFFSET_ADDRESS            (0x000AU) /* Nothing */
+#define MTU2_TGRC_OFFSET_ADDRESS            (0x000AU) /* Nothing */
+#define MTU3_TGRC_OFFSET_ADDRESS            (0x0024U)
+#define MTU4_TGRC_OFFSET_ADDRESS            (0x0028U)
+#define MTU5_TGRC_OFFSET_ADDRESS            (0x0082U) /* Nothing */
+#define MTU6_TGRC_OFFSET_ADDRESS            (0x0024U)
+#define MTU7_TGRC_OFFSET_ADDRESS            (0x0028U)
+#define MTU8_TGRC_OFFSET_ADDRESS            (0x037CU)
 
 /* MTUx.TADCR offset address */
-#define MTU0_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU1_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU2_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU3_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU4_TADCR_OFFSET_ADDRESS          (0x0040U)
-#define MTU5_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU6_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
-#define MTU7_TADCR_OFFSET_ADDRESS          (0x0040U)
-#define MTU8_TADCR_OFFSET_ADDRESS          (0x0000U) /* Nothing */
+#define MTU0_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU1_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU2_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU3_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU4_TADCR_OFFSET_ADDRESS           (0x0040U)
+#define MTU5_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU6_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
+#define MTU7_TADCR_OFFSET_ADDRESS           (0x0040U)
+#define MTU8_TADCR_OFFSET_ADDRESS           (0x0000U) /* Nothing */
 
 /* TGR offset address */
-#define MTU3_TGRB_D_OFFSET_WORD            (0x2U)
-#define MTU3_TGRB_D_OFFSET_LONG            (0x4U)
+#define MTU3_TGRB_D_OFFSET_WORD             (0x2U)
+#define MTU3_TGRB_D_OFFSET_LONG             (0x4U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -429,18 +429,18 @@ static const uint8_t mtu3_tstr_val[BSP_FEATURE_MTU3_MAX_CHANNELS] =
 /* MTU3 implementation of timer interface  */
 const timer_api_t g_timer_on_mtu3 =
 {
-    .open           = R_MTU3_Open,
-    .stop           = R_MTU3_Stop,
-    .start          = R_MTU3_Start,
-    .reset          = R_MTU3_Reset,
-    .enable         = R_MTU3_Enable,
-    .disable        = R_MTU3_Disable,
-    .periodSet      = R_MTU3_PeriodSet,
-    .dutyCycleSet   = R_MTU3_DutyCycleSet,
-    .infoGet        = R_MTU3_InfoGet,
-    .statusGet      = R_MTU3_StatusGet,
-    .callbackSet    = R_MTU3_CallbackSet,
-    .close          = R_MTU3_Close,
+    .open         = R_MTU3_Open,
+    .stop         = R_MTU3_Stop,
+    .start        = R_MTU3_Start,
+    .reset        = R_MTU3_Reset,
+    .enable       = R_MTU3_Enable,
+    .disable      = R_MTU3_Disable,
+    .periodSet    = R_MTU3_PeriodSet,
+    .dutyCycleSet = R_MTU3_DutyCycleSet,
+    .infoGet      = R_MTU3_InfoGet,
+    .statusGet    = R_MTU3_StatusGet,
+    .callbackSet  = R_MTU3_CallbackSet,
+    .close        = R_MTU3_Close,
 };
 
 /*******************************************************************************************************************//**
@@ -596,6 +596,7 @@ fsp_err_t R_MTU3_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
 #endif
 
     mtu3_extended_cfg_t * p_extend = (mtu3_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+
     /* Update period buffer register. The actual period is one cycle longer than the register value.
      * Reference section "Note on Cycle Setting" */
     uint32_t new_period_counts = period_counts - 1U;
@@ -660,7 +661,8 @@ fsp_err_t R_MTU3_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
                 /* Do nothing. */
             }
         }
-        else if ((MTU3_CHANNEL_1 == p_instance_ctrl->p_cfg->channel) || (MTU3_CHANNEL_2 == p_instance_ctrl->p_cfg->channel))
+        else if ((MTU3_CHANNEL_1 == p_instance_ctrl->p_cfg->channel) ||
+                 (MTU3_CHANNEL_2 == p_instance_ctrl->p_cfg->channel))
         {
             /* MTU1 and 2 without TGRC and TGRD should write TGRA and TGRB */
             if (MTU3_TCNT_CLEAR_TGRA == p_extend->mtu3_clear)
@@ -708,13 +710,13 @@ fsp_err_t R_MTU3_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
  *
  * @param[in] p_ctrl                   Pointer to instance control block.
  * @param[in] duty_cycle_counts        Duty cycle to set in counts.
- *                                     When the initial output setting of the period register is LOW, 
+ *                                     When the initial output setting of the period register is LOW,
  *                                     entering a value greater than the period register will result in a 0% duty cycle.
  * @param[in] pin                      Not Used.
  *
  * @retval FSP_SUCCESS                 Duty cycle updated successfully.
  * @retval FSP_ERR_ASSERTION           A required pointer was NULL, or the period was not in the valid range of
- *                                     1 to 0xFFFF.                                  
+ *                                     1 to 0xFFFF.
  * @retval FSP_ERR_NOT_OPEN            The instance is not opened.
  * @retval FSP_ERR_UNSUPPORTED         MTU3_CFG_OUTPUT_SUPPORT_ENABLE is 0.
  **********************************************************************************************************************/
@@ -795,7 +797,8 @@ fsp_err_t R_MTU3_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
                 /* Do nothing. */
             }
         }
-        else if ((MTU3_CHANNEL_1 == p_instance_ctrl->p_cfg->channel) || (MTU3_CHANNEL_2 == p_instance_ctrl->p_cfg->channel))
+        else if ((MTU3_CHANNEL_1 == p_instance_ctrl->p_cfg->channel) ||
+                 (MTU3_CHANNEL_2 == p_instance_ctrl->p_cfg->channel))
         {
             /* MTU1 and 2 without TGRC and TGRD should write TGRA and TGRB */
             if (MTU3_TCNT_CLEAR_TGRA == p_extend->mtu3_clear)
@@ -908,7 +911,6 @@ fsp_err_t R_MTU3_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_in
     return FSP_SUCCESS;
 }
 
-
 /*******************************************************************************************************************//**
  * Get current timer status and store it in provided pointer p_status. Implements @ref timer_api_t::statusGet.
  *
@@ -953,7 +955,6 @@ fsp_err_t R_MTU3_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const 
 
     return FSP_SUCCESS;
 }
-
 
 /*******************************************************************************************************************//**
  * Set counter value.
@@ -1168,7 +1169,6 @@ fsp_err_t R_MTU3_Close (timer_ctrl_t * const p_ctrl)
 
     return err;
 }
-
 
 /** @} (end addtogroup MTU3) */
 
@@ -1387,8 +1387,6 @@ static void mtu3_counter_initialize (mtu3_instance_ctrl_t * const p_instance_ctr
      * register, PCLK divisor register, and counter register. */
 
     R_BSP_MODULE_START(FSP_IP_MTU3, 0);
-    R_BSP_MODULE_CLKON(FSP_IP_MTU3, 0);
-    R_BSP_MODULE_RSTOFF(FSP_IP_MTU3, 0);
 
     /* Initialize all registers that may affect operation of this driver to reset values.  Skip these since they
      * affect all channels, and are initialized in TSTR and TCNT is set immediately after
@@ -1537,24 +1535,12 @@ static void mtu3_disable_interrupt (mtu3_instance_ctrl_t * const p_instance_ctrl
     /* Save pointer to extended configuration structure. */
     mtu3_extended_cfg_t * p_extend = (mtu3_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
-    if (p_instance_ctrl->p_cfg->cycle_end_irq > FSP_INVALID_VECTOR)
-    {
-        *((uint8_t *) p_instance_ctrl->p_reg +
-          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TCIEV_Msk;
-    }
-
-    if (p_extend->capture_a_irq > FSP_INVALID_VECTOR)
-    {
-        *((uint8_t *) p_instance_ctrl->p_reg +
-          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TGIEA_Msk;
-    }
-
-    if (p_extend->capture_b_irq > FSP_INVALID_VECTOR)
-    {
-        *((uint8_t *) p_instance_ctrl->p_reg +
-          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TGIEB_Msk;
-    }
-
+    *((uint8_t *) p_instance_ctrl->p_reg +
+      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TCIEV_Msk;
+    *((uint8_t *) p_instance_ctrl->p_reg +
+      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TGIEA_Msk;
+    *((uint8_t *) p_instance_ctrl->p_reg +
+      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TGIEB_Msk;
     *((uint8_t *) p_instance_ctrl->p_reg +
       tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) &= (uint8_t) ~R_MTU_TIER_TTGE_Msk;
 
@@ -1577,36 +1563,24 @@ static void mtu3_enable_interrupt (mtu3_instance_ctrl_t * const p_instance_ctrl)
     *((uint8_t *) p_instance_ctrl->p_reg + tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) = 0x00U;
 
     /* Enable CPU interrupts if callback is not null. */
-    if (p_instance_ctrl->p_cfg->cycle_end_irq > FSP_INVALID_VECTOR)
-    {
-        *((uint8_t *) p_instance_ctrl->p_reg +
-          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TCIEV_Msk;
-    }
-
-    if (p_extend->capture_a_irq > FSP_INVALID_VECTOR)
-    {
-        *((uint8_t *) p_instance_ctrl->p_reg +
-          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TGIEA_Msk;
-    }
-
-    if (p_extend->capture_b_irq > FSP_INVALID_VECTOR)
-    {
-        *((uint8_t *) p_instance_ctrl->p_reg +
-          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TGIEB_Msk;
-    }
+    *((uint8_t *) p_instance_ctrl->p_reg +
+      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TCIEV_Msk;
+    *((uint8_t *) p_instance_ctrl->p_reg +
+      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TGIEA_Msk;
+    *((uint8_t *) p_instance_ctrl->p_reg +
+      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TGIEB_Msk;
 
     if (MTU3_ADC_TGRA_COMPARE_MATCH_ENABLE == p_extend->adc_activation_setting)
     {
-    *((uint8_t *) p_instance_ctrl->p_reg +
-      tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TTGE_Msk;
+        *((uint8_t *) p_instance_ctrl->p_reg +
+          tier_ofs_addr[p_instance_ctrl->p_cfg->channel]) |= R_MTU_TIER_TTGE_Msk;
     }
     else
     {
         /* Do nothing. */
     }
 
-    r_mtu3_enable_irq(p_instance_ctrl->p_cfg->cycle_end_irq, p_instance_ctrl->p_cfg->cycle_end_ipl,
-                          p_instance_ctrl);
+    r_mtu3_enable_irq(p_instance_ctrl->p_cfg->cycle_end_irq, p_instance_ctrl->p_cfg->cycle_end_ipl, p_instance_ctrl);
     r_mtu3_enable_irq(p_extend->capture_a_irq, p_extend->capture_a_ipl, p_instance_ctrl);
     r_mtu3_enable_irq(p_extend->capture_b_irq, p_extend->capture_b_ipl, p_instance_ctrl);
 }
@@ -1635,7 +1609,6 @@ static uint32_t mtu3_clock_frequency_get (mtu3_instance_ctrl_t * const p_instanc
 
     tcr_tpsc  &= R_MTU_TCR_TPSC_Msk;
     tcr2_tpsc &= R_MTU_TCR2_TPSC2_Msk;
-
 
     /* If TCR2.TPSC2 is 1 or greater, get from the array that stores the TCR2.TPSC2 settings. */
     if (tcr2_tpsc >= 1U)
@@ -1703,7 +1676,7 @@ static void r_mtu3_call_callback (mtu3_instance_ctrl_t * p_ctrl, timer_event_t e
 static void r_mtu3_capture_common_isr (IRQn_Type const irq, mtu3_prv_capture_event_t event)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE;
+    FSP_CONTEXT_SAVE
 
     /* Recover ISR context saved in open. */
     mtu3_instance_ctrl_t * p_instance_ctrl = (mtu3_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
@@ -1761,7 +1734,7 @@ static void r_mtu3_capture_common_isr (IRQn_Type const irq, mtu3_prv_capture_eve
 void mtu3_counter_overflow_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE;
+    FSP_CONTEXT_SAVE
 
     /* Recover ISR context saved in open. */
     mtu3_instance_ctrl_t * p_instance_ctrl = (mtu3_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
@@ -1772,7 +1745,7 @@ void mtu3_counter_overflow_isr (IRQn_Type const irq)
     }
 
     /* Restore context if RTOS is used */
-    FSP_CONTEXT_RESTORE;
+    FSP_CONTEXT_RESTORE
 }
 
 /*******************************************************************************************************************//**
@@ -1794,4 +1767,3 @@ void mtu3_capture_b_isr (IRQn_Type const irq)
 {
     r_mtu3_capture_common_isr(irq, MTU3_PRV_CAPTURE_EVENT_B);
 }
-

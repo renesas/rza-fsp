@@ -243,12 +243,12 @@ typedef struct
         {
             __IOM uint32_t GRADA_STEP : 4;
             __IOM uint32_t GRADA_TYPE : 1;
-            uint32_t                  : 19;
+            uint32_t                  : 11;
             __IOM uint32_t GRADA_B    : 1;
             __IOM uint32_t GRADA_G    : 1;
             __IOM uint32_t GRADA_R    : 1;
             __IOM uint32_t GRADA_A    : 1;
-            uint32_t                  : 3;
+            uint32_t                  : 11;
             __IOM uint32_t TMODE_EN   : 1;
         } ISU_RPF_SRC_TD1_b;
     };

@@ -56,9 +56,9 @@ typedef struct st_wdt_instance_ctrl
 /** WDT configuration extension. This extension is required. */
 typedef struct st_wdt_extended_cfg
 {
-    uint16_t  wdt_timeout;            // Timeout value until the counter overflows.
-    uint8_t   overflow_ipl;           // WDT Overflow interrupt priority.
-    IRQn_Type overflow_irq;           // WDT Overflow interrupt ID.
+    uint16_t  wdt_timeout;             // Timeout value until the counter overflows.
+    uint8_t   overflow_ipl;            // WDT Overflow interrupt priority.
+    IRQn_Type overflow_irq;            // WDT Overflow interrupt ID.
 } wdt_extended_cfg_t;
 
 /**********************************************************************************************************************

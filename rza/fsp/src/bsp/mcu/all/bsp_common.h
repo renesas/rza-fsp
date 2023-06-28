@@ -125,6 +125,12 @@ FSP_HEADER
  #define FSP_HARDWARE_REGISTER_WAIT(reg, required_value)    while (reg != required_value) { /* Wait. */}
 #endif
 
+#ifndef FSP_REGISTER_READ
+
+/* Read a register and discard the result. */
+ #define FSP_REGISTER_READ(A)    __ASM volatile ("" : : "r" (A));
+#endif
+
 /****************************************************************
  *
  * This check is performed to select suitable ASM API with respect to core

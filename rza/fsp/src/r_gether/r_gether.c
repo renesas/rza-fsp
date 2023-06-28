@@ -23,7 +23,6 @@
  ***********************************************************************************************************************/
 #include <string.h>
 #include "bsp_api.h"
-#include "r_ioport_api.h"
 #include "r_gether.h"
 #include "r_gether_phy.h"
 #include "hal_data.h"
@@ -141,6 +140,12 @@
  * Typedef definitions
  ***********************************************************************************************************************/
 
+#if defined(__ARMCC_VERSION) || defined(__ICCARM__)
+typedef void (BSP_CMSE_NONSECURE_CALL * ether_prv_ns_callback) (ether_callback_args_t * p_args);
+#elif defined(__GNUC__)
+typedef BSP_CMSE_NONSECURE_CALL void (*volatile ether_prv_ns_callback) (ether_callback_args_t * p_args);
+#endif
+
 typedef uint64_t address_size_t;
 
 /*
@@ -238,6 +243,7 @@ static void gether_configure_mac(ether_instance_ctrl_t * const p_instance_ctrl,
 static fsp_err_t gether_do_link(ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode);
 static fsp_err_t gether_link_status_check(ether_instance_ctrl_t const * const p_instance_ctrl);
 static uint8_t   gether_check_magic_packet_detection_bit(ether_instance_ctrl_t const * const p_instance_ctrl);
+static void      ether_call_callback(ether_instance_ctrl_t * p_instance_ctrl, ether_callback_args_t * p_callback_args);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -268,6 +274,7 @@ const ether_api_t g_ether_on_gether =
     .linkProcess     = R_GETHER_LinkProcess,
     .wakeOnLANEnable = R_GETHER_WakeOnLANEnable,
     .txStatusGet     = R_GETHER_TxStatusGet,
+    .callbackSet     = R_GETHER_CallbackSet,
 };
 
 /*
@@ -320,11 +327,12 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
     ether_instance_ctrl_t       * p_instance_ctrl = (ether_instance_ctrl_t *) p_ctrl;
     ether_phy_instance_extend_t * p_phy_instance_extend;
     R_EMAC0_Type                * p_reg_emac;
-    ioport_ethernet_channel_t     ioprt_ch = IOPORT_ETHERNET_CHANNEL_0;
+    bsp_ethernet_channel_t        ioprt_ch = BSP_ETHERNET_CHANNEL_0;
 
     fsp_err_t phy_ret;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
+
     /** Check parameters. */
     err = gether_open_param_check(p_instance_ctrl, p_cfg); /** check arguments */
     GETHER_ERROR_RETURN((FSP_SUCCESS == err), err);
@@ -345,22 +353,22 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
 
     if (p_cfg->channel == 1)
     {
-        ioprt_ch = IOPORT_ETHERNET_CHANNEL_1;
+        ioprt_ch = BSP_ETHERNET_CHANNEL_1;
     }
 
     /** GPIO settings */
     p_phy_instance_extend = (ether_phy_instance_extend_t *) p_cfg->p_ether_phy_instance->p_cfg->p_extend;
     if (p_phy_instance_extend->voltage == ETHER_PHY_VOLTAGE_33)
     {
-        g_ioport.p_api->pinEthernetVoltageModeCfg(g_ioport.p_ctrl, ioprt_ch, IOPORT_ETHERNET_VOLTAGE_33);
+        R_BSP_EthernetVoltageModeCfg(ioprt_ch, BSP_ETHERNET_VOLTAGE_33);
     }
     else if (p_phy_instance_extend->voltage == ETHER_PHY_VOLTAGE_25)
     {
-        g_ioport.p_api->pinEthernetVoltageModeCfg(g_ioport.p_ctrl, ioprt_ch, IOPORT_ETHERNET_VOLTAGE_25);
+        R_BSP_EthernetVoltageModeCfg(ioprt_ch, BSP_ETHERNET_VOLTAGE_25);
     }
     else if (p_phy_instance_extend->voltage == ETHER_PHY_VOLTAGE_18)
     {
-        g_ioport.p_api->pinEthernetVoltageModeCfg(g_ioport.p_ctrl, ioprt_ch, IOPORT_ETHERNET_VOLTAGE_18);
+        R_BSP_EthernetVoltageModeCfg(ioprt_ch, BSP_ETHERNET_VOLTAGE_18);
     }
     else
     {
@@ -369,11 +377,11 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
 
     if (p_cfg->p_ether_phy_instance->p_cfg->mii_type == ETHER_PHY_MII_TYPE_RMII)
     {
-        g_ioport.p_api->pinEthernetModeCfg(g_ioport.p_ctrl, ioprt_ch, IOPORT_ETHERNET_MODE_RMII);
+        R_BSP_EthernetModeCfg(ioprt_ch, BSP_ETHERNET_MODE_RMII);
     }
     else if (p_cfg->p_ether_phy_instance->p_cfg->mii_type == ETHER_PHY_MII_TYPE_MII)
     {
-        g_ioport.p_api->pinEthernetModeCfg(g_ioport.p_ctrl, ioprt_ch, IOPORT_ETHERNET_MODE_MII);
+        R_BSP_EthernetModeCfg(ioprt_ch, BSP_ETHERNET_MODE_MII);
     }
     else
     {
@@ -392,8 +400,13 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
     R_FSP_IsrContextSet(p_instance_ctrl->p_gether_cfg->irq, gether_eint_isr);
 
     R_BSP_MODULE_START(FSP_IP_ETHER, p_instance_ctrl->p_gether_cfg->channel);
-    R_BSP_MODULE_CLKON(FSP_IP_ETHER, p_cfg->channel);
-    R_BSP_MODULE_RSTOFF(FSP_IP_ETHER, p_cfg->channel);
+
+    /* Set callback and context pointers, if configured */
+    p_instance_ctrl->p_callback        = p_cfg->p_callback;
+    p_instance_ctrl->p_context         = p_cfg->p_context;
+    p_instance_ctrl->p_callback_memory = NULL;
+
+    R_BSP_MODULE_START(FSP_IP_ETHER, p_instance_ctrl->p_gether_cfg->channel);
 
     /* Initialize the Ethernet buffer */
     gether_init_buffers(p_instance_ctrl);
@@ -622,7 +635,8 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
     R_TOE0_Type           * p_reg_toe;
     R_ETHER0_Type         * p_reg_ether;
 
-    ether_callback_args_t callback_arg;
+    ether_callback_args_t     callback_arg;
+    ether_instance_extend_t * p_ether_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(p_instance_ctrl);
@@ -667,6 +681,7 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
     {
         uint32_t link_up_request = 0;
 #if (GETHER_CFG_USE_LINKSTA == 1)
+
         /*
          * The Link Up/Down is confirmed by the Link Status bit of PHY register1,
          * because the LINK signal of PHY-LSI is used for LED indicator, and
@@ -682,6 +697,7 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         {
             link_up_request = 0;
         }
+
 #elif (GETHER_CFG_USE_LINKSTA == 0)
         link_up_request = 1;
 #endif
@@ -695,14 +711,13 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
             p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
             /* Initialize the transmit and receive descriptor */
-            memset(p_instance_ctrl->p_gether_cfg->p_rx_descriptors,
+            memset(p_ether_instance_extend->p_rx_descriptor,
                    0x00,
                    sizeof(gether_instance_rx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_rx_descriptors + 1));
-            memset(p_instance_ctrl->p_gether_cfg->p_tx_descriptors,
+            memset(p_ether_instance_extend->p_tx_descriptor,
                    0x00,
                    sizeof(gether_instance_tx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_tx_descriptors + 1));
-            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel],
-                   0x00,
+            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel], 0x00,
                    sizeof(g_gether_basic_descriptors[0]));
 
             /* Initialize the Ethernet buffer */
@@ -731,12 +746,14 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
 
             if (FSP_SUCCESS == err)
             {
-                if (NULL != p_instance_ctrl->p_gether_cfg->p_callback)
+                if (NULL != p_instance_ctrl->p_callback)
                 {
-                    callback_arg.channel   = p_instance_ctrl->p_gether_cfg->channel;
-                    callback_arg.event     = ETHER_EVENT_LINK_ON;
-                    callback_arg.p_context = p_instance_ctrl->p_gether_cfg->p_context;
-                    (*p_instance_ctrl->p_gether_cfg->p_callback)((void *) &callback_arg);
+                    callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
+                    callback_arg.event       = ETHER_EVENT_LINK_ON;
+                    callback_arg.status_ecsr = 0;
+                    callback_arg.status_eesr = 0;
+                    callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
+                    ether_call_callback(p_instance_ctrl, &callback_arg);
                 }
             }
             else
@@ -855,6 +872,7 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
 #if (GETHER_CFG_USE_LINKSTA == 1)
+
         /*
          * The Link Up/Down is confirmed by the Link Status bit of PHY register1,
          * because the LINK signal of PHY-LSI is used for LED indicator, and
@@ -869,6 +887,7 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         {
             link_down_request = 0;
         }
+
 #elif (GETHER_CFG_USE_LINKSTA == 0)
         link_down_request = 1;
 #endif
@@ -918,12 +937,14 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
 
             p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_DOWN;
 
-            if (NULL != p_instance_ctrl->p_gether_cfg->p_callback)
+            if (NULL != p_instance_ctrl->p_callback)
             {
-                callback_arg.channel   = p_instance_ctrl->p_gether_cfg->channel;
-                callback_arg.event     = ETHER_EVENT_LINK_OFF;
-                callback_arg.p_context = p_instance_ctrl->p_gether_cfg->p_context;
-                (*p_instance_ctrl->p_gether_cfg->p_callback)((void *) &callback_arg);
+                callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
+                callback_arg.event       = ETHER_EVENT_LINK_OFF;
+                callback_arg.status_ecsr = 0;
+                callback_arg.status_eesr = 0;
+                callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
+                ether_call_callback(p_instance_ctrl, &callback_arg);
             }
         }
     }
@@ -964,6 +985,7 @@ fsp_err_t R_GETHER_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
     if (FSP_SUCCESS == err)
     {
 #if (GETHER_CFG_USE_LINKSTA == 1)
+
         /* It is confirmed not to become Link down while changing the setting. */
         if (GETHER_CFG_LINK_PRESENT == p_reg_emac->PSR_b.LMON)
         {
@@ -973,7 +995,9 @@ fsp_err_t R_GETHER_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
         {
             err = FSP_ERR_ETHER_ERROR_LINK;
         }
+
 #else
+
         /* It is confirmed not to become Link down while changing the setting. */
         err = gether_link_status_check(p_instance_ctrl);
 #endif
@@ -1164,6 +1188,7 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
                  (p_instance_ctrl->p_rx_descriptor->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
             /* Move to next descriptor */
             uint64_t pa = (uint64_t)
                           (void *) (((address_size_t) p_instance_ctrl->p_rx_descriptor &
@@ -1265,6 +1290,7 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
         if ((p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
             /* Move to next descriptor */
             uint64_t pa = (uint64_t)
                           (void *) (((address_size_t) p_tx_desc & GETHER_ADDRESS_UPPER_BITS_MASK) |
@@ -1293,6 +1319,7 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
         memcpy(p_copy_dst, p_write_buffer, frame_length);
 
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
         /* Clean cache after writing data */
         R_BSP_CACHE_CleanRange((address_size_t) p_copy_dst, (frame_length + 3) & GETHER_ADDRESS_4BYTE_MASK);
 #endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
@@ -1313,6 +1340,7 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
         if ((p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
             /* Move to next descriptor */
             uint64_t pa = (uint64_t)
                           (void *) (((address_size_t) p_tx_desc & GETHER_ADDRESS_UPPER_BITS_MASK) |
@@ -1385,6 +1413,54 @@ fsp_err_t R_GETHER_TxStatusGet (__attribute__((unused)) ether_ctrl_t * const p_c
  * @} (end addtogroup GETHER)
  **********************************************************************************************************************/
 
+/*******************************************************************************************************************//**
+ * Updates the user callback with the option to provide memory for the callback argument structure.
+ * Implements @ref ether_api_t::callbackSet.
+ *
+ * @retval  FSP_SUCCESS                  Callback updated successfully.
+ * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
+ * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
+ * @retval  FSP_ERR_NO_CALLBACK_MEMORY   p_callback is non-secure and p_callback_memory is either secure or NULL.
+ **********************************************************************************************************************/
+fsp_err_t R_GETHER_CallbackSet (ether_ctrl_t * const          p_api_ctrl,
+                               void (                      * p_callback ) (ether_callback_args_t *),
+                               void const * const            p_context,
+                               ether_callback_args_t * const p_callback_memory)
+{
+    ether_instance_ctrl_t * p_ctrl = (ether_instance_ctrl_t *) p_api_ctrl;
+
+#if ETHER_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(p_ctrl);
+    FSP_ASSERT(p_callback);
+    FSP_ERROR_RETURN(GETHER_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
+#endif
+
+#if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
+    /* Get security state of p_callback */
+    bool callback_is_secure =
+        (NULL == cmse_check_address_range((void *) p_callback, sizeof(void *), CMSE_AU_NONSECURE));
+
+ #if ETHER_CFG_PARAM_CHECKING_ENABLE
+    /* In secure projects, p_callback_memory must be provided in non-secure space if p_callback is non-secure */
+    ether_callback_args_t * const p_callback_memory_checked = cmse_check_pointed_object(p_callback_memory,
+                                                                                        CMSE_AU_NONSECURE);
+    FSP_ERROR_RETURN(callback_is_secure || (NULL != p_callback_memory_checked), FSP_ERR_NO_CALLBACK_MEMORY);
+ #endif
+#endif
+
+    /* Store callback and context */
+#if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
+    p_ctrl->p_callback = callback_is_secure ? p_callback :
+                         (void (*) (ether_callback_args_t *))cmse_nsfptr_create(p_callback);
+#else
+    p_ctrl->p_callback = p_callback;
+#endif
+    p_ctrl->p_context         = p_context;
+    p_ctrl->p_callback_memory = p_callback_memory;
+
+    return FSP_SUCCESS;
+}
+
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
@@ -1414,6 +1490,7 @@ static fsp_err_t gether_open_param_check (ether_instance_ctrl_t const * const p_
     FSP_ASSERT(p_instance_ctrl);
     GETHER_ERROR_RETURN((NULL != p_cfg), FSP_ERR_INVALID_POINTER);
     GETHER_ERROR_RETURN((NULL != p_cfg->p_mac_address), FSP_ERR_INVALID_POINTER);
+    GETHER_ERROR_RETURN((NULL != p_cfg->p_extend), FSP_ERR_INVALID_POINTER);
     GETHER_ERROR_RETURN((BSP_FEATURE_GETHER_MAX_CHANNELS > p_cfg->channel), FSP_ERR_INVALID_CHANNEL);
     GETHER_ERROR_RETURN((0 <= p_cfg->irq), FSP_ERR_INVALID_ARGUMENT);
     GETHER_ERROR_RETURN((p_cfg->padding <= ETHER_PADDING_3BYTE), FSP_ERR_INVALID_ARGUMENT);
@@ -1520,11 +1597,12 @@ static void gether_reset_mac (R_ETHER0_Type * const p_reg)
 static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
+    ether_instance_extend_t * p_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
+
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     uint64_t pa = 0;
 #endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
     uint32_t tx_num = p_instance_ctrl->p_gether_cfg->num_tx_descriptors;
-    ether_instance_extend_t * p_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
     /* NOTE: The first TX descriptor is dpecified to the value of DBTL register.
      *       The first RX descriprot is dpecified to (the value of DBTL register + 0x40).
@@ -1580,7 +1658,9 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
  ***********************************************************************************************************************/
 static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
+
     uint32_t i;
+
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     uint64_t pa = 0;
 #endif                                 /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
@@ -1702,6 +1782,7 @@ static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instan
     R_ETHER0_Type * p_reg_ether;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument */
     if ((NULL == p_instance_ctrl) || (GETHER_OPEN != p_instance_ctrl->open))
     {
@@ -1724,6 +1805,7 @@ static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instan
     else
     {
 #if (GETHER_CFG_USE_LINKSTA == 1)
+
         /* LINK Signal Change Interrupt Enable */
         p_reg_emac->CXR21_b.LINKI  = 1;
         p_reg_emac->CXR22_b.LINKIM = 1;
@@ -1735,6 +1817,7 @@ static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instan
 
 #if ((defined(__GNUC__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) || (defined(__ARMCC_VERSION) && \
     !defined(__ARM_BIG_ENDIAN)) || (defined(__ICCARM__) && (__LITTLE_ENDIAN__)))
+
     /* Set little endian mode */
     p_reg_ether->CCC_b.BOC = 0;
 #endif
@@ -1808,6 +1891,7 @@ static void gether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
     uint32_t       mac_l;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument */
     if ((NULL == p_instance_ctrl) || (GETHER_OPEN != p_instance_ctrl->open))
     {
@@ -2055,6 +2139,61 @@ static fsp_err_t gether_link_status_check (ether_instance_ctrl_t const * const p
     return err;
 }                                      /* End of function gether_link_status_check() */
 
+/*******************************************************************************************************************//**
+ * Calls user callback.
+ *
+ * @param[in]     p_instance_ctrl      Pointer to ether instance control block
+ * @param[in]     p_callback_args      Pointer to callback args
+ **********************************************************************************************************************/
+static void ether_call_callback (ether_instance_ctrl_t * p_instance_ctrl, ether_callback_args_t * p_callback_args)
+{
+    ether_callback_args_t args;
+
+    /* Store callback arguments in memory provided by user if available.  This allows callback arguments to be
+     * stored in non-secure memory so they can be accessed by a non-secure callback function. */
+    ether_callback_args_t * p_args = p_instance_ctrl->p_callback_memory;
+    if (NULL == p_args)
+    {
+        /* Store on stack */
+        p_args = &args;
+    }
+    else
+    {
+        /* Save current arguments on the stack in case this is a nested interrupt. */
+        args = *p_args;
+    }
+
+    p_args->event       = p_callback_args->event;
+    p_args->status_ecsr = p_callback_args->status_ecsr;
+    p_args->status_eesr = p_callback_args->status_eesr;
+    p_args->channel     = p_instance_ctrl->p_gether_cfg->channel;
+    p_args->p_context   = p_instance_ctrl->p_context;
+
+#if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
+    /* p_callback can point to a secure function or a non-secure function. */
+    if (!cmse_is_nsfptr(p_instance_ctrl->p_callback))
+    {
+        /* If p_callback is secure, then the project does not need to change security state. */
+        p_instance_ctrl->p_callback(p_args);
+    }
+    else
+    {
+        /* If p_callback is Non-secure, then the project must change to Non-secure state in order to call the callback. */
+        ether_prv_ns_callback p_callback = (ether_prv_ns_callback) (p_instance_ctrl->p_callback);
+        p_callback(p_args);
+    }
+#else
+    /* If the project is not Trustzone Secure, then it will never need to change security state in order to call the callback. */
+    p_instance_ctrl->p_callback(p_args);
+#endif
+
+    if (NULL != p_instance_ctrl->p_callback_memory)
+    {
+        /* Restore callback memory in case this is a nested interrupt. */
+        *p_instance_ctrl->p_callback_memory = args;
+    }
+}
+
 /***********************************************************************************************************************
  * Function Name: gether_eint_isr
  * Description  : Interrupt handler for Ethernet receive and transmit interrupts.
@@ -2063,16 +2202,16 @@ static fsp_err_t gether_link_status_check (ether_instance_ctrl_t const * const p
  ***********************************************************************************************************************/
 void gether_eint_isr (IRQn_Type const irq)
 {
-    uint32_t status_ecsr;
+    /* Save context if RTOS is used */
+    FSP_CONTEXT_SAVE
+
+	uint32_t status_ecsr;
     uint32_t status_eesr;
 
     ether_callback_args_t callback_arg;
     R_EMAC0_Type        * p_reg_emac;
     R_ETHER0_Type       * p_reg_ether;
     R_TOE0_Type         * p_reg_toe;
-
-    /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE
 
     ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
@@ -2154,14 +2293,14 @@ void gether_eint_isr (IRQn_Type const irq)
     }
 
     /* Callback : Interrupt handler */
-    if (NULL != p_instance_ctrl->p_gether_cfg->p_callback)
+    if (NULL != p_instance_ctrl->p_callback)
     {
         callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
         callback_arg.event       = ETHER_EVENT_INTERRUPT;
         callback_arg.status_ecsr = status_ecsr;
         callback_arg.status_eesr = status_eesr;
         callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
-        (*p_instance_ctrl->p_gether_cfg->p_callback)((void *) &callback_arg);
+        ether_call_callback(p_instance_ctrl, &callback_arg);
     }
 
     /* Clear pending IRQ to make sure it doesn't fire again after exiting */

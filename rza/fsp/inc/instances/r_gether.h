@@ -111,6 +111,27 @@ typedef enum e_gether_link_establish_status
     GETHER_LINK_ESTABLISH_STATUS_UP   = 1, ///< Link establish status is up
 } gether_link_establish_status_t;
 
+/** EDMAC descriptor as defined in the hardware manual.
+ * Structure must be packed at 1 byte.
+ */
+typedef struct st_ether_instance_descriptor
+{
+    volatile uint32_t status;
+#if ((defined(__GNUC__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)) || (defined(__ARMCC_VERSION) && \
+    !defined(__ARM_BIG_ENDIAN)) || (defined(__ICCARM__) && (__LITTLE_ENDIAN__)))
+
+    /* Little endian */
+    volatile uint16_t size;
+    volatile uint16_t buffer_size;
+#else
+    /* Big endian */
+    volatile uint16_t buffer_size;
+    volatile uint16_t size;
+#endif
+    uint8_t * p_buffer;
+    struct st_ether_instance_descriptor * p_next;
+} ether_instance_descriptor_t;
+
 /** GETHER control block. DO NOT INITIALIZE.  Initialization occurs when @ref ether_api_t::open is called. */
 typedef struct st_ether_instance_ctrl
 {
@@ -132,6 +153,13 @@ typedef struct st_ether_instance_ctrl
     gether_previous_link_status_t  previous_link_status;  ///< Previous link status
     gether_link_change_t           link_change;           ///< status of link change
     gether_link_establish_status_t link_establish_status; ///< Current Link status
+
+    /* Pointer to callback and optional working memory */
+    void (* p_callback)(ether_callback_args_t *);
+    ether_callback_args_t * p_callback_memory;
+
+    /* Pointer to context to be passed into callback function */
+    void const * p_context;
 } ether_instance_ctrl_t;
 
 typedef struct st_ether_instance_extend
@@ -175,6 +203,11 @@ fsp_err_t R_GETHER_LinkProcess(ether_ctrl_t * const p_ctrl);
 fsp_err_t R_GETHER_WakeOnLANEnable(ether_ctrl_t * const p_ctrl);
 
 fsp_err_t R_GETHER_TxStatusGet(ether_ctrl_t * const p_ctrl, void * const p_buffer_address);
+
+fsp_err_t R_GETHER_CallbackSet(ether_ctrl_t * const          p_api_ctrl,
+                               void (                      * p_callback ) (ether_callback_args_t *),
+                               void const * const            p_context,
+                               ether_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**
  * @} (end addtogroup GETHER)

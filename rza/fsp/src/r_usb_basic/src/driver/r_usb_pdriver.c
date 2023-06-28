@@ -41,7 +41,7 @@
 /******************************************************************************
  * Private global variables and functions
  ******************************************************************************/
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
 static void usb_pstd_interrupt(usb_utr_t * p_mess);
 
  #else                                 /*(BSP_CFG_RTOS == 2)*/
@@ -356,7 +356,7 @@ static void usb_pstd_interrupt (uint16_t type, uint16_t status, usb_cfg_t * p_cf
  ******************************************************************************/
  #endif                                /*(BSP_CFG_RTOS == 0)*/
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
 
 /******************************************************************************
  * Function Name   : usb_pstd_interrupt
@@ -662,7 +662,7 @@ void usb_pstd_pcd_task (void)
   #endif /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
  #endif /*(BSP_CFG_RTOS == 0)*/
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
     usb_er_t    err;
     usb_utr_t * p_mess;
 
@@ -732,7 +732,7 @@ usb_er_t usb_pstd_set_submitutr (usb_utr_t * utrmsg)
     /* Check state (Configured) */
     if (USB_TRUE == usb_pstd_chk_configured(utrmsg))
     {
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
         if (NULL != g_p_usb_pstd_pipe[pipenum])
         {
             usb_cstd_pipe_msg_forward(utrmsg, pipenum);
@@ -741,7 +741,7 @@ usb_er_t usb_pstd_set_submitutr (usb_utr_t * utrmsg)
         }
  #endif                                /* BSP_CFG_RTOS == 2 */
 
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
         g_p_usb_pstd_pipe[pipenum] = utrmsg;
  #endif                                /* (BSP_CFG_RTOS == 2) */
 
@@ -758,7 +758,7 @@ usb_er_t usb_pstd_set_submitutr (usb_utr_t * utrmsg)
     }
     else
     {
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
         if (USB_PIPE0 == pipenum)
         {
             usb_cstd_pipe0_msg_clear(utrmsg, 0);
@@ -767,6 +767,7 @@ usb_er_t usb_pstd_set_submitutr (usb_utr_t * utrmsg)
         {
             usb_cstd_pipe_msg_clear(utrmsg, pipenum);
         }
+
  #else                                 /* BSP_CFG_RTOS == 2 */
         /* Transfer stop */
         usb_pstd_forced_termination(pipenum, (uint16_t) USB_DATA_ERR, utrmsg);
@@ -1296,7 +1297,7 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
 {
     usb_er_t err;
     uint16_t pipenum;
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     usb_utr_t * p_tran_data;
   #endif                               /* BSP_CFG_RTOS == 2 */
 
@@ -1368,7 +1369,7 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
 usb_er_t usb_pstd_transfer_end (usb_utr_t * p_utr, uint16_t pipe)
 {
     usb_er_t err = USB_OK;
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     usb_utr_t utr;
   #endif                               /* (BSP_CFG_RTOS == 2) */
 
@@ -1418,7 +1419,7 @@ usb_er_t usb_pstd_transfer_end (usb_utr_t * p_utr, uint16_t pipe)
 void usb_pstd_change_device_state (uint16_t state, uint16_t keyword, usb_cb_t complete, usb_utr_t * p_utr)
 {
     uint16_t pipenum;
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     static usb_utr_t utr;
     uint16_t         err;
   #endif                               /* (BSP_CFG_RTOS == 2) */
@@ -1875,7 +1876,7 @@ void usb_peri_resume (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
     ctrl.p_transfer_rx = ptr->p_transfer_rx;
     ctrl.p_transfer_tx = ptr->p_transfer_tx;
  #endif
- #if (BSP_CFG_RTOS == 2)
+ #if (BSP_CFG_RTOS != 0)
     ctrl.p_data = (void *) ptr->cur_task_hdl;
  #endif                                /* (BSP_CFG_RTOS == 2) */
 
@@ -1919,7 +1920,7 @@ void usb_pvnd_read_complete (usb_utr_t * mess, uint16_t data1, uint16_t data2)
     ctrl.size = mess->read_req_len - mess->tranlen;
     ctrl.pipe = mess->keyword;         /* Pipe number setting */
     ctrl.type = USB_PVND;              /* Device class setting  */
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     ctrl.p_data = (void *) mess->cur_task_hdl;
   #endif /* (BSP_CFG_RTOS == 2) */
     switch (mess->status)
@@ -1976,7 +1977,7 @@ void usb_pvnd_write_complete (usb_utr_t * mess, uint16_t data1, uint16_t data2)
     }
 
     ctrl.module_number = mess->ip;
-  #if (BSP_CFG_RTOS == 2)
+  #if (BSP_CFG_RTOS != 0)
     ctrl.p_data = (void *) mess->cur_task_hdl;
   #endif                               /* (BSP_CFG_RTOS == 2) */
     usb_set_event(USB_STS_WRITE_COMPLETE, &ctrl);

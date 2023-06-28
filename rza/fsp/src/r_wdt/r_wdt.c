@@ -29,11 +29,11 @@
  * Macro definitions
  **********************************************************************************************************************/
 
-#define WDT_OPEN    (0x00574454ULL)
+#define WDT_OPEN                                  (0x00574454ULL)
 
 /* WDT register settings. */
-#define WDT_PRV_STATUS_FLAG_SET_POS             (2U)
-#define WDT_PRV_WDTSET_TIMEOUT_CALCURATE_VALUE  (1024 * 1024)
+#define WDT_PRV_STATUS_FLAG_SET_POS               (2U)
+#define WDT_PRV_WDTSET_TIMEOUT_CALCURATE_VALUE    (1024 * 1024)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -85,7 +85,7 @@ const wdt_api_t g_wdt_on_wdt =
  **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
- * Configures the WDT driver based on the input configurations. This function sets the callback function, 
+ * Configures the WDT driver based on the input configurations. This function sets the callback function,
  * the timeout count value, and enables the overflow interrupt.Implements
  * @ref wdt_api_t::open.
  *
@@ -114,8 +114,7 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
     p_instance_ctrl->p_callback_memory = NULL;
 
     /* Clock On and Reset Off. */
-    R_BSP_MODULE_CLKON(FSP_IP_WDT, 0);
-    R_BSP_MODULE_RSTOFF(FSP_IP_WDT, 0);
+    R_BSP_MODULE_START(FSP_IP_WDT, 0);
 
     /* Set the configuration registers in register start mode. */
     wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_cfg->p_extend;
@@ -146,9 +145,10 @@ fsp_err_t R_WDT_TimeoutGet (wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * co
 #endif
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
-    /* Get timeout value from WDTTIM register. 
+    /* Get timeout value from WDTTIM register.
      * (see section 'WDT Period Setting Register_n (WDTSET_n)' of the user's manual)*/
-    p_timeout->timeout_clocks = WDT_PRV_WDTSET_TIMEOUT_CALCURATE_VALUE * ((R_WDT0->WDTSET >> R_WDT0_WDTSET_WDTTIME_Pos) + 1);
+    p_timeout->timeout_clocks = WDT_PRV_WDTSET_TIMEOUT_CALCURATE_VALUE *
+                                ((R_WDT0->WDTSET >> R_WDT0_WDTSET_WDTTIME_Pos) + 1);
 
     /* Get the frequency of the clock supplying the watchdog */
     p_timeout->clock_frequency_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_OSCCLK);
@@ -178,7 +178,7 @@ fsp_err_t R_WDT_Refresh (wdt_ctrl_t * const p_ctrl)
     FSP_ERROR_RETURN(WDT_OPEN == p_instance_ctrl->wdt_open, FSP_ERR_NOT_OPEN);
 #endif
 
-    if(0 == R_WDT0->WDTCNT_b.WDTEN)
+    if (0 == R_WDT0->WDTCNT_b.WDTEN)
     {
         /* Start the WDT. */
         R_WDT0->WDTCNT = R_WDT0_WDTCNT_WDTEN_Msk;
@@ -420,7 +420,6 @@ static fsp_err_t r_wdt_parameter_checking (wdt_instance_ctrl_t * const p_instanc
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ERROR_RETURN(WDT_OPEN != p_instance_ctrl->wdt_open, FSP_ERR_ALREADY_OPEN);
     FSP_ASSERT(NULL != p_cfg->p_extend);
-
 #else
     FSP_PARAMETER_NOT_USED(p_instance_ctrl);
     FSP_PARAMETER_NOT_USED(p_cfg);
@@ -432,14 +431,14 @@ static fsp_err_t r_wdt_parameter_checking (wdt_instance_ctrl_t * const p_instanc
 /*******************************************************************************************************************//**
  * WDT Overflow ISR
  **********************************************************************************************************************/
-void wdt_overflow_isr(IRQn_Type const irq)
+void wdt_overflow_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
 
-    wdt_instance_ctrl_t * p_ctrl   = (wdt_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    wdt_instance_ctrl_t * p_ctrl = (wdt_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
-    if(NULL != p_ctrl->p_callback)
+    if (NULL != p_ctrl->p_callback)
     {
         /* Call the callback function. */
         r_wdt_overflow_callback(p_ctrl);

@@ -87,6 +87,7 @@ static bool r_usb_dmaca_set_transfer_data(uint8_t channel, usb_dmaca_transfer_da
 usb_dmaca_return_t r_usb_dmaca_create (uint8_t channel, usb_dmaca_transfer_data_cfg_t * p_data_cfg)
 {
  #if (1 == USB_DMACA_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument. */
     if (false == r_usb_dmaca_channel_valid_check(channel))
     {
@@ -138,6 +139,7 @@ usb_dmaca_return_t r_usb_dmaca_control (uint8_t channel, usb_dmaca_command_t com
     uint32_t dmaca_channel_status = 0x0000;
 
  #if (1 == USB_DMACA_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument. */
     if (false == r_usb_dmaca_channel_valid_check(channel))
     {
@@ -328,6 +330,7 @@ void r_usb_dmaca_init (void)
 usb_dmaca_return_t r_usb_dmaca_int_callback (uint8_t channel, void * p_callback)
 {
  #if (1 == USB_DMACA_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument. */
     if (false == r_usb_dmaca_channel_valid_check(channel))
     {
@@ -363,6 +366,7 @@ usb_dmaca_return_t r_usb_dmaca_int_callback (uint8_t channel, void * p_callback)
 usb_dmaca_return_t r_usb_dmaca_int_enable (uint8_t channel, uint8_t priority)
 {
  #if (1 == USB_DMACA_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument. */
     if (false == r_usb_dmaca_channel_valid_check(channel))
     {
@@ -393,6 +397,7 @@ usb_dmaca_return_t r_usb_dmaca_int_enable (uint8_t channel, uint8_t priority)
 usb_dmaca_return_t r_usb_dmaca_int_disable (uint8_t channel)
 {
  #if (1 == USB_DMACA_CFG_PARAM_CHECKING_ENABLE)
+
     /* Check argument. */
     if (false == r_usb_dmaca_channel_valid_check(channel))
     {

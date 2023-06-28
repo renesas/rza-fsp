@@ -44,13 +44,13 @@
 #define USB_VERSION_MINOR              (0)
 
 #define CLSDATASIZE                    (512U) /* Transfer data size for Standard Request */
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
 
 /* The buffer size of interrupt info is increased to avoid overlapping interrupt events. */
  #define USB_INT_BUFSIZE               (32U)  /* Size of Interrupt info buffer */
-#else /* #if (BSP_CFG_RTOS == 2) */
+#else /* #if (BSP_CFG_RTOS != 0) */
  #define USB_INT_BUFSIZE               (32U)  /* Size of Interrupt info buffer */
-#endif /* #if (BSP_CFG_RTOS == 2) */
+#endif /* #if (BSP_CFG_RTOS != 0) */
 #define USB_EVENT_MAX                  (32)
 
 /* Scheduler use define */
@@ -105,7 +105,7 @@
 #define USB_HUB_MPL                    (USB_HUB_TSK) /* Memory pool ID */
 #define USB_HUB_MSG                    (USB_HUB_TSK) /* Message ID */
 
-#if (BSP_CFG_RTOS == 2)
+#if (BSP_CFG_RTOS != 0)
 
 /* Class Request for Internal Communication  */
  #define USB_CLS_TSK                   (USB_TID_4)   /* Task ID */
@@ -115,7 +115,7 @@
 /* Peripheral Control Driver Task */
  #define USB_PCD_TSK                   (USB_TID_5)   /* Task ID */
  #define USB_PCD_MBX                   (USB_PCD_TSK) /* Mailbox ID */
-#endif /* #if (BSP_CFG_RTOS == 2) */
+#endif /* #if (BSP_CFG_RTOS != 0) */
 
 /* Error discrimination */
 #define USB_DEBUG_HOOK_HWR             (0x0100)
@@ -223,6 +223,8 @@
  #define USB_M0                                (R_USB01)
  #define USB00                                 (R_USB00)
  #define USB10                                 (R_USB10)
+
+ #define R_USB_HS0_BASE                        (R_USB00)
 #else                                  /* BSP_MCU_GROUP_RZT2M == 1 */
  #define USB_M0                                (R_USBF)
  #if defined(BSP_MCU_GROUP_RZT2M)
@@ -624,7 +626,7 @@
 #define USB_NOPORT                             (0xFFFFU) /* Not connect */
 
 /* Condition compilation by the difference of IP */
-#define USB_MAXDEVADDR                         (5U)
+#define USB_MAXDEVADDR                         (3U)
 
 #define USB_DEVICE_0                           (0x0000U) /* Device address 0 */
 #define USB_DEVICE_1                           (0x1000U) /* Device address 1 */
@@ -852,30 +854,33 @@
 /*************************************************************************
  * old basic_cfg.h #define
  *************************************************************************/
-#if (BSP_CFG_RTOS == 0) || USB_IP_EHCI_OHCI == 0
- #define USB_SND_MSG(ID, MESS)        (usb_cstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
- #define USB_ISND_MSG(ID, MESS)       (usb_cstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
- #define USB_RCV_MSG(ID, MESS)        (usb_cstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS), (usb_tm_t) (0U)))
- #define USB_WAI_MSG(ID, MESS, TM)    (usb_cstd_wai_msg((uint8_t) (ID), (usb_msg_t *) (MESS), (usb_tm_t) (TM)))
- #define USB_PGET_BLK(ID, BLK)        (usb_cstd_pget_blk((uint8_t) (ID), (usb_utr_t **) (BLK)))
- #define USB_REL_BLK(ID, BLK)         (usb_cstd_rel_blk((uint8_t) (ID), (usb_utr_t *) (BLK)))
-
-#else                                  /* #if (BSP_CFG_RTOS == 0) */
+#if (BSP_CFG_RTOS == 1)                /* #if (BSP_CFG_RTOS == 1) */
  #define USB_SND_MSG(ID, MESS)        (usb_hstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
  #define USB_ISND_MSG(ID, MESS)       (usb_hstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
  #define USB_RCV_MSG(ID, MESS)        (usb_hstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS)))
  #define USB_WAI_MSG(ID, MESS, TM)    (usb_hstd_wai_msg((uint8_t) (ID), (usb_msg_t *) (MESS), (usb_tm_t) (TM)))
  #define USB_PGET_BLK(ID, BLK)        (usb_hstd_pget_blk((uint8_t) (ID), (usb_utr_t **) (BLK)))
  #define USB_REL_BLK(ID, BLK)         (usb_hstd_rel_blk((uint8_t) (ID), (usb_utr_t *) (BLK)))
-#endif                                 /* #if (BSP_CFG_RTOS == 0) */
+#else                                  /* #if (BSP_CFG_RTOS == 1) */
+ #define USB_SND_MSG(ID, MESS)        (usb_cstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
+ #define USB_ISND_MSG(ID, MESS)       (usb_cstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
+ #define USB_RCV_MSG(ID, MESS)        (usb_cstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS), (usb_tm_t) (0U)))
+ #define USB_WAI_MSG(ID, MESS, TM)    (usb_cstd_wai_msg((uint8_t) (ID), (usb_msg_t *) (MESS), (usb_tm_t) (TM)))
+ #define USB_PGET_BLK(ID, BLK)        (usb_cstd_pget_blk((uint8_t) (ID), (usb_utr_t **) (BLK)))
+ #define USB_REL_BLK(ID, BLK)         (usb_cstd_rel_blk((uint8_t) (ID), (usb_utr_t *) (BLK)))
+#endif                                 /* #if (BSP_CFG_RTOS == 1) */
 #define USB_TRCV_MSG(ID, MESS, TM)    (usb_cstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS), (usb_tm_t) (TM)))
 
 /* Descriptor size */
-#define USB_DEVICESIZE    (20U)        /* Device Descriptor size */
-#define USB_CONFIGSIZE    (256U)       /* Configuration Descriptor size */
+#define USB_DEVICESIZE     (20U)       /* Device Descriptor size */
+#ifdef USB_CFG_HUVC_USE
+ #define USB_CONFIGSIZE    (3 * 1024)  /* Configuration Descriptor size */
+#else
+ #define USB_CONFIGSIZE    (256U)      /* Configuration Descriptor size */
+#endif /* USB_CFG_HUVC_USE */
 
 /* Number of software retries when a no-response condition occurs during a transfer */
-#define USB_PIPEERROR     (1U)
+#define USB_PIPEERROR      (1U)
 
 /** [Output debugging message in a console of IDE.]
  *   not defined(USB_DEBUG_ON) : No output the debugging message
