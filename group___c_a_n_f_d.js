@@ -11,7 +11,7 @@ var group___c_a_n_f_d =
     ] ],
     [ "canfd_extended_cfg_t", "group___c_a_n_f_d.html#structcanfd__extended__cfg__t", [
       [ "p_afl", "group___c_a_n_f_d.html#a3bcb58bb257835c3618f28751aad29a5", null ],
-      [ "txmb_txi_enable", "group___c_a_n_f_d.html#a1a95c697fe49bba12e5ddb7e21b04572", null ],
+      [ "txmb_txi_enable", "group___c_a_n_f_d.html#ab3421077c295a40773c6cad2fb638176", null ],
       [ "error_interrupts", "group___c_a_n_f_d.html#a0c05dacb48970397676e54a01c81d0e1", null ],
       [ "p_data_timing", "group___c_a_n_f_d.html#a924d2187cf551c85ded2b148e26bbfd9", null ],
       [ "delay_compensation", "group___c_a_n_f_d.html#a3b38e8d28731a86eb521db8a5c5ae85e", null ],
@@ -47,7 +47,13 @@ var group___c_a_n_f_d =
       [ "CANFD_ERROR_CHANNEL_ACK_DELIMITER", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4a5c4e3bece7c60441a51d3899e73a158f", null ],
       [ "CANFD_ERROR_GLOBAL_DLC", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4ac1b7da9fdca7a6fa3c9b9ba33371f4a8", null ],
       [ "CANFD_ERROR_GLOBAL_MESSAGE_LOST", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4abee1888c27382c7121781db44c31bc2b", null ],
-      [ "CANFD_ERROR_GLOBAL_PAYLOAD_OVERFLOW", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4a5d38f69b80c5a2ca136cc2372885dd15", null ]
+      [ "CANFD_ERROR_GLOBAL_PAYLOAD_OVERFLOW", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4a5d38f69b80c5a2ca136cc2372885dd15", null ],
+      [ "CANFD_ERROR_GLOBAL_TXQ_OVERWRITE", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4aabb74eb7c63e572823fdc251ee430510", null ],
+      [ "CANFD_ERROR_GLOBAL_TXQ_MESSAGE_LOST", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4a46568698565919a0a2f47cb8f3641799", null ],
+      [ "CANFD_ERROR_GLOBAL_CH0_SCAN_FAIL", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4a12b3e818b05c74a2e138ea58893151af", null ],
+      [ "CANFD_ERROR_GLOBAL_CH1_SCAN_FAIL", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4abad26cd9692b98e885b8f80eea26c9d9", null ],
+      [ "CANFD_ERROR_GLOBAL_CH0_ECC", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4acc2641aa9a3f9543af9d27313ba09001", null ],
+      [ "CANFD_ERROR_GLOBAL_CH1_ECC", "group___c_a_n_f_d.html#gga1598f08872dd960675f060c7e8c35cf4a632b3d6e96c5d7f468dfd4c0b33b1f86", null ]
     ] ],
     [ "canfd_tx_mb_t", "group___c_a_n_f_d.html#gaa7408bbf08466fb0f6025a8dfd93c714", null ],
     [ "canfd_rx_buffer_t", "group___c_a_n_f_d.html#gacccf33f0942180054dd71c26c512844d", null ],

@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.0</span>
+   &#160;<span id="projectnumber">Release v2.0.1</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -215,7 +215,7 @@ Disabled</li>
 </ul>
 </td><td>Default (BSP) </td><td>If selected code for parameter checking is included in the build. </td></tr>
 <tr>
-<td>Select PHY</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Select PHY(DEPRECATED)</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 Default</li>
 <li>
@@ -229,7 +229,7 @@ DP83620</li>
 <li>
 KSZ9131RNXI</li>
 </ul>
-</td><td>KSZ9131RNXI </td><td>Select PHY chip to use. Selecting 'Default' will automatically choose the correct option when using a Renesas development board. </td></tr>
+</td><td>Default </td><td>Config -&gt; Select PHY is deprecated. Enable support for a PHY in the Config section and select it with Module -&gt; PHY LSI type. Set Select PHY to Default to hide this message. </td></tr>
 <tr>
 <td>Reference Clock</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -265,7 +265,7 @@ This module can be added to the Stacks tab via New Stack &gt; Networking &gt; Gi
 </ul>
 </td><td>1 </td><td>Select the Ethernet controller channel number. </td></tr>
 <tr>
-<td>PHY-LSI Address</td><td>Specify a value between 0 and 31.</td><td>0 </td><td>Specify the address of the PHY-LSI used. </td></tr>
+<td>PHY-LSI Address</td><td>Specify a value between 0 and 31.</td><td>7 </td><td>Specify the address of the PHY-LSI used. </td></tr>
 <tr>
 <td>PHY-LSI Reset Completion Timeout</td><td>Specify a value between 0x1 and 0xFFFFFFFF.</td><td>0x00020000 </td><td>Specify the number of times to read the PHY-LSI control register while waiting for reset completion. This value should be adjusted experimentally based on the PHY-LSI used. </td></tr>
 <tr>
@@ -297,7 +297,7 @@ KSZ9131RNXI</li>
 <li>
 1.8V</li>
 </ul>
-</td><td>3.3V </td><td>Specify voltage. </td></tr>
+</td><td>1.8V </td><td>Specify voltage. </td></tr>
 <tr>
 <td>Flow Control</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -621,7 +621,7 @@ Capabilities bitmap for local advertising. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.0 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v2.0.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>
