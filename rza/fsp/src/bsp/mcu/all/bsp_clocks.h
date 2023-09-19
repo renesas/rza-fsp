@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -113,13 +113,13 @@ FSP_HEADER
 #define BSP_RSTMON_BIT_FSP_IP_ADC(channel)          (3U << (R_CPG_CPG_RSTMON_ADC_RST0_MON_Pos))
 
 #define BSP_CLKON_REG_FSP_IP_CANFD(channel)         (R_CPG->CPG_CLKON_CANFD)
-#define BSP_CLKON_BIT_FSP_IP_CANFD(channel)         (1U << (R_CPG_CPG_CLKON_CANFD_CLK0_ON_Pos + (channel)))
+#define BSP_CLKON_BIT_FSP_IP_CANFD(channel)         (1U << (R_CPG_CPG_CLKON_CANFD_CLK0_ON_Pos))
 #define BSP_CLKMON_REG_FSP_IP_CANFD(channel)        (R_CPG->CPG_CLKMON_CANFD)
-#define BSP_CLKMON_BIT_FSP_IP_CANFD(channel)        (1U << (R_CPG_CPG_CLKMON_CANFD_CLK0_MON_Pos + (channel)))
+#define BSP_CLKMON_BIT_FSP_IP_CANFD(channel)        (1U << (R_CPG_CPG_CLKMON_CANFD_CLK0_MON_Pos))
 #define BSP_RST_REG_FSP_IP_CANFD(channel)           (R_CPG->CPG_RST_CANFD)
-#define BSP_RST_BIT_FSP_IP_CANFD(channel)           (1U << (R_CPG_CPG_RST_CANFD_UNIT0_RSTB_Pos + (channel)))
+#define BSP_RST_BIT_FSP_IP_CANFD(channel)           (3U << (R_CPG_CPG_RST_CANFD_UNIT0_RSTB_Pos))
 #define BSP_RSTMON_REG_FSP_IP_CANFD(channel)        (R_CPG->CPG_RSTMON_CANFD)
-#define BSP_RSTMON_BIT_FSP_IP_CANFD(channel)        (1U << (R_CPG_CPG_RSTMON_CANFD_RST0_MON_Pos + (channel)))
+#define BSP_RSTMON_BIT_FSP_IP_CANFD(channel)        (3U << (R_CPG_CPG_RSTMON_CANFD_RST0_MON_Pos))
 
 #define BSP_CLKON_REG_FSP_IP_CRU(channel)           (R_CPG->CPG_CLKON_CRU)
 #define BSP_CLKON_BIT_FSP_IP_CRU(channel)           (0x1FU << (R_CPG_CPG_CLKON_CRU_CLK0_ON_Pos))

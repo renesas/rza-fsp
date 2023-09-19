@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -432,7 +432,6 @@ void usb_hstd_transfer_end_cb (usb_utr_t * ptr, void * p_utr, uint32_t actual_si
 {
     st_usb_utr_t * p_mess;
     uint16_t       devadr = ptr->keyword;
-    uint16_t       data2  = 0;
 
     p_mess = (st_usb_utr_t *) p_utr;
 
@@ -467,7 +466,7 @@ void usb_hstd_transfer_end_cb (usb_utr_t * ptr, void * p_utr, uint32_t actual_si
     p_mess->status = status;
 
     /* Callback */
-    p_mess->complete(p_mess, ptr->keyword, data2);
+    p_mess->complete(p_mess, ptr->keyword, (uint16_t) actual_size);
 }                                      /* End of function usb_hstd_transfer_end_cb() */
 
 void usb_memcpy (uint32_t addr1, uint32_t addr2, uint32_t size)

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -312,7 +312,7 @@ fsp_err_t R_USB_HMSC_StorageReadSector (uint16_t        drive_number,
         }
     }
 
-    if ((void*)USB_NULL != p_cfg)
+    if ((void *) USB_NULL != p_cfg)
     {
         ptr.p_transfer_rx = p_cfg->p_transfer_rx;
         ptr.p_transfer_tx = p_cfg->p_transfer_tx;
@@ -359,6 +359,9 @@ fsp_err_t R_USB_HMSC_StorageWriteSector (uint16_t              drive_number,
     usb_utr_t   ptr;
     uint16_t    err_code;
     usb_cfg_t * p_cfg = USB_NULL;
+#if    defined(BSP_MCU_GROUP_RZA3UL)
+    uint8_t * temp_buf;
+#endif                                 /* defined(BSP_MCU_GROUP_RZA3UL) */
 
 #if USB_CFG_PARAM_CHECKING_ENABLE == BSP_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(buff)
@@ -401,13 +404,22 @@ fsp_err_t R_USB_HMSC_StorageWriteSector (uint16_t              drive_number,
         }
     }
 
-    if ((void*)USB_NULL != p_cfg)
+    if ((void *) USB_NULL != p_cfg)
     {
         ptr.p_transfer_rx = p_cfg->p_transfer_rx;
         ptr.p_transfer_tx = p_cfg->p_transfer_tx;
     }
 
     g_usb_hmsc_strg_process[ptr.ip] = USB_MSG_HMSC_STRG_RW_END;
+
+#if defined(BSP_MCU_GROUP_RZA3UL)
+    temp_buf = (uint8_t *) r_usb_pa_to_va((uint64_t) buff);
+    if (buff != temp_buf)
+    {
+        memcpy(temp_buf, buff, trans_byte);
+    }
+#endif                                 /* defined(BSP_MCU_GROUP_RZA3UL) */
+
     err_code = usb_hmsc_write10(&ptr, drive_number, buff, sector_number, sector_count, trans_byte);
     if (USB_HMSC_OK == err_code)
     {

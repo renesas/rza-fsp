@@ -19,50 +19,50 @@
  **********************************************************************************************************************/
 
 /**********************************************************************************************************************
- * File Name    : r_usb_hmsc.h
- * Description  : USB HMSC public APIs.
- **********************************************************************************************************************/
+ * File Name    : board_ethernet_phy.h
+ * Version      : 1.00
+ * Description  : board_ethernet phy header
+ *********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
- * @addtogroup USB_HMSC
+ * @ingroup BOARD_RZA3UL_SMARC_QSPI_XIP
+ * @defgroup BOARD_RZA3UL_SMARC_QSPI_XIP_ETHERNET_PHY Board Ethernet Phy
+ * @brief Ethernet Phy information for this board.
+ *
+ * This is code specific to the SMARC board.
+ *
  * @{
  **********************************************************************************************************************/
 
-#ifndef R_USB_HMSC_H
-#define R_USB_HMSC_H
+#ifndef BSP_ETHERNET_PHY_H
+#define BSP_ETHERNET_PHY_H
 
-#include "r_usb_hmsc_api.h"
-
-/* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+/** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
-/******************************************************************************
- * Exported global functions (to be accessed by other files)
- ******************************************************************************/
-fsp_err_t R_USB_HMSC_StorageCommand(usb_ctrl_t * const p_api_ctrl, uint8_t * p_buf, uint8_t command,
-                                    uint8_t destination);
+/***********************************************************************************************************************
+ * Macro definitions
+ **********************************************************************************************************************/
+#define BOARD_PHY_TYPE                             (5) // DEPRECATED
+#define ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE    (1)
+#define ETHER_PHY_LSI_TYPE_KIT_COMPONENT           ETHER_PHY_LSI_TYPE_KSZ9131RNXI
+#define BOARD_PHY_REF_CLK                          (1)
 
-fsp_err_t R_USB_HMSC_DriveNumberGet(usb_ctrl_t * const p_api_ctrl, uint8_t * p_drive, uint8_t destination);
+/***********************************************************************************************************************
+ * Typedef definitions
+ **********************************************************************************************************************/
 
-fsp_err_t R_USB_HMSC_SemaphoreGet(void);
+/***********************************************************************************************************************
+ * Exported global variables
+ **********************************************************************************************************************/
 
-fsp_err_t R_USB_HMSC_SemaphoreRelease(void);
+/***********************************************************************************************************************
+ * Public Functions
+ **********************************************************************************************************************/
 
-fsp_err_t R_USB_HMSC_StorageReadSector(uint16_t        drive_number,
-                                       uint8_t * const buff,
-                                       uint32_t        sector_number,
-                                       uint16_t        sector_count);
-
-fsp_err_t R_USB_HMSC_StorageWriteSector(uint16_t              drive_number,
-                                        uint8_t const * const buff,
-                                        uint32_t              sector_number,
-                                        uint16_t              sector_count);
-
-/* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+/** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
-#endif                                 /* R_USB_HMSC_H */
+#endif
 
-/*******************************************************************************************************************//**
- * @} (end addtogroup USB_HMSC)
- **********************************************************************************************************************/
+/** @} (end defgroup BOARD_RZA3UL_SMARC_QSPI_XIP_ETHERNET_PHY) */

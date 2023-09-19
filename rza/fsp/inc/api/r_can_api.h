@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -44,7 +44,7 @@
  * Includes
  **********************************************************************************************************************/
 
-/* Includes board and MCU related header files. */
+/* Includes board and MPU related header files. */
 #include "bsp_api.h"
 
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
@@ -200,7 +200,7 @@ typedef struct st_can_api
      * - R_CANFD_Open()
      *
      * @param[in,out]  p_ctrl     Pointer to the CAN control block. Must be declared by user. Value set here.
-     * @param[in]      can_cfg_t  Pointer to CAN configuration structure. All elements of this structure must be set by
+     * @param[in]      p_cfg      Pointer to CAN configuration structure. All elements of this structure must be set by
      *                            user.
      */
     fsp_err_t (* open)(can_ctrl_t * const p_ctrl, can_cfg_t const * const p_cfg);
@@ -227,6 +227,7 @@ typedef struct st_can_api
     /** Close function for CAN device
      * @par Implemented as
      * - R_CAN_Close()
+     * - R_CANFD_Close()
      * @param[in]   p_ctrl     Pointer to the CAN control block.
      */
     fsp_err_t (* close)(can_ctrl_t * const p_ctrl);

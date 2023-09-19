@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -55,6 +55,7 @@
  #define USB_ALL_PAGES          (0x3F)
  #define USB_VALUE_ALL_PAGES    (44)
  #define USB_HMSC_MAX_DEVICE    (4)
+ #define USB_DATA_DIR_IN        (0x80U)
 
 /******************************************************************************
  * Private global variables and functions
@@ -74,7 +75,7 @@ static usb_er_t usb_hmsc_clear_stall(usb_utr_t * ptr, uint16_t Pipe, usb_cb_t co
 static uint16_t usb_hmsc_data_act(usb_utr_t * mess);
 static void     usb_hmsc_stall_err(usb_utr_t * mess);
 static void     usb_hmsc_specified_path(usb_utr_t * mess);
-static void     usb_hmsc_check_result(usb_utr_t * mess, uint16_t data1, uint16_t data2);
+static void     usb_hmsc_check_result(usb_utr_t * mess, uint16_t data1, uint16_t actual_size);
 static void     usb_hmsc_command_result(usb_utr_t * ptr, uint16_t result);
 static uint16_t usb_hmsc_get_string_desc(usb_utr_t * ptr, uint16_t addr, uint16_t string, usb_cb_t complete);
 static uint16_t usb_hmsc_send_cbw(usb_utr_t * ptr, uint16_t side);
@@ -1306,18 +1307,33 @@ static void usb_hmsc_specified_path (usb_utr_t * mess)
 /******************************************************************************
  * Function Name   : usb_hmsc_check_result
  * Description     : Hub class check result
- * Arguments       : usb_utr_t    *mess   : Pointer to usb_utr_t structure
- *               : uint16_t     data1   : Not used
- *               : uint16_t     data2   : Not used
+ * Arguments       : usb_utr_t    *mess         : Pointer to usb_utr_t structure
+ *                 : uint16_t     data1         : Not used
+ *                 : uint16_t     actual_size   : data size
  * Return value    : none
  ******************************************************************************/
-static void usb_hmsc_check_result (usb_utr_t * mess, uint16_t data1, uint16_t data2)
+static void usb_hmsc_check_result (usb_utr_t * mess, uint16_t data1, uint16_t actual_size)
 {
     (void) data1;
-    (void) data2;
+  #if defined(BSP_MCU_GROUP_RZA3UL)
+    uint8_t * va_buf;
+    void    * pa_baf;
+  #endif                               /* #if defined(BSP_MCU_GROUP_RZA3UL) */
   #if USB_IP_EHCI_OHCI == 1
     mess->result = mess->status;
   #endif
+
+  #if defined(BSP_MCU_GROUP_RZA3UL)
+    va_buf = (uint8_t *) r_usb_pa_to_va((uint64_t) mess->p_tranadr);
+    if (mess->p_tranadr != va_buf)
+    {
+        if ((mess->keyword != USB_PIPE0) && (g_usb_hstd_pipe[mess->keyword].direction == USB_DATA_DIR_IN))
+        {
+            pa_baf = (void *) mess->p_tranadr;
+            memcpy(pa_baf, va_buf, actual_size);
+        }
+    }
+  #endif                               /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     usb_hmsc_specified_path(mess);
 }
 
@@ -3148,25 +3164,44 @@ uint16_t usb_hmsc_req_trans_wait_tmo (uint16_t tmo)
 /******************************************************************************
  * Function Name   : usb_hmsc_trans_result
  * Description     : Send a message to notify the result of the hmsc class request.
- * Argument        : usb_utr_t *ptr   : USB system internal structure. Selects channel.
- *                 uint16_t data1
- *                 uint16_t data2
+ * Argument        : usb_utr_t    * mess        : USB system internal structure. Selects channel.
+ *                   uint16_t     data1         : Not used
+ *                   uint16_t     actual_size   : data size
  * Return value    : none
  ******************************************************************************/
-void usb_hmsc_trans_result (usb_utr_t * mess, uint16_t data1, uint16_t data2)
+void usb_hmsc_trans_result (usb_utr_t * mess, uint16_t data1, uint16_t actual_size)
 {
     usb_er_t err;
     (void) data1;
-    (void) data2;
+  #if defined(BSP_MCU_GROUP_RZA3UL)
+    uint8_t * va_buf;
+    void    * pa_baf;
+  #else
+    (void) actual_size;
+  #endif
 
   #if BSP_CFG_RTOS == 2
     gs_usb_hmsc_tran_result_msg = *mess;
 
+   #if defined(BSP_MCU_GROUP_RZA3UL)
+    va_buf = (uint8_t *) r_usb_pa_to_va((uint64_t) mess->p_tranadr);
+    if (mess->p_tranadr != va_buf)
+    {
+        if ((mess->keyword != USB_PIPE0) && (g_usb_hstd_pipe[mess->keyword].direction == USB_DATA_DIR_IN))
+        {
+            pa_baf = (void *) mess->p_tranadr;
+            memcpy(pa_baf, va_buf, actual_size);
+        }
+    }
+   #endif                              /* #if defined(BSP_MCU_GROUP_RZA3UL) */
+
     /* Send a message to HMSC mailbox */
     err = USB_SND_MSG(USB_HMSC_MBX, (usb_msg_t *) &gs_usb_hmsc_tran_result_msg);
   #else                                /* BSP_CFG_RTOS == 2 */
+    (void) actual_size;
+
     err = USB_SND_MSG(USB_HMSC_MBX, (usb_msg_t *) mess);
-  #endif /* BSP_CFG_RTOS == 2 */
+  #endif                               /* BSP_CFG_RTOS == 2 */
     if (USB_OK != err)
     {
         USB_PRINTF1("### HMSC snd_msg error (%ld)\n", err);

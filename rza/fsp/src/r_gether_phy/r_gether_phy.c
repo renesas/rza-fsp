@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -138,7 +138,7 @@
 uint32_t gether_phy_read(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr);
 void     gether_phy_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr, uint32_t data);
 
-#if (GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+#if (ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE)
 extern void gether_phy_targets_ksz9131rnxi_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
 extern bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(ether_phy_instance_ctrl_t * p_instance_ctrl,
                                                                           uint32_t                    line_speed_duplex);
@@ -409,7 +409,7 @@ fsp_err_t R_GETHER_PHY_LinkPartnerAbilityGet (ether_phy_ctrl_t * const p_ctrl,
         (*p_line_speed_duplex) = ETHER_PHY_LINK_SPEED_100F;
     }
 
-#if (GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+#if (ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE)
 
     /* Check if the link partner has 1000BASE-T full duplex capability */
     reg = gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_AN_MASTER_SLAVE_STATUS);
@@ -880,7 +880,7 @@ static void gether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instanc
     switch (p_instance_ctrl->p_gether_phy_cfg->phy_lsi_type)
     {
         /* Use KSZ9131RNXI */
-#if (GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+#if (ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE)
         case ETHER_PHY_LSI_TYPE_KSZ9131RNXI:
         {
             gether_phy_targets_ksz9131rnxi_initialize(p_instance_ctrl);
@@ -913,7 +913,7 @@ static bool gether_phy_targets_is_support_link_partner_ability (ether_phy_instan
     switch (p_instance_ctrl->p_gether_phy_cfg->phy_lsi_type)
     {
         /* Use KSZ8091RNB */
-#if (GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+#if (ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE)
         case ETHER_PHY_LSI_TYPE_KSZ9131RNXI:
         {
             result = gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(p_instance_ctrl, line_speed_duplex);

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -48,6 +48,10 @@
 #define BSP_FEATURE_BSP_HAS_MMU_SUPPORT              (1)
 
 #define BSP_FEATURE_CANFD_NUM_CHANNELS               (2U)
+#define BSP_FEATURE_CANFD_FD_SUPPORT                 (1U)
+#define BSP_FEATURE_CANFD_LITE                       (0U)
+#define BSP_FEATURE_CANFD_NUM_INSTANCES              (1U)
+#define BSP_FEATURE_CANFD_HAS_RSCANFD                (1U)
 
 #define BSP_FEATURE_CPG_HAS_ICLK                     (1U)
 #define BSP_FEATURE_CPG_HAS_SD0CLK                   (1U)
@@ -133,9 +137,6 @@
 #define BSP_FEATURE_SSI_FIFO_NUM_STAGES              (32U)
 #define BSP_FEATURE_SSI_VALID_CHANNEL_MASK           (0x0FU)
 #define BSP_FEATURE_SSI_MAX_CHANNELS                 (4U)
-
-#define BSP_FEATURE_CANFD_FD_SUPPORT                 (1U)
-#define BSP_FEATURE_CANFD_NUM_INSTANCES              (1U)
 
 #define BSP_FEATURE_TSU_MAX_CHANNELS                 (1U)
 

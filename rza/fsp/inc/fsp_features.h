@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -84,10 +84,9 @@
  * @param      ch       The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
 
-#define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch);  \
-                                                        R_BSP_MSTP_START(ip, ch);    \
-                                                        R_BSP_MODULE_RSTOFF(ip, 0U); \
-                                                        R_BSP_MODULE_RSTOFF(ip, 1U);}
+#define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
+                                                        R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
  * Enables the module stop state.
@@ -96,8 +95,7 @@
  * @param      ch       The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
 
-#define R_BSP_MODULE_STOP_FSP_IP_CANFD(ip, ch)         {R_BSP_MSTP_STOP(ip, ch); \
-                                                        R_BSP_MODULE_CLKOFF(ip, ch);}
+#define R_BSP_MODULE_STOP_FSP_IP_CANFD(ip, ch)         {NULL;}
 
 /*******************************************************************************************************************//**
  * Cancel the module stop state.

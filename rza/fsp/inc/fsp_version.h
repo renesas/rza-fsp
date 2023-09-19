@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -48,16 +48,16 @@ extern "C" {
 #define FSP_VERSION_MINOR (0U)
 
 /** FSP pack patch version. */
-#define FSP_VERSION_PATCH (0U)
+#define FSP_VERSION_PATCH (1U)
 
 /** FSP pack version build number (currently unused). */
 #define FSP_VERSION_BUILD           (0U)
 
 /** Public FSP version name. */
-#define FSP_VERSION_STRING          ("2.0.0")
+#define FSP_VERSION_STRING          ("2.0.1")
 
 /** Unique FSP version ID. */
-#define FSP_VERSION_BUILD_STRING    ("Built with RZ/A3UL Flexible Software Package version 2.0.0")
+#define FSP_VERSION_BUILD_STRING    ("Built with RZ/A3UL Flexible Software Package version 2.0.1")
 
 /**********************************************************************************************************************
  * Typedef definitions

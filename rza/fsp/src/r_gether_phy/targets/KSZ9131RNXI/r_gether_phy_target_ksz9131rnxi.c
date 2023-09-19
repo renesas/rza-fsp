@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -26,7 +26,7 @@
 #include "bsp_api.h"
 #include "r_gether_phy.h"
 #include "r_ether_phy_api.h"
-#if (GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI)
+#if (ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE)
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -160,4 +160,4 @@ bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability (ether_phy_in
     return true;
 }                                      /* End of function ether_phy_targets_is_support_link_partner_ability() */
 
-#endif /* GETHER_PHY_CFG_USE_PHY == GETHER_PHY_CFG_USE_PHY_KSZ9131RNXI */
+#endif /* ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE */

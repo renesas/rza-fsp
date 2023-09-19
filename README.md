@@ -10,7 +10,7 @@ FSP uses an open software ecosystem and provides flexibility in using your prefe
 
 ### Current Release
 
-[FSP v2.0.0](https://github.com/renesas/rza-fsp/releases/tag/v2.0.0)
+[FSP v2.0.1](https://github.com/renesas/rza-fsp/releases/tag/v2.0.1)
 
 ### Supported RZ/A MPU Kits
 
@@ -23,7 +23,7 @@ N/A
 ### Setup Instractions
 ##### For existing users that are using RZ/A FSP with e² studio
 
-- FSP versions of 2.0.0 and later require a minimum e² studio version of 2023-04.
+- FSP versions of 2.0.1 and later require a minimum e² studio version of 2023-04.
 
 If you have already installed a previous FSP release that included e² studio then you can download the packs separately. These are available for download under the Assets section for each release. There is a zipped version, RZA_FSP_Packs_\<version\>.zip, and an installer version, RZA_FSP_Packs_\<version\>.exe.
 

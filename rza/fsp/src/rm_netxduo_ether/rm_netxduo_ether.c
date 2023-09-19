@@ -1,21 +1,21 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
- * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
- * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
- * sold pursuant to Renesas terms and conditions of sale.  Purchasers are solely responsible for the selection and use
- * of Renesas products and Renesas assumes no liability.  No license, express or implied, to any intellectual property
- * right is granted by Renesas. This software is protected under all applicable laws, including copyright laws. Renesas
- * reserves the right to change or discontinue this software and/or this documentation. THE SOFTWARE AND DOCUMENTATION
- * IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND TO THE FULLEST EXTENT
- * PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY, INCLUDING WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE SOFTWARE OR
- * DOCUMENTATION.  RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.  TO THE MAXIMUM
- * EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR DOCUMENTATION
- * (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER, INCLUDING,
- * WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY LOST PROFITS,
- * OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE POSSIBILITY
- * OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale.  Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability.  No license, express or implied, to any
+ * intellectual property right is granted by Renesas.  This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION.  RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -31,6 +31,10 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+#ifdef __GNUC__
+ #pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
+ #pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+#endif
 
 /* Disable support for RARP by default. */
 #ifndef RM_NETXDUO_ETHER_RARP_SUPPORT
@@ -38,6 +42,7 @@
 #endif
 
 #define NX_ETHERNET_SIZE                  14
+#define NX_READ_BUFFER_SIZE               2000
 
 /* Ethernet Frame IDs. */
 #define NX_ETHERNET_IP                    0x0800
@@ -71,7 +76,7 @@ typedef struct _nx_network_driver_instance_type
 /* Instance of network driver. */
 static _nx_network_driver_instance_type _nx_driver_instance[NX_MAX_INTERFACES];
 
-static uint8_t _nx_driver_read_buffer[2000];
+static uint8_t _nx_driver_read_buffer[NX_READ_BUFFER_SIZE];
 
 static int _convert_packet_data(uint8_t * p_buffer_pointer, uint32_t xbytes_received, NX_PACKET ** packet_top);
 
@@ -671,7 +676,8 @@ static int _convert_packet_data (uint8_t * p_buffer_pointer, uint32_t xbytes_rec
                 *packet_top = packet_ptr;
                 break;
             }
-            else
+
+            // else //The following code will not be executed even if there is no else.
             {
                 nx_packet_release(packet_ptr);
                 packet_ptr            = NULL;
@@ -714,7 +720,8 @@ void rm_netxduo_ether_callback (ether_callback_args_t * p_args)
 {
     /* Get the ether interface from a global pointer because r_ether does not set p_contect in p_args. */
     rm_netxduo_ether_instance_t * p_netxduo_ether_instance = (rm_netxduo_ether_instance_t *) p_args->p_context;
-    ether_instance_t const      * p_ether_instance         = p_netxduo_ether_instance->p_cfg->p_ether_instance;
+
+// ether_instance_t const      * p_ether_instance         = p_netxduo_ether_instance->p_cfg->p_ether_instance;
 
     /* Either the callback was called from an ISR or it was called from the linkProcess. */
     switch (p_args->event)

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -253,7 +253,7 @@ void usb_hmsc_strg_check_result(usb_utr_t * mess, uint16_t data1, uint16_t data2
 #if (BSP_CFG_RTOS == 2)
 uint16_t usb_hmsc_get_string_info(usb_utr_t * mess, uint16_t addr, uint16_t string);
 uint16_t usb_hmsc_trans_wait_tmo(uint16_t tmo);
-void     usb_hmsc_trans_result(usb_utr_t * mess, uint16_t data1, uint16_t data2);
+void     usb_hmsc_trans_result(usb_utr_t * mess, uint16_t data1, uint16_t actual_size);
 uint16_t usb_hmsc_req_trans_wait_tmo(uint16_t tmo);
 void     usb_hmsc_req_trans_result(usb_utr_t * mess, uint16_t data1, uint16_t data2);
 uint16_t hmsc_error_process(usb_utr_t * ptr, uint16_t side, uint16_t err_code);

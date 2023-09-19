@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2022] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
@@ -126,12 +126,13 @@ usb_cfg_t * host_cfg;
 void usbfs_interrupt_handler(IRQn_Type const irq);
 void usbfs_resume_handler(void);
 
-void usbfs_d0fifo_handler(void);
-void usbfs_d1fifo_handler(void);
-void usbhs_interrupt_handler(IRQn_Type const irq);
-void usbhs_d0fifo_handler(void);
-void usbhs_d1fifo_handler(void);
-void usbfs_usbi_isr(void);
+void      usbfs_d0fifo_handler(void);
+void      usbfs_d1fifo_handler(void);
+void      usbhs_interrupt_handler(IRQn_Type const irq);
+void      usbhs_d0fifo_handler(void);
+void      usbhs_d1fifo_handler(void);
+void      usbfs_usbi_isr(void);
+fsp_err_t usb_module_register_clear(uint8_t usb_ip);
 
 #if  USB_IP_EHCI_OHCI == 1
 void usb_ahb_pci_bridge_init(uint8_t ip_type);
@@ -313,6 +314,133 @@ fsp_err_t usb_module_start (uint8_t ip_type)
  ******************************************************************************/
 
 /**************************************************************************//**
+ * @brief This function clear USB module register.
+ *
+ * @retval FSP_SUCCESS           Success.
+ ******************************************************************************/
+fsp_err_t usb_module_register_clear (uint8_t usb_ip)
+{
+    if (USB_IP0 == usb_ip)
+    {
+#if defined(USB_CFG_OTG_USE)
+        USB_M0->DVSTCTR0    = (uint16_t) (USB_M0->DVSTCTR0 & (USB_EXICEN | USB_VBUSEN));
+        USB_M0->DCPCTR      = USB_SQSET;
+        USB_M0->PIPE_CTR[0] = 0;
+        USB_M0->PIPE_CTR[1] = 0;
+        USB_M0->PIPE_CTR[2] = 0;
+        USB_M0->PIPE_CTR[3] = 0;
+        USB_M0->PIPE_CTR[4] = 0;
+        USB_M0->PIPE_CTR[5] = 0;
+        USB_M0->PIPE_CTR[6] = 0;
+        USB_M0->PIPE_CTR[7] = 0;
+        USB_M0->PIPE_CTR[8] = 0;
+        USB_M0->BRDYENB     = 0;
+        USB_M0->NRDYENB     = 0;
+        USB_M0->BEMPENB     = 0;
+        USB_M0->INTENB0     = 0;
+        USB_M0->INTENB1     = 0;
+        USB_M0->BRDYSTS     = 0;
+        USB_M0->NRDYSTS     = 0;
+        USB_M0->BEMPSTS     = 0;
+#else                                  /* defined(USB_CFG_OTG_USE) */
+        USB_M0->DVSTCTR0         = 0;
+        USB_M0->DCPCTR           = USB_SQSET;
+        USB_M0->PIPE1CTR         = 0;
+        USB_M0->PIPE1CTR_b.SQCLR = 1;
+        USB_M0->PIPE2CTR         = 0;
+        USB_M0->PIPE2CTR_b.SQCLR = 1;
+        USB_M0->PIPE3CTR         = 0;
+        USB_M0->PIPE3CTR_b.SQCLR = 1;
+        USB_M0->PIPE4CTR         = 0;
+        USB_M0->PIPE4CTR_b.SQCLR = 1;
+        USB_M0->PIPE5CTR         = 0;
+        USB_M0->PIPE5CTR_b.SQCLR = 1;
+        USB_M0->PIPE6CTR         = 0;
+        USB_M0->PIPE6CTR_b.SQCLR = 1;
+        USB_M0->PIPE7CTR         = 0;
+        USB_M0->PIPE7CTR_b.SQCLR = 1;
+        USB_M0->PIPE8CTR         = 0;
+        USB_M0->PIPE8CTR_b.SQCLR = 1;
+        USB_M0->PIPE9CTR         = 0;
+        USB_M0->PIPE9CTR_b.SQCLR = 1;
+        USB_M0->BRDYENB          = 0;
+        USB_M0->NRDYENB          = 0;
+        USB_M0->BEMPENB          = 0;
+        USB_M0->INTENB0          = 0;
+        USB_M0->BRDYSTS          = 0;
+        USB_M0->NRDYSTS          = 0;
+        USB_M0->BEMPSTS          = 0;
+        USB_M0->SYSCFG0          = (uint16_t) (USB_M0->SYSCFG0 & (~USB_DPRPU));
+        USB_M0->SYSCFG0          = (uint16_t) (USB_M0->SYSCFG0 & (~USB_DRPD));
+        USB_M0->SYSCFG0          = (uint16_t) (USB_M0->SYSCFG0 & (~USB_DCFM));
+        USB_M0->SYSCFG0          = (uint16_t) (USB_M0->SYSCFG0 & (~USB_USBE));
+        USB_M0->LPSTS            = 0;
+#endif                                 /* defined(USB_CFG_OTG_USE) */
+    }
+    else
+    {
+#if defined(USB_CFG_OTG_USE)
+        USB_M1->DVSTCTR0    = (uint16_t) (USB_M0->DVSTCTR0 & (USB_EXICEN | USB_VBUSEN));
+        USB_M1->DCPCTR      = USB_SQSET;
+        USB_M1->PIPE_CTR[0] = 0;
+        USB_M1->PIPE_CTR[1] = 0;
+        USB_M1->PIPE_CTR[2] = 0;
+        USB_M1->PIPE_CTR[3] = 0;
+        USB_M1->PIPE_CTR[4] = 0;
+        USB_M1->PIPE_CTR[5] = 0;
+        USB_M1->PIPE_CTR[6] = 0;
+        USB_M1->PIPE_CTR[7] = 0;
+        USB_M1->PIPE_CTR[8] = 0;
+        USB_M1->BRDYENB     = 0;
+        USB_M1->NRDYENB     = 0;
+        USB_M1->BEMPENB     = 0;
+        USB_M1->INTENB0     = 0;
+        USB_M1->INTENB1     = 0;
+        USB_M1->BRDYSTS     = 0;
+        USB_M1->NRDYSTS     = 0;
+        USB_M1->BEMPSTS     = 0;
+#else                                  /* defined(USB_CFG_OTG_USE) */
+ #if !defined(BSP_MCU_GROUP_RZA3UL)
+        USB_M1->DVSTCTR0         = 0;
+        USB_M1->DCPCTR           = USB_SQSET;
+        USB_M1->PIPE1CTR         = 0;
+        USB_M1->PIPE1CTR_b.SQCLR = 1;
+        USB_M1->PIPE2CTR         = 0;
+        USB_M1->PIPE2CTR_b.SQCLR = 1;
+        USB_M1->PIPE3CTR         = 0;
+        USB_M1->PIPE3CTR_b.SQCLR = 1;
+        USB_M1->PIPE4CTR         = 0;
+        USB_M1->PIPE4CTR_b.SQCLR = 1;
+        USB_M1->PIPE5CTR         = 0;
+        USB_M1->PIPE5CTR_b.SQCLR = 1;
+        USB_M1->PIPE6CTR         = 0;
+        USB_M1->PIPE6CTR_b.SQCLR = 1;
+        USB_M1->PIPE7CTR         = 0;
+        USB_M1->PIPE7CTR_b.SQCLR = 1;
+        USB_M1->PIPE8CTR         = 0;
+        USB_M1->PIPE8CTR_b.SQCLR = 1;
+        USB_M1->PIPE9CTR         = 0;
+        USB_M1->PIPE9CTR_b.SQCLR = 1;
+        USB_M1->BRDYENB          = 0;
+        USB_M1->NRDYENB          = 0;
+        USB_M1->BEMPENB          = 0;
+        USB_M1->INTENB0          = 0;
+        USB_M1->BRDYSTS          = 0;
+        USB_M1->NRDYSTS          = 0;
+        USB_M1->BEMPSTS          = 0;
+        USB_M1->SYSCFG0          = (uint16_t) (USB_M1->SYSCFG0 & (~USB_DPRPU));
+        USB_M1->SYSCFG0          = (uint16_t) (USB_M1->SYSCFG0 & (~USB_DRPD));
+        USB_M1->SYSCFG0          = (uint16_t) (USB_M1->SYSCFG0 & (~USB_DCFM));
+        USB_M1->SYSCFG0          = (uint16_t) (USB_M1->SYSCFG0 & (~USB_USBE));
+        USB_M1->LPSTS            = 0;
+ #endif                                /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
+#endif                                 /* defined(USB_CFG_OTG_USE) */
+    }
+
+    return FSP_SUCCESS;
+}
+
+/**************************************************************************//**
  * @brief This function stops USB module.
  *
  * @retval FSP_SUCCESS           Success.
@@ -324,6 +452,10 @@ fsp_err_t usb_module_start (uint8_t ip_type)
 fsp_err_t usb_module_stop (uint8_t ip_type)
 {
     fsp_err_t result = FSP_ERR_USB_PARAMETER;
+
+ #if USB_CFG_MODE == USB_CFG_PERI
+    usb_module_register_clear(ip_type);
+ #endif                                /*  #if USB_CFG_MODE == USB_CFG_PERI */
 
     if (1 == ip_type)
     {
