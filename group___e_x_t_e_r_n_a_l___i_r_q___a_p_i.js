@@ -9,7 +9,7 @@ var group___e_x_t_e_r_n_a_l___i_r_q___a_p_i =
       [ "ipl", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a21219682d6af73d780e49a7e67e53f22", null ],
       [ "irq", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a568e65aafea692dff0f64c3b66df2c2a", null ],
       [ "trigger", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ac9c027f165cdd6273959c0338cfb212d", null ],
-      [ "pclk_div", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#acab3057d607bc3efd20955126a8e92d7", null ],
+      [ "clk_source_div", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a67f5f231d026357697b6a20d68b559ff", null ],
       [ "filter_enable", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#aa77181dcffe927e006c2ed112c1a62ad", null ],
       [ "p_callback", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ac8dadd8ef06c625a7b02c2eb06da7959", null ],
       [ "p_context", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a4237b56a314b7e145aefb59e6e1def1b", null ],
@@ -34,10 +34,10 @@ var group___e_x_t_e_r_n_a_l___i_r_q___a_p_i =
       [ "EXTERNAL_IRQ_TRIG_BOTH_EDGE", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57ca0a2ebac83c3e8ca3da64e703dda65b71", null ],
       [ "EXTERNAL_IRQ_TRIG_LEVEL_LOW", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57cae0ae8739569bb4721c7ed289397b9c4f", null ]
     ] ],
-    [ "external_irq_pclk_div_t", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga692e093fc800ee08e3f84fae648372d8", [
-      [ "EXTERNAL_IRQ_PCLK_DIV_BY_1", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga692e093fc800ee08e3f84fae648372d8a8efd589848d944d15906446d30500c1a", null ],
-      [ "EXTERNAL_IRQ_PCLK_DIV_BY_8", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga692e093fc800ee08e3f84fae648372d8aea6e72eaa11987f54579a14bb4b3a7e9", null ],
-      [ "EXTERNAL_IRQ_PCLK_DIV_BY_32", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga692e093fc800ee08e3f84fae648372d8a0ec86c6eb31ac0c5e2a789e3bcefe334", null ],
-      [ "EXTERNAL_IRQ_PCLK_DIV_BY_64", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga692e093fc800ee08e3f84fae648372d8a50e18b67ca2b1d8c0efb69dac660c581", null ]
+    [ "external_irq_clk_source_div_t", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c", [
+      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_1", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1ca3fb5a9b7bb9b2bea52b1530e6c109e35", null ],
+      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_8", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1ca1410fd90337fc1f10823958c1bf392fd", null ],
+      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_32", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1cad75058ebcc84ca9dd929d6d6059b0c2a", null ],
+      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_64", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1ca9e9f3234c8d045b869b6de1d25ae68d9", null ]
     ] ]
 ];

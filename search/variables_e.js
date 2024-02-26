@@ -25,7 +25,7 @@ var searchData=
   ['rgb_5fbit_5fextension',['rgb_bit_extension',['../group___c_r_u.html#accf9cc609aa9d1b355ecb80fc73cef4b',1,'cru_extended_cfg_t']]],
   ['rof',['rof',['../group___c_r_u.html#a2a1dad21b291e02152286d5c5e999b7d',1,'linearmatrix_cfg_t']]],
   ['rr',['rr',['../group___c_r_u.html#a7175ddd231d1fbd307f09a30a74803fa',1,'linearmatrix_cfg_t']]],
-  ['rs485_5fsetting',['rs485_setting',['../group___s_c_i_f___u_a_r_t.html#a17bbc99632889e12269013e35f1dcfba',1,'scif_uart_extended_cfg_t']]],
+  ['rs485_5fsetting',['rs485_setting',['../group___s_c_i___u_a_r_t.html#afbddfe3e0c2394d7cfd9db923078404f',1,'sci_uart_extended_cfg_t::rs485_setting()'],['../group___s_c_i_f___u_a_r_t.html#a17bbc99632889e12269013e35f1dcfba',1,'scif_uart_extended_cfg_t::rs485_setting()']]],
   ['rsv',['rsv',['../group___u_s_b___p_c_d_c___a_p_i.html#a04305ba233471eb366c15711eb33d40f',1,'usb_serial_state_bitmap_t::rsv()'],['../group___u_s_b___p_c_d_c___a_p_i.html#aa7d986360b70b33c39abdad8904d33f4',1,'usb_pcdc_linecoding_t::rsv()'],['../group___u_s_b___p_c_d_c___a_p_i.html#af9666766e5cb7a242cc92fe8ecd90fc3',1,'usb_pcdc_ctrllinestate_t::rsv()']]],
   ['rts_5ffifo_5ftrigger',['rts_fifo_trigger',['../group___s_c_i_f___u_a_r_t.html#a04920b030d567052f3b4efb1f85753e9',1,'scif_uart_extended_cfg_t']]],
   ['rx_5fcount',['rx_count',['../group___r_s_p_i.html#af07a6630edcb186c8ccb2b74d228f729',1,'rspi_instance_ctrl_t']]],

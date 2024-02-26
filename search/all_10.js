@@ -390,7 +390,7 @@ var searchData=
   ['rm_5fguix_5fport_5fevent_5funderflow',['RM_GUIX_PORT_EVENT_UNDERFLOW',['../group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fa05efaed0e8146dd8f2a957e5f52871ec',1,'rm_guix_port.h']]],
   ['rof',['rof',['../group___c_r_u.html#a2a1dad21b291e02152286d5c5e999b7d',1,'linearmatrix_cfg_t']]],
   ['rr',['rr',['../group___c_r_u.html#a7175ddd231d1fbd307f09a30a74803fa',1,'linearmatrix_cfg_t']]],
-  ['rs485_5fsetting',['rs485_setting',['../group___s_c_i_f___u_a_r_t.html#a17bbc99632889e12269013e35f1dcfba',1,'scif_uart_extended_cfg_t']]],
+  ['rs485_5fsetting',['rs485_setting',['../group___s_c_i___u_a_r_t.html#afbddfe3e0c2394d7cfd9db923078404f',1,'sci_uart_extended_cfg_t::rs485_setting()'],['../group___s_c_i_f___u_a_r_t.html#a17bbc99632889e12269013e35f1dcfba',1,'scif_uart_extended_cfg_t::rs485_setting()']]],
   ['renesas_20serial_20peripheral_20interface_20_28r_5frspi_29',['Renesas Serial Peripheral Interface (r_rspi)',['../group___r_s_p_i.html',1,'']]],
   ['rspi_5fdelay_5fcount_5f1',['RSPI_DELAY_COUNT_1',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775acf6c2af3c3fd7da891cd64c6ac082ed7',1,'r_rspi.h']]],
   ['rspi_5fdelay_5fcount_5f2',['RSPI_DELAY_COUNT_2',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a113a034f110841c3f8fb0c726238c7ea',1,'r_rspi.h']]],

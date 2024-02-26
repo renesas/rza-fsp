@@ -2,7 +2,7 @@ var searchData=
 [
   ['sci_5fuart_5fextended_5fcfg_5ft',['sci_uart_extended_cfg_t',['../group___s_c_i___u_a_r_t.html#structsci__uart__extended__cfg__t',1,'']]],
   ['sci_5fuart_5finstance_5fctrl_5ft',['sci_uart_instance_ctrl_t',['../group___s_c_i___u_a_r_t.html#structsci__uart__instance__ctrl__t',1,'']]],
-  ['sci_5fuart_5frs485_5fsetting_5ft',['sci_uart_rs485_setting_t',['../group___s_c_i_f___u_a_r_t.html#structsci__uart__rs485__setting__t',1,'']]],
+  ['sci_5fuart_5frs485_5fsetting_5ft',['sci_uart_rs485_setting_t',['../group___s_c_i___u_a_r_t.html#structsci__uart__rs485__setting__t',1,'']]],
   ['scif_5fbaud_5fsetting_5ft',['scif_baud_setting_t',['../group___s_c_i_f___u_a_r_t.html#structscif__baud__setting__t',1,'']]],
   ['scif_5fuart_5fextended_5fcfg_5ft',['scif_uart_extended_cfg_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__extended__cfg__t',1,'']]],
   ['scif_5fuart_5finstance_5fctrl_5ft',['scif_uart_instance_ctrl_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__instance__ctrl__t',1,'']]],

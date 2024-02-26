@@ -5,10 +5,10 @@ var group___s_c_i_f___u_a_r_t =
       [ "brr", "group___s_c_i_f___u_a_r_t.html#acc601128ecd5e04fcc306b249a2bb7bf", null ],
       [ "mddr", "group___s_c_i_f___u_a_r_t.html#acbf8ff1fb27039b0240beceeff67d048", null ]
     ] ],
-    [ "sci_uart_rs485_setting_t", "group___s_c_i_f___u_a_r_t.html#structsci__uart__rs485__setting__t", [
-      [ "enable", "group___s_c_i_f___u_a_r_t.html#a7ecf6bb47dcdafcd7e569695d0be405b", null ],
-      [ "polarity", "group___s_c_i_f___u_a_r_t.html#aafcbd1f2c02e2f81d81371bb9e6b895d", null ],
-      [ "de_control_pin", "group___s_c_i_f___u_a_r_t.html#a2e764fad5f11c412720a531a8e1b6815", null ]
+    [ "sci_uart_rs485_setting_t", "group___s_c_i___u_a_r_t.html#structsci__uart__rs485__setting__t", [
+      [ "enable", "group___s_c_i___u_a_r_t.html#a7ecf6bb47dcdafcd7e569695d0be405b", null ],
+      [ "polarity", "group___s_c_i___u_a_r_t.html#aafcbd1f2c02e2f81d81371bb9e6b895d", null ],
+      [ "de_control_pin", "group___s_c_i___u_a_r_t.html#a2e764fad5f11c412720a531a8e1b6815", null ]
     ] ],
     [ "scif_uart_extended_cfg_t", "group___s_c_i_f___u_a_r_t.html#structscif__uart__extended__cfg__t", [
       [ "bri_ipl", "group___s_c_i_f___u_a_r_t.html#a3fa97958f621b33bee457ec6bc136bed", null ],
@@ -43,9 +43,13 @@ var group___s_c_i_f___u_a_r_t =
     ] ],
     [ "sci_uart_rs485_enable_t", "group___s_c_i_f___u_a_r_t.html#ga9522502f434bcaa2bbaf9cb1321ce542", [
       [ "SCI_UART_RS485_DISABLE", "group___s_c_i_f___u_a_r_t.html#gga9522502f434bcaa2bbaf9cb1321ce542aa05bec8fad1420e777b184f55300b484", null ],
+      [ "SCI_UART_RS485_ENABLE", "group___s_c_i_f___u_a_r_t.html#gga9522502f434bcaa2bbaf9cb1321ce542acd3ee665f5225c5bb017bb64d33cf127", null ],
+      [ "SCI_UART_RS485_DISABLE", "group___s_c_i_f___u_a_r_t.html#gga9522502f434bcaa2bbaf9cb1321ce542aa05bec8fad1420e777b184f55300b484", null ],
       [ "SCI_UART_RS485_ENABLE", "group___s_c_i_f___u_a_r_t.html#gga9522502f434bcaa2bbaf9cb1321ce542acd3ee665f5225c5bb017bb64d33cf127", null ]
     ] ],
     [ "sci_uart_rs485_de_polarity_t", "group___s_c_i_f___u_a_r_t.html#ga0bd2440ef30f2feca9a2d129989bffce", [
+      [ "SCI_UART_RS485_DE_POLARITY_HIGH", "group___s_c_i_f___u_a_r_t.html#gga0bd2440ef30f2feca9a2d129989bffcea7cfd9e1ff7eca0657388f7cf9ce708fc", null ],
+      [ "SCI_UART_RS485_DE_POLARITY_LOW", "group___s_c_i_f___u_a_r_t.html#gga0bd2440ef30f2feca9a2d129989bffceac1a061d1cb22d6b336e23185af20e089", null ],
       [ "SCI_UART_RS485_DE_POLARITY_HIGH", "group___s_c_i_f___u_a_r_t.html#gga0bd2440ef30f2feca9a2d129989bffcea7cfd9e1ff7eca0657388f7cf9ce708fc", null ],
       [ "SCI_UART_RS485_DE_POLARITY_LOW", "group___s_c_i_f___u_a_r_t.html#gga0bd2440ef30f2feca9a2d129989bffceac1a061d1cb22d6b336e23185af20e089", null ]
     ] ],

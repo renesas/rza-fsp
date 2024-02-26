@@ -11,6 +11,6 @@ var searchData=
   ['ether_5fpromiscuous_5ft',['ether_promiscuous_t',['../group___e_t_h_e_r___a_p_i.html#ga3d443f5aaeafc8b8fa20eda633cbede1',1,'r_ether_api.h']]],
   ['ether_5fwake_5fon_5flan_5ft',['ether_wake_on_lan_t',['../group___e_t_h_e_r___a_p_i.html#ga9bc17e8981b3bb4f3d42d31c1f11bcd7',1,'r_ether_api.h']]],
   ['ether_5fzerocopy_5ft',['ether_zerocopy_t',['../group___e_t_h_e_r___a_p_i.html#gad3c9ba84cbe05cc1ff9b37d25318dd07',1,'r_ether_api.h']]],
-  ['external_5firq_5fpclk_5fdiv_5ft',['external_irq_pclk_div_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga692e093fc800ee08e3f84fae648372d8',1,'r_external_irq_api.h']]],
+  ['external_5firq_5fclk_5fsource_5fdiv_5ft',['external_irq_clk_source_div_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c',1,'r_external_irq_api.h']]],
   ['external_5firq_5ftrigger_5ft',['external_irq_trigger_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga2d1960d763da14da209e16fbb972d57c',1,'r_external_irq_api.h']]]
 ];

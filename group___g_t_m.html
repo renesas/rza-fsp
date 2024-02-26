@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.1</span>
+   &#160;<span id="projectnumber">Release v2.0.2</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -266,7 +266,11 @@ One-Shot</li>
 <tr>
 <td>General &gt; Period</td><td>Value must be non-negative</td><td>1 </td><td>Specify the timer period based on the selected unit.<br />
 <br />
-When the unit is set to 'Raw Counts', setting the period to 0x10000 results in the maximum period at the lowest divisor (fastest timer tick). Set the period to 0x10000 for a free running timer, pulse width measurement or pulse period measurement. Setting the period higher will automatically select a higher divider; the period can be set up to 0x80000 when counting from PCLKB or 0x800000 when counting from LOCO/subclock, which will use a divider of 8 or 128 respectively with the maximum period. </td></tr>
+Valid input value range:<br />
+- When 'Raw Counts' is selected in 'Period Unit', set the value to 0x00000001~0x100000000<br />
+- When other item is selected in 'Period Unit', set the value to (1 / count clock) ~ (0x100000000 / count clock)<br />
+<br />
+If the input value is exceeded valid range, the ERROR will be shown in hal_data.c. </td></tr>
 <tr>
 <td>General &gt; Period Unit</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -842,7 +846,7 @@ Stop the timer before calling this function if one-shot output is used.</dd></dl
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.1 User's Manual Copyright © (2023) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

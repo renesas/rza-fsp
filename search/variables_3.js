@@ -8,7 +8,7 @@ var searchData=
   ['data_5fsize',['data_size',['../group___c_a_m_e_r_a___a_p_i.html#a2199fad0eb0c4891f92af5ad41e0413a',1,'camera_status_t']]],
   ['data_5fswap',['data_swap',['../group___d_i_s_p_l_a_y___a_p_i.html#a4d6fa76869eb255d482c8c699d9efa57',1,'display_input_cfg_t::data_swap()'],['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a696c275e45786a911fffa1cadc9f1bfc',1,'isu_buffer_cfg_t::data_swap()']]],
   ['datasizeget',['dataSizeGet',['../group___u_s_b___a_p_i.html#ac2b9fd6871571a54b991b598cd5802a7',1,'usb_api_t']]],
-  ['de_5fcontrol_5fpin',['de_control_pin',['../group___s_c_i_f___u_a_r_t.html#a2e764fad5f11c412720a531a8e1b6815',1,'sci_uart_rs485_setting_t']]],
+  ['de_5fcontrol_5fpin',['de_control_pin',['../group___s_c_i___u_a_r_t.html#a2e764fad5f11c412720a531a8e1b6815',1,'sci_uart_rs485_setting_t']]],
   ['delay_5fcompensation',['delay_compensation',['../group___c_a_n_f_d.html#a3b38e8d28731a86eb521db8a5c5ae85e',1,'canfd_extended_cfg_t']]],
   ['dest_5fsize',['dest_size',['../group___d_m_a_c.html#af1a8d4edbbe91240e8d726056eb54385',1,'dmac_extended_info_t']]],
   ['detection_5fmode',['detection_mode',['../group___d_m_a_c.html#a39a63419e2521a7554b2747b015f5ff8',1,'dmac_extended_cfg_t']]],
