@@ -113,6 +113,8 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
     p_instance_ctrl->p_context         = p_cfg->p_context;
     p_instance_ctrl->p_callback_memory = NULL;
 
+    p_instance_ctrl->p_cfg = p_cfg;
+
     /* Clock On and Reset Off. */
     R_BSP_MODULE_START(FSP_IP_WDT, 0);
 
@@ -121,7 +123,10 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
     R_WDT0->WDTSET = p_extend->wdt_timeout << R_WDT0_WDTSET_WDTTIME_Pos;
 
     /* Enable WDT Overflow interrupt. */
-    R_BSP_IrqCfgEnable(p_extend->overflow_irq, p_extend->overflow_ipl, p_instance_ctrl);
+    if (NULL != p_instance_ctrl->p_callback)
+    {
+        R_BSP_IrqCfgEnable(p_extend->overflow_irq, p_extend->overflow_ipl, p_instance_ctrl);
+    }
 
     p_instance_ctrl->wdt_open = WDT_OPEN;
 
@@ -312,6 +317,8 @@ fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
     FSP_ERROR_RETURN(WDT_OPEN == p_instance_ctrl->wdt_open, FSP_ERR_NOT_OPEN);
 #endif
 
+    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+
     /* Store callback and context */
 #if BSP_TZ_SECURE_BUILD
 
@@ -337,6 +344,9 @@ fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
 #endif
     p_instance_ctrl->p_context         = p_context;
     p_instance_ctrl->p_callback_memory = p_callback_memory;
+
+    /* Enable WDT Overflow interrupt. */
+    R_BSP_IrqCfgEnable(p_extend->overflow_irq, p_extend->overflow_ipl, p_instance_ctrl);
 
     return FSP_SUCCESS;
 }

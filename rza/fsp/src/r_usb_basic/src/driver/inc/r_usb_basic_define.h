@@ -854,21 +854,21 @@
 /*************************************************************************
  * old basic_cfg.h #define
  *************************************************************************/
-#if (BSP_CFG_RTOS == 1)                /* #if (BSP_CFG_RTOS == 1) */
- #define USB_SND_MSG(ID, MESS)        (usb_hstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
- #define USB_ISND_MSG(ID, MESS)       (usb_hstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
- #define USB_RCV_MSG(ID, MESS)        (usb_hstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS)))
- #define USB_WAI_MSG(ID, MESS, TM)    (usb_hstd_wai_msg((uint8_t) (ID), (usb_msg_t *) (MESS), (usb_tm_t) (TM)))
- #define USB_PGET_BLK(ID, BLK)        (usb_hstd_pget_blk((uint8_t) (ID), (usb_utr_t **) (BLK)))
- #define USB_REL_BLK(ID, BLK)         (usb_hstd_rel_blk((uint8_t) (ID), (usb_utr_t *) (BLK)))
-#else                                  /* #if (BSP_CFG_RTOS == 1) */
+#if (BSP_CFG_RTOS == 0) || (USB_IP_EHCI_OHCI == 0)               /* #if (BSP_CFG_RTOS == 0) || (USB_IP_EHCI_OHCI == 0) */
  #define USB_SND_MSG(ID, MESS)        (usb_cstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
  #define USB_ISND_MSG(ID, MESS)       (usb_cstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
  #define USB_RCV_MSG(ID, MESS)        (usb_cstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS), (usb_tm_t) (0U)))
  #define USB_WAI_MSG(ID, MESS, TM)    (usb_cstd_wai_msg((uint8_t) (ID), (usb_msg_t *) (MESS), (usb_tm_t) (TM)))
  #define USB_PGET_BLK(ID, BLK)        (usb_cstd_pget_blk((uint8_t) (ID), (usb_utr_t **) (BLK)))
  #define USB_REL_BLK(ID, BLK)         (usb_cstd_rel_blk((uint8_t) (ID), (usb_utr_t *) (BLK)))
-#endif                                 /* #if (BSP_CFG_RTOS == 1) */
+#else                                  /* #if (BSP_CFG_RTOS == 1) */
+ #define USB_SND_MSG(ID, MESS)        (usb_hstd_snd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
+ #define USB_ISND_MSG(ID, MESS)       (usb_hstd_isnd_msg((uint8_t) (ID), (usb_msg_t *) (MESS)))
+ #define USB_RCV_MSG(ID, MESS)        (usb_hstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS)))
+ #define USB_WAI_MSG(ID, MESS, TM)    (usb_hstd_wai_msg((uint8_t) (ID), (usb_msg_t *) (MESS), (usb_tm_t) (TM)))
+ #define USB_PGET_BLK(ID, BLK)        (usb_hstd_pget_blk((uint8_t) (ID), (usb_utr_t **) (BLK)))
+ #define USB_REL_BLK(ID, BLK)         (usb_hstd_rel_blk((uint8_t) (ID), (usb_utr_t *) (BLK)))
+#endif                                 /* #if (BSP_CFG_RTOS == 0) || (USB_IP_EHCI_OHCI == 0) */
 #define USB_TRCV_MSG(ID, MESS, TM)    (usb_cstd_rec_msg((uint8_t) (ID), (usb_msg_t **) (MESS), (usb_tm_t) (TM)))
 
 /* Descriptor size */

@@ -1274,19 +1274,6 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
         gether_instance_tx_descriptor_t * p_tx_desc = p_instance_ctrl->p_tx_descriptor;
         gether_instance_tx_descriptor_t   dummy;
 
-        gether_instance_tx_descriptor_t * p_tx_desc_chk =
-            (void *) (((address_size_t) p_instance_ctrl->p_tx_descriptor & GETHER_ADDRESS_UPPER_BITS_MASK) |
-                      (address_size_t) p_reg_ether->CDAR0);
-        if ((p_tx_desc_chk->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc_chk->dt == GETHER_DESCRIPTOR_TYPE_LINK))
-        {
-            R_TOE0_Type * p_reg_toe;
-            p_reg_toe = (R_TOE0_Type *) p_instance_ctrl->p_reg_toe;
-
-            /* Move to the top of the descriptor */
-            p_reg_ether->DLR_b.LBA0 = 1;
-            p_reg_toe->CSR0_b.TPE   = 1;
-        }
-
         if ((p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
@@ -1329,6 +1316,8 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
 
         do
         {
+            /* Clean cache after writing descriptor */
+            R_BSP_CACHE_CleanRange((address_size_t) p_tx_desc, sizeof(gether_instance_tx_descriptor_t));
             /* Read back the last written descriptor */
             dummy = *p_tx_desc;
         } while (memcmp(&dummy, p_tx_desc, sizeof(gether_instance_tx_descriptor_t)));

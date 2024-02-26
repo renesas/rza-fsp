@@ -32,6 +32,24 @@
 #include "../hw/inc/r_usb_bitdefine.h"
 #include "../hw/inc/r_usb_reg_access.h"
 
+#if (BSP_CFG_RTOS == 1)
+ #include "../../../../../microsoft/azure-rtos/usbx/common/core/inc/ux_api.h"
+ #if defined(USB_CFG_OTG_USE)
+  #if defined(USB_CFG_HCDC_USE)
+   #include "ux_host_class_cdc_acm.h"
+  #endif                               /* defined(USB_CFG_HCDC_USE) */
+  #if defined(USB_CFG_HHID_USE)
+   #include "ux_host_class_hid.h"
+   #include "ux_host_class_hid_keyboard.h"
+   #include "ux_host_class_hid_mouse.h"
+   #include "ux_host_class_hid_remote_control.h"
+  #endif                               /* defined(USB_CFG_HHID_USE) */
+  #if defined(USB_CFG_HMSC_USE)
+   #include "ux_host_class_storage.h"
+  #endif                               /* defined(USB_CFG_HMSC_USE) */
+ #endif                                /* defined(USB_CFG_OTG_USE) */
+#endif                                 /* #if (BSP_CFG_RTOS == 1) */
+
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
  #include "../hw/inc/r_usb_dmac.h"
 #endif                                 /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
@@ -79,9 +97,27 @@ uint16_t g_usb_peri_connected;                          /* Status for USB connec
 usb_pcdreg_t g_usb_pstd_driver;
 usb_setup_t  g_usb_pstd_req_reg;                        /* Device Request - Request structure */
 
+ #if (BSP_CFG_RTOS == 1)
+uint8_t g_usb_peri_usbx_is_configured[USB_NUM_USBIP];
+ #endif /* (BSP_CFG_RTOS == 1) */
+
 /******************************************************************************
  * Exported global variables
  ******************************************************************************/
+
+ #if (BSP_CFG_RTOS == 1)
+extern bool         g_usb_peri_usbx_is_detach[USB_MAX_PIPE_NO + 1];
+extern bool         g_usb_peri_usbx_is_fifo_error[USB_MAX_PIPE_NO + 1];
+extern TX_SEMAPHORE g_usb_peri_usbx_sem[USB_MAX_PIPE_NO + 1];
+extern UINT usb_host_usbx_initialize(UX_HCD * hcd);
+
+  #if defined(USB_CFG_OTG_USE)
+extern uint8_t        g_is_usbx_otg_host_class_init[USB_NUM_USBIP];
+extern rtos_task_id_t g_hcd_tsk_hdl;
+extern uint8_t        g_usb_otg_suspend_flag[USB_NUM_USBIP];
+
+  #endif                               /* #if defined(USB_CFG_OTG_USE) */
+ #endif                                /* #if (BSP_CFG_RTOS == 1) */
 
 /******************************************************************************
  * Renesas Abstracted Peripheral Driver functions
@@ -431,6 +467,13 @@ static void usb_pstd_interrupt (usb_utr_t * p_mess)
             {
                 USB_PRINTF0("VBUS int detach\n");
                 usb_pstd_detach_process(p_mess); /* USB detach */
+  #if (BSP_CFG_RTOS == 1)
+                if (USB_YES == g_usb_peri_usbx_is_configured[p_mess->ip])
+                {
+                    _ux_device_stack_disconnect();
+                    g_usb_peri_usbx_is_configured[p_mess->ip] = USB_NO;
+                }
+  #endif                               /* (BSP_CFG_RTOS == 1) */
             }
 
             break;
@@ -1331,6 +1374,27 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
 
     err = usb_pstd_set_submitutr(ptr);
   #else                                /* BSP_CFG_RTOS == 0 */
+   #if (BSP_CFG_RTOS == 1)             /* BSP_CFG_RTOS == 0 */
+    ptr->msghead = (usb_mh_t) USB_NULL;
+    ptr->msginfo = USB_MSG_PCD_SUBMITUTR;
+
+    err = USB_PGET_BLK(1, &p_tran_data);
+    if (TX_SUCCESS != err)
+    {
+        return USB_ERROR;
+    }
+
+    *p_tran_data              = *ptr;
+    p_tran_data->cur_task_hdl = tx_thread_identify();
+    g_usb_peri_usbx_is_fifo_error[pipenum] = USB_NO;
+
+    /* Send message */
+    err = USB_SND_MSG(USB_PCD_MBX, (usb_msg_t *) p_tran_data);
+    if (USB_OK != err)
+    {
+        USB_REL_BLK(1, p_tran_data);
+    }
+   #else                                /* BSP_CFG_RTOS == 1 */
     ptr->msghead = (usb_mh_t) USB_NULL;
     ptr->msginfo = USB_MSG_PCD_SUBMITUTR;
 
@@ -1349,6 +1413,39 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
     {
         vPortFree(p_tran_data);
     }
+   #endif
+
+   #if (BSP_CFG_RTOS == 1)
+    if (0 != pipenum)
+    {
+    #if defined(USB_CFG_PPRN_USE)
+        UINT tx_err;
+        tx_err = tx_semaphore_get(&g_usb_peri_usbx_sem[pipenum], p_tran_data->timeout);
+        if (TX_SUCCESS != tx_err)
+        {
+            p_tran_data->is_timeout = USB_YES;
+            err = usb_pstd_transfer_end(p_tran_data, pipenum);
+            if (USB_OK != err)
+            {
+                USB_REL_BLK(1, p_tran_data);
+            }
+
+            err = USB_ERR_TMOUT;
+        }
+        else
+        {
+            if (USB_YES == g_usb_peri_usbx_is_fifo_error[pipenum])
+            {
+                g_usb_peri_usbx_is_fifo_error[pipenum] = USB_NO;
+                err = USB_ERR_FIFO_ACCESS;
+            }
+        }
+
+    #else                              /* defined(USB_CFG_PPRN_USE) */
+        tx_semaphore_get(&g_usb_peri_usbx_sem[pipenum], TX_WAIT_FOREVER);
+    #endif  /* defined(USB_CFG_PPRN_USE) */
+    }
+   #endif                              /* #if (BSP_CFG_RTOS == 1) */
   #endif                               /* (BSP_CFG_RTOS == 0) */
 
     return err;

@@ -10,7 +10,7 @@ FSP uses an open software ecosystem and provides flexibility in using your prefe
 
 ### Current Release
 
-[FSP v2.0.1](https://github.com/renesas/rza-fsp/releases/tag/v2.0.1)
+[FSP v2.0.2](https://github.com/renesas/rza-fsp/releases/tag/v2.0.2)
 
 ### Supported RZ/A MPU Kits
 

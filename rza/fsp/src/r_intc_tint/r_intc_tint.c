@@ -135,6 +135,16 @@ fsp_err_t R_INTC_TINT_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, e
     titsr |= (uint32_t) (p_extend->tint_trigger << (channel_titsr * INTC_TINT_TITSR_TITSEL_WIDTH));
     *(&R_INTC_IA55->TITSR0 + p_ctrl->channel / INTC_TINT_TITSR_TITSEL_NUMBER) = titsr;
 
+    /* Set the source of TINT and enable the TINT. */
+    uint32_t channel_tssr = p_ctrl->channel % INTC_TINT_TSSR_TSSEL_NUMBER;
+    uint32_t tssr         = *(&R_INTC_IA55->TSSR0 + p_ctrl->channel / INTC_TINT_TSSR_TSSEL_NUMBER);
+    tssr &= ~(INTC_TINT_TSSR_TSSEL_TIEN_MASK << (channel_tssr * INTC_TINT_TSSR_TSSEL_TIEN_WIDTH));
+    tssr |= (uint32_t) (p_extend->gpioint << (channel_tssr * INTC_TINT_TSSR_TSSEL_TIEN_WIDTH));
+    tssr |=
+        (uint32_t) (INTC_TINT_TSSR_TIEN_MASK <<
+                    (channel_tssr * INTC_TINT_TSSR_TSSEL_TIEN_WIDTH + INTC_TINT_TSSR_TIEN_WIDTH));
+    *(&R_INTC_IA55->TSSR0 + p_ctrl->channel / INTC_TINT_TSSR_TSSEL_NUMBER) = tssr;
+
     if ((INTC_TINT_TRIGGER_LEVEL_HIGH == p_extend->tint_trigger) ||
         (INTC_TINT_TRIGGER_LEVEL_LOW == p_extend->tint_trigger))
     {
@@ -155,16 +165,6 @@ fsp_err_t R_INTC_TINT_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, e
         tscr = R_INTC_IA55->TSCR;
         FSP_PARAMETER_NOT_USED(tscr);
     }
-
-    /* Set the source of TINT and enable the TINT. */
-    uint32_t channel_tssr = p_ctrl->channel % INTC_TINT_TSSR_TSSEL_NUMBER;
-    uint32_t tssr         = *(&R_INTC_IA55->TSSR0 + p_ctrl->channel / INTC_TINT_TSSR_TSSEL_NUMBER);
-    tssr &= ~(INTC_TINT_TSSR_TSSEL_TIEN_MASK << (channel_tssr * INTC_TINT_TSSR_TSSEL_TIEN_WIDTH));
-    tssr |= (uint32_t) (p_extend->gpioint << (channel_tssr * INTC_TINT_TSSR_TSSEL_TIEN_WIDTH));
-    tssr |=
-        (uint32_t) (INTC_TINT_TSSR_TIEN_MASK <<
-                    (channel_tssr * INTC_TINT_TSSR_TSSEL_TIEN_WIDTH + INTC_TINT_TSSR_TIEN_WIDTH));
-    *(&R_INTC_IA55->TSSR0 + p_ctrl->channel / INTC_TINT_TSSR_TSSEL_NUMBER) = tssr;
 
     if (p_ctrl->irq >= 0)
     {

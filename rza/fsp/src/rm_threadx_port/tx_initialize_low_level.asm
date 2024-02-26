@@ -73,8 +73,12 @@
     .type    _tx_initialize_low_level, @function
 _tx_initialize_low_level:
 
-    MSR     DAIFSet, 0x3                        // Lockout interrupts
+    /* Setup EL0 stack */
+    MOV     x0, sp                              // Pickup SP
+    MSR     SPSEL, #0                           // Change to EL0
+    MOV     sp, x0                              // Setup to EL0 stack
 
+    MSR     DAIFSet, 0x3                        // Lockout interrupts
 
     /* Save the system stack pointer.  */
     // _tx_thread_system_stack_ptr = (VOID_PTR) (sp);

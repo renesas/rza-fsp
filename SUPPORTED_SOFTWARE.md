@@ -7,6 +7,7 @@
     * [Azure RTOS USBX HCDC](https://docs.microsoft.com/en-us/azure/rtos/usbx/)
     * [Azure RTOS USBX HHID](https://docs.microsoft.com/en-us/azure/rtos/usbx/)
     * [Azure RTOS USBX HUVC](https://docs.microsoft.com/en-us/azure/rtos/usbx/)
+    * [Azure RTOS USBX PCDC](https://docs.microsoft.com/en-us/azure/rtos/usbx/)
     * [CANFD Driver on r_canfd](https://renesas.github.io/rza-fsp/group___c_a_n_f_d.html)
     * [I2C Master (r_riic_master)](https://renesas.github.io/rza-fsp/group___r_i_i_c___m_a_s_t_e_r.html)
     * [I2C Slave Driver on r_riic_slave](https://renesas.github.io/rza-fsp/group___r_i_i_c___s_l_a_v_e.html)

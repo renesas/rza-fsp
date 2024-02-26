@@ -147,6 +147,8 @@ typedef enum e_noise_cancel_lvl
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
+static void r_sci_negate_de_pin(sci_uart_instance_ctrl_t const * const p_ctrl);
+
 #if (SCI_UART_CFG_PARAM_CHECKING_ENABLE)
 
 static fsp_err_t r_sci_read_write_param_check(sci_uart_instance_ctrl_t const * const p_ctrl,
@@ -300,6 +302,15 @@ fsp_err_t R_SCI_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * co
                          FSP_ERR_INVALID_ARGUMENT);
     }
 
+ #if (SCI_UART_CFG_RS485_SUPPORT)
+    if (((sci_uart_extended_cfg_t *) p_cfg->p_extend)->rs485_setting.enable == SCI_UART_RS485_ENABLE)
+    {
+        FSP_ERROR_RETURN(
+            ((sci_uart_extended_cfg_t *) p_cfg->p_extend)->rs485_setting.de_control_pin != SCI_UART_INVALID_16BIT_PARAM,
+            FSP_ERR_INVALID_ARGUMENT);
+    }
+ #endif
+
     FSP_ASSERT(p_cfg->rxi_irq >= 0);
     FSP_ASSERT(p_cfg->txi_irq >= 0);
     FSP_ASSERT(p_cfg->tei_irq >= 0);
@@ -331,6 +342,9 @@ fsp_err_t R_SCI_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * co
 
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
+
+    /* Negate driver enable if RS-485 mode is enabled. */
+    r_sci_negate_de_pin(p_ctrl);
 
     /* Enable the SCI channel and reset the registers to their initial state. */
     R_BSP_MODULE_START(FSP_IP_SCI, p_cfg->channel);
@@ -426,6 +440,9 @@ fsp_err_t R_SCI_UART_Close (uart_ctrl_t * const p_api_ctrl)
     r_sci_uart_transfer_close(p_ctrl);
 #endif
 
+    /* Negate driver enable if RS-485 mode is enabled. */
+    r_sci_negate_de_pin(p_ctrl);
+
     /* Remove power to the channel. */
     R_BSP_MODULE_STOP(FSP_IP_SCI, p_ctrl->p_cfg->channel);
 
@@ -519,6 +536,22 @@ fsp_err_t R_SCI_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * cons
     err = r_sci_read_write_param_check(p_ctrl, p_src, bytes);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     FSP_ERROR_RETURN(0U == p_ctrl->tx_src_bytes, FSP_ERR_IN_USE);
+ #endif
+
+ #if (SCI_UART_CFG_RS485_SUPPORT)
+    sci_uart_extended_cfg_t * p_extend = (sci_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
+    /* If RS-485 is enabled, then assert the driver enable pin at the start of a write transfer. */
+    if (p_extend->rs485_setting.enable)
+    {
+        R_BSP_PinAccessEnable();
+
+        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+                               p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
+        R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
+
+        R_BSP_PinAccessDisable();
+    }
  #endif
 
     /* Transmit interrupts must be disabled to start with. */
@@ -751,6 +784,9 @@ fsp_err_t R_SCI_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communica
 
         p_ctrl->tx_src_bytes = 0U;
 
+        /* Negate driver enable if RS-485 mode is enabled. */
+        r_sci_negate_de_pin(p_ctrl);
+
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     }
 #endif
@@ -979,6 +1015,33 @@ fsp_err_t R_SCI_UART_BaudCalculate (uint32_t               baudrate,
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
+
+/*******************************************************************************************************************//**
+ * Negate the DE pin if it is enabled.
+ *
+ * @param[in] p_ctrl Pointer to the control block for the channel.
+ **********************************************************************************************************************/
+static void r_sci_negate_de_pin (sci_uart_instance_ctrl_t const * const p_ctrl)
+{
+#if (SCI_UART_CFG_RS485_SUPPORT)
+    sci_uart_extended_cfg_t * p_extend = (sci_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
+    /* If RS-485 is enabled, then negate the driver enable pin at the end of a write transfer. */
+    if (p_extend->rs485_setting.enable)
+    {
+        R_BSP_PinAccessEnable();
+
+        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+                               p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_LOW : BSP_IO_LEVEL_HIGH;
+        R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
+
+        R_BSP_PinAccessDisable();
+    }
+
+#else
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+#endif
+}
 
 #if (SCI_UART_CFG_PARAM_CHECKING_ENABLE)
 

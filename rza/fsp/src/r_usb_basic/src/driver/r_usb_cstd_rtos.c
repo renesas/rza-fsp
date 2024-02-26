@@ -1120,6 +1120,19 @@ usb_rtos_err_t usb_rtos_configuration (void)
 
     {
    #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+        g_mbx_table[0]  = NULL;
+        g_mbx_table[1]  = &g_hcd_mbx_hdl;      /* A mailbox handler of USB HCD task */
+        g_mbx_table[2]  = &g_mgr_mbx_hdl;      /* A mailbox handler of USB HCD task */
+        g_mbx_table[3]  = &g_hub_mbx_hdl;      /* A mailbox handler of USB MGR task */
+        g_mbx_table[4]  = &g_cls_mbx_hdl;      /* A mailbox handler of USB HUB task */
+        g_mbx_table[5]  = &g_pcd_mbx_hdl;      /* A mailbox handler of USB internal communication */
+        g_mbx_table[6]  = &g_hmsc_mbx_hdl;     /* A mailbox handler of USB PCD task */
+        g_mbx_table[7]  = &g_hmsc_req_mbx_hdl; /* A mailbox handler of USB HMSC */
+        g_mbx_table[8]  = &g_hcdc_mbx_hdl;     /* A mailbox handler for class request (via PIPE0) of USB HMSC */
+        g_mbx_table[9]  = &g_hhid_mbx_hdl;     /* A mailbox handler of USB HCDC task */
+        g_mbx_table[10] = &g_pmsc_mbx_hdl;     /* A mailbox handler of USB HHID task */
+//        g_mbx_table[11] = &g_hprn_mbx_hdl;     /* A mailbox handler of USB HPRN task */
+
         /** Create mailbox **/
         /** USB PCD task **/
         ret =
@@ -1872,8 +1885,6 @@ usb_er_t usb_cstd_isnd_msg (uint8_t id, usb_msg_t * mess)
  * End of function usb_cstd_isnd_msg
  ******************************************************************************/
 
- #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-
 /******************************************************************************
  * Function Name   : usb_cstd_pget_blk
  * Description     : Get a memory block for the caller.
@@ -2081,8 +2092,6 @@ uint8_t usb_cstd_check_schedule (void)
 /******************************************************************************
  * End of function usb_cstd_check_schedule
  ******************************************************************************/
-
- #endif                                /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
 /******************************************************************************
  * Function Name   : usb_cstd_pipe_msg_clear

@@ -128,10 +128,15 @@ void usb_cstd_pipe_init (usb_utr_t * ptr, uint16_t pipe)
     if (g_usb_usbmode[ip_no] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_CFG_RTOS != 0)
+  #if (BSP_CFG_RTOS == 2)
         if (NULL != g_p_usb_pstd_pipe[pipe])
         {
             vPortFree(g_p_usb_pstd_pipe[pipe]);
+        }
+  #elif (BSP_CFG_RTOS == 1)
+        if (NULL != g_p_usb_pstd_pipe[pipe])
+        {
+            tx_block_release(g_p_usb_pstd_pipe[pipe]);
         }
   #endif                               /* (BSP_CFG_RTOS == 2) */
 
@@ -143,10 +148,15 @@ void usb_cstd_pipe_init (usb_utr_t * ptr, uint16_t pipe)
     else
     {
  #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-  #if (BSP_CFG_RTOS != 0)
+  #if (BSP_CFG_RTOS == 2)
         if (NULL != g_p_usb_hstd_pipe[ptr->ip][pipe])
         {
             vPortFree(g_p_usb_hstd_pipe[ptr->ip][pipe]);
+        }
+  #elif (BSP_CFG_RTOS == 1)
+        if (NULL != g_p_usb_hstd_pipe[ptr->ip][pipe])
+        {
+            tx_block_release(g_p_usb_hstd_pipe[ptr->ip][pipe]);
         }
   #endif                               /* (BSP_CFG_RTOS == 2) */
 
@@ -241,10 +251,15 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t * ptr, uint16_t pipe_no)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_CFG_RTOS != 0)
+  #if (BSP_CFG_RTOS == 2)
         if (NULL != g_p_usb_pstd_pipe[pipe_no])
         {
             vPortFree(g_p_usb_pstd_pipe[pipe_no]);
+        }
+  #elif (BSP_CFG_RTOS == 1)
+        if (NULL != g_p_usb_pstd_pipe[pipe_no])
+        {
+            tx_block_release(g_p_usb_pstd_pipe[pipe_no]);
         }
   #endif                               /* (BSP_CFG_RTOS == 2) */
 
@@ -254,10 +269,15 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t * ptr, uint16_t pipe_no)
     else
     {
  #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-  #if (BSP_CFG_RTOS != 0)
+  #if (BSP_CFG_RTOS == 2)
         if (NULL != g_p_usb_hstd_pipe[ptr->ip][pipe_no])
         {
             vPortFree(g_p_usb_hstd_pipe[ptr->ip][pipe_no]);
+        }
+  #elif (BSP_CFG_RTOS == 1)
+        if (NULL != g_p_usb_hstd_pipe[ptr->ip][pipe_no])
+        {
+            tx_block_release(g_p_usb_hstd_pipe[ptr->ip][pipe_no]);
         }
   #endif                               /* (BSP_CFG_RTOS == 2) */
 

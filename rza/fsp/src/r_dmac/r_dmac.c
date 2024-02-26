@@ -416,37 +416,37 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
 
     if ((1 == p_ctrl->p_reg->CHSTAT_b.EN) && (0 == p_ctrl->p_reg->CHCFG_b.REN))
     {
-        p_src_cast  = (uint32_t *) &p_src;
-        p_dest_cast = (uint32_t *) &p_dest;
-        if (1 == p_ctrl->p_reg->CHSTAT_b.SR)
+        p_src_cast  = (uint32_t *) p_src;
+        p_dest_cast = (uint32_t *) p_dest;
+        if (0 == p_ctrl->p_reg->CHSTAT_b.SR)
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
-            va = *p_src_cast;
+            va = (uint64_t) p_src_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N1SA = (uint32_t) pa;
 
-            va = *p_dest_cast;
+            va = (uint64_t) p_dest_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N1DA = (uint32_t) pa;
 #else
-            p_ctrl->p_reg->N1SA = *p_src_cast;
-            p_ctrl->p_reg->N1DA = *p_dest_cast;
+            p_ctrl->p_reg->N1SA = p_src_cast;
+            p_ctrl->p_reg->N1DA = p_dest_cast;
 #endif
             p_ctrl->p_reg->N1TB = num_transfers;
         }
         else
         {
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
-            va = *p_src_cast;
+            va = (uint64_t) p_src_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N0SA = (uint32_t) pa;
 
-            va = *p_dest_cast;
+            va = (uint64_t) p_dest_cast;
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N0DA = (uint32_t) pa;
 #else
-            p_ctrl->p_reg->N0SA = *p_src_cast;
-            p_ctrl->p_reg->N0DA = *p_dest_cast;
+            p_ctrl->p_reg->N0SA = p_src_cast;
+            p_ctrl->p_reg->N0DA = p_dest_cast;
 #endif
             p_ctrl->p_reg->N0TB = num_transfers;
         }

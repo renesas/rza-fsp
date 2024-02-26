@@ -76,23 +76,23 @@ typedef enum e_external_irq_trigger
 /** External IRQ input pin digital filtering sample clock divisor settings. The digital filter rejects trigger
  * conditions that are shorter than 3 periods of the filter clock.
  */
-typedef enum e_external_irq_pclk_div
+typedef enum e_external_irq_clk_souce_div
 {
-    EXTERNAL_IRQ_PCLK_DIV_BY_1  = 0,   ///< Filter using PCLK divided by 1
-    EXTERNAL_IRQ_PCLK_DIV_BY_8  = 1,   ///< Filter using PCLK divided by 8
-    EXTERNAL_IRQ_PCLK_DIV_BY_32 = 2,   ///< Filter using PCLK divided by 32
-    EXTERNAL_IRQ_PCLK_DIV_BY_64 = 3,   ///< Filter using PCLK divided by 64
-} external_irq_pclk_div_t;
+    EXTERNAL_IRQ_CLK_SOURCE_DIV_1  = 0, ///< Filter using clock source divided by 1
+    EXTERNAL_IRQ_CLK_SOURCE_DIV_8  = 1, ///< Filter using clock source divided by 8
+    EXTERNAL_IRQ_CLK_SOURCE_DIV_32 = 2, ///< Filter using clock source divided by 32
+    EXTERNAL_IRQ_CLK_SOURCE_DIV_64 = 3, ///< Filter using clock source divided by 64
+} external_irq_clk_source_div_t;
 
 /** User configuration structure, used in open function */
 typedef struct st_external_irq_cfg
 {
-    uint8_t                 channel;   ///< Hardware channel used.
-    uint8_t                 ipl;       ///< Interrupt priority
-    IRQn_Type               irq;       ///< GIC interrupt number assigned to this instance
-    external_irq_trigger_t  trigger;   ///< Trigger setting.
-    external_irq_pclk_div_t pclk_div;  ///< Digital filter clock divisor setting.
-    bool filter_enable;                ///< Digital filter enable/disable setting.
+    uint8_t                       channel;        ///< Hardware channel used.
+    uint8_t                       ipl;            ///< Interrupt priority
+    IRQn_Type                     irq;            ///< GIC interrupt number assigned to this instance
+    external_irq_trigger_t        trigger;        ///< Trigger setting.
+    external_irq_clk_source_div_t clk_source_div; ///< Digital filter clock divisor setting.
+    bool filter_enable;                           ///< Digital filter enable/disable setting.
 
     /** Callback provided external input trigger occurs. */
     void (* p_callback)(external_irq_callback_args_t * p_args);

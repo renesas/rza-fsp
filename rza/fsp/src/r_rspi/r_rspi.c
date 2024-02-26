@@ -834,8 +834,10 @@ static void r_rspi_set_rxtrg (rspi_instance_ctrl_t * p_ctrl, rspi_rx_trigger_lev
         level = RSPI_RX_TRIGGER_1;
     }
 
-    p_ctrl->p_regs->SPBFCR &= (uint8_t) (~R_RSPI0_SPBFCR_RXTRG_Msk);
-    p_ctrl->p_regs->SPBFCR |= (uint8_t) (level << R_RSPI0_SPBFCR_RXTRG_Pos);
+    uint8_t spbfcr = p_ctrl->p_regs->SPBFCR;
+    spbfcr                &= (uint8_t) (~R_RSPI0_SPBFCR_RXTRG_Msk);
+    spbfcr                |= (uint8_t) (level << R_RSPI0_SPBFCR_RXTRG_Pos);
+    p_ctrl->p_regs->SPBFCR = spbfcr;
 }
 
 /*******************************************************************************************************************//**

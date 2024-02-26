@@ -375,6 +375,13 @@ void      usb_pstd_forced_termination(uint16_t pipe, uint16_t status, usb_utr_t 
 void      usb_pstd_interrupt_clock(uint8_t usb_ip);
 void      usb_pstd_self_clock(uint8_t usb_ip);
 void      usb_pstd_stop_clock(uint8_t usb_ip);
+fsp_err_t usb_cstd_wai_msg(uint8_t id, usb_msg_t * mess, usb_tm_t times);
+usb_er_t  usb_cstd_pget_blk(uint8_t id, usb_utr_t ** blk);
+usb_er_t  usb_cstd_rel_blk(uint8_t id, usb_utr_t * blk);
+void      usb_cstd_wait_scheduler(void);
+void      usb_cstd_sche_init(void);
+void      usb_cstd_set_task_pri(uint8_t tasknum, uint8_t pri);
+uint8_t   usb_cstd_check_schedule(void);
 
 #endif                                 /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
 
@@ -768,6 +775,32 @@ extern uint64_t r_usb_pa_to_va(uint64_t paddr);
 extern uint64_t r_usb_va_to_pa(uint64_t vaddr);
 
 #endif
+
+#if (BSP_CFG_RTOS == 1)
+void usb_cstd_usbx_callback(usb_event_info_t * p_api_event, usb_hdl_t cur_task, usb_onoff_t usb_state);
+
+ #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+void usb_host_usbx_registration(usb_utr_t * p_utr);
+void usb_host_usbx_attach_init(uint8_t module_number);
+
+ #endif                                /* #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+
+ #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+uint32_t usb_peri_usbx_initialize_complete(void);
+
+ #endif                                /* #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
+
+ #if defined(USB_CFG_OTG_USE)
+void usb_otg_irq_callback(external_irq_callback_args_t * p_args);
+void usb2_otg_irq_callback(external_irq_callback_args_t * p_args);
+VOID usb_otg_detach_timer(ULONG args);
+VOID usb2_otg_detach_timer(ULONG args);
+VOID usb_otg_chattering_timer(ULONG args);
+VOID usb_otg_hnp_timer(ULONG args);
+
+ #endif                                /* defined(USB_CFG_OTG_USE) */
+
+#endif                                 /* #if (BSP_CFG_RTOS == 1) */
 
 #endif                                 /* R_USB_EXTERN_H */
 

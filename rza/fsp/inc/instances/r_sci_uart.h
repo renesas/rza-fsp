@@ -120,6 +120,20 @@ typedef enum e_sci_uart_noise_cancellation
     SCI_UART_NOISE_CANCELLATION_ENABLE  = 0x1, ///< Enable noise cancellation
 } sci_uart_noise_cancellation_t;
 
+/** RS-485 Enable/Disable. */
+typedef enum e_sci_uart_rs485_enable
+{
+    SCI_UART_RS485_DISABLE = 0,        ///< RS-485 disabled.
+    SCI_UART_RS485_ENABLE  = 1,        ///< RS-485 enabled.
+} sci_uart_rs485_enable_t;
+
+/** The polarity of the RS-485 DE signal. */
+typedef enum e_sci_uart_rs485_de_polarity
+{
+    SCI_UART_RS485_DE_POLARITY_HIGH = 0, ///< The DE signal is high when a write transfer is in progress.
+    SCI_UART_RS485_DE_POLARITY_LOW  = 1, ///< The DE signal is low when a write transfer is in progress.
+} sci_uart_rs485_de_polarity_t;
+
 /** Register settings to acheive a desired baud rate and modulation duty. */
 typedef struct st_baud_setting
 {
@@ -144,6 +158,14 @@ typedef struct st_baud_setting
     uint8_t mddr;                      ///< Modulation Duty Register setting
 } baud_setting_t;
 
+/** Configuration settings for controlling the DE signal for RS-485. */
+typedef struct st_sci_uart_rs485_setting
+{
+    sci_uart_rs485_enable_t      enable;         ///< Enable the DE signal.
+    sci_uart_rs485_de_polarity_t polarity;       ///< DE signal polarity.
+    bsp_io_port_pin_t            de_control_pin; ///< UART Driver Enable pin.
+} sci_uart_rs485_setting_t;
+
 /** UART on SCI device Configuration */
 typedef struct st_sci_uart_extended_cfg
 {
@@ -154,6 +176,7 @@ typedef struct st_sci_uart_extended_cfg
     sci_uart_rx_fifo_trigger_t    rx_fifo_trigger;  ///< Receive FIFO trigger level, unused if channel has no FIFO or if DTC is used.
     bsp_io_port_pin_t             flow_control_pin; ///< UART Driver Enable pin
     sci_uart_flow_control_t       flow_control;     ///< CTS/RTS function of the SSn pin
+    sci_uart_rs485_setting_t      rs485_setting;    ///< RS-485 settings.
 } sci_uart_extended_cfg_t;
 
 /**********************************************************************************************************************
@@ -178,7 +201,7 @@ fsp_err_t R_SCI_UART_BaudCalculate(uint32_t               baudrate,
                                    uint32_t               baud_rate_error_x_1000,
                                    baud_setting_t * const p_baud_setting);
 fsp_err_t R_SCI_UART_CallbackSet(uart_ctrl_t * const          p_api_ctrl,
-                                 void (                     * p_callback ) (uart_callback_args_t *),
+                                 void (                     * p_callback)(uart_callback_args_t *),
                                  void const * const           p_context,
                                  uart_callback_args_t * const p_callback_memory);
 fsp_err_t R_SCI_UART_ReadStop(uart_ctrl_t * const p_api_ctrl, uint32_t * remaining_bytes);

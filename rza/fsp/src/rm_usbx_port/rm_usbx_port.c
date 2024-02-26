@@ -301,11 +301,15 @@ uint32_t usb_peri_usbx_uninitialize (uint32_t dcd_io)
 {
     UX_SLAVE_DCD * dcd;
 
-  #if defined(R_USB_HS0_BASE)
+  #if defined(BSP_MCU_GROUP_RZA3UL)
+    if ((dcd_io != USB_IP0) && (dcd_io != USB_IP1))
+  #else /* #if defined(BSP_MCU_GROUP_RZA3UL) */
+   #if defined(R_USB_HS0_BASE)
     if ((dcd_io != R_USB_HS0_BASE) && (dcd_io != R_USB_FS0_BASE))
-  #else
+   #else
     if (dcd_io != R_USB_FS0_BASE)
-  #endif
+   #endif
+  #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     {
         return (uint32_t) FSP_ERR_USB_FAILED;
     }
@@ -542,10 +546,12 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
 
     module_number = USB_CFG_IP0;
   #if defined(R_USB_HS0_BASE)
+   #if !defined(BSP_MCU_GROUP_RZA3UL)
     if (R_USB_HS0_BASE == dcd->ux_slave_dcd_io)
     {
         module_number = USB_CFG_IP1;
     }
+   #endif /* defined(BSP_MCU_GROUP_RZA3UL) */
   #endif                               /* defined(R_USB_HS0_BASE) */
     tran_data.ip = module_number;
 

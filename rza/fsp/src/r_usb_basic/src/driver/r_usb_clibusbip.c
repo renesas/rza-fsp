@@ -724,6 +724,29 @@ uint16_t usb_cstd_remote_wakeup (usb_utr_t * p_utr)
 #endif /* (USB_CFG_MODE == USB_CFG_PERI) */
 }                                      /* End of function usb_cstd_remote_wakeup */
 
+#if (BSP_CFG_RTOS == 1)
+
+/******************************************************************************
+ * Function Name   : usb_cstd_usbx_callback
+ * Description     : The callback function is not used when using USBX.
+ *                   Therefore, prepared an empty function.
+ * Arguments       : usb_event_info_t *p_api_event :
+ *                   usb_hdl_t cur_task            :
+ *                   usb_onoff_t usb_state         :
+ * Return value    : none
+ ******************************************************************************/
+void usb_cstd_usbx_callback (usb_event_info_t * p_api_event, usb_hdl_t cur_task, usb_onoff_t usb_state)
+{
+    FSP_PARAMETER_NOT_USED(p_api_event);
+    FSP_PARAMETER_NOT_USED(cur_task);
+    FSP_PARAMETER_NOT_USED(usb_state);
+}
+
+/******************************************************************************
+ * End of function usb_cstd_usbx_callback
+ ******************************************************************************/
+#endif                                 /* #if (BSP_CFG_RTOS == 1) */
+
 /******************************************************************************
  * End  Of File
  ******************************************************************************/

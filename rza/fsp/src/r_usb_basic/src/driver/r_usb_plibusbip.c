@@ -50,6 +50,13 @@
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
 /******************************************************************************
+ * Exported global variables (to be accessed by other files)
+ ******************************************************************************/
+ #if (BSP_CFG_RTOS == 1)
+extern TX_SEMAPHORE g_usb_peri_usbx_sem[USB_MAX_PIPE_NO + 1];
+ #endif                                /* #if (BSP_CFG_RTOS == 1) */
+
+/******************************************************************************
  * Renesas Abstracted Host Lib IP functions
  ******************************************************************************/
 
@@ -787,6 +794,8 @@ void usb_pstd_data_end (uint16_t pipe, uint16_t status, usb_utr_t * p_utr)
         usb_cstd_pipe_msg_re_forward(USB_IP0, pipe); /* Get PIPE Transfer wait que and Message send to PCD */
  #elif (BSP_CFG_RTOS == 1)
         USB_REL_BLK(1, g_p_usb_pstd_pipe[pipe]);
+        g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
+        usb_cstd_pipe_msg_re_forward(USB_IP0, pipe); /* Get PIPE Transfer wait que and Message send to PCD */
  #else  /* (BSP_CFG_RTOS == 2) */
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
  #endif                                /* (BSP_CFG_RTOS == 2) */
@@ -1146,6 +1155,10 @@ uint8_t usb_pstd_set_pipe_table (uint8_t * descriptor, usb_utr_t * p_utr, uint8_
         /* set max packet size */
         pipe_maxp = (uint16_t) descriptor[USB_EP_B_MAXPACKETSIZE_L];
         pipe_maxp = (uint16_t) (pipe_maxp | ((uint16_t) descriptor[USB_EP_B_MAXPACKETSIZE_H] << 8));
+
+ #if (BSP_CFG_RTOS == 1)
+        tx_semaphore_create(&g_usb_peri_usbx_sem[pipe_no], "USB_FSP_SEMX", 0);
+ #endif                                /* #if (BSP_CFG_RTOS == 1) */
 
         /* Set Pipe table block */
         g_usb_pipe_table[p_utr->ip][pipe_no].use_flag  = USB_TRUE;

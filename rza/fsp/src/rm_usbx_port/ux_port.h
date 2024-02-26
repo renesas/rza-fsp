@@ -57,7 +57,9 @@
   #include "ux_user.h"
  #endif
 
+#if USB_CFG_HOST_MODE
  #include "rm_usbx_port_cfg.h"
+#endif
 
 /* Include library header files.  */
 

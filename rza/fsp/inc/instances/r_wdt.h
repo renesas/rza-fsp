@@ -47,7 +47,8 @@ typedef struct st_wdt_instance_ctrl
 {
     uint32_t wdt_open;                                 // Indicates whether the open() API has been successfully
                                                        // called.
-    void const * p_context;                            // Placeholder for user data.  Passed to the user callback in
+    wdt_cfg_t const * p_cfg;                           // Pointer to the configuration block.
+    void const      * p_context;                       // Placeholder for user data.  Passed to the user callback in
                                                        // wdt_callback_args_t.
     void (* p_callback)(wdt_callback_args_t * p_args); // Callback provided when a WDT NMI ISR occurs.
     wdt_callback_args_t * p_callback_memory;           // Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
