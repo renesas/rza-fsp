@@ -63,6 +63,8 @@
 /*  09-30-2020     William E. Lamie         Initial Version 6.1           */
 /*                                                                        */
 /**************************************************************************/
+#include "tx_user.h"
+
 // VOID   _tx_thread_context_restore(VOID)
 // {
     .global _tx_thread_context_restore

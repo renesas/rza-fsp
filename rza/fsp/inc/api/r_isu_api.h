@@ -26,8 +26,6 @@
  * @section IMAGE_SCALING_API_SUMMARY Summary
  * The Image Scaling interface provides a general API for configuring and controlling image scaling.
  *
- * Implemented by:
- * @ref ISU
  *
  * @{
  **********************************************************************************************************************/
@@ -135,33 +133,25 @@ typedef void isu_ctrl_t;
 typedef struct st_isu_api
 {
     /** Open scaling device.
-     * @par Implemented as
-     * - @ref R_ISU_Open()
      * @param[in,out]  p_ctrl        Pointer to scaling interface control block.
      * @param[in]      p_cfg         Pointer to scaling configuration structure.
      */
     fsp_err_t (* open)(isu_ctrl_t * const p_ctrl, isu_cfg_t const * const p_cfg);
 
     /** Close scaling device.
-     * @par Implemented as
-     * - @ref R_ISU_Close()
      * @param[in]     p_ctrl   Pointer to scaling interface control block.
      */
     fsp_err_t (* close)(isu_ctrl_t * const p_ctrl);
 
     /** Start image scaling.
-     * @par Implemented as
-     * - @ref R_ISU_Start()
      * @param[in]     p_ctrl   Pointer to scaling interface control block.
      */
     fsp_err_t (* start)(isu_ctrl_t * const p_ctrl);
 
     /** Change image scaling configuration.
-     * @par Implemented as
-     * - @ref R_ISU_ChangeCfg()
      * @param[in]     p_ctrl   Pointer to scaling interface control block.
      */
-    fsp_err_t (* changeCfg)(isu_ctrl_t * const p_api_ctrl, isu_runtime_cfg_t * const p_runtime_cfg);
+    fsp_err_t (* changeCfg)(isu_ctrl_t * const p_ctrl, isu_runtime_cfg_t * const p_runtime_cfg);
 } isu_api_t;
 
 /** This structure encompasses everything that is needed to use an instance of this interface. */

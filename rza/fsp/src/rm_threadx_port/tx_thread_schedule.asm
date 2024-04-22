@@ -67,6 +67,7 @@
 /*                                            resulting in version 6.1.10 */
 /*                                                                        */
 /**************************************************************************/
+#include "tx_user.h"
 // VOID   _tx_thread_schedule(VOID)
 // {
     .global _tx_thread_schedule

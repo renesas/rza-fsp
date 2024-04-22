@@ -374,7 +374,7 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
             R_BSP_PinAccessEnable();
 
             /* Assert driver enable if RS-485 FullDuplex mode is enabled. */
-            bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+            bsp_io_level_t level = SCIF_UART_RS485_DE_POLARITY_HIGH ==
                                    p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
             R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
 
@@ -572,7 +572,7 @@ fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * con
     {
         R_BSP_PinAccessEnable();
 
-        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+        bsp_io_level_t level = SCIF_UART_RS485_DE_POLARITY_HIGH ==
                                p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
         R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
 
@@ -919,6 +919,7 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
      *  BRR = (PCLK / (div_coefficient * baud)) - 1
      */
     int32_t  hit_bit_err = SCIF_UART_100_PERCENT_X_1000;
+    uint8_t  hit_mddr    = 0U;
     uint32_t divisor     = 0U;
 
     uint32_t freq_hz = R_FSP_SystemClockHzGet(BSP_FEATURE_SCIF_CLOCK);
@@ -980,17 +981,16 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
                     int32_t bit_err = (int32_t) ((((int64_t) freq_hz * SCIF_UART_100_PERCENT_X_1000) / err_divisor) -
                                                  SCIF_UART_100_PERCENT_X_1000);
 
-                    uint32_t mddr = SCIF_UART_MDDR_MAX;
+                    uint8_t mddr = 0;
                     if (bitrate_modulation)
                     {
                         /* Calculate the MDDR (M) value if bit rate modulation is enabled,
                          * The formula to calculate MBBR (from the M and N relationship given in the hardware manual)
-                         * is as follows and it must be between 128 and 256.
+                         * is as follows and it must be between 128 and 255.
                          * MDDR = ((div_coefficient * baud * 256) * (BRR + 1)) / PCLK */
-                        mddr = (uint32_t) err_divisor / (freq_hz / SCIF_UART_MDDR_MAX);
+                        mddr = (uint8_t) ((uint32_t) err_divisor / (freq_hz / SCIF_UART_MDDR_MAX));
 
-                        /* The maximum value that could result from the calculation above is 256, which is a valid MDDR
-                         * value, so only the lower bound is checked. */
+                        /* MDDR value must be greater than or equal to SCIF_UART_MDDR_MIN. */
                         if (mddr < SCIF_UART_MDDR_MIN)
                         {
                             break;
@@ -1020,21 +1020,17 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
                         p_baud_setting->semr_baudrate_bits_b.cks  = g_async_baud[i].cks;
                         p_baud_setting->brr = (uint8_t) temp_brr;
                         hit_bit_err         = bit_err;
-                        if (SCIF_UART_MDDR_MAX <= mddr)
-                        {
-                            p_baud_setting->semr_baudrate_bits_b.brme = 0U;
-                            p_baud_setting->mddr = SCIF_UART_MDDR_MAX - 1;
-                        }
-                        else
-                        {
-                            p_baud_setting->semr_baudrate_bits_b.brme = 1U;
-                            p_baud_setting->mddr = (uint8_t) mddr;
-                        }
+                        hit_mddr            = mddr;
+                    }
 
-                        if (!bitrate_modulation)
-                        {
-                            break;
-                        }
+                    if (bitrate_modulation)
+                    {
+                        p_baud_setting->semr_baudrate_bits_b.brme = 1U;
+                        p_baud_setting->mddr = hit_mddr;
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }
@@ -1070,7 +1066,7 @@ static void r_scif_negate_de_pin (scif_uart_instance_ctrl_t const * const p_ctrl
     {
         R_BSP_PinAccessEnable();
 
-        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+        bsp_io_level_t level = SCIF_UART_RS485_DE_POLARITY_HIGH ==
                                p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_LOW : BSP_IO_LEVEL_HIGH;
         R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
 

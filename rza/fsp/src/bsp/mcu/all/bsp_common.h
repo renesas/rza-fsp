@@ -33,7 +33,7 @@
 #include <string.h>
 
 /* Different compiler support. */
-#include "../../inc/fsp_common_api.h"
+#include "../../inc/api/fsp_common_api.h"
 #include "bsp_compiler_support.h"
 #include "bsp_cfg.h"
 
@@ -57,6 +57,7 @@ FSP_HEADER
 #if 1 == BSP_CFG_RTOS                  /* ThreadX */
  #include "tx_user.h"
  #if defined(TX_ENABLE_EVENT_TRACE) || defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY)
+  #include "tx_api.h"
   #define FSP_CONTEXT_SAVE       tx_isr_start((uint32_t) R_FSP_CurrentIrqGet());
   #define FSP_CONTEXT_RESTORE    tx_isr_end((uint32_t) R_FSP_CurrentIrqGet());
  #else
@@ -128,7 +129,7 @@ FSP_HEADER
 #ifndef FSP_REGISTER_READ
 
 /* Read a register and discard the result. */
- #define FSP_REGISTER_READ(A)    __ASM volatile ("" : : "r" (A));
+ #define FSP_REGISTER_READ(A)    __asm__ volatile ("" : : "r" (A));
 #endif
 
 /****************************************************************

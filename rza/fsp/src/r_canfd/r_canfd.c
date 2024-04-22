@@ -46,11 +46,17 @@
  #define CANFD_PRV_STANDARD_ID_MAX         (0x7FFU)
 #endif
 
+/** Whether or not the peripheral contains CFDCFTISTS and CFDCFRISTS registers. */
+#define CANFD_PRV_CFIFO_HAS_ISTS           (!(BSP_FEATURE_CANFD_LITE && BSP_FEATURE_CANFD_NUM_CHANNELS == 1))
+
 #if BSP_FEATURE_CANFD_LITE
+ #define CANFD_PRV_CFIFO_CHANNEL_OFFSET    (1U)
+
  #define R_CANFD_CFDRM_RM_TYPE             R_CANFD_CFDRM_RM_Type
 
  #define CANFD_PRV_RXMB_PTR(buffer)    ((volatile R_CANFD_CFDRM_RM_TYPE *) &p_reg->CFDRM[buffer >> 3].RM[buffer & 7U])
  #define CANFD_PRV_RX_FIFO_MAX             (2U)
+ #define CANFD_PRV_COMMON_FIFO_MAX         (1U)
  #define CANFD_PRV_CFDTMIEC_LENGTH         (1)
  #define CANFD_PRV_RMID_POSITION           (R_CANFD_CFDRM_RM_ID_RMID_Pos)
  #define CANFD_PRV_RMID_MASK               (R_CANFD_CFDRM_RM_ID_RMID_Msk)
@@ -61,7 +67,9 @@
  #define CANFD_PRV_RMDLC_POSITION          (R_CANFD_CFDRM_RM_PTR_RMDLC_Pos)
  #define CANFD_PRV_RMDLC_MASK              (R_CANFD_CFDRM_RM_PTR_RMDLC_Msk)
 #else
+ #define CANFD_PRV_CFIFO_CHANNEL_OFFSET    (3U)
  #define CANFD_PRV_RX_FIFO_MAX             (8U)
+ #define CANFD_PRV_COMMON_FIFO_MAX         (3U)
  #define CANFD_PRV_CFDTMIEC_LENGTH         (2)
  #if BSP_FEATURE_CANFD_HAS_RSCANFD
   #define CANFD_PRV_RMID_POSITION          (R_CANFD_RSCFDnCFDRMID0_RMID_Pos)
@@ -73,14 +81,18 @@
   #define CANFD_PRV_RMDLC_POSITION         (R_CANFD_RSCFDnCFDRMPTR0_RMDLC_Pos)
   #define CANFD_PRV_RMDLC_MASK             (R_CANFD_RSCFDnCFDRMPTR0_RMDLC_Msk)
   #define CANFD_PRV_CFDFESTS_RFXEMP_Msk    (0x000000FFUL)
+  #define CANFD_PRV_CFDFESTS_CFXEMP_Msk    (0x00003f00UL)
+  #define CANFD_PRV_CFDCFCC_CFE_Msk        (R_CANFD_RSCFDnCFDCFCC0_CFE_Msk)
  #endif
 #endif
 
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
- #define CANFD_INTER_CH(channel)    (0U)
+ #define CANFD_INTER_CH(channel)                  (0U)
 #else
- #define CANFD_INTER_CH(channel)    (channel)
+ #define CANFD_INTER_CH(channel)                  (channel)
 #endif
+
+#define CANFD_PRV_CFIFO_INDEX(buffer, channel)    ((buffer) + ((channel) * CANFD_PRV_CFIFO_CHANNEL_OFFSET))
 
 /***********************************************************************************************************************
  * Const data
@@ -108,7 +120,7 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile canfd_prv_ns_callback)(can_callb
  * Private function prototypes
  **********************************************************************************************************************/
 #if CANFD_CFG_PARAM_CHECKING_ENABLE
-static bool r_canfd_bit_timing_parameter_check(can_bit_timing_cfg_t * p_bit_timing);
+static bool r_canfd_bit_timing_parameter_check(can_bit_timing_cfg_t * p_bit_timing, bool is_data_phase);
 
 #endif
 
@@ -125,6 +137,7 @@ static void r_canfd_mode_transition(canfd_instance_ctrl_t * p_ctrl, can_operatio
 static void r_canfd_mode_ctr_set(volatile uint32_t * p_ctr_reg, can_operation_mode_t operation_mode);
 void        canfd_error_isr(IRQn_Type const irq);
 void        canfd_rx_fifo_isr(IRQn_Type const irq);
+void        canfd_common_fifo_rx_isr(IRQn_Type const irq);
 void        canfd_channel_tx_isr(IRQn_Type const irq);
 
 /***********************************************************************************************************************
@@ -204,14 +217,14 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
     FSP_ASSERT(p_extend->p_global_cfg);
 
     /* Check nominal bit timing parameters for correctness */
-    FSP_ERROR_RETURN(r_canfd_bit_timing_parameter_check(p_cfg->p_bit_timing), FSP_ERR_CAN_INIT_FAILED);
+    FSP_ERROR_RETURN(r_canfd_bit_timing_parameter_check(p_cfg->p_bit_timing, false), FSP_ERR_CAN_INIT_FAILED);
 
  #if BSP_FEATURE_CANFD_FD_SUPPORT
 
     /* Check that bit timing for FD bitrate switching is present and correct */
     can_bit_timing_cfg_t * p_data_timing = p_extend->p_data_timing;
     FSP_ASSERT(p_data_timing);
-    FSP_ERROR_RETURN(r_canfd_bit_timing_parameter_check(p_data_timing), FSP_ERR_CAN_INIT_FAILED);
+    FSP_ERROR_RETURN(r_canfd_bit_timing_parameter_check(p_data_timing, true), FSP_ERR_CAN_INIT_FAILED);
 
     can_bit_timing_cfg_t * p_bit_timing = p_cfg->p_bit_timing;
 
@@ -308,6 +321,14 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
         /* Set global error interrupts */
         uint32_t gctr = p_reg->RSCFDnCFDGCTR & R_CANFD_RSCFDnCFDGCTR_GMDC_Msk;
         p_reg->RSCFDnCFDGCTR = p_global_cfg->global_interrupts | gctr;
+
+        /* Configure Common FIFOs */
+        for (uint32_t i = 0; i < R_CANFD_NUM_COMMON_FIFOS; i++)
+        {
+            /* Configure the Common FIFOs. Mask out the enable bit because it can only be set once operating. */
+            uint32_t * cfcc_base = (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDCFCC0 + 0x04 * i);
+            *cfcc_base = p_global_cfg->common_fifo_config[i] & (uint32_t) ~R_CANFD_RSCFDnCFDCFCC0_CFE_Msk;
+        }
     }
     else
     {
@@ -475,6 +496,12 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
         R_BSP_IrqCfgEnable(p_cfg->tx_irq, p_cfg->ipl, p_ctrl);
     }
 
+    /* Use the CAN RX IRQ for Common FIFO RX. */
+    if (p_cfg->rx_irq >= 0)
+    {
+        R_BSP_IrqCfgEnable(p_cfg->rx_irq, p_cfg->ipl, p_ctrl);
+    }
+
     /* Set global mode to Operation and wait for transition */
     r_canfd_mode_transition(p_ctrl, CAN_OPERATION_MODE_GLOBAL_OPERATION);
 
@@ -523,6 +550,11 @@ fsp_err_t R_CANFD_Close (can_ctrl_t * const p_api_ctrl)
     if (p_cfg->tx_irq >= 0)
     {
         R_BSP_IrqDisable(p_cfg->tx_irq);
+    }
+
+    if (p_cfg->rx_irq >= 0)
+    {
+        R_BSP_IrqDisable(p_cfg->rx_irq);
     }
 
     /* Disable Global Error interrupt if the handler channel is being closed */
@@ -601,11 +633,17 @@ fsp_err_t R_CANFD_Write (can_ctrl_t * const p_api_ctrl, uint32_t buffer, can_fra
     FSP_ERROR_RETURN(p_ctrl->open == CANFD_OPEN, FSP_ERR_NOT_OPEN);
 
  #if !BSP_FEATURE_CANFD_LITE
-    /* CANFD channels have 16 TX message buffers each (0-15) */
-    FSP_ERROR_RETURN((buffer <= 15U), FSP_ERR_INVALID_ARGUMENT);
+
+    /* CANFD channels have 16 TX message buffers + 3 common FIFOs each (0-15, 16-18) */
+    FSP_ERROR_RETURN((buffer <= 15U) ||
+                     (buffer - (uint32_t) CANFD_TX_BUFFER_FIFO_COMMON_0 <= 2U),
+                     FSP_ERR_INVALID_ARGUMENT);
  #else
-    /* CANFD Lite has 4 TX message buffers */
-    FSP_ERROR_RETURN(buffer <= 3U, FSP_ERR_INVALID_ARGUMENT);
+
+    /* CANFD Lite has 4 TX message buffers + 1 common FIFO */
+    FSP_ERROR_RETURN((buffer <= 3U) ||
+                     (buffer - (uint32_t) CANFD_TX_BUFFER_FIFO_COMMON_0 <= 0U),
+                     FSP_ERR_INVALID_ARGUMENT);
  #endif
 
     /* Check DLC field */
@@ -637,65 +675,133 @@ fsp_err_t R_CANFD_Write (can_ctrl_t * const p_api_ctrl, uint32_t buffer, can_fra
 
 #if BSP_FEATURE_CANFD_HAS_RSCANFD
 
-    /* Calculate global TX message buffer number */
-    uint32_t txmb = buffer + (interlaced_channel * CANFD_PRV_TXMB_CHANNEL_OFFSET);
+    /* Provide variables to store common values. */
+    const bool is_cfifo    = buffer >= (uint32_t) CANFD_TX_BUFFER_FIFO_COMMON_0;
+    uint8_t  * p_dest      = NULL;
+    uint8_t  * tmc_base    = NULL;
+    uint32_t * cfpctr_base = NULL;
 
-    uint8_t * tmc_base      = (uint8_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMC0) + txmb);
-    uint8_t * cfdtmsts_base = (uint8_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMSTS0) + txmb);
+    if (!is_cfifo)
+    {
+        /* Calculate global TX message buffer number */
+        uint32_t buffer_idx = buffer + (interlaced_channel * CANFD_PRV_TXMB_CHANNEL_OFFSET);
 
-    uintptr_t tmid_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMID1) -
-                                 (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMID0);
-    uint32_t * tmid_base = (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMID0) + tmid_address_gap * txmb);
+        tmc_base = (uint8_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMC0) + buffer_idx);
+        uint8_t * cfdtmsts_base = (uint8_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMSTS0) + buffer_idx);
 
-    uintptr_t tmptr_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMPTR1) -
-                                  (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMPTR0);
-    uint32_t * tmptr_base =
-        (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMPTR0) + tmptr_address_gap * txmb);
+        uintptr_t tmid_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMID1) -
+                                     (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMID0);
+        uint32_t * tmid_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMID0) + tmid_address_gap * buffer_idx);
 
-    uintptr_t tmfdctr_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMFDCTR1) -
-                                    (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMFDCTR0);
-    uint32_t * tmfdctr_base =
-        (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMFDCTR0) + tmfdctr_address_gap * txmb);
+        uintptr_t tmptr_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMPTR1) -
+                                      (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMPTR0);
+        uint32_t * tmptr_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMPTR0) + tmptr_address_gap * buffer_idx);
 
-    uintptr_t tmdf_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMDF0_1) -
-                                 (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMDF0_0);
-    uint32_t * tmdf_base =
-        (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMDF0_0) + tmdf_address_gap * txmb);
+        uintptr_t tmfdctr_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMFDCTR1) -
+                                        (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMFDCTR0);
+        uint32_t * tmfdctr_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMFDCTR0) + tmfdctr_address_gap * buffer_idx);
 
-    /* Ensure MB is ready */
-    FSP_ERROR_RETURN(
-        0U == (((*cfdtmsts_base) & R_CANFD_RSCFDnCFDTMSTS0_TMTRM_Msk) >> R_CANFD_RSCFDnCFDTMSTS0_TMTRM_Pos),
-        FSP_ERR_CAN_TRANSMIT_NOT_READY);
+        uintptr_t tmdf_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMDF0_1) -
+                                     (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMDF0_0);
+        uint32_t * tmdf_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDTMDF0_0) + tmdf_address_gap * buffer_idx);
 
-    /* Set ID */
-    *tmid_base = p_frame->id | ((uint32_t) p_frame->type << R_CANFD_RSCFDnCFDTMID0_TMRTR_Pos) |
-                 ((uint32_t) p_frame->id_mode << R_CANFD_RSCFDnCFDTMID0_TMIDE_Pos);
+        /* Ensure MB is ready */
+        FSP_ERROR_RETURN(0U ==
+                         (((*cfdtmsts_base) & R_CANFD_RSCFDnCFDTMSTS0_TMTRM_Msk) >> R_CANFD_RSCFDnCFDTMSTS0_TMTRM_Pos),
+                         FSP_ERR_CAN_TRANSMIT_NOT_READY);
+
+        /* Set ID */
+        *tmid_base = p_frame->id | ((uint32_t) p_frame->type << R_CANFD_RSCFDnCFDTMID0_TMRTR_Pos) |
+                     ((uint32_t) p_frame->id_mode << R_CANFD_RSCFDnCFDTMID0_TMIDE_Pos);
 
  #if BSP_FEATURE_CANFD_FD_SUPPORT
 
-    /* Set DLC */
-    *tmptr_base = (uint32_t) r_canfd_bytes_to_dlc(p_frame->data_length_code) << R_CANFD_RSCFDnCFDTMPTR0_TMDLC_Pos;
+        /* Set DLC */
+        *tmptr_base = (uint32_t) r_canfd_bytes_to_dlc(p_frame->data_length_code) << R_CANFD_RSCFDnCFDTMPTR0_TMDLC_Pos;
 
-    /* Set FD bits (ESI, BRS and FDF) */
-    *tmfdctr_base = p_frame->options & 7U;
+        /* Set FD bits (ESI, BRS and FDF) */
+        *tmfdctr_base = p_frame->options & 7U;
  #else
 
-    /* Set DLC */
-    p_ctrl->p_reg->CFDTM[txmb].PTR = (uint32_t) p_frame->data_length_code << R_CANFD_RSCFDnCFDTMPTR0_TMDLC_Pos;
+        /* Set DLC */
+        *tmptr_base = (uint32_t) p_frame->data_length_code << R_CANFD_RSCFDnCFDTMPTR0_TMDLC_Pos;
  #endif
+        p_dest = (uint8_t *) tmdf_base;
+    }
+    else
+    {
+        /* Calculate the Common FIFO index. */
+        uint32_t buffer_idx = buffer - (uint32_t) CANFD_TX_BUFFER_FIFO_COMMON_0 +
+                              (interlaced_channel * CANFD_PRV_CFIFO_CHANNEL_OFFSET);
+
+        uintptr_t cfpctr_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFPCTR1) -
+                                       (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFPCTR0);
+        cfpctr_base = (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFPCTR0) + cfpctr_address_gap * buffer_idx);
+
+        uintptr_t cfid_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFID1) -
+                                     (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFID0);
+        uint32_t * cfid_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFID0) + cfid_address_gap * buffer_idx);
+
+        uintptr_t cfptr_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFPTR1) -
+                                      (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFPTR0);
+        uint32_t * cfptr_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFPTR0) + cfptr_address_gap * buffer_idx);
+
+        uintptr_t cffdcsts_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFFDCSTS1) -
+                                         (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFFDCSTS0);
+        uint32_t * cffdcsts_base = (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFFDCSTS0) +
+                                                 cffdcsts_address_gap * buffer_idx);
+
+        uintptr_t cfdf_address_gap = (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFDF0_1) -
+                                     (uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFDF0_0);
+        uint32_t * cfdf_base =
+            (uint32_t *) ((uintptr_t) (&p_ctrl->p_reg->RSCFDnCFDCFDF0_0) + cfdf_address_gap * buffer_idx);
+
+        /* Set ID */
+        *cfid_base = p_frame->id | ((uint32_t) p_frame->type << R_CANFD_RSCFDnCFDCFID0_CFRTR_Pos) |
+                     ((uint32_t) p_frame->id_mode << R_CANFD_RSCFDnCFDCFID0_CFIDE_Pos);
+
+ #if BSP_FEATURE_CANFD_FD_SUPPORT
+
+        /* Set DLC */
+        *cfptr_base = (uint32_t) r_canfd_bytes_to_dlc(p_frame->data_length_code) << R_CANFD_RSCFDnCFDCFPTR0_CFDLC_Pos;
+
+        /* Set FD bits (ESI, BRS and FDF) */
+        *cffdcsts_base = p_frame->options & 7U;
+ #else
+
+        /* Set DLC */
+        *cfptr_base = (uint32_t) p_frame->data_length_code << R_CANFD_RSCFDnCFDCFPTR0_CFDLC_Pos;
+ #endif
+
+        /* Store the data poitner. */
+        p_dest = (uint8_t *) cfdf_base;
+    }
 #endif
 
     /* Copy data to register buffer */
-    uint32_t  len    = p_frame->data_length_code;
-    uint8_t * p_dest = (uint8_t *) tmdf_base;
-    uint8_t * p_src  = p_frame->data;
+    uint32_t  len   = p_frame->data_length_code;
+    uint8_t * p_src = p_frame->data;
     while (len--)
     {
         *p_dest++ = *p_src++;
     }
 
-    /* Request transmission */
-    *tmc_base = 1;
+    if (!is_cfifo)
+    {
+        /* Request transmission */
+        *tmc_base = 1;
+    }
+    else
+    {
+        /* Increment the Common FIFO pointer by writing 0xFF to CFPCTR. */
+        *cfpctr_base = UINT8_MAX;
+    }
 
     return FSP_SUCCESS;
 }
@@ -719,20 +825,36 @@ fsp_err_t R_CANFD_Read (can_ctrl_t * const p_api_ctrl, uint32_t buffer, can_fram
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ASSERT(NULL != p_frame);
     FSP_ERROR_RETURN(p_ctrl->open == CANFD_OPEN, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(buffer < CANFD_PRV_RXMB_MAX + CANFD_PRV_RX_FIFO_MAX, FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN((buffer < CANFD_PRV_RXMB_MAX + CANFD_PRV_RX_FIFO_MAX) ||
+                     ((buffer >= CANFD_RX_BUFFER_FIFO_COMMON_0) &&
+                      (buffer < CANFD_RX_BUFFER_FIFO_COMMON_0 + CANFD_PRV_COMMON_FIFO_MAX)),
+                     FSP_ERR_INVALID_ARGUMENT);
 #endif
 
     uint32_t not_empty;
 
 #if BSP_FEATURE_CANFD_HAS_RSCANFD
+
     /* Return an error if the buffer or FIFO is empty */
     if (buffer < CANFD_PRV_RXMB_MAX)
     {
         not_empty = p_ctrl->p_reg->RSCFDnCFDRMND0 & (1U << buffer);
     }
-    else
+    else if (buffer < (uint32_t) CANFD_RX_BUFFER_FIFO_COMMON_0)
     {
         not_empty = !(p_ctrl->p_reg->RSCFDnCFDFESTS & (1U << (buffer - CANFD_PRV_RXMB_MAX)));
+    }
+    else
+    {
+        /* Common FIFO status are grouped together and not channelized, so calculate the index based on the channel. */
+        const uint32_t cfifo_idx = CANFD_PRV_CFIFO_INDEX(buffer - (uint32_t) CANFD_RX_BUFFER_FIFO_COMMON_0,
+                                                         CANFD_INTER_CH(p_ctrl->p_cfg->channel));
+
+        /* Update the buffer to be effectively the cfifo index calculated above. */
+        /* This is needed since r_canfd_mb_read(...) doesn't take a channel number. */
+        buffer = cfifo_idx + (uint32_t) CANFD_RX_BUFFER_FIFO_COMMON_0;
+
+        not_empty = (~p_ctrl->p_reg->RSCFDnCFDFESTS & (1U << (R_CANFD_RSCFDnCFDFESTS_CF0EMP_Pos + cfifo_idx))) != 0;
     }
 #endif
 
@@ -787,7 +909,7 @@ fsp_err_t R_CANFD_ModeTransition (can_ctrl_t * const   p_api_ctrl,
  #endif
 
     /* Check to ensure the current mode is Global Reset when transitioning into or out of Global Sleep (see Section
-    * "Global Modes" in the User's Manual for details) */
+     * "Global Modes" in the User's Manual for details) */
  #if BSP_FEATURE_CANFD_HAS_RSCANFD
     FSP_ERROR_RETURN(((cfdgsts & R_CANFD_RSCFDnCFDGSTS_GRSTSTS_Msk) && (CAN_OPERATION_MODE_RESET & operation_mode)) ||
                      (!(cfdgsts & R_CANFD_RSCFDnCFDGSTS_GSLPSTS_Msk) &&
@@ -817,6 +939,7 @@ fsp_err_t R_CANFD_ModeTransition (can_ctrl_t * const   p_api_ctrl,
     if (p_ctrl->test_mode != test_mode)
     {
  #if !BSP_FEATURE_CANFD_LITE
+
         /* Follow the procedure for switching to Internal Bus mode given in Section "Inter-Channel
          * Communication Test Setting Procedure" of the User's Manual */
         if (CAN_TEST_MODE_INTERNAL_BUS == test_mode)
@@ -913,7 +1036,8 @@ fsp_err_t R_CANFD_InfoGet (can_ctrl_t * const p_api_ctrl, can_info_t * const p_i
         (uint8_t) ((cfdcnsts & R_CANFD_RSCFDnCFDC0STS_TEC_Msk) >> R_CANFD_RSCFDnCFDC0STS_TEC_Pos);
     p_info->error_code     = *(cfdcerfl_base[interlaced_channel]) & UINT16_MAX;
     p_info->rx_mb_status   = p_ctrl->p_reg->RSCFDnCFDRMND0;
-    p_info->rx_fifo_status = (~p_ctrl->p_reg->RSCFDnCFDFESTS) & CANFD_PRV_CFDFESTS_RFXEMP_Msk;
+    p_info->rx_fifo_status = (~p_ctrl->p_reg->RSCFDnCFDFESTS) &
+                             (CANFD_PRV_CFDFESTS_RFXEMP_Msk | CANFD_PRV_CFDFESTS_CFXEMP_Msk);
 #endif
 
     /* Clear error flags */
@@ -980,7 +1104,7 @@ fsp_err_t R_CANFD_CallbackSet (can_ctrl_t * const          p_api_ctrl,
  * Private Functions
  **********************************************************************************************************************/
 #if CANFD_CFG_PARAM_CHECKING_ENABLE
-static bool r_canfd_bit_timing_parameter_check (can_bit_timing_cfg_t * const p_bit_timing)
+static bool r_canfd_bit_timing_parameter_check (can_bit_timing_cfg_t * const p_bit_timing, bool is_data_phase)
 {
     /* Check that prescaler is in range */
     FSP_ERROR_RETURN((p_bit_timing->baud_rate_prescaler <= CANFD_BAUD_RATE_PRESCALER_MAX) &&
@@ -990,8 +1114,22 @@ static bool r_canfd_bit_timing_parameter_check (can_bit_timing_cfg_t * const p_b
     /* Check that TSEG1 > TSEG2 >= SJW for nominal bitrate
      * (see section "Bit Timing Setting" in the User's Manual.) */
 
-    /* Check Time Segment 1 is greater than Time Segment 2 */
-    FSP_ERROR_RETURN((uint32_t) p_bit_timing->time_segment_1 > (uint32_t) p_bit_timing->time_segment_2, false);
+ #if BSP_FEATURE_CANFD_FD_SUPPORT
+    if (is_data_phase)
+    {
+        /* Check Time Segment 1 is greater than or equal to Time Segment 2 */
+        FSP_ERROR_RETURN((uint32_t) p_bit_timing->time_segment_1 >= (uint32_t) p_bit_timing->time_segment_2, false);
+    }
+    else
+ #else
+
+    /* Data phase is only avaiable for FD mode. */
+    FSP_PARAMETER_NOT_USED(is_data_phase);
+ #endif
+    {
+        /* Check Time Segment 1 is greater than Time Segment 2 */
+        FSP_ERROR_RETURN((uint32_t) p_bit_timing->time_segment_1 > (uint32_t) p_bit_timing->time_segment_2, false);
+    }
 
     /* Check Time Segment 2 is greater than or equal to the synchronization jump width */
     FSP_ERROR_RETURN((uint32_t) p_bit_timing->time_segment_2 >= (uint32_t) p_bit_timing->synchronization_jump_width,
@@ -1013,39 +1151,58 @@ static bool r_canfd_bit_timing_parameter_check (can_bit_timing_cfg_t * const p_b
  **********************************************************************************************************************/
 static void r_canfd_mb_read (R_CANFD_Type * p_reg, uint32_t buffer, can_frame_t * const frame)
 {
-    bool is_mb = buffer < CANFD_PRV_RXMB_MAX;
+    bool       is_mb    = buffer < CANFD_PRV_RXMB_MAX;
+    const bool is_cfifo = buffer >= (uint32_t) CANFD_RX_BUFFER_FIFO_COMMON_0;
 
 #if BSP_FEATURE_CANFD_HAS_RSCANFD
+
     /* Get pointer to message buffer (FIFOs use the same buffer structure) */
     uintptr_t rmid_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRMID1) - (uintptr_t) (&p_reg->RSCFDnCFDRMID0);
     uintptr_t rfid_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRFID1) - (uintptr_t) (&p_reg->RSCFDnCFDRFID0);
+    uintptr_t cfid_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDCFID1) - (uintptr_t) (&p_reg->RSCFDnCFDCFID0);
 
     uint32_t * id_base = (is_mb) ?
                          (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRMID0 + rmid_address_gap * buffer) :
+                         (is_cfifo) ?
+                         (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDCFID0 + cfid_address_gap *
+                                       (buffer - CANFD_RX_BUFFER_FIFO_COMMON_0)) :
                          (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRFID0 + rfid_address_gap *
                                        (buffer - CANFD_PRV_RXMB_MAX));
 
-    uintptr_t rmfdsts_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRMFDSTS1) - (uintptr_t) (&p_reg->RSCFDnCFDRMFDSTS0);
-    uintptr_t rffdsts_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRFFDSTS1) - (uintptr_t) (&p_reg->RSCFDnCFDRFFDSTS0);
+    uintptr_t rmfdsts_address_gap  = (uintptr_t) (&p_reg->RSCFDnCFDRMFDSTS1) - (uintptr_t) (&p_reg->RSCFDnCFDRMFDSTS0);
+    uintptr_t rffdsts_address_gap  = (uintptr_t) (&p_reg->RSCFDnCFDRFFDSTS1) - (uintptr_t) (&p_reg->RSCFDnCFDRFFDSTS0);
+    uintptr_t cffdcsts_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDCFFDCSTS1) -
+                                     (uintptr_t) (&p_reg->RSCFDnCFDCFFDCSTS0);
 
     uint32_t * fdsts_base = (is_mb) ?
                             (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRMFDSTS0 + rmfdsts_address_gap * buffer) :
+                            (is_cfifo) ?
+                            (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDCFFDCSTS0 + cffdcsts_address_gap *
+                                          (buffer - CANFD_RX_BUFFER_FIFO_COMMON_0)) :
                             (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRFFDSTS0 + rffdsts_address_gap *
                                           (buffer - CANFD_PRV_RXMB_MAX));
 
     uintptr_t rmptr_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRMPTR1) - (uintptr_t) (&p_reg->RSCFDnCFDRMPTR0);
     uintptr_t rfptr_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRFPTR1) - (uintptr_t) (&p_reg->RSCFDnCFDRFPTR0);
+    uintptr_t cfptr_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDCFPTR1) - (uintptr_t) (&p_reg->RSCFDnCFDCFPTR0);
 
     uint32_t * ptr_base = (is_mb) ?
                           (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRMPTR0 + rmptr_address_gap * buffer) :
+                          (is_cfifo) ?
+                          (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDCFPTR0 + cfptr_address_gap *
+                                        (buffer - CANFD_RX_BUFFER_FIFO_COMMON_0)) :
                           (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRFPTR0 + rfptr_address_gap *
                                         (buffer - CANFD_PRV_RXMB_MAX));
 
     uintptr_t rmdf_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRMDF0_1) - (uintptr_t) (&p_reg->RSCFDnCFDRMDF0_0);
     uintptr_t rfdf_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRFDF0_1) - (uintptr_t) (&p_reg->RSCFDnCFDRFDF0_0);
+    uintptr_t cfdf_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDCFDF0_1) - (uintptr_t) (&p_reg->RSCFDnCFDCFDF0_0);
 
     uint32_t * df_base = (is_mb) ?
                          (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRMDF0_0 + rmdf_address_gap * buffer) :
+                         (is_cfifo) ?
+                         (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDCFDF0_0 + cfdf_address_gap *
+                                       (buffer - CANFD_RX_BUFFER_FIFO_COMMON_0)) :
                          (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRFDF0_0 + rfdf_address_gap *
                                        (buffer - CANFD_PRV_RXMB_MAX));
 
@@ -1085,6 +1242,13 @@ static void r_canfd_mb_read (R_CANFD_Type * p_reg, uint32_t buffer, can_frame_t 
     {
         /* Clear RXMB New Data bit */
         p_reg->RSCFDnCFDRMND0 &= ~(1U << buffer);
+    }
+    else if (is_cfifo)
+    {
+        /* Increment the Common FIFO pointer. */
+        uint32_t * cfpctr_base =
+            (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDCFPCTR0 + 0x04 * (buffer - CANFD_RX_BUFFER_FIFO_COMMON_0));
+        *cfpctr_base = UINT8_MAX;
     }
     else
     {
@@ -1319,7 +1483,7 @@ static void r_canfd_rx_fifo_handler (uint32_t instance)
             args.channel = instance;
  #else
             uintptr_t rffdsts_address_gap = (uintptr_t) (&p_reg->RSCFDnCFDRFPTR1) -
-                                          (uintptr_t) (&p_reg->RSCFDnCFDRFPTR0);
+                                            (uintptr_t) (&p_reg->RSCFDnCFDRFPTR0);
             uint32_t * rffdsts_base =
                 (uint32_t *) ((uintptr_t) &p_reg->RSCFDnCFDRFPTR0 + rffdsts_address_gap * fifo);
             args.channel = ((*rffdsts_base) & R_CANFD_RSCFDnCFDRFPTR0_RFPTR_Msk) >> R_CANFD_RSCFDnCFDRFPTR0_RFPTR_Pos;
@@ -1357,8 +1521,7 @@ static void r_canfd_rx_fifo_handler (uint32_t instance)
 void canfd_rx_fifo_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE
-	FSP_PARAMETER_NOT_USED(irq);
+    FSP_CONTEXT_SAVE FSP_PARAMETER_NOT_USED(irq);
 
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
 
@@ -1391,8 +1554,9 @@ void canfd_channel_tx_isr (IRQn_Type const irq)
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
 
-    canfd_instance_ctrl_t * p_ctrl  = (canfd_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-    uint32_t                channel = p_ctrl->p_cfg->channel;
+    canfd_instance_ctrl_t * p_ctrl   = (canfd_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    canfd_extended_cfg_t  * p_extend = (canfd_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    uint32_t                channel  = p_ctrl->p_cfg->channel;
 
     /* Set static arguments */
     can_callback_args_t args;
@@ -1404,55 +1568,191 @@ void canfd_channel_tx_isr (IRQn_Type const irq)
 #if BSP_FEATURE_CANFD_HAS_RSCANFD
 
     /* Check the byte of CFDGTINTSTS0 that corresponds to the interrupting channel */
-    uint32_t cfdgtintsts = *((volatile uint8_t *) (&p_ctrl->p_reg->RSCFDnCFDGTINTSTS0) + interlaced_channel);
-    while (cfdgtintsts)
+    volatile uint8_t * p_cfdgtintsts = (((volatile uint8_t *) &p_ctrl->p_reg->RSCFDnCFDGTINTSTS0) + interlaced_channel);
+    while (*p_cfdgtintsts)
     {
-        volatile uint32_t * cfdtm_sts;
-
-        interlaced_channel <<= 1;
+        bool                is_cfifo = false;
+        uint32_t            txmb;
+        volatile uint32_t * p_cfdtm_sts;
+        const uint32_t      cfdgtintsts = *p_cfdgtintsts;
 
         /* Get relevant TX status register bank */
         if (cfdgtintsts & R_CANFD_RSCFDnCFDGTINTSTS0_TSIF0_Msk)
         {
-            cfdtm_sts  = (volatile uint32_t *) &p_ctrl->p_reg->RSCFDnCFDTMTCSTS0;
-            args.event = CAN_EVENT_TX_COMPLETE;
+            p_cfdtm_sts = (volatile uint32_t *) &p_ctrl->p_reg->RSCFDnCFDTMTCSTS0;
+            args.event  = CAN_EVENT_TX_COMPLETE;
+        }
+        else if (cfdgtintsts & R_CANFD_RSCFDnCFDGTINTSTS0_CFTIF0_Msk)
+        {
+            is_cfifo = true;
+            uint32_t common_fifo_index;
+ #if CANFD_PRV_CFIFO_HAS_ISTS
+            p_cfdtm_sts = (volatile uint32_t *) &p_ctrl->p_reg->RSCFDnCFDCFTISTS;
+
+            /* Determine TX Common FIFO buffer with the specified event */
+            uint32_t common_fifo_mask_result = 0;
+            common_fifo_index = CANFD_PRV_CFIFO_CHANNEL_OFFSET * 2;
+            while (0U == common_fifo_mask_result)
+            {
+                /* Decrement common_fifo_index until a flag is found in the mask. */
+                common_fifo_index--;
+                common_fifo_mask_result = (uint32_t) (*p_cfdtm_sts & (1U << common_fifo_index));
+            }
+
+ #else
+            common_fifo_index = 0;
+ #endif
+            args.event =
+                (p_extend->p_global_cfg->common_fifo_config[common_fifo_index] & R_CANFD_RSCFDnCFDCFCC0_CFIM_Msk) ?
+                CAN_EVENT_TX_COMPLETE : CAN_EVENT_TX_FIFO_EMPTY;
         }
         else
         {
-            cfdtm_sts  = (volatile uint32_t *) &p_ctrl->p_reg->RSCFDnCFDTMTASTS0;
-            args.event = CAN_EVENT_TX_ABORTED;
+            p_cfdtm_sts = (volatile uint32_t *) &p_ctrl->p_reg->RSCFDnCFDTMTASTS0;
+            args.event  = CAN_EVENT_TX_ABORTED;
         }
-
-        interlaced_channel >>= 1;
 
         /* Calculate lowest TXMB with the specified event */
-        uint32_t txmb_mask_result = 0;
-        uint32_t shift_count      = CANFD_PRV_TXMB_CHANNEL_OFFSET * 2;
-        while (0U == txmb_mask_result)
+        if (!is_cfifo)
         {
-            /* Decrement shift count until a flag is found in the mask. */
-            shift_count--;
-            txmb_mask_result = (uint32_t) (*cfdtm_sts & (1U << shift_count));
+            uint32_t txmb_mask_result = 0;
+            uint32_t shift_count      = CANFD_PRV_TXMB_CHANNEL_OFFSET * 2;
+            while (0U == txmb_mask_result)
+            {
+                /* Decrement shift count until a flag is found in the mask. */
+                shift_count--;
+                txmb_mask_result = (uint32_t) (*p_cfdtm_sts & (1U << shift_count));
+            }
+
+            txmb = shift_count;
+
+            /* Clear TX complete/abort flags */
+            uint8_t * tmsts_base = (uint8_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDTMSTS0 + txmb);
+            *tmsts_base &= (uint8_t) (~R_CANFD_RSCFDnCFDTMSTS0_TMTRF_Msk);
         }
+        else
+        {
+ #if CANFD_PRV_CFIFO_HAS_ISTS
+            uint32_t txmb_mask_result = 0;
+            uint32_t shift_count      = CANFD_PRV_CFIFO_CHANNEL_OFFSET * 2;
+            while (0U == txmb_mask_result)
+            {
+                /* Decrement shift count until a flag is found in the mask. */
+                shift_count--;
+                txmb_mask_result = (uint32_t) (*p_cfdtm_sts & (1U << shift_count));
+            }
 
-        uint32_t txmb = shift_count;
+ #else
+            txmb = 0;
+ #endif
+            txmb = shift_count;
 
-        /* Clear TX complete/abort flags */
-        uint8_t * tmsts_base = (uint8_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDTMSTS0 + txmb);
-        *tmsts_base &= (uint8_t) (~R_CANFD_RSCFDnCFDTMSTS0_TMTRF_Msk);
+            /* Clear the interrupt flag for Common FIFO TX. */
+            uint8_t * cfsts_base = (uint8_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDCFSTS0 + 0x04 * txmb);
+            *cfsts_base &= (uint8_t) (~R_CANFD_RSCFDnCFDCFSTS0_CFTXIF_Msk);
+
+            /* Add the Common FIFO offset so the correct type of buffer will be available in the callback. */
+            txmb += CANFD_TX_BUFFER_FIFO_COMMON_0;
+        }
 
         /* Set the callback arguments */
         args.buffer = txmb;
 
         r_canfd_call_callback(p_ctrl, &args);
-
-        /* Check for more interrupts on this channel */
-        cfdgtintsts = *((volatile uint8_t *) (&p_ctrl->p_reg->RSCFDnCFDGTINTSTS0) + interlaced_channel);
     }
 #endif
 
     /* Clear interrupt */
     R_BSP_IrqStatusClear(irq);
+
+    /* Restore context if RTOS is used */
+    FSP_CONTEXT_RESTORE
+}
+
+/*******************************************************************************************************************//**
+ * Common FIFO Receive ISR.
+ *
+ * Saves context if RTOS is used, clears interrupts, calls common receive function
+ * and restores context if RTOS is used.
+ **********************************************************************************************************************/
+void canfd_common_fifo_rx_isr (IRQn_Type const irq)
+{
+    /* Save context if RTOS is used */
+    FSP_CONTEXT_SAVE
+
+    canfd_instance_ctrl_t * p_ctrl  = (canfd_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    uint32_t                channel = p_ctrl->p_cfg->channel;
+
+    /* Set static arguments */
+    can_callback_args_t args;
+
+#if CANFD_PRV_CFIFO_HAS_ISTS
+
+    /* Get lowest FIFO requesting interrupt */
+    uint32_t shift_count      = CANFD_PRV_CFIFO_CHANNEL_OFFSET * 2;
+    uint32_t fifo_mask_result = 0;
+    while (0U == fifo_mask_result)
+    {
+        /* Decrement shift count until a flag is found in the mask. */
+        shift_count--;
+        fifo_mask_result = (uint32_t) (p_ctrl->p_reg->RSCFDnCFDCFRISTS & (1U << shift_count));
+    }
+
+    uint32_t fifo = shift_count;
+#else
+    uint32_t fifo = 0;
+#endif
+
+    /* Set static arguments */
+    args.event   = CAN_EVENT_RX_COMPLETE;
+    args.channel = channel;
+
+#if BSP_FEATURE_CANFD_NUM_CHANNELS > 1
+
+    /* Get the channel based fifo index to get the currect buffer value. */
+    if (fifo < CANFD_PRV_CFIFO_CHANNEL_OFFSET)
+    {
+        args.buffer = fifo;
+    }
+    else
+    {
+        args.buffer = fifo % CANFD_PRV_CFIFO_CHANNEL_OFFSET;
+    }
+
+#else
+    args.buffer = fifo;
+#endif
+
+    /* Move buffer up to the correct range. */
+    args.buffer += (uint32_t) CANFD_RX_BUFFER_FIFO_COMMON_0;
+
+    /* Read from the FIFO until it is empty */
+    while (!(p_ctrl->p_reg->RSCFDnCFDFESTS & (1U << (R_CANFD_RSCFDnCFDFESTS_CF0EMP_Pos + fifo))))
+    {
+        /* Read and index FIFO */
+        /* buffer is slightly different in this function since it operates globally. */
+        r_canfd_mb_read(p_ctrl->p_reg, fifo + (uint32_t) CANFD_RX_BUFFER_FIFO_COMMON_0, &args.frame);
+
+        /* Set the remaining callback arguments */
+        args.p_context = gp_ctrl[args.channel]->p_context;
+        r_canfd_call_callback(gp_ctrl[args.channel], &args);
+    }
+
+    /* Clear Common FIFO RX Interrupt Flag */
+    uint32_t * cfsts_base = (uint32_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDCFSTS0 + 0x04 * fifo);
+    *cfsts_base &= (uint32_t) ~R_CANFD_RSCFDnCFDCFSTS0_CFRXIF_Msk;
+
+#if CANFD_PRV_CFIFO_HAS_ISTS
+    if (!p_ctrl->p_reg->RSCFDnCFDCFRISTS)
+#else
+
+    /* This device is single channel and single Common FIFO. */
+    if (!(p_ctrl->p_reg->RSCFDnCFDCFSTS0 & R_CANFD_RSCFDnCFDCFSTS0_CFRXIF_Msk))
+#endif
+    {
+        /* Clear interrupt in NVIC if there are no pending RX FIFO IRQs */
+        R_BSP_IrqStatusClear(irq);
+    }
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
@@ -1478,9 +1778,30 @@ static void r_canfd_mode_transition (canfd_instance_ctrl_t * p_ctrl, can_operati
     bool global_mode = (bool) (operation_mode >> 7);
     operation_mode &= 0xF;
 
+    uint32_t * rfcc_base = NULL;
+    uint32_t * cfcc_base = NULL;
+
     if (global_mode)
     {
         uint32_t cfdgctr = p_ctrl->p_reg->RSCFDnCFDGCTR;
+
+        /* If CANFD is transitioning to Global Reset, make sure the FIFOs are disabled. */
+        if (!(cfdgctr & R_CANFD_RSCFDnCFDGSTS_GRSTSTS_Msk) && (operation_mode & CAN_OPERATION_MODE_RESET))
+        {
+            /* Disable RX FIFOs */
+            for (uint32_t i = 0; i < CANFD_PRV_RX_FIFO_MAX; i++)
+            {
+                rfcc_base   = (uint32_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDRFCC0 + 0x04 * i);
+                *rfcc_base &= (uint32_t) ~R_CANFD_RSCFDnCFDRFCC0_RFE_Msk;
+            }
+
+            /* Disable Common FIFOs */
+            for (uint32_t i = 0; i < CANFD_PRV_COMMON_FIFO_MAX * BSP_FEATURE_CANFD_NUM_CHANNELS; i++)
+            {
+                cfcc_base   = (uint32_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDCFCC0 + 0x04 * i);
+                *cfcc_base &= (uint32_t) ~R_CANFD_RSCFDnCFDCFCC0_CFE_Msk;
+            }
+        }
 
         r_canfd_mode_ctr_set(&p_ctrl->p_reg->RSCFDnCFDGCTR, operation_mode);
 
@@ -1494,7 +1815,7 @@ static void r_canfd_mode_transition (canfd_instance_ctrl_t * p_ctrl, can_operati
             /* Enable RX FIFOs */
             for (uint32_t i = 0; i < CANFD_PRV_RX_FIFO_MAX; i++)
             {
-                uint32_t * rfcc_base = (uint32_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDRFCC0 + 0x04 * i);
+                rfcc_base   = (uint32_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDRFCC0 + 0x04 * i);
                 *rfcc_base &= (uint32_t) ~R_CANFD_RSCFDnCFDRFCC0_RFE_Msk;
                 *rfcc_base |= p_global_cfg->rx_fifo_config[i] & 1U;
             }
@@ -1514,6 +1835,25 @@ static void r_canfd_mode_transition (canfd_instance_ctrl_t * p_ctrl, can_operati
 
         /* Request transition to selected mode */
         r_canfd_mode_ctr_set(cfdcctr_base[interlaced_channel], operation_mode);
+
+        /* If CANFD is transitioning from Reset, make sure the Common FIFOs are enabled.
+         * The FIFOs will be disabled automatically if configured for TX and the channel is transitioned to reset. */
+        if ((cfdcnctr & R_CANFD_RSCFDnCFDC0CTR_CHMDC_Msk) && !(operation_mode & CAN_OPERATION_MODE_RESET))
+        {
+            /* Get global config */
+            canfd_global_cfg_t * p_global_cfg =
+                ((canfd_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->p_global_cfg;
+
+            const uint32_t ch_offset = interlaced_channel * CANFD_PRV_COMMON_FIFO_MAX;
+
+            /* Enable Common FIFOs */
+            for (uint32_t i = 0; i < CANFD_PRV_COMMON_FIFO_MAX; i++)
+            {
+                cfcc_base   = (uint32_t *) ((uintptr_t) &p_ctrl->p_reg->RSCFDnCFDCFCC0 + 0x04 * (ch_offset + i));
+                *cfcc_base &= (uint32_t) ~R_CANFD_RSCFDnCFDCFCC0_CFE_Msk;
+                *cfcc_base |= p_global_cfg->common_fifo_config[ch_offset + i] & 1U;
+            }
+        }
     }
 #endif
 

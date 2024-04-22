@@ -873,7 +873,7 @@ static void r_adc_call_callback (adc_c_instance_ctrl_t * p_ctrl, adc_callback_ar
 void adc_scan_end_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
-    FSP_CONTEXT_SAVE;
+    FSP_CONTEXT_SAVE
 
     adc_c_instance_ctrl_t * p_instance_ctrl = (adc_c_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
     adc_c_extended_cfg_t  * p_extend        = (adc_c_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
@@ -916,5 +916,5 @@ void adc_scan_end_isr (IRQn_Type const irq)
     }
 
     /* Restore context if RTOS is used */
-    FSP_CONTEXT_RESTORE;
+    FSP_CONTEXT_RESTORE
 }

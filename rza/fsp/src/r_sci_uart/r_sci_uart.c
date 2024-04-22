@@ -169,8 +169,8 @@ static fsp_err_t r_sci_uart_transfer_open(sci_uart_instance_ctrl_t * const p_ctr
 
 static void r_sci_uart_transfer_close(sci_uart_instance_ctrl_t * p_ctrl);
 
-void sci_uart_txi_dmac_isr(IRQn_Type const irq);
-void sci_uart_rxi_dmac_isr(IRQn_Type const irq);
+void sci_uart_tx_dmac_callback(sci_uart_instance_ctrl_t * p_ctrl);
+void sci_uart_rx_dmac_callback(sci_uart_instance_ctrl_t * p_ctrl);
 
 #endif
 
@@ -892,7 +892,7 @@ fsp_err_t R_SCI_UART_BaudCalculate (uint32_t               baudrate,
      *  BRR = (PCLK / (div_coefficient * baud)) - 1
      */
     int32_t  hit_bit_err = SCI_UART_100_PERCENT_X_1000;
-    uint32_t hit_mddr    = 0U;
+    uint8_t  hit_mddr    = 0U;
     uint32_t divisor     = 0U;
 
     uint32_t freq_hz = R_FSP_SystemClockHzGet(BSP_FEATURE_SCI_CLOCK);
@@ -946,17 +946,16 @@ fsp_err_t R_SCI_UART_BaudCalculate (uint32_t               baudrate,
                     int32_t bit_err = (int32_t) ((((int64_t) freq_hz * SCI_UART_100_PERCENT_X_1000) / err_divisor) -
                                                  SCI_UART_100_PERCENT_X_1000);
 
-                    uint32_t mddr = 0U;
+                    uint8_t mddr = 0U;
                     if (bitrate_modulation)
                     {
                         /* Calculate the MDDR (M) value if bit rate modulation is enabled,
                          * The formula to calculate MBBR (from the M and N relationship given in the hardware manual) is as follows
-                         * and it must be between 128 and 256.
+                         * and it must be between 128 and 255.
                          * MDDR = ((div_coefficient * baud * 256) * (BRR + 1)) / PCLK */
-                        mddr = (uint32_t) err_divisor / (freq_hz / SCI_UART_MDDR_MAX);
+                        mddr = (uint8_t) ((uint32_t) err_divisor / (freq_hz / SCI_UART_MDDR_MAX));
 
-                        /* The maximum value that could result from the calculation above is 256, which is a valid MDDR
-                         * value, so only the lower bound is checked. */
+                        /* MDDR value must be greater than or equal to SCI_UART_MDDR_MIN. */
                         if (mddr < SCI_UART_MDDR_MIN)
                         {
                             break;
@@ -991,7 +990,7 @@ fsp_err_t R_SCI_UART_BaudCalculate (uint32_t               baudrate,
                     if (bitrate_modulation)
                     {
                         p_baud_setting->semr_baudrate_bits_b.brme = 1U;
-                        p_baud_setting->mddr = (uint8_t) hit_mddr;
+                        p_baud_setting->mddr = hit_mddr;
                     }
                     else
                     {
@@ -1619,6 +1618,9 @@ void sci_uart_tei_isr (IRQn_Type const irq)
     /* Receiving TEI(transmit end interrupt) means the completion of transmission, so call callback function here. */
     p_ctrl->p_reg->SCR &= (uint8_t) ~(SCI_SCR_TIE_MASK | SCI_SCR_TEIE_MASK);
 
+    /* Negate driver enable if RS-485 mode is enabled. */
+    r_sci_negate_de_pin(p_ctrl);
+
     /* If a callback was provided, call it with the argument */
     if (NULL != p_ctrl->p_callback)
     {
@@ -1630,7 +1632,7 @@ void sci_uart_tei_isr (IRQn_Type const irq)
     R_BSP_IrqStatusClear(irq);
 
     /* Restore context if RTOS is used */
-    FSP_CONTEXT_RESTORE;
+    FSP_CONTEXT_RESTORE
 }
 
 #endif
@@ -1668,6 +1670,9 @@ void sci_uart_eri_isr (IRQn_Type const irq)
     /* Clear error condition. */
     p_ctrl->p_reg->SSR &= (uint8_t) (~SCI_RCVR_ERR_MASK);
 
+    /* Negate driver enable if RS-485 mode is enabled. */
+    r_sci_negate_de_pin(p_ctrl);
+
     /* If a callback was provided, call it with the argument */
     if (NULL != p_ctrl->p_callback)
     {
@@ -1689,11 +1694,8 @@ void sci_uart_eri_isr (IRQn_Type const irq)
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of transmission.
  **********************************************************************************************************************/
-void sci_uart_txi_dmac_isr (IRQn_Type const irq)
+void sci_uart_tx_dmac_callback (sci_uart_instance_ctrl_t * p_ctrl)
 {
-    /* Recover ISR context saved in open. */
-    sci_uart_instance_ctrl_t * p_ctrl = (sci_uart_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     /* After all data has been transmitted, disable transmit interrupts and enable the transmit end interrupt. */
     uint8_t scr_temp = p_ctrl->p_reg->SCR;
     scr_temp          |= SCI_SCR_TEIE_MASK;
@@ -1713,11 +1715,8 @@ void sci_uart_txi_dmac_isr (IRQn_Type const irq)
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of receptions.
  **********************************************************************************************************************/
-void sci_uart_rxi_dmac_isr (IRQn_Type const irq)
+void sci_uart_rx_dmac_callback (sci_uart_instance_ctrl_t * p_ctrl)
 {
-    /* Recover ISR context saved in open. */
-    sci_uart_instance_ctrl_t * p_ctrl = (sci_uart_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     p_ctrl->rx_dest_bytes = 0;
 
     p_ctrl->p_rx_dest = NULL;

@@ -141,9 +141,9 @@
  ***********************************************************************************************************************/
 
 #if defined(__ARMCC_VERSION) || defined(__ICCARM__)
-typedef void (BSP_CMSE_NONSECURE_CALL * ether_prv_ns_callback) (ether_callback_args_t * p_args);
+typedef void (BSP_CMSE_NONSECURE_CALL * ether_prv_ns_callback)(ether_callback_args_t * p_args);
 #elif defined(__GNUC__)
-typedef BSP_CMSE_NONSECURE_CALL void (*volatile ether_prv_ns_callback) (ether_callback_args_t * p_args);
+typedef BSP_CMSE_NONSECURE_CALL void (*volatile ether_prv_ns_callback)(ether_callback_args_t * p_args);
 #endif
 
 typedef uint64_t address_size_t;
@@ -317,9 +317,11 @@ static uint32_t tag_counter = 0;
  * @retval  FSP_ERR_ASSERTION                       Pointer to ETHER control block or configuration structure is NULL.
  * @retval  FSP_ERR_ALREADY_OPEN                    Control block has already been opened or channel is being used by another
  *                                                  instance. Call close() then open() to reconfigure.
+ * @retval  FSP_ERR_ETHER_ERROR_PHY_COMMUNICATION   Initialization of PHY-LSI failed.
  * @retval  FSP_ERR_INVALID_CHANNEL                 Invalid channel number is given.
  * @retval  FSP_ERR_INVALID_POINTER                 Pointer to MAC address is NULL.
  * @retval  FSP_ERR_INVALID_ARGUMENT                Interrupt is not enabled.
+ * @retval  FSP_ERR_ETHER_PHY_ERROR_LINK            Initialization of PHY-LSI failed.
  ***********************************************************************************************************************/
 fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p_cfg)
 {
@@ -420,23 +422,50 @@ fsp_err_t R_GETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const 
         p_instance_ctrl->p_gether_cfg->p_ether_phy_instance->p_cfg);
     GETHER_ERROR_RETURN((FSP_SUCCESS == phy_ret), phy_ret);
 
-    if (p_cfg->p_ether_phy_instance->p_cfg->mii_type == ETHER_PHY_MII_TYPE_RMII)
+#if !GETHER_PHY_CFG_INIT_PHY_LSI_AUTOMATIC
+
+    /* Initialize the PHY */
+    if (FSP_SUCCESS == phy_ret)
     {
-        p_reg_emac->CXR35             = GETHER_ETHERC_CXR35_RGMII_VALUE;
-        p_reg_emac->CXR31_b.SEL_LINK0 = 1;
+        phy_ret = p_instance_ctrl->p_gether_cfg->p_ether_phy_instance->p_api->chipInit(
+            p_instance_ctrl->p_gether_cfg->p_ether_phy_instance->p_ctrl,
+            p_instance_ctrl->p_gether_cfg->p_ether_phy_instance->p_cfg);
+    }
+#endif
+
+    if (FSP_SUCCESS == phy_ret)
+    {
+        if (p_cfg->p_ether_phy_instance->p_cfg->mii_type == ETHER_PHY_MII_TYPE_RMII)
+        {
+            p_reg_emac->CXR35             = GETHER_ETHERC_CXR35_RGMII_VALUE;
+            p_reg_emac->CXR31_b.SEL_LINK0 = 1;
+        }
+        else
+        {
+            p_reg_emac->CXR35             = GETHER_ETHERC_CXR35_MII_VALUE;
+            p_reg_emac->CXR31_b.SEL_LINK0 = 0;
+        }
+
+        p_reg_emac->CXR2C = GETHER_ETHERC_CXR2C_DEFAULT_VALUE;
+
+        /* Receive frame limit set register */
+        p_reg_emac->CXR2A = GETHER_RCV_BUFF_MAX + 4;
+
+        p_instance_ctrl->open = GETHER_OPEN;
+
+        err = FSP_SUCCESS;
     }
     else
     {
-        p_reg_emac->CXR35             = GETHER_ETHERC_CXR35_MII_VALUE;
-        p_reg_emac->CXR31_b.SEL_LINK0 = 0;
+        if (FSP_ERR_ETHER_PHY_ERROR_LINK == phy_ret)
+        {
+            err = FSP_ERR_ETHER_ERROR_PHY_COMMUNICATION;
+        }
+        else
+        {
+            err = phy_ret;
+        }
     }
-
-    p_reg_emac->CXR2C = GETHER_ETHERC_CXR2C_DEFAULT_VALUE;
-
-    /* Receive frame limit set register */
-    p_reg_emac->CXR2A = GETHER_RCV_BUFF_MAX + 4;
-
-    p_instance_ctrl->open = GETHER_OPEN;
 
     return err;
 }                                      /* End of function R_GETHER_Open() */
@@ -636,7 +665,8 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
     R_ETHER0_Type         * p_reg_ether;
 
     ether_callback_args_t     callback_arg;
-    ether_instance_extend_t * p_ether_instance_extend = (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
+    ether_instance_extend_t * p_ether_instance_extend =
+        (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(p_instance_ctrl);
@@ -679,7 +709,6 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
     /* When the link is up */
     if (GETHER_LINK_CHANGE_LINK_UP == p_instance_ctrl->link_change)
     {
-        uint32_t link_up_request = 0;
 #if (GETHER_CFG_USE_LINKSTA == 1)
 
         /*
@@ -691,184 +720,176 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
 
         if (FSP_SUCCESS == err)
         {
-            link_up_request = 1;
+#endif
+
+#if (ETHER_CFG_USE_LINKSTA == 1)
+        p_instance_ctrl->link_change = GETHER_LINK_CHANGE_LINK_DOWN;
+#elif (ETHER_CFG_USE_LINKSTA == 0)
+        p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
+#endif
+
+        /* Initialize the transmit and receive descriptor */
+        memset(p_ether_instance_extend->p_rx_descriptor, 0x00,
+               sizeof(gether_instance_rx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_rx_descriptors + 1));
+        memset(p_ether_instance_extend->p_tx_descriptor, 0x00,
+               sizeof(gether_instance_tx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_tx_descriptors + 1));
+        memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel], 0x00,
+               sizeof(g_gether_basic_descriptors[0]));
+
+        /* Initialize the Ethernet buffer */
+        gether_init_buffers(p_instance_ctrl);
+
+        p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_UP;
+
+        /*
+         * ETHERC and EDMAC are set after ETHERC and EDMAC are reset in software
+         * and sending and receiving is permitted.
+         */
+        gether_configure_mac(p_instance_ctrl,
+                             p_instance_ctrl->p_gether_cfg->p_mac_address,
+                             GETHER_NO_USE_MAGIC_PACKET_DETECT);
+
+        p_reg_emac->CXR20 = GETHER_ETHERC_ECMR_MODE_CLEAR;
+
+        p_reg_emac->CXR21 = ((1UL << R_ETHER_CXR21_FCI_Pos) & R_ETHER_CXR21_FCI_Msk) |
+                            ((1UL << R_ETHER_CXR21_LINKI_Pos) & R_ETHER_CXR21_LINKI_Msk) |
+                            ((1UL << R_ETHER_CXR21_PFRI_Pos) & R_ETHER_CXR21_PFRI_Msk);
+
+        /* E-MAC interrupt enable register */
+        p_reg_emac->CXR22 = ((1UL << R_ETHER_CXR22_FCIM_Pos) & R_ETHER_CXR22_FCIM_Msk);
+
+        err = gether_do_link(p_instance_ctrl, GETHER_NO_USE_MAGIC_PACKET_DETECT);
+
+        if (FSP_SUCCESS == err)
+        {
+            if (NULL != p_instance_ctrl->p_callback)
+            {
+                callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
+                callback_arg.event       = ETHER_EVENT_LINK_ON;
+                callback_arg.status_ecsr = 0;
+                callback_arg.status_eesr = 0;
+                callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
+                ether_call_callback(p_instance_ctrl, &callback_arg);
+            }
         }
         else
         {
-            link_up_request = 0;
+            /* When PHY auto-negotiation is not completed */
+            p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_DOWN;
+            p_instance_ctrl->link_change           = GETHER_LINK_CHANGE_LINK_UP;
         }
 
-#elif (GETHER_CFG_USE_LINKSTA == 0)
-        link_up_request = 1;
+#if (ETHER_CFG_USE_LINKSTA == 1)
+    }
+    else
+    {
+        /* no process */
+    }
 #endif
-        if (link_up_request > 0)
-        {
-            /*
-             * The status of the LINK signal became "link-up" even if PHY-LSI did not detect "link-up"
-             * after a reset. To avoid this wrong detection, processing in R_GETHER_LinkProcess has been modified to
-             * clear the flag after link-up is confirmed in R_GETHER_CheckLink_ZC.
-             */
-            p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
-            /* Initialize the transmit and receive descriptor */
-            memset(p_ether_instance_extend->p_rx_descriptor,
-                   0x00,
-                   sizeof(gether_instance_rx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_rx_descriptors + 1));
-            memset(p_ether_instance_extend->p_tx_descriptor,
-                   0x00,
-                   sizeof(gether_instance_tx_descriptor_t) * (p_instance_ctrl->p_gether_cfg->num_tx_descriptors + 1));
-            memset(g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel], 0x00,
-                   sizeof(g_gether_basic_descriptors[0]));
+        /* Enable adding TX checksum */
+        p_reg_toe->CSR1 = (1 << R_ETHER_CSR1_TIP4_Pos) |
+                          (1 << R_ETHER_CSR1_TTCP4_Pos) |
+                          (1 << R_ETHER_CSR1_TUDP4_Pos) |
+                          (1 << R_ETHER_CSR1_TICMP4_Pos);
 
-            /* Initialize the Ethernet buffer */
-            gether_init_buffers(p_instance_ctrl);
+        /* Enable calculating RX checksum */
+        p_reg_toe->CSR2 = (1 << R_ETHER_CSR2_RIP4_Pos) |
+                          (1 << R_ETHER_CSR2_RTCP4_Pos) |
+                          (1 << R_ETHER_CSR2_RUDP4_Pos) |
+                          (1 << R_ETHER_CSR2_RICMP4_Pos);
 
-            p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_UP;
-
-            /*
-             * ETHERC and EDMAC are set after ETHERC and EDMAC are reset in software
-             * and sending and receiving is permitted.
-             */
-            gether_configure_mac(p_instance_ctrl,
-                                 p_instance_ctrl->p_gether_cfg->p_mac_address,
-                                 GETHER_NO_USE_MAGIC_PACKET_DETECT);
-
-            p_reg_emac->CXR20 = GETHER_ETHERC_ECMR_MODE_CLEAR;
-
-            p_reg_emac->CXR21 = ((1UL << R_ETHER_CXR21_FCI_Pos) & R_ETHER_CXR21_FCI_Msk) |
-                                ((1UL << R_ETHER_CXR21_LINKI_Pos) & R_ETHER_CXR21_LINKI_Msk) |
-                                ((1UL << R_ETHER_CXR21_PFRI_Pos) & R_ETHER_CXR21_PFRI_Msk);
-
-            /* E-MAC interrupt enable register */
-            p_reg_emac->CXR22 = ((1UL << R_ETHER_CXR22_FCIM_Pos) & R_ETHER_CXR22_FCIM_Msk);
-
-            err = gether_do_link(p_instance_ctrl, GETHER_NO_USE_MAGIC_PACKET_DETECT);
-
-            if (FSP_SUCCESS == err)
-            {
-                if (NULL != p_instance_ctrl->p_callback)
-                {
-                    callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
-                    callback_arg.event       = ETHER_EVENT_LINK_ON;
-                    callback_arg.status_ecsr = 0;
-                    callback_arg.status_eesr = 0;
-                    callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
-                    ether_call_callback(p_instance_ctrl, &callback_arg);
-                }
-            }
-            else
-            {
-                /* When PHY auto-negotiation is not completed */
-                p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_DOWN;
-                p_instance_ctrl->link_change           = GETHER_LINK_CHANGE_LINK_UP;
-            }
-
-            /* Enable adding TX checksum */
-            p_reg_toe->CSR1 = (1 << R_ETHER_CSR1_TIP4_Pos) |
-                              (1 << R_ETHER_CSR1_TTCP4_Pos) |
-                              (1 << R_ETHER_CSR1_TUDP4_Pos) |
-                              (1 << R_ETHER_CSR1_TICMP4_Pos);
-
-            /* Enable calculating RX checksum */
-            p_reg_toe->CSR2 = (1 << R_ETHER_CSR2_RIP4_Pos) |
-                              (1 << R_ETHER_CSR2_RTCP4_Pos) |
-                              (1 << R_ETHER_CSR2_RUDP4_Pos) |
-                              (1 << R_ETHER_CSR2_RICMP4_Pos);
-
-            /* Set the base address of descriptors */
+        /* Set the base address of descriptors */
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
-            {
-                uint64_t pa = 0;
-                R_MMU_VAtoPA(&g_mmu_ctrl,
-                             (uint64_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel],
-                             &pa);
-                p_reg_ether->DBAT = (uint32_t) (address_size_t) pa;
-            }
-#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
-            p_reg_ether->DBAT = (uint64_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel];
-#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
-            /* Set RX */
-            p_reg_ether->RCR = GETHER_RCR_DEFAULT_VALUE;
-
-            /* Set Max Frame Length (RTC) */
-            p_reg_ether->RTC = GETHER_RTC_FIXED_BITS | p_instance_ctrl->p_gether_cfg->ether_buffer_size;
-
-            p_reg_ether->CIE  = 0x00000000; /* default value */
-            p_reg_ether->DIE  = 0x00000000; /* default value */
-            p_reg_ether->EIE  = 0x00000000; /* default value */
-            p_reg_ether->RIE0 = 0x00000000; /* default value */
-            p_reg_ether->RIE1 = 0x00000000; /* default value */
-            p_reg_ether->RIE2 = 0x00000000; /* default value */
-            p_reg_ether->TIE  = 0x00000000; /* default value */
-            p_reg_ether->RIE3 = 0x00000000; /* default value */
-
-            /* PAUSE prohibition */
-            p_reg_emac->CXR72 = 1;
-
-            /* E-MAC status register clear */
-            p_reg_emac->CXR21 = ((1UL << R_ETHER_CXR21_FCI_Pos) & R_ETHER_CXR21_FCI_Msk) |
-                                ((1UL << R_ETHER_CXR21_LINKI_Pos) & R_ETHER_CXR21_LINKI_Msk) |
-                                ((1UL << R_ETHER_CXR21_PFRI_Pos) & R_ETHER_CXR21_PFRI_Msk);
-
-            /* E-MAC interrupt enable register */
-            p_reg_emac->CXR22_b.FCIM = 1;
-
-            /* Clear all ETHERC status BFR, PSRTO, LCHNG, MPD, ICD */
-            p_reg_emac->CXR21 = GETHER_ETHERC_INTERRUPT_FACTOR_ALL;
-
-            /* DMAC init */
-            p_reg_ether->CCC_b.BOC = 0;
-
-            /* Set RX */
-            p_reg_ether->RCR = GETHER_RCR_DEFAULT_VALUE;
-
-            /* Set FIFO size */
-            p_reg_ether->TGC = GETHER_TGC_DEFAULT_VALUE;
-
-            p_reg_ether->TCCR = 0;
-
-            /* Interrupt enable: */
-
-            p_reg_ether->DIC = (1 << GETHER_DECRIPTOR_INT_TX) |
-                               (1 << GETHER_DECRIPTOR_INT_RX);
-
-            /* Frame receive */
-            p_reg_ether->RIC0 = ((1UL << R_ETHER_RIC0_FRE_Pos) & R_ETHER_RIC0_FRE_Msk);
-            p_reg_ether->RIC1 = 0;
-
-            /* Receive FIFO full error, descriptor empty */
-            p_reg_ether->RIC2 = ((1UL << R_ETHER_RIC2_QFE_Pos) & R_ETHER_RIC2_QFE_Msk) |
-                                ((1UL << R_ETHER_RIC2_RFFE_Pos) & R_ETHER_RIC2_RFFE_Msk);
-            p_reg_ether->RIC3      = 0;
-            p_reg_ether->TIE_b.FTS = 1;
-
-            /* Setting the control will start the DMAC process. */
-            p_reg_ether->CCC_b.OPC = GETHER_OPC_MODE_OPERATION;
-            p_reg_toe->CSR0_b.TPE  = 1;
-            p_reg_toe->CSR0_b.RPE  = 1;
-
-            if ((ETHER_FLOW_CONTROL_ENABLE == p_instance_ctrl->p_gether_cfg->flow_control))
-            {
-                p_reg_emac->CXR20_b.RXF  = 1;
-                p_reg_emac->CXR20_b.TZPF = 1;
-            }
-
-            p_reg_emac->CXR20_b.RPE = 1;
-            p_reg_emac->CXR20_b.TPE = 1;
-
-            p_reg_emac->CXR20_b.RCPT = 1;
-
-            /* Move the TX descriptor */
-            p_reg_ether->TCCR_b.TSRQ = 1;
-
-            /* Interrupt enable: */
-            gether_enable_icu(p_instance_ctrl);
+        {
+            uint64_t pa = 0;
+            R_MMU_VAtoPA(&g_mmu_ctrl, (uint64_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel],
+                         &pa);
+            p_reg_ether->DBAT = (uint32_t) (address_size_t) pa;
         }
+#else                                  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        p_reg_ether->DBAT = (uint64_t) g_gether_basic_descriptors[p_instance_ctrl->p_gether_cfg->channel];
+#endif  /* BSP_FEATURE_BSP_HAS_MMU_SUPPORT */
+        /* Set RX */
+        p_reg_ether->RCR = GETHER_RCR_DEFAULT_VALUE;
+
+        /* Set Max Frame Length (RTC) */
+        p_reg_ether->RTC = GETHER_RTC_FIXED_BITS | p_instance_ctrl->p_gether_cfg->ether_buffer_size;
+
+        p_reg_ether->CIE  = 0x00000000; /* default value */
+        p_reg_ether->DIE  = 0x00000000; /* default value */
+        p_reg_ether->EIE  = 0x00000000; /* default value */
+        p_reg_ether->RIE0 = 0x00000000; /* default value */
+        p_reg_ether->RIE1 = 0x00000000; /* default value */
+        p_reg_ether->RIE2 = 0x00000000; /* default value */
+        p_reg_ether->TIE  = 0x00000000; /* default value */
+        p_reg_ether->RIE3 = 0x00000000; /* default value */
+
+        /* PAUSE prohibition */
+        p_reg_emac->CXR72 = 1;
+
+        /* E-MAC status register clear */
+        p_reg_emac->CXR21 = ((1UL << R_ETHER_CXR21_FCI_Pos) & R_ETHER_CXR21_FCI_Msk) |
+                            ((1UL << R_ETHER_CXR21_LINKI_Pos) & R_ETHER_CXR21_LINKI_Msk) |
+                            ((1UL << R_ETHER_CXR21_PFRI_Pos) & R_ETHER_CXR21_PFRI_Msk);
+
+        /* E-MAC interrupt enable register */
+        p_reg_emac->CXR22_b.FCIM = 1;
+
+        /* Clear all ETHERC status BFR, PSRTO, LCHNG, MPD, ICD */
+        p_reg_emac->CXR21 = GETHER_ETHERC_INTERRUPT_FACTOR_ALL;
+
+        /* DMAC init */
+        p_reg_ether->CCC_b.BOC = 0;
+
+        /* Set RX */
+        p_reg_ether->RCR = GETHER_RCR_DEFAULT_VALUE;
+
+        /* Set FIFO size */
+        p_reg_ether->TGC = GETHER_TGC_DEFAULT_VALUE;
+
+        p_reg_ether->TCCR = 0;
+
+        /* Interrupt enable: */
+
+        p_reg_ether->DIC = (1 << GETHER_DECRIPTOR_INT_TX) |
+                           (1 << GETHER_DECRIPTOR_INT_RX);
+
+        /* Frame receive */
+        p_reg_ether->RIC0 = ((1UL << R_ETHER_RIC0_FRE_Pos) & R_ETHER_RIC0_FRE_Msk);
+        p_reg_ether->RIC1 = 0;
+
+        /* Receive FIFO full error, descriptor empty */
+        p_reg_ether->RIC2 = ((1UL << R_ETHER_RIC2_QFE_Pos) & R_ETHER_RIC2_QFE_Msk) |
+                            ((1UL << R_ETHER_RIC2_RFFE_Pos) & R_ETHER_RIC2_RFFE_Msk);
+        p_reg_ether->RIC3      = 0;
+        p_reg_ether->TIE_b.FTS = 1;
+
+        /* Setting the control will start the DMAC process. */
+        p_reg_ether->CCC_b.OPC = GETHER_OPC_MODE_OPERATION;
+        p_reg_toe->CSR0_b.TPE  = 1;
+        p_reg_toe->CSR0_b.RPE  = 1;
+
+        if ((ETHER_FLOW_CONTROL_ENABLE == p_instance_ctrl->p_gether_cfg->flow_control))
+        {
+            p_reg_emac->CXR20_b.RXF  = 1;
+            p_reg_emac->CXR20_b.TZPF = 1;
+        }
+
+        p_reg_emac->CXR20_b.RPE = 1;
+        p_reg_emac->CXR20_b.TPE = 1;
+
+        p_reg_emac->CXR20_b.RCPT = 1;
+
+        /* Move the TX descriptor */
+        p_reg_ether->TCCR_b.TSRQ = 1;
+
+        /* Interrupt enable: */
+        gether_enable_icu(p_instance_ctrl);
     }
     /* When the link is down */
     else if (GETHER_LINK_CHANGE_LINK_DOWN == p_instance_ctrl->link_change)
     {
-        uint32_t link_down_request = 1;
         p_instance_ctrl->link_change = GETHER_LINK_CHANGE_NO_CHANGE;
 
 #if (GETHER_CFG_USE_LINKSTA == 1)
@@ -881,72 +902,68 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
         err = gether_link_status_check(p_instance_ctrl);
         if (FSP_ERR_ETHER_ERROR_LINK == err)
         {
-            link_down_request = 1;
-        }
-        else
-        {
-            link_down_request = 0;
-        }
-
-#elif (GETHER_CFG_USE_LINKSTA == 0)
-        link_down_request = 1;
 #endif
-        if (link_down_request > 0)
+        while (p_reg_ether->TCCR_b.TSRQ == 1)
         {
-            while (p_reg_ether->TCCR_b.TSRQ == 1)
-            {
-                ;
-            }
-
-            /* E-MAC.CXR20 Set bit6 (RPE) = "0" to stop Rx Function of E-MAC. Not necessary to change other bits. */
-            p_reg_emac->CXR20_b.RPE = 0;
-
-            /* DMAC.CSR Wait until bit20 (RPO) will be "0" (Wait Reception FIFO will be empty) */
-            while (p_reg_ether->CSR_b.RPO == 1)
-            {
-                ;
-            }
-
-            /* DMAC.CCC Set bit8 (DTSR) = "1" to stop URAM access. Not necessary to change other bits. */
-            p_reg_ether->CCC_b.DTSR = 1;
-
-            /* DMAC.CSR Wait until bit8 (DTS) will be "1" (URAM access is stopping) */
-            while (p_reg_ether->CSR_b.DTS == 0)
-            {
-                ;
-            }
-
-            /* TOE.CSR0 Wait until bit5 (RPE) and bit4 (TPE) will be "0"*/
-            while (p_reg_toe->CSR0 & (R_ETHER_CSR0_TPE_Msk | R_ETHER_CSR0_RPE_Msk))
-            {
-                /* TOE.CSR0 Set bit5 (RPE) = "0" and bit4 (TPE) = "0" to stop Rx and Tx Function of TOE. Not necessary to change other bits. */
-                p_reg_toe->CSR0 = 0;
-            }
-
-            /* E-MAC.CXR20 Wait until bit6 (RPE) and bit5 (TPE) will be "0" */
-            while (p_reg_emac->CXR20 & (R_ETHER_CXR20_TPE_Msk | R_ETHER_CXR20_RPE_Msk))
-            {
-                /* E-MAC.CXR20 Set bit5 (TPE) = "0" to stop Tx Function of E-MAC. Not necessary to change other bits. */
-                p_reg_emac->CXR20_b.TPE = 0;
-                p_reg_emac->CXR20_b.RPE = 0;
-            }
-
-            /* DMAC.CCC Set bit [1:0] = "01b" (Config Mode) and bit8 (DTSR) = "0" */
-            p_reg_ether->CCC = (uint32_t) ((p_reg_ether->CCC & ~(R_ETHER_CCC_OPC_Msk | R_ETHER_CCC_DTSR_Msk)) |
-                                           GETHER_OPC_MODE_CONFIG);
-
-            p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_DOWN;
-
-            if (NULL != p_instance_ctrl->p_callback)
-            {
-                callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
-                callback_arg.event       = ETHER_EVENT_LINK_OFF;
-                callback_arg.status_ecsr = 0;
-                callback_arg.status_eesr = 0;
-                callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
-                ether_call_callback(p_instance_ctrl, &callback_arg);
-            }
+            ;
         }
+
+        /* E-MAC.CXR20 Set bit6 (RPE) = "0" to stop Rx Function of E-MAC. Not necessary to change other bits. */
+        p_reg_emac->CXR20_b.RPE = 0;
+
+        /* DMAC.CSR Wait until bit20 (RPO) will be "0" (Wait Reception FIFO will be empty) */
+        while (p_reg_ether->CSR_b.RPO == 1)
+        {
+            ;
+        }
+
+        /* DMAC.CCC Set bit8 (DTSR) = "1" to stop URAM access. Not necessary to change other bits. */
+        p_reg_ether->CCC_b.DTSR = 1;
+
+        /* DMAC.CSR Wait until bit8 (DTS) will be "1" (URAM access is stopping) */
+        while (p_reg_ether->CSR_b.DTS == 0)
+        {
+            ;
+        }
+
+        /* TOE.CSR0 Wait until bit5 (RPE) and bit4 (TPE) will be "0"*/
+        while (p_reg_toe->CSR0 & (R_ETHER_CSR0_TPE_Msk | R_ETHER_CSR0_RPE_Msk))
+        {
+            /* TOE.CSR0 Set bit5 (RPE) = "0" and bit4 (TPE) = "0" to stop Rx and Tx Function of TOE. Not necessary to change other bits. */
+            p_reg_toe->CSR0 = 0;
+        }
+
+        /* E-MAC.CXR20 Wait until bit6 (RPE) and bit5 (TPE) will be "0" */
+        while (p_reg_emac->CXR20 & (R_ETHER_CXR20_TPE_Msk | R_ETHER_CXR20_RPE_Msk))
+        {
+            /* E-MAC.CXR20 Set bit5 (TPE) = "0" to stop Tx Function of E-MAC. Not necessary to change other bits. */
+            p_reg_emac->CXR20_b.TPE = 0;
+            p_reg_emac->CXR20_b.RPE = 0;
+        }
+
+        /* DMAC.CCC Set bit [1:0] = "01b" (Config Mode) and bit8 (DTSR) = "0" */
+        p_reg_ether->CCC = (uint32_t) ((p_reg_ether->CCC & ~(R_ETHER_CCC_OPC_Msk | R_ETHER_CCC_DTSR_Msk)) |
+                                       GETHER_OPC_MODE_CONFIG);
+
+        p_instance_ctrl->link_establish_status = GETHER_LINK_ESTABLISH_STATUS_DOWN;
+
+        if (NULL != p_instance_ctrl->p_callback)
+        {
+            callback_arg.channel     = p_instance_ctrl->p_gether_cfg->channel;
+            callback_arg.event       = ETHER_EVENT_LINK_OFF;
+            callback_arg.status_ecsr = 0;
+            callback_arg.status_eesr = 0;
+            callback_arg.p_context   = p_instance_ctrl->p_gether_cfg->p_context;
+            ether_call_callback(p_instance_ctrl, &callback_arg);
+        }
+
+#if (ETHER_CFG_USE_LINKSTA == 1)
+    }
+    else
+    {
+        ;                              /* no operation */
+    }
+#endif
     }
     else
     {
@@ -968,7 +985,7 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
  ***********************************************************************************************************************/
 fsp_err_t R_GETHER_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
 {
-    fsp_err_t               err             = FSP_SUCCESS;
+    fsp_err_t err = FSP_SUCCESS;
     ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) p_ctrl;
 
     /* Check argument */
@@ -1028,11 +1045,11 @@ fsp_err_t R_GETHER_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
  ***********************************************************************************************************************/
 fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint32_t * const length_bytes)
 {
-    fsp_err_t               err               = FSP_SUCCESS;
-    ether_instance_ctrl_t * p_instance_ctrl   = (ether_instance_ctrl_t *) p_ctrl;
-    uint8_t               * p_read_buffer     = NULL; /* Buffer location controlled by the Ethernet driver */
-    uint8_t               * p_read_buffer_out = NULL; /* Buffer location controlled by the Ethernet driver */
-    uint32_t                received_size     = GETHER_NO_DATA;
+    fsp_err_t err = FSP_SUCCESS;
+    ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) p_ctrl;
+    uint8_t * p_read_buffer                 = NULL; /* Buffer location controlled by the Ethernet driver */
+    uint8_t * p_read_buffer_out             = NULL; /* Buffer location controlled by the Ethernet driver */
+    uint32_t received_size = GETHER_NO_DATA;
 #if  (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     uint64_t va;
 #endif
@@ -1237,13 +1254,13 @@ fsp_err_t R_GETHER_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uin
  ***********************************************************************************************************************/
 fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint32_t const frame_length)
 {
-    fsp_err_t               err             = FSP_SUCCESS;
+    fsp_err_t err = FSP_SUCCESS;
     ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) p_ctrl;
-    R_ETHER0_Type         * p_reg_ether;
+    R_ETHER0_Type * p_reg_ether;
 
     uint8_t * p_write_buffer = p_buffer;
-    uint32_t  buf_size;
-    void    * p_copy_dst;
+    uint32_t buf_size;
+    void * p_copy_dst;
 
     /* Check argument */
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
@@ -1272,7 +1289,7 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
     else
     {
         gether_instance_tx_descriptor_t * p_tx_desc = p_instance_ctrl->p_tx_descriptor;
-        gether_instance_tx_descriptor_t   dummy;
+        gether_instance_tx_descriptor_t dummy;
 
         if ((p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINKFIX) || (p_tx_desc->dt == GETHER_DESCRIPTOR_TYPE_LINK))
         {
@@ -1318,6 +1335,7 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
         {
             /* Clean cache after writing descriptor */
             R_BSP_CACHE_CleanRange((address_size_t) p_tx_desc, sizeof(gether_instance_tx_descriptor_t));
+
             /* Read back the last written descriptor */
             dummy = *p_tx_desc;
         } while (memcmp(&dummy, p_tx_desc, sizeof(gether_instance_tx_descriptor_t)));
@@ -1365,8 +1383,8 @@ fsp_err_t R_GETHER_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, ui
 fsp_err_t R_GETHER_TxStatusGet (__attribute__((unused)) ether_ctrl_t * const p_ctrl,
                                 __attribute__((unused)) void * const         p_buffer_address)
 {
-    ether_instance_ctrl_t           * p_instance_ctrl = (ether_instance_ctrl_t *) p_ctrl;
-    R_ETHER0_Type                   * p_reg_ether;
+    ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) p_ctrl;
+    R_ETHER0_Type * p_reg_ether;
     gether_instance_tx_descriptor_t * p_descriptor;
     fsp_err_t err = FSP_ERR_NOT_FOUND;
 
@@ -1412,9 +1430,9 @@ fsp_err_t R_GETHER_TxStatusGet (__attribute__((unused)) ether_ctrl_t * const p_c
  * @retval  FSP_ERR_NO_CALLBACK_MEMORY   p_callback is non-secure and p_callback_memory is either secure or NULL.
  **********************************************************************************************************************/
 fsp_err_t R_GETHER_CallbackSet (ether_ctrl_t * const          p_api_ctrl,
-                               void (                      * p_callback ) (ether_callback_args_t *),
-                               void const * const            p_context,
-                               ether_callback_args_t * const p_callback_memory)
+                                void (                      * p_callback)(ether_callback_args_t *),
+                                void const * const            p_context,
+                                ether_callback_args_t * const p_callback_memory)
 {
     ether_instance_ctrl_t * p_ctrl = (ether_instance_ctrl_t *) p_api_ctrl;
 
@@ -1425,11 +1443,13 @@ fsp_err_t R_GETHER_CallbackSet (ether_ctrl_t * const          p_api_ctrl,
 #endif
 
 #if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
+
     /* Get security state of p_callback */
     bool callback_is_secure =
         (NULL == cmse_check_address_range((void *) p_callback, sizeof(void *), CMSE_AU_NONSECURE));
 
  #if ETHER_CFG_PARAM_CHECKING_ENABLE
+
     /* In secure projects, p_callback_memory must be provided in non-secure space if p_callback is non-secure */
     ether_callback_args_t * const p_callback_memory_checked = cmse_check_pointed_object(p_callback_memory,
                                                                                         CMSE_AU_NONSECURE);
@@ -1440,7 +1460,7 @@ fsp_err_t R_GETHER_CallbackSet (ether_ctrl_t * const          p_api_ctrl,
     /* Store callback and context */
 #if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
     p_ctrl->p_callback = callback_is_secure ? p_callback :
-                         (void (*) (ether_callback_args_t *))cmse_nsfptr_create(p_callback);
+                         (void (*)(ether_callback_args_t *))cmse_nsfptr_create(p_callback);
 #else
     p_ctrl->p_callback = p_callback;
 #endif
@@ -1464,7 +1484,6 @@ fsp_err_t R_GETHER_CallbackSet (ether_ctrl_t * const          p_api_ctrl,
  *
  * @retval  FSP_SUCCESS                  No parameter error found
  * @retval  FSP_ERR_ASSERTION            Pointer to ETHER control block or configuration structure is NULL
- * @retval  FSP_ERR_ALREADY_OPEN         Control block has already been opened
  * @retval  FSP_ERR_INVALID_CHANNEL      Invalid channel number is given.
  * @retval  FSP_ERR_INVALID_POINTER      Pointer to MAC address is NULL.
  * @retval  FSP_ERR_INVALID_ARGUMENT     Irq number lower then 0.
@@ -1472,8 +1491,8 @@ fsp_err_t R_GETHER_CallbackSet (ether_ctrl_t * const          p_api_ctrl,
 static fsp_err_t gether_open_param_check (ether_instance_ctrl_t const * const p_instance_ctrl,
                                           ether_cfg_t const * const           p_cfg)
 {
-    address_size_t            descriptor_base_address;
-    address_size_t            descriptor_check_address;
+    address_size_t descriptor_base_address;
+    address_size_t descriptor_check_address;
     ether_instance_extend_t * p_instance_extend;
 
     FSP_ASSERT(p_instance_ctrl);
@@ -1494,8 +1513,6 @@ static fsp_err_t gether_open_param_check (ether_instance_ctrl_t const * const p_
     {
         GETHER_ERROR_RETURN((p_cfg->pp_ether_buffers != NULL), FSP_ERR_INVALID_ARGUMENT);
     }
-
-    GETHER_ERROR_RETURN((GETHER_OPEN != p_instance_ctrl->open), FSP_ERR_ALREADY_OPEN);
 
     /*
      * Check Descriptor address
@@ -1647,7 +1664,6 @@ static void gether_init_rx_descriptors (ether_instance_ctrl_t * const p_instance
  ***********************************************************************************************************************/
 static void gether_init_descriptors (ether_instance_ctrl_t * const p_instance_ctrl)
 {
-
     uint32_t i;
 
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
@@ -1767,7 +1783,7 @@ static void gether_init_buffers (ether_instance_ctrl_t * const p_instance_ctrl)
  ***********************************************************************************************************************/
 static void gether_config_ethernet (ether_instance_ctrl_t const * const p_instance_ctrl, const uint8_t mode)
 {
-    R_EMAC0_Type  * p_reg_emac;
+    R_EMAC0_Type * p_reg_emac;
     R_ETHER0_Type * p_reg_ether;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
@@ -1876,8 +1892,8 @@ static void gether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
                                   const uint8_t                 mode)
 {
     R_EMAC0_Type * p_reg_emac;
-    uint32_t       mac_h;
-    uint32_t       mac_l;
+    uint32_t mac_h;
+    uint32_t mac_l;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
 
@@ -1923,15 +1939,15 @@ static void gether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
  ***********************************************************************************************************************/
 static fsp_err_t gether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode)
 {
-    fsp_err_t      err;
+    fsp_err_t err;
     R_EMAC0_Type * p_reg_emac;
 
-    uint32_t  link_speed_duplex  = 0;
-    uint32_t  local_pause_bits   = 0;
-    uint32_t  partner_pause_bits = 0;
-    uint32_t  transmit_pause_set = 0;
-    uint32_t  receive_pause_set  = 0;
-    uint32_t  full_duplex        = 0;
+    uint32_t link_speed_duplex  = 0;
+    uint32_t local_pause_bits   = 0;
+    uint32_t partner_pause_bits = 0;
+    uint32_t transmit_pause_set = 0;
+    uint32_t receive_pause_set  = 0;
+    uint32_t full_duplex        = 0;
     fsp_err_t link_result;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
@@ -2159,6 +2175,7 @@ static void ether_call_callback (ether_instance_ctrl_t * p_instance_ctrl, ether_
     p_args->p_context   = p_instance_ctrl->p_context;
 
 #if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
+
     /* p_callback can point to a secure function or a non-secure function. */
     if (!cmse_is_nsfptr(p_instance_ctrl->p_callback))
     {
@@ -2171,7 +2188,9 @@ static void ether_call_callback (ether_instance_ctrl_t * p_instance_ctrl, ether_
         ether_prv_ns_callback p_callback = (ether_prv_ns_callback) (p_instance_ctrl->p_callback);
         p_callback(p_args);
     }
+
 #else
+
     /* If the project is not Trustzone Secure, then it will never need to change security state in order to call the callback. */
     p_instance_ctrl->p_callback(p_args);
 #endif
@@ -2194,13 +2213,13 @@ void gether_eint_isr (IRQn_Type const irq)
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
 
-	uint32_t status_ecsr;
+    uint32_t status_ecsr;
     uint32_t status_eesr;
 
     ether_callback_args_t callback_arg;
-    R_EMAC0_Type        * p_reg_emac;
-    R_ETHER0_Type       * p_reg_ether;
-    R_TOE0_Type         * p_reg_toe;
+    R_EMAC0_Type * p_reg_emac;
+    R_ETHER0_Type * p_reg_ether;
+    R_TOE0_Type * p_reg_toe;
 
     ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 

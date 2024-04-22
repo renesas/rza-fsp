@@ -129,8 +129,9 @@ static void r_ssi_interrupts_configure(ssi_instance_ctrl_t * const p_instance_ct
 static fsp_err_t r_ssi_dependent_drivers_configure(R_SSI0_Type           * p_reg,
                                                    i2s_cfg_t const * const p_cfg,
                                                    transfer_size_t         fifo_access_size);
-void ssi_txi_dmac_isr(IRQn_Type const irq);
-void ssi_rxi_dmac_isr(IRQn_Type const irq);
+
+void ssi_tx_dmac_callback(ssi_instance_ctrl_t * p_ctrl);
+void ssi_rx_dmac_callback(ssi_instance_ctrl_t * p_ctrl);
 
 #endif
 
@@ -1331,23 +1332,19 @@ void ssi_int_isr (IRQn_Type const irq)
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of transmission.
  **********************************************************************************************************************/
-void ssi_txi_dmac_isr (IRQn_Type const irq)
+void ssi_tx_dmac_callback (ssi_instance_ctrl_t * p_ctrl)
 {
-    ssi_instance_ctrl_t * p_instance_ctrl = (ssi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
-    p_instance_ctrl->p_tx_src = NULL;
+    p_ctrl->p_tx_src = NULL;
 }
 
 /*******************************************************************************************************************//**
  * Dedicated function for DMAC linkage at the time of reception.
  **********************************************************************************************************************/
-void ssi_rxi_dmac_isr (IRQn_Type const irq)
+void ssi_rx_dmac_callback (ssi_instance_ctrl_t * p_ctrl)
 {
-    ssi_instance_ctrl_t * p_instance_ctrl = (ssi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    p_ctrl->p_rx_dest = NULL;
 
-    p_instance_ctrl->p_rx_dest = NULL;
-
-    r_ssi_call_callback(p_instance_ctrl, I2S_EVENT_RX_FULL);
+    r_ssi_call_callback(p_ctrl, I2S_EVENT_RX_FULL);
 }
 
 #endif

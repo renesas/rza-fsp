@@ -854,7 +854,7 @@ uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
 }
 
 /*******************************************************************************************************************//**
- * Set a clock frequency.
+ * DEPRECATED: Set a clock frequency.
  *
  * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
  * @param[in]   clock_sel             Value to set in Source Clock Setting register.

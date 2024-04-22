@@ -35,7 +35,9 @@
 FSP_HEADER
 
 #include "r_ioport_api.h"
-#include "r_ioport_cfg.h"
+#if __has_include("r_ioport_cfg.h")
+ #include "r_ioport_cfg.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions

@@ -44,6 +44,7 @@
     * [Azure RTOS NetX Duo IP Instance](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/chapter3)
     * [Azure RTOS NetX Duo IoT Middleware](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/overview-netx-duo)
     * [Azure RTOS NetX Duo MQTT Client](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/netx-duo-mqtt/chapter1)
+    * [Azure RTOS NetX Duo NAT](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/netx-duo-nat/chapter1)
     * [Azure RTOS NetX Duo POP3 Client](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/netx-duo-pop3-client/chapter1)
     * [Azure RTOS NetX Duo Packet Pool Instance](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/chapter3)
     * [Azure RTOS NetX Duo SMTP Client](https://docs.microsoft.com/en-us/azure/rtos/netx-duo/netx-duo-smtp-client/chapter1)

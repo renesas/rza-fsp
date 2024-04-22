@@ -59,11 +59,8 @@
  * Exported global function
  ***********************************************************************************************************************/
 void gether_phy_targets_ksz9131rnxi_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
-bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(
-    ether_phy_instance_ctrl_t * p_instance_ctrl,
-    uint32_t                    line_speed_duplex);
-extern uint32_t gether_phy_read(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr);
-extern void     gether_phy_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr, uint32_t data);
+bool gether_phy_target_ksz9131rnxi_is_support_link_partner_ability(ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                                   uint32_t                    line_speed_duplex);
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -85,15 +82,19 @@ static uint32_t gether_phy_mmd_read (ether_phy_instance_ctrl_t * p_instance_ctrl
                                      uint32_t                    device_address,
                                      uint32_t                    reg_addr)
 {
-    gether_phy_write(p_instance_ctrl,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL_ADDRESS | device_address);
-    gether_phy_write(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, reg_addr);
-    gether_phy_write(p_instance_ctrl,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL_DATA | device_address);
+    uint32_t data = 0;
 
-    return gether_phy_read(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA);
+    R_GETHER_PHY_Write(p_instance_ctrl,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL_ADDRESS | device_address);
+    R_GETHER_PHY_Write(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, reg_addr);
+    R_GETHER_PHY_Write(p_instance_ctrl,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL_DATA | device_address);
+
+    R_GETHER_PHY_Read(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, &data);
+
+    return data;
 }                                      /* End of gether_phy_mmd_read */
 
 /***********************************************************************************************************************
@@ -110,14 +111,14 @@ static void gether_phy_mmd_write (ether_phy_instance_ctrl_t * p_instance_ctrl,
                                   uint32_t                    reg_addr,
                                   uint32_t                    data)
 {
-    gether_phy_write(p_instance_ctrl,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL_ADDRESS | device_address);
-    gether_phy_write(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, reg_addr);
-    gether_phy_write(p_instance_ctrl,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL,
-                     GETHER_PHY_REG_MMD_ACCESS_CONTROL_DATA | device_address);
-    gether_phy_write(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, data);
+    R_GETHER_PHY_Write(p_instance_ctrl,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL_ADDRESS | device_address);
+    R_GETHER_PHY_Write(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, reg_addr);
+    R_GETHER_PHY_Write(p_instance_ctrl,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL,
+                       GETHER_PHY_REG_MMD_ACCESS_CONTROL_DATA | device_address);
+    R_GETHER_PHY_Write(p_instance_ctrl, GETHER_PHY_REG_MMD_ADDRESS_DATA, data);
 }                                      /* End of gether_phy_mmd_write */
 
 /***********************************************************************************************************************

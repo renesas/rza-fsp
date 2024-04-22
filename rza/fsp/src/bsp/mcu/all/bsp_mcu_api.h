@@ -153,6 +153,16 @@ void R_BSP_CACHE_InvalidateRange(uint64_t base_address, uint64_t length);
  **********************************************************************************************************************/
 void R_BSP_CACHE_CleanInvalidateRange(uint64_t base_address, uint64_t length);
 
+/*******************************************************************************************************************//**
+ * TLB Invalidate All, EL3
+ *
+ * Invalidates cached copies of translation table entries from TLBs
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_TLB_Invalidate(void)
+{
+     __asm__ volatile ("TLBI ALLE3\n");
+}
+
 /** @} (end addtogroup BSP_MCU) */
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */

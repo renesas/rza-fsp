@@ -35,6 +35,8 @@
 #define START_PROSESSING                (0x00010001)
 #define DESCRIPTOR_START                (0x00000002)
 #define DESCRIPTOR_STOP                 (0x00000000)
+#define DESCRIPTOR_NEXT_ADD_L           (0x00000000)
+#define DESCRIPTOR_NEXT_ADD_H           (0x00000000)
 
 /* Register offset address for descriptor list*/
 #define OFFSET_ADDR_RPF_SRC_SIZE        (0x00000100)
@@ -67,6 +69,37 @@
 #define OFFSET_ADDR_WPF_CLP2            (0x000001C0)
 #define OFFSET_ADDR_WPF_DST_DSWAP       (0x000001C4)
 
+/* Offset address for descriptor list*/
+#define ISU_FM_DESCRIPTOR_OFFSET_0      0
+#define ISU_FM_DESCRIPTOR_OFFSET_1      1
+#define ISU_FM_DESCRIPTOR_OFFSET_2      2
+#define ISU_FM_DESCRIPTOR_OFFSET_3      3
+#define ISU_FM_DESCRIPTOR_OFFSET_4      4
+#define ISU_FM_DESCRIPTOR_OFFSET_5      5
+#define ISU_FM_DESCRIPTOR_OFFSET_6      6
+#define ISU_FM_DESCRIPTOR_OFFSET_7      7
+#define ISU_FM_DESCRIPTOR_OFFSET_8      8
+#define ISU_FM_DESCRIPTOR_OFFSET_9      9
+#define ISU_FM_DESCRIPTOR_OFFSET_10     10
+#define ISU_FM_DESCRIPTOR_OFFSET_11     11
+#define ISU_FM_DESCRIPTOR_OFFSET_12     12
+#define ISU_FM_DESCRIPTOR_OFFSET_13     13
+#define ISU_FM_DESCRIPTOR_OFFSET_14     14
+#define ISU_FM_DESCRIPTOR_OFFSET_15     15
+#define ISU_FM_DESCRIPTOR_OFFSET_16     16
+#define ISU_FM_DESCRIPTOR_OFFSET_17     17
+#define ISU_FM_DESCRIPTOR_OFFSET_18     18
+#define ISU_FM_DESCRIPTOR_OFFSET_19     19
+#define ISU_FM_DESCRIPTOR_OFFSET_20     20
+#define ISU_FM_DESCRIPTOR_OFFSET_21     21
+#define ISU_FM_DESCRIPTOR_OFFSET_22     22
+#define ISU_FM_DESCRIPTOR_OFFSET_23     23
+#define ISU_FM_DESCRIPTOR_OFFSET_24     24
+#define ISU_FM_DESCRIPTOR_OFFSET_25     25
+#define ISU_FM_DESCRIPTOR_OFFSET_26     26
+#define ISU_FM_DESCRIPTOR_OFFSET_27     27
+#define ISU_FM_DESCRIPTOR_OFFSET_28     28
+
 /* Set data for color format conversion */
 #define VAL_WPF_CCOL_ENABLE             (0x00000002)
 #define VAL_WPF_MUL1_YUV2RGB            (0x000004A8)
@@ -92,6 +125,8 @@
 #define VAL_WPF_MUL1_DISABLE            (0x00000400)
 #define VAL_WPF_MUL4_DISABLE            (0x04000000)
 #define VAL_WPF_MUL6_DISABLE            (0x00000400)
+#define VAL_WPF_REGISTER_NOT_USED       (0x00000000)
+#define VAL_FM_DL_STADDH_NOT_USED       (0x00000000)
 
 #define MICRO_WAIT_10                   (10U)
 #define CAL_RESIZE_RATE_4096            (4096U)
@@ -302,13 +337,13 @@ fsp_err_t R_ISU_Start (isu_ctrl_t * const p_api_ctrl)
     R_ISU->ISU_FM_DL_STADDH = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
     R_ISU->ISU_FM_DL_STADDL = (uint32_t) (pa) & CAST_TO_UINT32;
 #else
-    R_ISU->ISU_FM_DL_STADDH = 0x00000000;
+    R_ISU->ISU_FM_DL_STADDH = VAL_FM_DL_STADDH_NOT_USED;
     R_ISU->ISU_FM_DL_STADDL = (uint64_t) &descriptor_cfg & CAST_TO_UINT32;
 #endif
 
     /* set footer data of description */
-    descriptor_cfg.next_address_h  = 0x00000000;
-    descriptor_cfg.next_address_l  = 0x00000000;
+    descriptor_cfg.next_address_h  = DESCRIPTOR_NEXT_ADD_H;
+    descriptor_cfg.next_address_l  = DESCRIPTOR_NEXT_ADD_L;
     descriptor_cfg.dexsriptor_ctrl = DESCRIPTOR_START;
 
     /* Enable frame end interruption */
@@ -381,35 +416,35 @@ static void r_isu_fm_set_addr (void)
     descriptor_cfg.header = DESCRIPTOR_HEADER;
 
     /* set descriptor for register address */
-    descriptor_cfg.cmd[0].set_address  = OFFSET_ADDR_RPF_SRC_SIZE;
-    descriptor_cfg.cmd[1].set_address  = OFFSET_ADDR_RPF_SRC_STRD;
-    descriptor_cfg.cmd[2].set_address  = OFFSET_ADDR_RPF_SRC_ADDH_PL0;
-    descriptor_cfg.cmd[3].set_address  = OFFSET_ADDR_RPF_SRC_ADDL_PL0;
-    descriptor_cfg.cmd[4].set_address  = OFFSET_ADDR_RPF_SRC_ADDH_PL1;
-    descriptor_cfg.cmd[5].set_address  = OFFSET_ADDR_RPF_SRC_ADDL_PL1;
-    descriptor_cfg.cmd[6].set_address  = OFFSET_ADDR_RPF_FMT;
-    descriptor_cfg.cmd[7].set_address  = OFFSET_ADDR_RPF_SRC_DSWAP;
-    descriptor_cfg.cmd[8].set_address  = OFFSET_ADDR_RS_HSCALE;
-    descriptor_cfg.cmd[9].set_address  = OFFSET_ADDR_RS_VSCALE;
-    descriptor_cfg.cmd[10].set_address = OFFSET_ADDR_RS_OS_CROP;
-    descriptor_cfg.cmd[11].set_address = OFFSET_ADDR_WPF_DST_ADDH_PH0;
-    descriptor_cfg.cmd[12].set_address = OFFSET_ADDR_WPF_DST_ADDL_PL0;
-    descriptor_cfg.cmd[13].set_address = OFFSET_ADDR_WPF_DST_ADDL_PH1;
-    descriptor_cfg.cmd[14].set_address = OFFSET_ADDR_WPF_DST_ADDL_PL1;
-    descriptor_cfg.cmd[15].set_address = OFFSET_ADDR_WPF_DST_STRD;
-    descriptor_cfg.cmd[16].set_address = OFFSET_ADDR_WPF_FMT;
-    descriptor_cfg.cmd[17].set_address = OFFSET_ADDR_WPF_CCOL;
-    descriptor_cfg.cmd[18].set_address = OFFSET_ADDR_WPF_MUL1;
-    descriptor_cfg.cmd[19].set_address = OFFSET_ADDR_WPF_MUL2;
-    descriptor_cfg.cmd[20].set_address = OFFSET_ADDR_WPF_MUL3;
-    descriptor_cfg.cmd[21].set_address = OFFSET_ADDR_WPF_MUL4;
-    descriptor_cfg.cmd[22].set_address = OFFSET_ADDR_WPF_MUL5;
-    descriptor_cfg.cmd[23].set_address = OFFSET_ADDR_WPF_MUL6;
-    descriptor_cfg.cmd[24].set_address = OFFSET_ADDR_WPF_OSFT1;
-    descriptor_cfg.cmd[25].set_address = OFFSET_ADDR_WPF_OFST2;
-    descriptor_cfg.cmd[26].set_address = OFFSET_ADDR_WPF_CLP1;
-    descriptor_cfg.cmd[27].set_address = OFFSET_ADDR_WPF_CLP2;
-    descriptor_cfg.cmd[28].set_address = OFFSET_ADDR_WPF_DST_DSWAP;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_0].set_address  = OFFSET_ADDR_RPF_SRC_SIZE;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_1].set_address  = OFFSET_ADDR_RPF_SRC_STRD;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_2].set_address  = OFFSET_ADDR_RPF_SRC_ADDH_PL0;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_3].set_address  = OFFSET_ADDR_RPF_SRC_ADDL_PL0;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_4].set_address  = OFFSET_ADDR_RPF_SRC_ADDH_PL1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_5].set_address  = OFFSET_ADDR_RPF_SRC_ADDL_PL1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_6].set_address  = OFFSET_ADDR_RPF_FMT;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_7].set_address  = OFFSET_ADDR_RPF_SRC_DSWAP;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_8].set_address  = OFFSET_ADDR_RS_HSCALE;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_9].set_address  = OFFSET_ADDR_RS_VSCALE;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_10].set_address = OFFSET_ADDR_RS_OS_CROP;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_11].set_address = OFFSET_ADDR_WPF_DST_ADDH_PH0;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_12].set_address = OFFSET_ADDR_WPF_DST_ADDL_PL0;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_13].set_address = OFFSET_ADDR_WPF_DST_ADDL_PH1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_14].set_address = OFFSET_ADDR_WPF_DST_ADDL_PL1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_15].set_address = OFFSET_ADDR_WPF_DST_STRD;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_16].set_address = OFFSET_ADDR_WPF_FMT;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_17].set_address = OFFSET_ADDR_WPF_CCOL;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_18].set_address = OFFSET_ADDR_WPF_MUL1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_19].set_address = OFFSET_ADDR_WPF_MUL2;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_20].set_address = OFFSET_ADDR_WPF_MUL3;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_21].set_address = OFFSET_ADDR_WPF_MUL4;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_22].set_address = OFFSET_ADDR_WPF_MUL5;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_23].set_address = OFFSET_ADDR_WPF_MUL6;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_24].set_address = OFFSET_ADDR_WPF_OSFT1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_25].set_address = OFFSET_ADDR_WPF_OFST2;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_26].set_address = OFFSET_ADDR_WPF_CLP1;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_27].set_address = OFFSET_ADDR_WPF_CLP2;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_28].set_address = OFFSET_ADDR_WPF_DST_DSWAP;
 }
 
 /*******************************************************************************************************************//**
@@ -423,6 +458,8 @@ static void r_isu_fm_set_data (isu_runtime_cfg_t const * const p_cfg)
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     uint64_t pa;                       /* Physical Address */
     uint64_t va;                       /* Virtual Address */
+#else
+    uint64_t buffer_address;           /* Used to store address of buffer*/
 #endif
 
     uint32_t resize_hrate_int;
@@ -447,52 +484,62 @@ static void r_isu_fm_set_data (isu_runtime_cfg_t const * const p_cfg)
     resize_vrate_dec = (uint32_t) (int_cast_val - resize_vrate_int * CAL_RESIZE_RATE_4096);
 
     /* set descriptor for register data */
-    descriptor_cfg.cmd[0].set_data = (p_cfg->input.hsize << BIT_SHIFT_16) | (p_cfg->input.vsize);
-    descriptor_cfg.cmd[1].set_data = p_cfg->input.hstride << BIT_SHIFT_16;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_0].set_data = (p_cfg->input.hsize << BIT_SHIFT_16) |
+                                                              (p_cfg->input.vsize);
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_1].set_data = p_cfg->input.hstride << BIT_SHIFT_16;
 
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     va = (uint64_t) (p_cfg->input.p_base) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-    descriptor_cfg.cmd[2].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[3].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_2].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_3].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
 #else
-    descriptor_cfg.cmd[2].set_data = (uint32_t) (p_cfg->input.p_base >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[3].set_data = (uint32_t) p_cfg->input.p_base & CAST_TO_UINT32;
+    buffer_address = p_cfg->input.p_base;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_2].set_data = (uint32_t) (buffer_address >> BIT_SHIFT_32) &
+                                                              CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_3].set_data = (uint32_t) buffer_address & CAST_TO_UINT32;
 #endif
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     va = (uint64_t) (p_cfg->input.p_base_cbcr) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-    descriptor_cfg.cmd[4].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[5].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_4].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_5].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
 #else
-    descriptor_cfg.cmd[4].set_data = (uint32_t) (p_cfg->input.p_base_cbcr >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[5].set_data = (uint32_t) p_cfg->input.p_base_cbcr & CAST_TO_UINT32;
+    buffer_address = p_cfg->input.p_base_cbcr;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_4].set_data = (uint32_t) (buffer_address >> BIT_SHIFT_32) &
+                                                              CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_5].set_data = (uint32_t) buffer_address & CAST_TO_UINT32;
 #endif
-    descriptor_cfg.cmd[6].set_data  = scaling_format_table[p_cfg->input.format];
-    descriptor_cfg.cmd[7].set_data  = p_cfg->input.data_swap;
-    descriptor_cfg.cmd[8].set_data  = (resize_hrate_int << BIT_SHIFT_16) | (resize_hrate_dec);
-    descriptor_cfg.cmd[9].set_data  = (resize_vrate_int << BIT_SHIFT_16) | (resize_vrate_dec);
-    descriptor_cfg.cmd[10].set_data = (p_cfg->output.hsize << BIT_SHIFT_16) | (p_cfg->output.vsize);
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_6].set_data  = scaling_format_table[p_cfg->input.format];
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_7].set_data  = p_cfg->input.data_swap;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_8].set_data  = (resize_hrate_int << BIT_SHIFT_16) | (resize_hrate_dec);
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_9].set_data  = (resize_vrate_int << BIT_SHIFT_16) | (resize_vrate_dec);
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_10].set_data = (p_cfg->output.hsize << BIT_SHIFT_16) |
+                                                               (p_cfg->output.vsize);
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     va = (uint64_t) (p_cfg->output.p_base) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-    descriptor_cfg.cmd[11].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[12].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_11].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_12].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
 #else
-    descriptor_cfg.cmd[11].set_data = (uint32_t) (p_cfg->output.p_base >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[12].set_data = (uint32_t) p_cfg->output.p_base & CAST_TO_UINT32;
+    buffer_address = p_cfg->output.p_base;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_11].set_data = (uint32_t) (buffer_address >> BIT_SHIFT_32) &
+                                                               CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_12].set_data = (uint32_t) buffer_address & CAST_TO_UINT32;
 #endif
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
     va = (uint64_t) (p_cfg->output.p_base_cbcr) & CAST_TO_UINT32;
     R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
-    descriptor_cfg.cmd[13].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[14].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_13].set_data = (uint32_t) (pa >> BIT_SHIFT_32) & CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_14].set_data = (uint32_t) (pa) & CAST_TO_UINT32;
 #else
-    descriptor_cfg.cmd[13].set_data = (uint32_t) (p_cfg->output.p_base_cbcr >> BIT_SHIFT_32) & CAST_TO_UINT32;
-    descriptor_cfg.cmd[14].set_data = (uint32_t) p_cfg->output.p_base_cbcr & CAST_TO_UINT32;
+    buffer_address = p_cfg->output.p_base_cbcr;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_13].set_data = (uint32_t) (buffer_address >> BIT_SHIFT_32) &
+                                                               CAST_TO_UINT32;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_14].set_data = (uint32_t) buffer_address & CAST_TO_UINT32;
 #endif
-    descriptor_cfg.cmd[15].set_data = p_cfg->output.hstride << BIT_SHIFT_16;
-    descriptor_cfg.cmd[16].set_data = scaling_format_table[p_cfg->output.format];
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_15].set_data = p_cfg->output.hstride << BIT_SHIFT_16;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_16].set_data = scaling_format_table[p_cfg->output.format];
 
     /* Color Correction settings */
     /* input format is YCbCr */
@@ -502,33 +549,33 @@ static void r_isu_fm_set_data (isu_runtime_cfg_t const * const p_cfg)
         /* output format is RGB and enable color conversion (BT.601SDTV) */
         if ((ISU_COLOR_FORMAT_RGB565 <= p_cfg->output.format) && (p_cfg->output.format <= ISU_COLOR_FORMAT_ABGR8888))
         {
-            descriptor_cfg.cmd[17].set_data = VAL_WPF_CCOL_ENABLE;
-            descriptor_cfg.cmd[18].set_data = VAL_WPF_MUL1_YUV2RGB;
-            descriptor_cfg.cmd[19].set_data = VAL_WPF_MUL2_YUV2RGB;
-            descriptor_cfg.cmd[20].set_data = VAL_WPF_MUL3_YUV2RGB;
-            descriptor_cfg.cmd[21].set_data = VAL_WPF_MUL4_YUV2RGB;
-            descriptor_cfg.cmd[22].set_data = VAL_WPF_MUL5_YUV2RGB;
-            descriptor_cfg.cmd[23].set_data = VAL_WPF_MUL6_YUV2RGB;
-            descriptor_cfg.cmd[24].set_data = VAL_WPF_OFST1_YUV2RGB;
-            descriptor_cfg.cmd[25].set_data = VAL_WPF_OFST2_YUV2RGB;
-            descriptor_cfg.cmd[26].set_data = VAL_WPF_CLP1_YUV2RGB;
-            descriptor_cfg.cmd[27].set_data = VAL_WPF_CLK2_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_17].set_data = VAL_WPF_CCOL_ENABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_18].set_data = VAL_WPF_MUL1_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_19].set_data = VAL_WPF_MUL2_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_20].set_data = VAL_WPF_MUL3_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_21].set_data = VAL_WPF_MUL4_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_22].set_data = VAL_WPF_MUL5_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_23].set_data = VAL_WPF_MUL6_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_24].set_data = VAL_WPF_OFST1_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_25].set_data = VAL_WPF_OFST2_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_26].set_data = VAL_WPF_CLP1_YUV2RGB;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_27].set_data = VAL_WPF_CLK2_YUV2RGB;
         }
         /* output format is YCbCr and disable color conversion */
         else if ((ISU_COLOR_FORMAT_YCBCR422_UYVY <= p_cfg->output.format) &&
                  (p_cfg->output.format <= ISU_COLOR_FORMAT_YCBCR420_NV12))
         {
-            descriptor_cfg.cmd[17].set_data = 0x00000000;
-            descriptor_cfg.cmd[18].set_data = VAL_WPF_MUL1_DISABLE;
-            descriptor_cfg.cmd[19].set_data = 0x00000000;
-            descriptor_cfg.cmd[20].set_data = 0x00000000;
-            descriptor_cfg.cmd[21].set_data = VAL_WPF_MUL4_DISABLE;
-            descriptor_cfg.cmd[22].set_data = 0x00000000;
-            descriptor_cfg.cmd[23].set_data = VAL_WPF_MUL6_DISABLE;
-            descriptor_cfg.cmd[24].set_data = 0x00000000;
-            descriptor_cfg.cmd[25].set_data = 0x00000000;
-            descriptor_cfg.cmd[26].set_data = 0x00000000;
-            descriptor_cfg.cmd[27].set_data = 0x00000000;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_17].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_18].set_data = VAL_WPF_MUL1_DISABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_19].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_20].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_21].set_data = VAL_WPF_MUL4_DISABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_22].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_23].set_data = VAL_WPF_MUL6_DISABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_24].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_25].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_26].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_27].set_data = VAL_WPF_REGISTER_NOT_USED;
         }
         else
         {
@@ -542,33 +589,33 @@ static void r_isu_fm_set_data (isu_runtime_cfg_t const * const p_cfg)
         if ((ISU_COLOR_FORMAT_YCBCR422_UYVY <= p_cfg->output.format) &&
             (p_cfg->output.format <= ISU_COLOR_FORMAT_YCBCR420_NV12))
         {
-            descriptor_cfg.cmd[17].set_data = VAL_WPF_CCOL_ENABLE;
-            descriptor_cfg.cmd[18].set_data = VAL_WPF_MUL1_RGB2YUV;
-            descriptor_cfg.cmd[19].set_data = VAL_WPF_MUL2_RGB2YUV;
-            descriptor_cfg.cmd[20].set_data = VAL_WPF_MUL3_RGB2YUV;
-            descriptor_cfg.cmd[21].set_data = VAL_WPF_MUL4_RGB2YUV;
-            descriptor_cfg.cmd[22].set_data = VAL_WPF_MUL5_RGB2YUV;
-            descriptor_cfg.cmd[23].set_data = VAL_WPF_MUL6_RGB2YUV;
-            descriptor_cfg.cmd[24].set_data = VAL_WPF_OFST1_RGB2YUV;
-            descriptor_cfg.cmd[25].set_data = VAL_WPF_OFST2_RGB2YUV;
-            descriptor_cfg.cmd[26].set_data = VAL_WPF_CLP1_RGB2YUV;
-            descriptor_cfg.cmd[27].set_data = VAL_WPF_CLP2_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_17].set_data = VAL_WPF_CCOL_ENABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_18].set_data = VAL_WPF_MUL1_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_19].set_data = VAL_WPF_MUL2_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_20].set_data = VAL_WPF_MUL3_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_21].set_data = VAL_WPF_MUL4_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_22].set_data = VAL_WPF_MUL5_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_23].set_data = VAL_WPF_MUL6_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_24].set_data = VAL_WPF_OFST1_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_25].set_data = VAL_WPF_OFST2_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_26].set_data = VAL_WPF_CLP1_RGB2YUV;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_27].set_data = VAL_WPF_CLP2_RGB2YUV;
         }
         /* output format is RGB and disable color conversion */
         else if ((ISU_COLOR_FORMAT_RGB565 <= p_cfg->output.format) &&
                  (p_cfg->output.format <= ISU_COLOR_FORMAT_ABGR8888))
         {
-            descriptor_cfg.cmd[17].set_data = 0x00000000;
-            descriptor_cfg.cmd[18].set_data = VAL_WPF_MUL1_DISABLE;
-            descriptor_cfg.cmd[19].set_data = 0x00000000;
-            descriptor_cfg.cmd[20].set_data = 0x00000000;
-            descriptor_cfg.cmd[21].set_data = VAL_WPF_MUL4_DISABLE;
-            descriptor_cfg.cmd[22].set_data = 0x00000000;
-            descriptor_cfg.cmd[23].set_data = VAL_WPF_MUL6_DISABLE;
-            descriptor_cfg.cmd[24].set_data = 0x00000000;
-            descriptor_cfg.cmd[25].set_data = 0x00000000;
-            descriptor_cfg.cmd[26].set_data = 0x00000000;
-            descriptor_cfg.cmd[27].set_data = 0x00000000;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_17].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_18].set_data = VAL_WPF_MUL1_DISABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_19].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_20].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_21].set_data = VAL_WPF_MUL4_DISABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_22].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_23].set_data = VAL_WPF_MUL6_DISABLE;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_24].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_25].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_26].set_data = VAL_WPF_REGISTER_NOT_USED;
+            descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_27].set_data = VAL_WPF_REGISTER_NOT_USED;
         }
         else
         {
@@ -577,20 +624,20 @@ static void r_isu_fm_set_data (isu_runtime_cfg_t const * const p_cfg)
     }
     else
     {
-        descriptor_cfg.cmd[17].set_data = 0x00000000;
-        descriptor_cfg.cmd[18].set_data = VAL_WPF_MUL1_DISABLE;
-        descriptor_cfg.cmd[19].set_data = 0x00000000;
-        descriptor_cfg.cmd[20].set_data = 0x00000000;
-        descriptor_cfg.cmd[21].set_data = VAL_WPF_MUL4_DISABLE;
-        descriptor_cfg.cmd[22].set_data = 0x00000000;
-        descriptor_cfg.cmd[23].set_data = VAL_WPF_MUL6_DISABLE;
-        descriptor_cfg.cmd[24].set_data = 0x00000000;
-        descriptor_cfg.cmd[25].set_data = 0x00000000;
-        descriptor_cfg.cmd[26].set_data = 0x00000000;
-        descriptor_cfg.cmd[27].set_data = 0x00000000;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_17].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_18].set_data = VAL_WPF_MUL1_DISABLE;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_19].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_20].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_21].set_data = VAL_WPF_MUL4_DISABLE;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_22].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_23].set_data = VAL_WPF_MUL6_DISABLE;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_24].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_25].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_26].set_data = VAL_WPF_REGISTER_NOT_USED;
+        descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_27].set_data = VAL_WPF_REGISTER_NOT_USED;
     }
 
-    descriptor_cfg.cmd[28].set_data = p_cfg->output.data_swap;
+    descriptor_cfg.cmd[ISU_FM_DESCRIPTOR_OFFSET_28].set_data = p_cfg->output.data_swap;
 
     R_BSP_CACHE_CleanInvalidateAll();
 }

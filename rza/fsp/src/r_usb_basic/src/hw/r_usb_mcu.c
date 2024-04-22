@@ -454,7 +454,10 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
     fsp_err_t result = FSP_ERR_USB_PARAMETER;
 
  #if USB_CFG_MODE == USB_CFG_PERI
-    usb_module_register_clear(ip_type);
+    if ((R_MSTP->PERI_COM_b.MHUSB2H == 0) && (R_MSTP->PERI_COM_b.MHUSB2F == 0))
+    {
+        usb_module_register_clear(ip_type);
+    }
  #endif                                /*  #if USB_CFG_MODE == USB_CFG_PERI */
 
     if (1 == ip_type)
@@ -658,6 +661,7 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
     {
 #if (!defined(BSP_MCU_GROUP_RA4M1)) && (!defined(BSP_MCU_GROUP_RA2A1)) && \
         (!defined(BSP_MCU_GROUP_RZT2M)) && (!defined(BSP_MCU_GROUP_RZA3UL))
+
         /* Deep standby USB monitor register
          * b0      SRPC0    USB0 single end control
          * b1      PRUE0    DP Pull-Up Resistor control
@@ -807,9 +811,10 @@ void usb_cpu_int_enable (void)
      * b6 IEN6 Interrupt enable bit
      * b7 IEN7 Interrupt enable bit
      */
-    R_BSP_IrqCfgEnable(host_cfg->irq, host_cfg->ipl, host_cfg);     /* USBI enable */
+    R_BSP_IrqCfgEnable(host_cfg->irq, host_cfg->ipl, host_cfg); /* USBI enable */
 
  #if defined(BSP_MCU_GROUP_RA6M3)
+
     /* Interrupt enable register (USB1 USBIO enable)
      * b0 IEN0 Interrupt enable bit
      * b1 IEN1 Interrupt enable bit
@@ -849,6 +854,7 @@ void usb_cpu_int_disable (void)
     R_BSP_IrqDisable(host_cfg->irq);   /* USBI enable */
 
  #if defined(BSP_MCU_GROUP_RA6M3)
+
     /* Interrupt enable register (USB1 USBIO disable)
      * b0 IEN0 Interrupt enable bit
      * b1 IEN1 Interrupt enable bit

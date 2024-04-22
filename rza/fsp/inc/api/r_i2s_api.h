@@ -26,8 +26,6 @@
  * @section I2S_API_SUMMARY Summary
  * @brief The I2S (Inter-IC Sound) interface provides APIs and definitions for I2S audio communication.
  *
- * @section I2S_API_INSTANCES Known Implementations
- * @ref SSI
  * @{
  **********************************************************************************************************************/
 
@@ -40,6 +38,9 @@
 
 /* Register definitions, common services and error codes. */
 #include "bsp_api.h"
+#ifndef BSP_OVERRIDE_I2S_INCLUDE
+ #include "r_timer_api.h"
+#endif
 #include "r_transfer_api.h"
 
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
@@ -52,6 +53,7 @@ FSP_HEADER
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
+#ifndef BSP_OVERRIDE_I2S_PCM_WIDTH_T
 
 /** Audio PCM width */
 typedef enum e_i2s_pcm_width
@@ -64,6 +66,9 @@ typedef enum e_i2s_pcm_width
     I2S_PCM_WIDTH_24_BITS = 5,         ///< Using 24-bit PCM
     I2S_PCM_WIDTH_32_BITS = 6,         ///< Using 32-bit PCM
 } i2s_pcm_width_t;
+#endif
+
+#ifndef BSP_OVERRIDE_I2S_WORD_LENGTH_T
 
 /** Audio system word length. */
 typedef enum e_i2s_word_length
@@ -77,6 +82,7 @@ typedef enum e_i2s_word_length
     I2S_WORD_LENGTH_128_BITS = 6,      ///< Using 128-bit system word length
     I2S_WORD_LENGTH_256_BITS = 7,      ///< Using 256-bit system word length
 } i2s_word_length_t;
+#endif
 
 /** Events that can trigger a callback function */
 typedef enum e_i2s_event
@@ -86,12 +92,15 @@ typedef enum e_i2s_event
     I2S_EVENT_RX_FULL,                 ///< Receive buffer is above FIFO trigger level
 } i2s_event_t;
 
+#ifndef BSP_OVERRIDE_I2S_MODE_T
+
 /** I2S communication mode */
 typedef enum e_i2s_mode
 {
     I2S_MODE_SLAVE  = 0,               ///< Slave mode
     I2S_MODE_MASTER = 1,               ///< Master mode
 } i2s_mode_t;
+#endif
 
 /** Mute audio samples. */
 typedef enum e_i2s_mute
@@ -123,8 +132,6 @@ typedef struct st_i2s_callback_args
 } i2s_callback_args_t;
 
 /** I2S control block.  Allocate an instance specific control block to pass into the I2S API calls.
- * @par Implemented as
- * - ssi_instance_ctrl_t
  */
 typedef void i2s_ctrl_t;
 
@@ -168,8 +175,6 @@ typedef struct st_i2s_cfg
 typedef struct st_i2s_api
 {
     /** Initial configuration.
-     * @par Implemented as
-     * - @ref R_SSI_Open()
      *
      * @pre Peripheral clocks and any required output pins should be configured prior to calling this function.
      * @note To reconfigure after calling this function, call @ref i2s_api_t::close first.
@@ -180,16 +185,12 @@ typedef struct st_i2s_api
 
     /** Stop communication. Communication is stopped when callback is called with I2S_EVENT_IDLE.
      *
-     * @par Implemented as
-     * - @ref R_SSI_Stop()
      *
      * @param[in]   p_ctrl     Control block set in @ref i2s_api_t::open call for this instance.
      */
     fsp_err_t (* stop)(i2s_ctrl_t * const p_ctrl);
 
     /** Enable or disable mute.
-     * @par Implemented as
-     * - @ref R_SSI_Mute()
      *
      * @param[in]   p_ctrl       Control block set in @ref i2s_api_t::open call for this instance.
      * @param[in]   mute_enable  Whether to enable or disable mute.
@@ -198,8 +199,6 @@ typedef struct st_i2s_api
 
     /** Write I2S data.  All transmit data is queued when callback is called with I2S_EVENT_TX_EMPTY.
      * Transmission is complete when callback is called with I2S_EVENT_IDLE.
-     * @par Implemented as
-     * - @ref R_SSI_Write()
      *
      * @param[in]   p_ctrl     Control block set in @ref i2s_api_t::open call for this instance.
      * @param[in]   p_src      Buffer of PCM samples.  Must be 4 byte aligned.
@@ -209,8 +208,6 @@ typedef struct st_i2s_api
     fsp_err_t (* write)(i2s_ctrl_t * const p_ctrl, void const * const p_src, uint32_t const bytes);
 
     /** Read I2S data.  Reception is complete when callback is called with I2S_EVENT_RX_EMPTY.
-     * @par Implemented as
-     * - @ref R_SSI_Read()
      *
      * @param[in]   p_ctrl     Control block set in @ref i2s_api_t::open call for this instance.
      * @param[in]   p_dest     Buffer to store PCM samples.  Must be 4 byte aligned.
@@ -221,8 +218,6 @@ typedef struct st_i2s_api
 
     /** Simultaneously write and read I2S data.  Transmission and reception are complete when
      * callback is called with I2S_EVENT_IDLE.
-     * @par Implemented as
-     * - @ref R_SSI_WriteRead()
      *
      * @param[in]   p_ctrl     Control block set in @ref i2s_api_t::open call for this instance.
      * @param[in]   p_src      Buffer of PCM samples.  Must be 4 byte aligned.
@@ -235,8 +230,6 @@ typedef struct st_i2s_api
                             uint32_t const bytes);
 
     /** Get current status and store it in provided pointer p_status.
-     * @par Implemented as
-     * - @ref R_SSI_StatusGet()
      *
      * @param[in]   p_ctrl     Control block set in @ref i2s_api_t::open call for this instance.
      * @param[out]  p_status   Current status of the driver.
@@ -244,8 +237,6 @@ typedef struct st_i2s_api
     fsp_err_t (* statusGet)(i2s_ctrl_t * const p_ctrl, i2s_status_t * const p_status);
 
     /** Allows driver to be reconfigured and may reduce power consumption.
-     * @par Implemented as
-     * - @ref R_SSI_Close()
      *
      * @param[in]   p_ctrl     Control block set in @ref i2s_api_t::open call for this instance.
      */
@@ -253,8 +244,6 @@ typedef struct st_i2s_api
 
     /**
      * Specify callback function and optional context pointer and working memory pointer.
-     * @par Implemented as
-     * - R_SSI_CallbackSet()
      *
      * @param[in]   p_ctrl                   Pointer to the I2S control block.
      * @param[in]   p_callback               Callback function
@@ -262,7 +251,7 @@ typedef struct st_i2s_api
      * @param[in]   p_working_memory         Pointer to volatile memory where callback structure can be allocated.
      *                                       Callback arguments allocated here are only valid during the callback.
      */
-    fsp_err_t (* callbackSet)(i2s_ctrl_t * const p_api_ctrl, void (* p_callback)(i2s_callback_args_t *),
+    fsp_err_t (* callbackSet)(i2s_ctrl_t * const p_ctrl, void (* p_callback)(i2s_callback_args_t *),
                               void const * const p_context, i2s_callback_args_t * const p_callback_memory);
 } i2s_api_t;
 
@@ -280,5 +269,5 @@ FSP_FOOTER
 #endif
 
 /*******************************************************************************************************************//**
- * @} (end addtogroup I2S_API)
+ * @} (end defgroup I2S_API)
  **********************************************************************************************************************/

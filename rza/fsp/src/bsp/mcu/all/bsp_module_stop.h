@@ -35,13 +35,27 @@ FSP_HEADER
  * @param      ip       fsp_ip_t enum value for the module to be started
  * @param      channel  The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
-#define R_BSP_MSTP_START(ip, channel)             {FSP_CRITICAL_SECTION_DEFINE;                                      \
+#if BSP_CFG_MSTP_CHANGE_DELAY_ENABLE
+ #define R_BSP_MSTP_START(ip, channel)            {FSP_CRITICAL_SECTION_DEFINE;                                      \
                                                    FSP_CRITICAL_SECTION_ENTER;                                       \
                                                    BSP_MSTP_REG_ ## ip(channel) = 0x00000000U                        \
                                                                                   | (BSP_MSTP_BIT_ ## ip(channel) << \
                                                                                      16U);                           \
                                                    BSP_MSTP_REG_ ## ip(channel);                                     \
+                                                   FSP_REGISTER_READ(BSP_MSTP_REG_ ## ip(channel));                  \
+                                                   R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US,              \
+                                                                       BSP_DELAY_UNITS_MICROSECONDS);                \
                                                    FSP_CRITICAL_SECTION_EXIT;}
+#else
+ #define R_BSP_MSTP_START(ip, channel)            {FSP_CRITICAL_SECTION_DEFINE;                                      \
+                                                   FSP_CRITICAL_SECTION_ENTER;                                       \
+                                                   BSP_MSTP_REG_ ## ip(channel) = 0x00000000U                        \
+                                                                                  | (BSP_MSTP_BIT_ ## ip(channel) << \
+                                                                                     16U);                           \
+                                                   BSP_MSTP_REG_ ## ip(channel);                                     \
+                                                   FSP_REGISTER_READ(BSP_MSTP_REG_ ## ip(channel));                  \
+                                                   FSP_CRITICAL_SECTION_EXIT;}
+#endif
 
 /*******************************************************************************************************************//**
  * Enables the module stop state.

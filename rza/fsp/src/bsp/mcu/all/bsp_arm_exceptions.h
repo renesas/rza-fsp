@@ -18,14 +18,21 @@
  * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
  **********************************************************************************************************************/
 
-/** @} (end addtogroup BSP_MCU) */
-
 #ifndef BSP_ARM_EXCEPTIONS_H
-#define BSP_ARM_EXCEPTIONS_H
+ #define BSP_ARM_EXCEPTIONS_H
 
  #ifdef __cplusplus
 extern "C" {
  #endif
+
+/** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
+
+/*******************************************************************************************************************//**
+ * @addtogroup BSP_MCU
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
@@ -33,6 +40,11 @@ extern "C" {
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
+
+/** @} (end addtogroup BSP_MCU) */
+
+/** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+    FSP_FOOTER
 
  #ifdef __cplusplus
 }

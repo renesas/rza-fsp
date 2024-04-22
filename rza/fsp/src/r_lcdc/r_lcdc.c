@@ -1310,7 +1310,7 @@ void lcdc_vspd_int (IRQn_Type const irq)
 
     if (1 == R_LCDC->VI6_WPF0_IRQ_STA_b.UND)
     {
-        event_flag = DISPLAY_EVENT_UNDERFLOW;
+        event_flag = DISPLAY_EVENT_GR1_UNDERFLOW;
     }
     else
     {

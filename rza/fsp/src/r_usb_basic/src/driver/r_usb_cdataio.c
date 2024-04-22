@@ -173,10 +173,17 @@ void (* g_usb_callback[])(usb_utr_t *, uint16_t, uint16_t) USB_BUFFER_PLACE_IN_S
 {
     /* PCDC, PCDCC */
 #if defined(USB_CFG_PCDC_USE)
+ #if (BSP_CFG_RTOS == 1)
+    USB_NULL, USB_NULL,                              /* USB_PCDC  (0) */
+    USB_NULL, USB_NULL,                              /* USB_PCDCC (1) */
+    USB_NULL, USB_NULL,                              /* USB_PCDC2  (2) */
+    USB_NULL, USB_NULL,                              /* USB_PCDCC2 (3) */
+ #else /* #if (BSP_CFG_RTOS == 1) */
     usb_pcdc_read_complete, usb_pcdc_write_complete, /* USB_PCDC  (0) */
     USB_NULL, usb_pcdc_write_complete,               /* USB_PCDCC (1) */
-    usb_pcdc_read_complete, usb_pcdc_write_complete, /* USB_PCDC2  (0) */
-    USB_NULL, usb_pcdc_write_complete,               /* USB_PCDCC2 (1) */
+    usb_pcdc_read_complete, usb_pcdc_write_complete, /* USB_PCDC2  (2) */
+    USB_NULL, usb_pcdc_write_complete,               /* USB_PCDCC2 (3) */
+ #endif /* #if (BSP_CFG_RTOS == 1) */
 #else
     USB_NULL, USB_NULL,                              /* USB_PCDC  (0) */
     USB_NULL, USB_NULL,                              /* USB_PCDCC (1) */
@@ -186,18 +193,47 @@ void (* g_usb_callback[])(usb_utr_t *, uint16_t, uint16_t) USB_BUFFER_PLACE_IN_S
 
     /* PHID */
 #if defined(USB_CFG_PHID_USE)
-    usb_phid_read_complete, usb_phid_write_complete, /* USB_PHID (2) */
+ #if (BSP_CFG_RTOS != 1)
+    usb_phid_read_complete, usb_phid_write_complete, /* USB_PHID (4) */
+    usb_phid_read_complete, usb_phid_write_complete, /* USB_PHID2 (5) */
+ #else /*  #if (BSP_CFG_RTOS == 1) */
+    USB_NULL, USB_NULL,                              /* USB_PHID (4) */
+    USB_NULL, USB_NULL,                              /* USB_PHID (5) */
+ #endif /*  #if (BSP_CFG_RTOS == 1) */
 #else
-    USB_NULL, USB_NULL,                              /* USB_PHID (2) */
+    USB_NULL, USB_NULL,                              /* USB_PHID (4) */
+    USB_NULL, USB_NULL,                              /* USB_PHID (5) */
 #endif
 
-    /* PVNDR */
-    USB_NULL, USB_NULL,                              /* USB_PVND  (3) */
+    /* PAUD */
+    USB_NULL, USB_NULL,                              /* USB_PAUD (6) */
+
+    /* PPRN */
+#if defined(USB_CFG_PPRN_USE)
+ #if (BSP_CFG_RTOS != 1)
+    usb_pprn_read_complete, usb_pprn_write_complete, /* USB_PPRN (7) */
+ #else /* BSP_CFG_RTOS != 1 */
+    USB_NULL, USB_NULL,                              /* USB_PPRN (7) */
+ #endif /* BSP_CFG_RTOS != 1 */
+#else                                                /* defined(USB_CFG_PPRN_USE) */
+    USB_NULL, USB_NULL,                              /* USB_PPRN (7) */
+#endif /* defined(USB_CFG_PPRN_USE) */
+
+    /* DFU */
+    USB_NULL, USB_NULL,                              /* USB_DFU (8) */
+
+    /* PVND */
+    USB_NULL, USB_NULL,                              /* USB_PVND (9) */
 
     /* HCDC, HCDCC */
 #if defined(USB_CFG_HCDC_USE)
-    usb_hcdc_read_complete, usb_hcdc_write_complete, /* USB_HCDC  (4) */
-    usb_hcdc_read_complete, USB_NULL,                /* USB_HCDCC (5) */
+ #if (BSP_CFG_RTOS == 1)
+    USB_NULL, USB_NULL,                              /* USB_HCDC  (10) */
+    USB_NULL, USB_NULL,                              /* USB_HCDCC (11) */
+ #else /* #if (BSP_CFG_RTOS == 1) */
+    usb_hcdc_read_complete, usb_hcdc_write_complete, /* USB_HCDC  (10) */
+    usb_hcdc_read_complete, USB_NULL,                /* USB_HCDCC (11) */
+ #endif /* #if (BSP_CFG_RTOS == 1) */
 #else
     USB_NULL, USB_NULL,                              /* USB_HCDC  (4) */
     USB_NULL, USB_NULL,                              /* USB_HCDCC (5) */
@@ -205,25 +241,43 @@ void (* g_usb_callback[])(usb_utr_t *, uint16_t, uint16_t) USB_BUFFER_PLACE_IN_S
 
     /* HHID */
 #if defined(USB_CFG_HHID_USE)
-    usb_hhid_read_complete, usb_hhid_write_complete, /* USB_HHID  (6) */
+ #if (BSP_CFG_RTOS == 1)
+    USB_NULL, USB_NULL,                              /* USB_HHID (12) */
+ #else                                               /* #if (BSP_CFG_RTOS == 1) */
+    usb_hhid_read_complete, usb_hhid_write_complete, /* USB_HHID  (12) */
+ #endif /* #if (BSP_CFG_RTOS == 1) */
 #else
     USB_NULL, USB_NULL,                              /* USB_HHID  (6) */
 #endif
 
-    /* HVNDR */
-#if defined(USB_CFG_HVNDR_USE)
-    usb_hvndr_read_complete, usb_hnvdr_write_complete, /* USB_HVND  (7) */
+    /* HVND */
+#if defined(USB_CFG_HVND_USE)
+    usb_hvnd_read_complete, usb_hvnd_write_complete, /* USB_HVND  (13) */
 #else
-    USB_NULL, USB_NULL,                                /* USB_HVND  (7) */
+    USB_NULL, USB_NULL,                              /* USB_HVND  (7) */
 #endif
 
     /* HMSC */
-    USB_NULL, USB_NULL,                                /* USB_HMSC  (8) */
+    USB_NULL, USB_NULL,                              /* USB_HMSC  (8) */
 
     /* PMSC */
-    USB_NULL, USB_NULL,                                /* USB_PMSC  (9) */
-};                                                     /* const void (g_usb_callback[])(usb_utr_t *, uint16_t, uint16_t) */
+    USB_NULL, USB_NULL,                              /* USB_PMSC  (15) */
 
+    /* HPRN */
+#if defined(USB_CFG_HPRN_USE)
+ #if (BSP_CFG_RTOS == 1)
+    USB_NULL, USB_NULL,                              /* USB_HPRN (16) */
+ #else                                               /* #if (BSP_CFG_RTOS == 1) */
+    usb_hprn_read_complete, usb_hprn_write_complete, /* USB_HPRN (16) */
+ #endif /* #if (BSP_CFG_RTOS == 1) */
+#else
+    USB_NULL, USB_NULL,                              /* USB_HPRN (16) */
+#endif
+
+    /* HUVC */
+
+    USB_NULL, USB_NULL,                /* USB_HUVC (17) */
+};                                     /* const void (g_usb_callback[])(usb_utr_t *, uint16_t, uint16_t) */
 #if defined(USB_CFG_PCDC_USE)
 
 /* Abstract Control Model Notification - SerialState */
@@ -742,7 +796,6 @@ uint8_t usb_get_usepipe (usb_instance_ctrl_t * p_ctrl, usb_transfer_t dir)
     if (USB_CLASS_INTERNAL_PVND < (usb_class_internal_t) (p_ctrl->type))
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-
         /* Host */
         idx =
             (uint8_t) (((uint8_t) (((usb_class_internal_t) p_ctrl->type - USB_CLASS_INTERNAL_HCDC) * 8) +
@@ -753,7 +806,6 @@ uint8_t usb_get_usepipe (usb_instance_ctrl_t * p_ctrl, usb_transfer_t dir)
     else
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-
         /* Peripheral */
         idx  = (uint8_t) ((p_ctrl->type * 2) + dir);
         pipe = g_usb_pipe_peri[idx];

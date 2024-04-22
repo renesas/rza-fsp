@@ -28,7 +28,8 @@
  **********************************************************************************************************************/
 
 /** "GTM" in ASCII, used to determine if channel is open. */
-#define GTM_OPEN    (0x0047544DULL)
+#define GTM_OPEN                (0x0047544DULL)
+#define GTM_PRV_CHANNEL_SIZE    ((uint32_t) R_GTM1_BASE - (uint32_t) R_GTM0_BASE)
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -117,9 +118,9 @@ fsp_err_t R_GTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_c
 #endif
 
     /* calculate base address for specified channel */
-    intptr_t base_address = (intptr_t) R_GTM0_BASE +
-                            (p_cfg->channel * ((intptr_t) R_GTM1_BASE - (intptr_t) R_GTM0_BASE));
-    p_instance_ctrl->p_reg = (R_GTM0_Type *) base_address;
+    intptr_t base_address         = (uint32_t) R_GTM0_BASE;
+    intptr_t channel_base_address = base_address + (p_cfg->channel * GTM_PRV_CHANNEL_SIZE);
+    p_instance_ctrl->p_reg = (R_GTM0_Type *) channel_base_address;
     p_instance_ctrl->p_cfg = p_cfg;
 
     /* Power on the GTM channel. */

@@ -43,7 +43,6 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#define BOARD_PHY_TYPE                             (5) // DEPRECATED
 #define ETHER_PHY_CFG_TARGET_KSZ9131RNXI_ENABLE    (1)
 #define ETHER_PHY_LSI_TYPE_KIT_COMPONENT           ETHER_PHY_LSI_TYPE_KSZ9131RNXI
 #define BOARD_PHY_REF_CLK                          (1)

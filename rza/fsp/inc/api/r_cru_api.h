@@ -26,8 +26,6 @@
  * @section Camera_API_SUMMARY Summary
  * The Camera interface provides a general API for configuring and controlling camera panels.
  *
- * Implemented by:
- * @ref CRU
  *
  * @{
  **********************************************************************************************************************/
@@ -99,8 +97,6 @@ typedef struct st_cru_cfg
 } cru_cfg_t;
 
 /** CRU control block.  Allocate an instance specific control block to pass into the CRU API calls.
- * @par Implemented as
- * - cru_instance_ctrl_t
  */
 typedef void cru_ctrl_t;
 
@@ -108,8 +104,6 @@ typedef void cru_ctrl_t;
 typedef struct st_cru_api
 {
     /** Initial configuration.
-     * @par Implemented as
-     * - @ref R_CRU_Open()
      *
      * @note To reconfigure after calling this function, call @ref cru_api_t::close first.
      * @param[in]  p_ctrl       Pointer to control structure.
@@ -118,32 +112,24 @@ typedef struct st_cru_api
     fsp_err_t (* open)(cru_ctrl_t * const p_ctrl, cru_cfg_t const * const p_cfg);
 
     /** Closes the driver and allows reconfiguration. May reduce power consumption.
-     * @par Implemented as
-     * - @ref R_CRU_Close()
      *
      * @param[in]  p_ctrl       Pointer to control structure.
      */
     fsp_err_t (* close)(cru_ctrl_t * const p_ctrl);
 
     /** Start a capture.
-     * @par Implemented as
-     * - @ref R_CRU_CaptureStart()
      *
      * @param[in]  p_ctrl       Pointer to control structure.
      */
     fsp_err_t (* captureStart)(cru_ctrl_t * const p_ctrl);
 
     /** Stop a capture
-     * @par Implemented as
-     * - @ref R_CRU_CaptureStop()
      *
      * @param[in]  p_ctrl       Pointer to control structure.
      */
     fsp_err_t (* captureStop)(cru_ctrl_t * const p_ctrl);
 
     /** Check scan status.
-     * @par Implemented as
-     * - @ref R_CRU_StatusGet()
      *
      * @param[in]  p_ctrl   Pointer to control handle structure
      * @param[out] p_status Pointer to store current status in

@@ -175,13 +175,17 @@ extern uint16_t g_usb_hstd_use_pipe[];
 extern rtos_sem_id_t g_usb_semaphore_hdl[];
 extern usb_utr_t * get_usb_int_buf(void);
 
-extern usb_callback_t * g_usb_apl_callback[USB_NUM_USBIP];
 #endif                                                                       /*#if (BSP_CFG_RTOS != 0)*/
 extern void (* g_usb_callback[])(usb_utr_t *, uint16_t, uint16_t);
 
 #if (BSP_CFG_RTOS == 1)
 extern TX_SEMAPHORE g_usb_host_usbx_sem[USB_NUM_USBIP][USB_MAX_PIPE_NO + 1]; // usbx
 #endif                                                                       /* #if (BSP_CFG_RTOS == 1) */
+
+/* #if (BSP_CFG_RTOS != 0) */
+extern usb_callback_t      * g_usb_apl_callback[USB_NUM_USBIP];
+extern usb_callback_args_t * g_usb_apl_callback_memory[USB_NUM_USBIP];
+
 /* r_usb_pbc.c */
 #if USB_CFG_BC == USB_CFG_ENABLE
  #if (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI
@@ -359,7 +363,7 @@ void     usb_cstd_clr_pipe_cnfg(usb_utr_t * ptr, uint16_t pipe_no);
 void     usb_cstd_set_nak(usb_utr_t * ptr, uint16_t pipe);
 uint16_t usb_cstd_get_buf_size(usb_utr_t * ptr, uint16_t pipe);
 
-#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+#if ((USB_CFG_MODE &USB_CFG_HOST) == USB_CFG_HOST)
 uint8_t    * usb_hstd_write_fifo(usb_utr_t * ptr, uint16_t count, uint16_t pipemode, uint8_t * write_p);
 uint8_t    * usb_hstd_read_fifo(usb_utr_t * ptr, uint16_t count, uint16_t pipemode, uint8_t * read_p);
 void         usb_hstd_forced_termination(usb_utr_t * ptr, uint16_t pipe, uint16_t status);
@@ -368,7 +372,7 @@ void         usb_hstd_nrdy_endprocess(usb_utr_t * ptr, uint16_t pipe);
 
 #endif                                 /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
-#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+#if ((USB_CFG_MODE &USB_CFG_PERI) == USB_CFG_PERI)
 uint8_t * usb_pstd_write_fifo(uint16_t count, uint16_t pipemode, uint8_t * write_p, usb_utr_t * p_utr);
 uint8_t * usb_pstd_read_fifo(uint16_t count, uint16_t pipemode, uint8_t * read_p, usb_utr_t * p_utr);
 void      usb_pstd_forced_termination(uint16_t pipe, uint16_t status, usb_utr_t * p_utr);

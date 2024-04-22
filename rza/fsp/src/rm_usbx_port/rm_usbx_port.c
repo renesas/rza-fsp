@@ -83,6 +83,7 @@
  * Macro definitions
  ******************************************************************************/
  #define VALUE_1000UL                           (1000UL)
+ #define VALUE_1024UL                           (1024UL)
  #if defined(USB_CFG_HHID_USE)
   #define UX_FSP_HC_AVAILABLE_BANDWIDTH         (2322UL)
  #else
@@ -196,6 +197,13 @@ static uint16_t g_usbx_hub_port_reset_flg   = 0;
 static uint16_t g_usbx_hub_port_clear_flg   = 0;
 static uint32_t g_usbx_hub_status;
 static uint32_t g_usbx_hub_passed_count = 0;
+
+  #if defined(USB_CFG_HUVC_USE)
+   #if (USB_CFG_DMA == USB_CFG_ENABLE)
+static uint32_t g_internal_buffer[VALUE_1024UL / sizeof(uint32_t)];
+   #endif                              /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
+  #endif                               /* defined(USB_CFG_HUVC_USE) */
+
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
 
 /******************************************************************************
@@ -303,13 +311,13 @@ uint32_t usb_peri_usbx_uninitialize (uint32_t dcd_io)
 
   #if defined(BSP_MCU_GROUP_RZA3UL)
     if ((dcd_io != USB_IP0) && (dcd_io != USB_IP1))
-  #else /* #if defined(BSP_MCU_GROUP_RZA3UL) */
+  #else                                /* #if defined(BSP_MCU_GROUP_RZA3UL) */
    #if defined(R_USB_HS0_BASE)
     if ((dcd_io != R_USB_HS0_BASE) && (dcd_io != R_USB_FS0_BASE))
    #else
     if (dcd_io != R_USB_FS0_BASE)
    #endif
-  #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
+  #endif                               /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     {
         return (uint32_t) FSP_ERR_USB_FAILED;
     }
@@ -500,6 +508,7 @@ static void usb_peri_usbx_transfer_complete_cb (usb_utr_t * p_mess, uint16_t dat
 
         tx_semaphore_put(&g_usb_peri_usbx_sem[pipe]);
     }
+
   #else                                /* defined(USB_CFG_PPRN_USE) */
     tx_semaphore_put(&g_usb_peri_usbx_sem[pipe]);
   #endif  /* defined(USB_CFG_PPRN_USE) */
@@ -551,7 +560,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
     {
         module_number = USB_CFG_IP1;
     }
-   #endif /* defined(BSP_MCU_GROUP_RZA3UL) */
+   #endif                              /* defined(BSP_MCU_GROUP_RZA3UL) */
   #endif                               /* defined(R_USB_HS0_BASE) */
     tran_data.ip = module_number;
 
@@ -638,6 +647,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                         {
                             status = (uint32_t) UX_SUCCESS;
                         }
+
   #elif defined(USB_CFG_PHID_USE)
                         if (USB_CFG_PHID_INT_OUT == pipe)
                         {
@@ -647,6 +657,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                         {
                             status = (uint32_t) UX_SUCCESS;
                         }
+
   #elif defined(USB_CFG_PPRN_USE)
                         if ((USB_CFG_PPRN_BULK_IN == pipe) || (USB_CFG_PPRN_BULK_OUT == pipe))
                         {
@@ -656,6 +667,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                         {
                             status = (uint32_t) UX_SUCCESS;
                         }
+
   #else                                /* defined(USB_CFG_PMSC_USE) */
    #if defined(USB_CFG_PCDC_USE)
                         transfer_request->ux_slave_transfer_request_completion_code = UX_TRANSFER_ERROR;
@@ -666,6 +678,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                     else
                     {
   #if defined(USB_CFG_PMSC_USE)
+
                         /*  The error code other UX_SUCCESS must be returned than       *
                          *  when USB peripheral device status is not CONFIGURED status. */
                         uint16_t dvsq;
@@ -679,6 +692,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                         {
                             status = (uint32_t) UX_TRANSFER_ERROR;
                         }
+
   #else                                /* defined(USB_CFG_PMSC_USE) */
    #if defined(USB_CFG_PCDC_USE)
                         transfer_request->ux_slave_transfer_request_completion_code = UX_SUCCESS;
@@ -698,6 +712,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                     {
                         status = (uint32_t) UX_TRANSFER_ERROR;
                     }
+
   #else                                /* define(USB_CFG_PPRN_USE) */
                     status = (uint32_t) UX_TRANSFER_ERROR;
   #endif                               /* define(USB_CFG_PPRN_USE) */
@@ -742,38 +757,38 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
 
         case (uint32_t) UX_DCD_TRANSFER_ABORT:
   #if defined(USB_CFG_PCDC_USE)
-        {
-            CHAR         * name;
-            ULONG          current_value;
-            TX_THREAD    * first_suspended;
-            ULONG          suspended_count;
-            TX_SEMAPHORE * next_semaphore;
-
-            transfer_request = (UX_SLAVE_TRANSFER *) parameter;
-            endpoint         = transfer_request->ux_slave_transfer_request_endpoint;
-            endpoint_index   = endpoint->ux_slave_endpoint_descriptor.bEndpointAddress;
-            if (0 != endpoint_index)
             {
-                pipe = usb_pstd_epadr2pipe((uint16_t) endpoint_index, &tran_data);
+                CHAR         * name;
+                ULONG          current_value;
+                TX_THREAD    * first_suspended;
+                ULONG          suspended_count;
+                TX_SEMAPHORE * next_semaphore;
+
+                transfer_request = (UX_SLAVE_TRANSFER *) parameter;
+                endpoint         = transfer_request->ux_slave_transfer_request_endpoint;
+                endpoint_index   = endpoint->ux_slave_endpoint_descriptor.bEndpointAddress;
+                if (0 != endpoint_index)
+                {
+                    pipe = usb_pstd_epadr2pipe((uint16_t) endpoint_index, &tran_data);
+                }
+
+                tx_semaphore_info_get(&g_usb_peri_usbx_sem[pipe],
+                                      &name,
+                                      &current_value,
+                                      &first_suspended,
+                                      &suspended_count,
+                                      &next_semaphore);
+
+                if (1 == suspended_count)
+                {
+                    usb_pstd_forced_termination(pipe, (uint16_t) USB_DATA_STOP, &tran_data);
+
+                    _ux_utility_thread_suspend(first_suspended);
+                    tx_semaphore_put(&g_usb_peri_usbx_sem[pipe]);
+                }
+
+                break;
             }
-
-            tx_semaphore_info_get(&g_usb_peri_usbx_sem[pipe],
-                                  &name,
-                                  &current_value,
-                                  &first_suspended,
-                                  &suspended_count,
-                                  &next_semaphore);
-
-            if (1 == suspended_count)
-            {
-                usb_pstd_forced_termination(pipe, (uint16_t) USB_DATA_STOP, &tran_data);
-
-                _ux_utility_thread_suspend(first_suspended);
-                tx_semaphore_put(&g_usb_peri_usbx_sem[pipe]);
-            }
-
-            break;
-        }
   #elif defined(USB_CFG_PPRN_USE)      /* #if defined(USB_CFG_PCDC_USE) */
             {
                 for (pipe = USB_MIN_PIPE_NO; pipe < (USB_MAXPIPE_NUM + 1); pipe++)
@@ -1012,10 +1027,8 @@ static UINT usb_peri_usbx_media_write (VOID  * storage,
     if ((status.initialized == true) && (status.busy == false) && (status.media_inserted == true))
     {
         err_code =
-            gp_block_media_instance->p_api->write(gp_block_media_instance->p_ctrl,
-                                                  (uint8_t * const) data_pointer,
-                                                  (uint32_t const) lba,
-                                                  (uint32_t const) number_blocks);
+            gp_block_media_instance->p_api->write(gp_block_media_instance->p_ctrl, (uint8_t * const) data_pointer,
+                                                  (uint32_t const) lba, (uint32_t const) number_blocks);
         if (err_code == FSP_SUCCESS)
         {
             while (timeout > 0)
@@ -1496,6 +1509,7 @@ void usb_host_usbx_registration (usb_utr_t * p_utr)
 
   #if !defined(USB_CFG_OTG_USE)
    #if USB_CFG_HUB == USB_CFG_ENABLE
+
     /* WAIT_LOOP */
     for (i = 0; i < USB_MAX_CONNECT_DEVICE_NUM; i++) /* Loop support CDC device count */
     {
@@ -1633,6 +1647,7 @@ void usb_host_usbx_class_check (usb_utr_t * p_utr, uint16_t ** table)
 
                 g_usb_hmsc_out_pipectr[p_utr->ip][i] = 0;
             }
+
    #else                               /* defined(USB_CFG_HMSC_USE) */
             pipe_no =
                 usb_hstd_make_pipe_reg_info(p_utr->ip, dev_addr, usb_class, speed, (p_config + offset), &ep_tbl);
@@ -1645,6 +1660,7 @@ void usb_host_usbx_class_check (usb_utr_t * p_utr, uint16_t ** table)
                     num_set_pipe++;
                     usb_hstd_set_pipe_info(p_utr->ip, pipe_no, &ep_tbl);
                 }
+
     #else                              /* defined(USB_CFG_HHID_USE) */
                 usb_hstd_set_pipe_info(p_utr->ip, pipe_no, &ep_tbl);
     #endif  /* defined(USB_CFG_HHID_USE) */
@@ -1678,7 +1694,7 @@ static uint32_t usb_host_usbx_get_speed (UX_HCD * hcd)
     uint16_t  connect_inf;
     uint32_t  speed;
 
-    if (R_USB_HS0_BASE == hcd->ux_hcd_io)
+    if (R_USB_HS0_BASE == (R_USB00_Type *) (uintptr_t) hcd->ux_hcd_io)
     {
         utr.ip = USB_IP1;
     }
@@ -1791,7 +1807,7 @@ static void usb_host_usbx_class_request_cb (usb_utr_t * p_utr, uint16_t data1, u
     usb_hcdreg_t * driver;
 
     uint32_t i;
-  #if defined(USB_CFG_HUVC_USE)
+  #if (defined(USB_CFG_HUVC_USE) | defined(USB_CFG_HPRN_USE))
     uint32_t             alternate_number;
     uint32_t             interface_number;
     uint16_t             is_interface_discoverd = 0;
@@ -1802,7 +1818,7 @@ static void usb_host_usbx_class_request_cb (usb_utr_t * p_utr, uint16_t data1, u
     uint16_t             dev_addr;
     uint8_t              pipe_no;
     usb_pipe_table_reg_t ep_tbl;
-  #endif                               /* defined(USB_CFG_HUVC_USE) */
+  #endif                               /* (defined(USB_CFG_HUVC_USE) | defined(USB_CFG_HPRN_USE) */
     pipe = (uint8_t) p_utr->keyword;
 
   #if (defined(USB_CFG_HHID_USE) | defined(USB_CFG_OTG_USE) | defined(USB_CFG_HPRN_USE) | defined(USB_CFG_HCDC_USE) | \
@@ -1950,9 +1966,7 @@ static void usb_host_usbx_class_request_cb (usb_utr_t * p_utr, uint16_t data1, u
     if (p_utr->p_setup[0] == (USB_SET_ADDRESS | USB_HOST_TO_DEV | USB_STANDARD | USB_DEVICE))
     {
         /* Set device speed */
-        usb_hstd_set_hub_port(p_utr,
-                              (uint16_t) (p_utr->p_setup[1] << USB_DEVADDRBIT),
-                              USB_ADDRESS1 << 11,
+        usb_hstd_set_hub_port(p_utr, (uint16_t) (p_utr->p_setup[1] << USB_DEVADDRBIT), USB_ADDRESS1 << 11,
                               (uint16_t) (g_usbx_hub_port << 8));
         usb_hstd_set_dev_addr(p_utr,
                               (uint16_t) (p_utr->p_setup[1] << USB_DEVADDRBIT),
@@ -1978,8 +1992,7 @@ static void usb_host_usbx_class_request_cb (usb_utr_t * p_utr, uint16_t data1, u
         (p_utr->p_setup[1] & USB_DEV_DESCRIPTOR) &&
         ((p_utr->read_req_len - p_utr->tranlen) == UX_DEVICE_DESCRIPTOR_LENGTH))
     {
-        memcpy((uint8_t *) g_usb_hstd_device_descriptor[p_utr->ip],
-               p_utr->p_tranadr,
+        memcpy((uint8_t *) g_usb_hstd_device_descriptor[p_utr->ip], p_utr->p_tranadr,
                (p_utr->read_req_len - p_utr->tranlen));
     }
 
@@ -1991,8 +2004,7 @@ static void usb_host_usbx_class_request_cb (usb_utr_t * p_utr, uint16_t data1, u
         /* Do it only once in the enumeration. */
         if (0 == g_usbx_hub_passed_count)
         {
-            memcpy((uint8_t *) g_usb_hstd_config_descriptor[p_utr->ip],
-                   p_utr->p_tranadr,
+            memcpy((uint8_t *) g_usb_hstd_config_descriptor[p_utr->ip], p_utr->p_tranadr,
                    (p_utr->read_req_len - p_utr->tranlen));
 
             flg = 0U;
@@ -2020,69 +2032,82 @@ static void usb_host_usbx_class_request_cb (usb_utr_t * p_utr, uint16_t data1, u
         g_usbx_hub_passed_count++;
     }
 
-  #if defined(USB_CFG_HUVC_USE)
+  #if (defined(USB_CFG_HUVC_USE) | defined(USB_CFG_HPRN_USE))
+
     /* Completion of SET_INTERFACE */
     if (p_utr->p_setup[0] == (USB_SET_INTERFACE | USB_HOST_TO_DEV | USB_STANDARD | USB_INTERFACE))
     {
         alternate_number = p_utr->p_setup[1]; /* Requested alternate number at SET_INTERFACE */
         interface_number = p_utr->p_setup[2]; /* Requested interface number at SET_INTERFACE */
-
+   #if (defined(USB_CFG_HUVC_USE))
         if ((0 != alternate_number) && (0 != interface_number))
         {
-            dev_addr  = p_utr->p_setup[4];
-            usb_class = USB_CLASS_INTERNAL_HUVC;
+   #endif                                     /* (defined(USB_CFG_HUVC_USE)) */
+        dev_addr = p_utr->p_setup[4];
+   #if (defined(USB_CFG_HUVC_USE))
+        usb_class = USB_CLASS_INTERNAL_HUVC;
+   #endif                                     /* (defined(USB_CFG_HUVC_USE)) */
+   #if (defined(USB_CFG_HPRN_USE))
+        usb_class = USB_CLASS_INTERNAL_HPRN;
+   #endif                                     /* (defined(USB_CFG_HPRN_USE)) */
+        p_config = (uint8_t *) g_usb_hstd_config_descriptor[p_utr->ip];
+        length   = (uint16_t) (*(p_config + 3) << 8);
+        length   = (uint16_t) (length + *(p_config + 2));
+        offset   = 0;
 
-            p_config = (uint8_t *) g_usb_hstd_config_descriptor[p_utr->ip];
-            length   = (uint16_t) (*(p_config + 3) << 8);
-            length   = (uint16_t) (length + *(p_config + 2));
-            offset   = 0;
-
-            while (offset < length)
+        while (offset < length)
+        {
+            if (USB_DT_INTERFACE == *(p_config + offset + 1))
             {
-                if (USB_DT_INTERFACE == *(p_config + offset + 1))
+                if (interface_number == *(p_config + offset + 2))
                 {
-                    if (interface_number == *(p_config + offset + 2))
+   #if (defined(USB_CFG_HUVC_USE))
+                    if ((UX_HOST_CLASS_VIDEO_SUBCLASS_STREAMING == *(p_config + offset + 6)) &&
+                        (alternate_number == *(p_config + offset + 3)))
+   #else
+                    if ((alternate_number == *(p_config + offset + 3)))
+   #endif                              /* defined(USB_CFG_HUVC_USE) */
                     {
-                        if ((UX_HOST_CLASS_VIDEO_SUBCLASS_STREAMING == *(p_config + offset + 6)) &&
-                            (alternate_number == *(p_config + offset + 3)))
-                        {
-                            is_interface_discoverd = 1;
-                        }
+                        is_interface_discoverd = 1;
                     }
                 }
-
-                if (1 == is_interface_discoverd)
-                {
-                    if (USB_DT_ENDPOINT == *(p_config + offset + USB_EP_B_DESCRIPTORTYPE))
-                    {
-                        if (USB_EP_IN == (*(p_config + offset + USB_EP_B_ENDPOINTADDRESS) & USB_EP_DIRMASK))
-                        {
-                            pipe_no =
-                                usb_hstd_make_pipe_reg_info(p_utr->ip,
-                                                            dev_addr,
-                                                            usb_class,
-                                                            0,
-                                                            (p_config + offset),
-                                                            &ep_tbl);
-                            if (USB_NULL != pipe_no)
-                            {
-                                usb_hstd_set_pipe_info(p_utr->ip, pipe_no, &ep_tbl);
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                offset = (uint16_t) (offset + (*(p_config + offset)));
             }
 
-            usb_host_usbx_set_pipe_registration(p_utr, g_usb_hstd_device_addr[p_utr->ip]); /* Host Pipe registration */
+            if (1 == is_interface_discoverd)
+            {
+                if (USB_DT_ENDPOINT == *(p_config + offset + USB_EP_B_DESCRIPTORTYPE))
+                {
+   #if (defined(USB_CFG_HUVC_USE))
+                    if (USB_EP_IN == (*(p_config + offset + USB_EP_B_ENDPOINTADDRESS) & USB_EP_DIRMASK))
+                    {
+   #else
+                    if (USB_EP_OUT == (*(p_config + offset + USB_EP_B_ENDPOINTADDRESS) & USB_EP_DIRMASK))
+   #endif                              /* defined(USB_CFG_HUVC_USE) */
+                        pipe_no =
+                            usb_hstd_make_pipe_reg_info(p_utr->ip, dev_addr, usb_class, 0, (p_config + offset),
+                                                        &ep_tbl);
+                        if (USB_NULL != pipe_no)
+                        {
+                            usb_hstd_set_pipe_info(p_utr->ip, pipe_no, &ep_tbl);
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            offset = (uint16_t) (offset + (*(p_config + offset)));
         }
+
+        usb_host_usbx_set_pipe_registration(p_utr, g_usb_hstd_device_addr[p_utr->ip]); /* Host Pipe registration */
+   #if (defined(USB_CFG_HUVC_USE))
     }
-  #endif
+   #endif                                                                              /* defined(USB_CFG_HUVC_USE) */
+    }
+  #endif                                                                               /* defined(USB_CFG_HUVC_USE) | defined(USB_CFG_HPRN_USE) */
+
     tx_semaphore_put(&g_usb_host_usbx_sem[p_utr->ip][pipe]);
-}                                      /* End of function usb_pstd_transfer_complete_cb() */
+}                                                                                      /* End of function usb_pstd_transfer_complete_cb() */
 
 /******************************************************************************
  * Function Name   : usb_hstd_transfer_complete_cb
@@ -2094,29 +2119,29 @@ static void usb_host_usbx_transfer_complete_cb (usb_utr_t * p_utr, uint16_t data
 {
     (void) data1;
     (void) data2;
-    uint8_t       pipe;
+    uint8_t pipe;
     UX_TRANSFER * transfer_request;
-    uint16_t      pipe_reg;
+    uint16_t pipe_reg;
   #if defined(USB_CFG_HCDC_USE)
     UX_HOST_CLASS_CDC_ACM * cdc_acm = NULL;
     ULONG class;
   #endif                               /* defined(USB_CFG_HCDC_USE) */
 
   #if defined(USB_CFG_OTG_USE)
-    UINT           status;
-    CHAR         * p_sem_name;
-    ULONG          current_value;
-    TX_THREAD    * p_suspend_thread;
-    ULONG          suspend_count;
+    UINT status;
+    CHAR * p_sem_name;
+    ULONG current_value;
+    TX_THREAD * p_suspend_thread;
+    ULONG suspend_count;
     TX_SEMAPHORE * p_next_sem;
   #endif                               /* defined(USB_CFG_OTG_USE) */
 
   #if defined(USB_CFG_HMSC_USE)
-    ULONG    class;
-    ULONG    dev_addr;
+    ULONG class;
+    ULONG dev_addr;
     uint32_t i;
    #if (USB_CFG_DMA == USB_CFG_ENABLE)
-    uint32_t  counter;
+    uint32_t counter;
     uint8_t * p_read;
     uint8_t * p_write;
    #endif                              /* (USB_CFG_DMA == USB_CFG_ENABLE) */
@@ -2256,6 +2281,13 @@ static void usb_host_usbx_transfer_complete_cb (usb_utr_t * p_utr, uint16_t data
         (USB_DATA_SHT == g_p_usb_hstd_pipe[p_utr->ip][pipe]->status))
     {
         transfer_request->ux_transfer_request_completion_code = UX_SUCCESS;
+   #if (USB_CFG_DMA == USB_CFG_ENABLE)
+        if (NULL != p_utr->p_tranadr_hold)
+        {
+            memcpy(transfer_request->ux_transfer_request_data_pointer, p_utr->p_tranadr,
+                   (p_utr->read_req_len - p_utr->tranlen));
+        }
+   #endif                              /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
     }
     else
     {
@@ -2282,6 +2314,7 @@ static void usb_host_usbx_transfer_complete_cb (usb_utr_t * p_utr, uint16_t data
             _ux_utility_semaphore_put(&transfer_request->ux_transfer_request_semaphore);
         }
     }
+
   #else                                /* defined(USB_CFG_OTG_USE) */
     _ux_utility_semaphore_put(&transfer_request->ux_transfer_request_semaphore);
   #endif  /* defined(USB_CFG_OTG_USE) */
@@ -2297,25 +2330,25 @@ static void usb_host_usbx_transfer_complete_cb (usb_utr_t * p_utr, uint16_t data
  ******************************************************************************/
 static UINT usb_host_usbx_to_basic (UX_HCD * hcd, UINT function, VOID * parameter)
 {
-    uint32_t      status = (uint32_t) UX_SUCCESS;
+    uint32_t status = (uint32_t) UX_SUCCESS;
     UX_ENDPOINT * endpoint;
-    uint8_t       module_number;
+    uint8_t module_number;
     UX_TRANSFER * transfer_request;
-    uint32_t      size;
-    uint8_t       pipe_number;
-    usb_er_t      err;
-    uint16_t      usb_class;
+    uint32_t size;
+    uint8_t pipe_number;
+    usb_er_t err;
+    uint16_t usb_class;
   #if defined(USB_CFG_HMSC_USE)
-    ULONG    dev_addr;
+    ULONG dev_addr;
     uint32_t i;
    #if (USB_CFG_DMA == USB_CFG_ENABLE)
     uint32_t allocation_size;
     uint16_t max_packet_size;
-    uint8_t  is_in_transfer = USB_NO;
+    uint8_t is_in_transfer = USB_NO;
    #endif                              /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
   #endif                               /* #if defined(USB_CFG_HMSC_USE) */
 
-    if (R_USB_HS0_BASE == hcd->ux_hcd_io)
+    if (R_USB_HS0_BASE == (R_USB00_Type *) (uintptr_t) hcd->ux_hcd_io)
     {
         module_number = USB_IP1;
     }
@@ -2383,6 +2416,7 @@ static UINT usb_host_usbx_to_basic (UX_HCD * hcd, UINT function, VOID * paramete
                             (uint16_t) transfer_request->ux_transfer_request_requested_length;
                         g_usb_host_usbx_req_msg[module_number].complete = (usb_cb_t) &usb_host_usbx_class_request_cb;
                     }
+
   #else                                /* #if defined(USB_CFG_HHID_USE) */
                     /* In this "case", only SetConfiguraion or the class request is processed.  */
                     if (UX_FSP_SET_CONFIGURATION == transfer_request->ux_transfer_request_function)
@@ -2604,10 +2638,26 @@ static UINT usb_host_usbx_to_basic (UX_HCD * hcd, UINT function, VOID * paramete
 
                     g_usb_host_usbx_req_nml_msg[module_number][pipe_number].read_req_len = size;        /* Request Data Size */
                     g_usb_host_usbx_req_nml_msg[module_number][pipe_number].keyword      = pipe_number; /* Pipe Number */
-                    g_usb_host_usbx_req_nml_msg[module_number][pipe_number].p_tranadr    =
-                        transfer_request->ux_transfer_request_data_pointer;                             /* Data address */
+   #if (USB_CFG_DMA == USB_CFG_ENABLE)
+                    if ((USB_IP1 == module_number) &&
+                        (0 != ((uint32_t) transfer_request->ux_transfer_request_data_pointer) % sizeof(uint32_t)))
+                    {
+                        g_usb_host_usbx_req_nml_msg[module_number][pipe_number].p_tranadr      = g_internal_buffer;
+                        g_usb_host_usbx_req_nml_msg[module_number][pipe_number].p_tranadr_hold =
+                            transfer_request->ux_transfer_request_data_pointer; /* Data address */
+                    }
+                    else
+                    {
+                        g_usb_host_usbx_req_nml_msg[module_number][pipe_number].p_tranadr =
+                            transfer_request->ux_transfer_request_data_pointer;              /* Data address */
+                        g_usb_host_usbx_req_nml_msg[module_number][pipe_number].p_tranadr_hold = NULL;
+                    }
 
-                    g_usb_host_usbx_req_nml_msg[module_number][pipe_number].tranlen  = size;            /* Request Data Size */
+   #else                                                                                     /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
+                    g_usb_host_usbx_req_nml_msg[module_number][pipe_number].p_tranadr =
+                        transfer_request->ux_transfer_request_data_pointer;                  /* Data address */
+   #endif
+                    g_usb_host_usbx_req_nml_msg[module_number][pipe_number].tranlen  = size; /* Request Data Size */
                     g_usb_host_usbx_req_nml_msg[module_number][pipe_number].complete =
                         usb_host_usbx_transfer_complete_cb;
 
@@ -2719,9 +2769,9 @@ static UINT usb_host_usbx_to_basic (UX_HCD * hcd, UINT function, VOID * paramete
         case (uint32_t) UX_HCD_GET_PORT_STATUS:
         {
   #if defined(USB_CFG_OTG_USE)
-            uint16_t  port_status = 0;
-            uint16_t  reg_dvstctr;
-            uint16_t  speed;
+            uint16_t port_status = 0;
+            uint16_t reg_dvstctr;
+            uint16_t speed;
             usb_utr_t utr;
 
             if (USB_MODE_HOST == g_usb_usbmode[module_number])
@@ -2778,6 +2828,7 @@ static UINT usb_host_usbx_to_basic (UX_HCD * hcd, UINT function, VOID * paramete
                     status = 0;
                 }
             }
+
   #else                                /* defined(USB_CFG_OTG_USE) */
             status = 0;
   #endif                               /* defined(USB_CFG_OTG_USE) */

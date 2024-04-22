@@ -162,6 +162,8 @@ reset_handler:
     LDR  x1, =BTBL_F                //;; RAM zero fill table for R_SC_HardwareSetup
     BL   INITSCT                    //;; Call
 
+    IC IALLUIS      //;; ICIALLUIS - Instruction Cache Invalidate All to PoU
+
 //==================================================================
 // Initialize hardware hook
 //==================================================================
@@ -185,6 +187,8 @@ reset_handler:
     LDR  x0, =DTBL                  //;; ROM to RAM table
     LDR  x1, =BTBL                  //;; RAM zero fill table
     BL   INITSCT                    //;; Call to copy and to clear the sections
+
+    IC IALLUIS      //;; ICIALLUIS - Instruction Cache Invalidate All to PoU
 
 // =========================================================================
 // Branch to C library entry point

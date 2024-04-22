@@ -276,12 +276,6 @@ void rm_netxduo_ether (NX_IP_DRIVER * driver_req_ptr, rm_netxduo_ether_instance_
 
                 FSP_LOG_PRINT("Cannot transmit Ethernet packets because the link is down.");
 
-                /* Remove the Ethernet header.  */
-                packet_ptr->nx_packet_prepend_ptr = packet_ptr->nx_packet_prepend_ptr + NX_ETHERNET_SIZE;
-
-                /* Adjust the packet length.  */
-                packet_ptr->nx_packet_length = packet_ptr->nx_packet_length - NX_ETHERNET_SIZE;
-
                 /* Release the NetX packet because it cannot be sent. */
                 if (NX_SUCCESS != nx_packet_transmit_release(driver_req_ptr->nx_ip_driver_packet))
                 {
@@ -353,12 +347,6 @@ void rm_netxduo_ether (NX_IP_DRIVER * driver_req_ptr, rm_netxduo_ether_instance_
 
                 FSP_LOG_PRINT("Failed to transmit the Ethernet packet.");
 
-                /* Remove the Ethernet header.  */
-                packet_ptr->nx_packet_prepend_ptr = packet_ptr->nx_packet_prepend_ptr + NX_ETHERNET_SIZE;
-
-                /* Adjust the packet length.  */
-                packet_ptr->nx_packet_length = packet_ptr->nx_packet_length - NX_ETHERNET_SIZE;
-
                 /* Release the NetX packet because it cannot be sent. */
                 if (NX_SUCCESS != nx_packet_transmit_release(packet_ptr))
                 {
@@ -367,12 +355,6 @@ void rm_netxduo_ether (NX_IP_DRIVER * driver_req_ptr, rm_netxduo_ether_instance_
 
                 return;
             }
-
-            /* Remove the Ethernet header.  */
-            packet_ptr->nx_packet_prepend_ptr = packet_ptr->nx_packet_prepend_ptr + NX_ETHERNET_SIZE;
-
-            /* Adjust the packet length.  */
-            packet_ptr->nx_packet_length = packet_ptr->nx_packet_length - NX_ETHERNET_SIZE;
 
             /* Release the NetX packet because it cannot be sent. */
             if (NX_SUCCESS != nx_packet_transmit_release(packet_ptr))
