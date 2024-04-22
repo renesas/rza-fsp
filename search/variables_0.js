@@ -15,7 +15,7 @@ var searchData=
   ['address_5flength',['address_length',['../group___s_p_i___f_l_a_s_h___a_p_i.html#a63de64208374fd3c6ea1db4ffb07111f',1,'spi_flash_direct_transfer_t']]],
   ['ali_5firq',['ali_irq',['../group___r_i_i_c___m_a_s_t_e_r.html#a2c8ba3ce75de64703a61dd700ae6bcb6',1,'riic_master_extended_cfg_t::ali_irq()'],['../group___r_i_i_c___s_l_a_v_e.html#a55c817a372e45b76fca43326c627c33f',1,'riic_slave_extended_cfg_t::ali_irq()']]],
   ['alignment',['alignment',['../group___a_d_c___a_p_i.html#aa36a14783685f411c4c0a7904a3de8eb',1,'adc_cfg_t']]],
-  ['allocatetable',['allocateTable',['../group___m_m_u___a_p_i.html#a3160d7a25d8f666e2e9d6a6e9fac35a1',1,'mmu_api_t']]],
+  ['allocatetable',['allocateTable',['../group___m_m_u___a_p_i.html#a542cb5c59baa02e1a14b298dcaad91ed',1,'mmu_api_t']]],
   ['audio_5fclock',['audio_clock',['../group___s_s_i.html#ab814181502963ee5a0fb311326d97352',1,'ssi_extended_cfg_t']]],
-  ['autocalibrate',['autoCalibrate',['../group___s_p_i___f_l_a_s_h___a_p_i.html#ad04434e2c049da61d3389355d5961f31',1,'spi_flash_api_t']]]
+  ['autocalibrate',['autoCalibrate',['../group___s_p_i___f_l_a_s_h___a_p_i.html#ac78c55ffe2b7d99681612ce796a384c5',1,'spi_flash_api_t']]]
 ];

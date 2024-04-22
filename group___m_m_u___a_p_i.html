@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -166,11 +166,10 @@ $(document).ready(function(){initNavTree('group___m_m_u___a_p_i.html','');});
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>Interface for accessing MMI/O ports and configuring I/O functionality. </p>
+<p>Interface for Memory Managing Unit(MMU) functions. </p>
 <h1><a class="anchor" id="MMU_API_SUMMARY"></a>
 Summary</h1>
-<p>The IOPort shared interface provides the ability to access the IOPorts of a device at both bit and port level. Port and pin direction can be changed.</p>
-<p>MMU Interface description: <a class="el" href="group___m_m_u.html">Memory Managing Unit (r_mmu)</a> </p>
+<p>The MMU interface provides functions for initializing and modifying virtual memory page tables. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -198,8 +197,17 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="textblock"><p>Page table configuration data for loading by R_MMU_Init() </p>
-</div>
+<div class="textblock"><p>Page table configuration data for loading by <a class="el" href="group___m_m_u.html#gaf2ff53d7a865a191aea49908302bcd40">R_MMU_Open()</a> </p>
+</div><table class="fieldtable">
+<tr><th colspan="3">Data Fields</th></tr>
+<tr><td class="fieldtype">
+<a id="a7a3a5bf2d47327a7f68a7952ee784732"></a>const void *</td>
+<td class="fieldname">
+p_extend</td>
+<td class="fielddoc">
+Pointer to hardware extend configuration. </td></tr>
+</table>
+
 </div>
 </div>
 <a name="structmmu__api__t" id="structmmu__api__t"></a>
@@ -220,14 +228,14 @@ Typedefs</h2></td></tr>
 <tr class="separator:a6ebad907515bb7ce1731559bfc83f98d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fe3b9d0cbe3cb5d9f4c269a82e7c8f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#a4fe3b9d0cbe3cb5d9f4c269a82e7c8f0">close</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl)</td></tr>
 <tr class="separator:a4fe3b9d0cbe3cb5d9f4c269a82e7c8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3160d7a25d8f666e2e9d6a6e9fac35a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#a3160d7a25d8f666e2e9d6a6e9fac35a1">allocateTable</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, uint32_t table_level, uint64_t table_base_ptr)</td></tr>
-<tr class="separator:a3160d7a25d8f666e2e9d6a6e9fac35a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5d69874bbded0217170facd020cce3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#ab5d69874bbded0217170facd020cce3c">writeTableLink</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, mmu_table_info_t *p_table_info, uint64_t vaddress, uint64_t next_table_base_ptr)</td></tr>
-<tr class="separator:ab5d69874bbded0217170facd020cce3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a63a602130dae718f45cf9d782270fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#a0a63a602130dae718f45cf9d782270fa">writeTable</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td></tr>
-<tr class="separator:a0a63a602130dae718f45cf9d782270fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf1953dd2e312287306d7db65fae2f7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#abf1953dd2e312287306d7db65fae2f7b">writeTableFault</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td></tr>
-<tr class="separator:abf1953dd2e312287306d7db65fae2f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a542cb5c59baa02e1a14b298dcaad91ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#a542cb5c59baa02e1a14b298dcaad91ed">allocateTable</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, uint32_t table_level, uint64_t table_base_ptr)</td></tr>
+<tr class="separator:a542cb5c59baa02e1a14b298dcaad91ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafbac004925a339d3f2623e8f3d07bee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#aafbac004925a339d3f2623e8f3d07bee">writeTableLink</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, mmu_table_info_t *p_table_info, uint64_t vaddress, uint64_t next_table_base_ptr)</td></tr>
+<tr class="separator:aafbac004925a339d3f2623e8f3d07bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bc2265826a9badac98d298658ef6918"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#a5bc2265826a9badac98d298658ef6918">writeTable</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td></tr>
+<tr class="separator:a5bc2265826a9badac98d298658ef6918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fc3446c1f69eb435aedccb3ac98f54c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___m_m_u___a_p_i.html#a1fc3446c1f69eb435aedccb3ac98f54c">writeTableFault</a> )(<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td></tr>
+<tr class="separator:a1fc3446c1f69eb435aedccb3ac98f54c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h4 class="groupheader">Field Documentation</h4>
 <a id="a6ebad907515bb7ce1731559bfc83f98d"></a>
@@ -242,13 +250,10 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Initialize internal driver data. Called during startup. Do not call this API during runtime.</p>
-<dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___m_m_u.html#gaf2ff53d7a865a191aea49908302bcd40">R_MMU_Open()</a> </li>
-</ul>
-</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">p_cfg</td><td>Pointer to pin configuration data array. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_cfg</td><td>Pointer to page table configuration data. </td></tr>
   </table>
   </dd>
 </dl>
@@ -266,10 +271,7 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Close the API. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___m_m_u.html#ga00334860c2b9a0dc8bccbede18428cd1">R_MMU_Close()</a></li>
-</ul>
-</dd></dl>
+<p>Close the API.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -279,21 +281,18 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
-<a id="a3160d7a25d8f666e2e9d6a6e9fac35a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3160d7a25d8f666e2e9d6a6e9fac35a1">&#9670;&nbsp;</a></span>allocateTable</h2>
+<a id="a542cb5c59baa02e1a14b298dcaad91ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a542cb5c59baa02e1a14b298dcaad91ed">&#9670;&nbsp;</a></span>allocateTable</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::allocateTable) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, uint32_t table_level, uint64_t table_base_ptr)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::allocateTable) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, uint32_t table_level, uint64_t table_base_ptr)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialize buffer for new page table region. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___m_m_u.html#gaaebd5a12450184c0fb7af17bd9cf5465">R_MMU_AllocateTable()</a></li>
-</ul>
-</dd></dl>
+<p>Initialize buffer for new page table region.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -305,21 +304,18 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
-<a id="ab5d69874bbded0217170facd020cce3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5d69874bbded0217170facd020cce3c">&#9670;&nbsp;</a></span>writeTableLink</h2>
+<a id="aafbac004925a339d3f2623e8f3d07bee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafbac004925a339d3f2623e8f3d07bee">&#9670;&nbsp;</a></span>writeTableLink</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::writeTableLink) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, mmu_table_info_t *p_table_info, uint64_t vaddress, uint64_t next_table_base_ptr)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::writeTableLink) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, mmu_table_info_t *p_table_info, uint64_t vaddress, uint64_t next_table_base_ptr)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Write page table entries as next page table link. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___m_m_u.html#ga3762aed67e3bd7c4acffc7855dabe3f3">R_MMU_WriteTableLink()</a></li>
-</ul>
-</dd></dl>
+<p>Write page table entries as next page table link.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -332,21 +328,18 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
-<a id="a0a63a602130dae718f45cf9d782270fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a63a602130dae718f45cf9d782270fa">&#9670;&nbsp;</a></span>writeTable</h2>
+<a id="a5bc2265826a9badac98d298658ef6918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bc2265826a9badac98d298658ef6918">&#9670;&nbsp;</a></span>writeTable</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::writeTable) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::writeTable) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Fill page table entries with specified attribute. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___m_m_u.html#ga36131e968589dc3dfd2d6f28fe7bd780">R_MMU_WriteTable()</a></li>
-</ul>
-</dd></dl>
+<p>Fill page table entries with specified attribute.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -358,21 +351,18 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
-<a id="abf1953dd2e312287306d7db65fae2f7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf1953dd2e312287306d7db65fae2f7b">&#9670;&nbsp;</a></span>writeTableFault</h2>
+<a id="a1fc3446c1f69eb435aedccb3ac98f54c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fc3446c1f69eb435aedccb3ac98f54c">&#9670;&nbsp;</a></span>writeTableFault</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::writeTableFault) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_api_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  mmu_api_t::writeTableFault) (<a class="el" href="group___m_m_u___a_p_i.html#ga554fca2e99d44c17e9fd4340d481488d">mmu_ctrl_t</a> *const p_ctrl, mmu_table_info_t *p_table_info, mmu_section_info_t *p_section_info)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Fill page table entries with acccess fault attribute. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___m_m_u.html#ga6441105a8ca66ba27c96f42f8efa96a7">R_MMU_WriteTableFault()</a></li>
-</ul>
-</dd></dl>
+<p>Fill page table entries with acccess fault attribute.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -435,10 +425,7 @@ Pointer to the API structure for this instance. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>MMU control block. Allocate an instance specific control block to pass into the MMU API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li>mmu_instance_ctrl_t </li>
-</ul>
-</dd></dl>
+<p>MMU control block. Allocate an instance specific control block to pass into the MMU API calls. </p>
 
 </div>
 </div>
@@ -448,7 +435,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

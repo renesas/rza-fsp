@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -257,6 +257,14 @@ Disabled</li>
 </ul>
 </td><td>Enabled </td><td>Determine if there is a FileX pointer in the thread control block. By default, the pointer is there for legacy/backwards compatibility. The pointer must also be there for applications using FileX. Disable this to save space in the thread control block. </td></tr>
 <tr>
+<td>General &gt; Use FPU</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Enabled</li>
+<li>
+Disabled</li>
+</ul>
+</td><td>Disabled </td><td>To save registers for FPU at context switching, Set this menu Enabled and call tx_thread_fp_enable() at the top of thread that uses FPU. </td></tr>
+<tr>
 <td>Timer &gt; Timer Ticks Per Second</td><td>Value must be greater than 0</td><td>1000 </td><td>Define the number of times the system timer runs per second. Default is 100 ticks per second, which results in a tick every 10ms. </td></tr>
 <tr>
 <td>Timer &gt; Timer Thread Stack Size</td><td>Value must be greater than 0</td><td>1024 </td><td>Define the system timer thread's default stack size and priority. These are only applicable if TX_TIMER_PROCESS_IN_ISR is disabled. </td></tr>
@@ -393,7 +401,7 @@ Low Power Modes</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

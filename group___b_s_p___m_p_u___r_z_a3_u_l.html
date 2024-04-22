@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -167,6 +167,16 @@ The following build time configurations are defined in fsp_cfg/bsp/bsp_mcu_famil
 </p><table class="doxtable">
 <tr>
 <th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
+<tr>
+<td>Clocks &gt; MSTP Change Delays</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Enabled</li>
+<li>
+Disabled</li>
+</ul>
+</td><td>Enabled </td><td>Setting this option to Enabled will insert delays after setting a MSTP bit to ensure voltage supply stability. This is not required on some MCU </td></tr>
+<tr>
+<td>Clocks &gt; Settling Delay (us)</td><td>Unit must be a non-negative integer</td><td>150 </td><td>Specifies the length of the delay to be used for the Clock settling, Sleep mode, and MSTP change delays. </td></tr>
 </table>
  </p>
 </div><!-- contents -->
@@ -175,7 +185,7 @@ The following build time configurations are defined in fsp_cfg/bsp/bsp_mcu_famil
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

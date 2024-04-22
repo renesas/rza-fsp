@@ -6,6 +6,7 @@ var searchData=
   ['scif_5fbaud_5fsetting_5ft',['scif_baud_setting_t',['../group___s_c_i_f___u_a_r_t.html#structscif__baud__setting__t',1,'']]],
   ['scif_5fuart_5fextended_5fcfg_5ft',['scif_uart_extended_cfg_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__extended__cfg__t',1,'']]],
   ['scif_5fuart_5finstance_5fctrl_5ft',['scif_uart_instance_ctrl_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__instance__ctrl__t',1,'']]],
+  ['scif_5fuart_5frs485_5fsetting_5ft',['scif_uart_rs485_setting_t',['../group___s_c_i_f___u_a_r_t.html#structscif__uart__rs485__setting__t',1,'']]],
   ['sdhi_5fextended_5fcfg_5ft',['sdhi_extended_cfg_t',['../structsdhi__extended__cfg__t.html',1,'']]],
   ['sdhi_5finstance_5fctrl_5ft',['sdhi_instance_ctrl_t',['../structsdhi__instance__ctrl__t.html',1,'']]],
   ['sdmmc_5fapi_5ft',['sdmmc_api_t',['../group___s_d_m_m_c___a_p_i.html#structsdmmc__api__t',1,'']]],

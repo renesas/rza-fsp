@@ -9,6 +9,7 @@ var searchData=
   ['tgrb_5fval',['tgrb_val',['../group___m_t_u3.html#af66a345b2403fb4b16c0c69babd6f96e',1,'mtu3_extended_cfg_t']]],
   ['tgrc_5fval',['tgrc_val',['../group___m_t_u3.html#af23edbc49f7268ad12e61a783bbbf951',1,'mtu3_extended_cfg_t']]],
   ['tgrd_5fval',['tgrd_val',['../group___m_t_u3.html#ac5bc8f09109ce78912076db7b22ed9f5',1,'mtu3_extended_cfg_t']]],
+  ['threshold',['threshold',['../group___d_i_s_p_l_a_y___a_p_i.html#ae883918d5a1da3c9145710d8149bfd94',1,'gamma_correction_t']]],
   ['ths_5fprepare',['ths_prepare',['../group___c_r_u.html#aae61f3561b3a088500ccd892b5af7542',1,'cru_extended_cfg_t']]],
   ['ths_5fsettle',['ths_settle',['../group___c_r_u.html#aff9a2cab89f81dcec68d25dea0d22c44',1,'cru_extended_cfg_t']]],
   ['time_5fsegment_5f1',['time_segment_1',['../group___c_a_n___a_p_i.html#aafe4728b44b6abbb0f5d540e16d0be40',1,'can_bit_timing_cfg_t']]],
@@ -38,7 +39,7 @@ var searchData=
   ['txi_5firq',['txi_irq',['../group___i2_c___m_a_s_t_e_r___a_p_i.html#a5d0a5cd0ccc684addfc096545cd3ebc6',1,'i2c_master_cfg_t::txi_irq()'],['../group___i2_c___s_l_a_v_e___a_p_i.html#ac88cda39460d4a3d029e5c6e93bf7204',1,'i2c_slave_cfg_t::txi_irq()'],['../group___i2_s___a_p_i.html#a01814a3a3c6522886e31f35ee3f1fcad',1,'i2s_cfg_t::txi_irq()'],['../group___s_p_i___a_p_i.html#a38e81bf48ececd7cc34ecf215b923c42',1,'spi_cfg_t::txi_irq()'],['../group___u_a_r_t___a_p_i.html#a79df568ef30629847da05d9b073f1602',1,'uart_cfg_t::txi_irq()']]],
   ['txmb_5fmerge_5fmode_5fenable',['txmb_merge_mode_enable',['../group___c_a_n_f_d.html#aaaef4497ea35ba92d6d85cc5cc4a380a',1,'canfd_extended_cfg_t']]],
   ['txmb_5ftxi_5fenable',['txmb_txi_enable',['../group___c_a_n_f_d.html#ab3421077c295a40773c6cad2fb638176',1,'canfd_extended_cfg_t']]],
-  ['txstatusget',['txStatusGet',['../group___e_t_h_e_r___a_p_i.html#a6fde51a3fef6b43ed0fada563fadfb4e',1,'ether_api_t']]],
-  ['type',['type',['../group___c_a_n___a_p_i.html#a79046fddb934fd7ea0d0cc70b8d7f26d',1,'can_frame_t']]],
-  ['typeget',['typeGet',['../group___u_s_b___h_h_i_d___a_p_i.html#a2624c916cc5fa8bdb61bb47d02db1e7c',1,'usb_hhid_api_t']]]
+  ['txstatusget',['txStatusGet',['../group___e_t_h_e_r___a_p_i.html#ad52cabec533efaaef3258caade1e0640',1,'ether_api_t']]],
+  ['type',['type',['../group___c_a_n___a_p_i.html#a79046fddb934fd7ea0d0cc70b8d7f26d',1,'can_frame_t::type()'],['../group___u_s_b___a_p_i.html#a210e81fd550ee15650d2261c72c3f46f',1,'usb_cfg_t::type()']]],
+  ['typeget',['typeGet',['../group___u_s_b___h_h_i_d___a_p_i.html#a8d389924204b9b1e5d0c523089a33729',1,'usb_hhid_api_t']]]
 ];

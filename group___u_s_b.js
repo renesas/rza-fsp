@@ -31,5 +31,7 @@ var group___u_s_b =
     [ "R_USB_DataSizeGet", "group___u_s_b.html#ga042d5b513be9896e593f023c8cb81cd1", null ],
     [ "R_USB_SetupGet", "group___u_s_b.html#ga628af921919f90a9232c8c1713cc6c48", null ],
     [ "R_USB_OtgCallbackSet", "group___u_s_b.html#ga66b9f21c7fc7cce60388edeaf7861d0e", null ],
-    [ "R_USB_OtgSRP", "group___u_s_b.html#ga1a52197abba908bdd990e9bca22d50a7", null ]
+    [ "R_USB_OtgSRP", "group___u_s_b.html#ga1a52197abba908bdd990e9bca22d50a7", null ],
+    [ "R_USB_DriverActivate", "group___u_s_b.html#ga2f8b7813a97e21b412fc95a80c042fe3", null ],
+    [ "R_USB_CallbackMemorySet", "group___u_s_b.html#gaaedca302f2e3938e2d85e4a82c44d44b", null ]
 ];

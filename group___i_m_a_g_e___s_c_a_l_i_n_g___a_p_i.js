@@ -29,7 +29,7 @@ var group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i =
       [ "open", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a9fdc7fbd9f3379e25d78b318dd873553", null ],
       [ "close", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a9ca1adb96a69c1e6322b6dd7883d45ce", null ],
       [ "start", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ae53471d8d28e491c0a4d173ba14a94ea", null ],
-      [ "changeCfg", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#aaef1dd64026d894e4822b060033ebd1f", null ]
+      [ "changeCfg", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a3f5591d4a4dd63b0bb98046574668091", null ]
     ] ],
     [ "isu_instance_t", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#structisu__instance__t", [
       [ "p_ctrl", "group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a031c3be79838964dbafcddce7efb3019", null ],

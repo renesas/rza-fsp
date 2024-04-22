@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -169,10 +169,7 @@ $(document).ready(function(){initNavTree('group___u_s_b___h_h_i_d___a_p_i.html',
 <p>Interface for USB HHID functions. </p>
 <h1><a class="anchor" id="USB_HHID_API_Summary"></a>
 Summary</h1>
-<p>The USB HHID interface provides USB HHID functionality.</p>
-<p>The USB HHID interface can be implemented by:</p><ul>
-<li><a class="el" href="group___u_s_b___h_h_i_d.html">USB Host Human Interface Device Class Driver (r_usb_hhid)</a> </li>
-</ul>
+<p>The USB HHID interface provides USB HHID functionality. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -219,30 +216,27 @@ Macros</h2></td></tr>
 <div class="textblock"><p>USB HHID functions implemented at the HAL layer will follow this API. </p>
 </div><table class="memberdecls">
 <tr><td colspan="2"><h3>Data Fields</h3></td></tr>
-<tr class="memitem:a2624c916cc5fa8bdb61bb47d02db1e7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b___h_h_i_d___a_p_i.html#a2624c916cc5fa8bdb61bb47d02db1e7c">typeGet</a> )(usb_ctrl_t *const p_api_ctrl, uint8_t *p_type, uint8_t device_address)</td></tr>
-<tr class="separator:a2624c916cc5fa8bdb61bb47d02db1e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2efecb9d87312ff91ae383fcaf46f6b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b___h_h_i_d___a_p_i.html#ad2efecb9d87312ff91ae383fcaf46f6b">maxPacketSizeGet</a> )(usb_ctrl_t *const p_api_ctrl, uint16_t *p_size, uint8_t direction, uint8_t device_address)</td></tr>
-<tr class="separator:ad2efecb9d87312ff91ae383fcaf46f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d389924204b9b1e5d0c523089a33729"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b___h_h_i_d___a_p_i.html#a8d389924204b9b1e5d0c523089a33729">typeGet</a> )(<a class="el" href="group___u_s_b___a_p_i.html#ga00a5a797b57dec247564f11056ac7230">usb_ctrl_t</a> *const p_ctrl, uint8_t *p_type, uint8_t device_address)</td></tr>
+<tr class="separator:a8d389924204b9b1e5d0c523089a33729"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad9760a73b112e373022758158de1957"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___u_s_b___h_h_i_d___a_p_i.html#aad9760a73b112e373022758158de1957">maxPacketSizeGet</a> )(<a class="el" href="group___u_s_b___a_p_i.html#ga00a5a797b57dec247564f11056ac7230">usb_ctrl_t</a> *const p_ctrl, uint16_t *p_size, uint8_t direction, uint8_t device_address)</td></tr>
+<tr class="separator:aad9760a73b112e373022758158de1957"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h4 class="groupheader">Field Documentation</h4>
-<a id="a2624c916cc5fa8bdb61bb47d02db1e7c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2624c916cc5fa8bdb61bb47d02db1e7c">&#9670;&nbsp;</a></span>typeGet</h2>
+<a id="a8d389924204b9b1e5d0c523089a33729"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d389924204b9b1e5d0c523089a33729">&#9670;&nbsp;</a></span>typeGet</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  usb_hhid_api_t::typeGet) (usb_ctrl_t *const p_api_ctrl, uint8_t *p_type, uint8_t device_address)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  usb_hhid_api_t::typeGet) (<a class="el" href="group___u_s_b___a_p_i.html#ga00a5a797b57dec247564f11056ac7230">usb_ctrl_t</a> *const p_ctrl, uint8_t *p_type, uint8_t device_address)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get HID protocol.(USB Mouse/USB Keyboard/Other Type.) </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___u_s_b___h_h_i_d.html#gad7360cafd2f3be2fb92f6059d5f98939">R_USB_HHID_TypeGet()</a></li>
-</ul>
-</dd></dl>
+<p>Get HID protocol.(USB Mouse/USB Keyboard/Other Type.)</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">p_api_ctrl</td><td>Pointer to control structure. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_type</td><td>Pointer to store HID protocol value. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">device_address</td><td>Device Address. </td></tr>
   </table>
@@ -251,24 +245,21 @@ Macros</h2></td></tr>
 
 </div>
 </div>
-<a id="ad2efecb9d87312ff91ae383fcaf46f6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2efecb9d87312ff91ae383fcaf46f6b">&#9670;&nbsp;</a></span>maxPacketSizeGet</h2>
+<a id="aad9760a73b112e373022758158de1957"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad9760a73b112e373022758158de1957">&#9670;&nbsp;</a></span>maxPacketSizeGet</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  usb_hhid_api_t::maxPacketSizeGet) (usb_ctrl_t *const p_api_ctrl, uint16_t *p_size, uint8_t direction, uint8_t device_address)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  usb_hhid_api_t::maxPacketSizeGet) (<a class="el" href="group___u_s_b___a_p_i.html#ga00a5a797b57dec247564f11056ac7230">usb_ctrl_t</a> *const p_ctrl, uint16_t *p_size, uint8_t direction, uint8_t device_address)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Obtains max packet size for the connected HID device. The max packet size is set to the area. Set the direction (USB_HID_IN/USB_HID_OUT). </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___u_s_b___h_h_i_d.html#gabb6918dace465a4239fd256e846fd45d">R_USB_HHID_MaxPacketSizeGet()</a></li>
-</ul>
-</dd></dl>
+<p>Obtains max packet size for the connected HID device. The max packet size is set to the area. Set the direction (USB_HID_IN/USB_HID_OUT).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">p_api_ctrl</td><td>Pointer to control structure. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_size</td><td>Pointer to the area to store the max package size. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">direction</td><td>Transfer direction. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">device_address</td><td>Device Address. </td></tr>
@@ -296,13 +287,13 @@ Macros</h2></td></tr>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
-<a id="a0190b5e73c5185b732f697f7d5316902"></a>usb_ctrl_t *</td>
+<a id="a0190b5e73c5185b732f697f7d5316902"></a><a class="el" href="group___u_s_b___a_p_i.html#ga00a5a797b57dec247564f11056ac7230">usb_ctrl_t</a> *</td>
 <td class="fieldname">
 p_ctrl</td>
 <td class="fielddoc">
 Pointer to the control structure for this instance. </td></tr>
 <tr><td class="fieldtype">
-<a id="a9c98ab9cbf2dd8173890c2ec3b90deb4"></a>usb_cfg_t const  *</td>
+<a id="a9c98ab9cbf2dd8173890c2ec3b90deb4"></a><a class="el" href="group___u_s_b___a_p_i.html#structusb__cfg__t">usb_cfg_t</a> const  *</td>
 <td class="fieldname">
 p_cfg</td>
 <td class="fielddoc">
@@ -323,7 +314,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

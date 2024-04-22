@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -160,8 +160,7 @@ $(document).ready(function(){initNavTree('group___i_o_p_o_r_t___a_p_i.html','');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle">
 <div class="title">I/O Port Interface<div class="ingroups"><a class="el" href="group___r_e_n_e_s_a_s___i_n_t_e_r_f_a_c_e_s.html">Interfaces</a></div></div>  </div>
 </div><!--header-->
@@ -170,8 +169,7 @@ $(document).ready(function(){initNavTree('group___i_o_p_o_r_t___a_p_i.html','');
 <p>Interface for accessing I/O ports and configuring I/O functionality. </p>
 <h1><a class="anchor" id="IOPORT_API_SUMMARY"></a>
 Summary</h1>
-<p>The IOPort shared interface provides the ability to access the IOPorts of a device at both bit and port level. Port and pin direction can be changed.</p>
-<p>IOPORT Interface description: <a class="el" href="group___i_o_p_o_r_t.html">I/O Ports (r_ioport)</a> </p>
+<p>The IOPort shared interface provides the ability to access the IOPorts of a device at both bit and port level. Port and pin direction can be changed. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -187,15 +185,10 @@ Data Structures</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:gaf5da96a68757260a2cb370fec69f0836"><td class="memItemLeft" align="right" valign="top">typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_o_p_o_r_t___a_p_i.html#gaf5da96a68757260a2cb370fec69f0836">ioport_size_t</a></td></tr>
-<tr class="memdesc:gaf5da96a68757260a2cb370fec69f0836"><td class="mdescLeft">&#160;</td><td class="mdescRight">IO port size on this device.  <a href="#gaf5da96a68757260a2cb370fec69f0836">More...</a><br /></td></tr>
+<tr class="memdesc:gaf5da96a68757260a2cb370fec69f0836"><td class="mdescLeft">&#160;</td><td class="mdescRight">IO port size.  <a href="#gaf5da96a68757260a2cb370fec69f0836">More...</a><br /></td></tr>
 <tr class="separator:gaf5da96a68757260a2cb370fec69f0836"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafc061c58bb812cb2a8f25222353634cd"><td class="memItemLeft" align="right" valign="top">typedef void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_o_p_o_r_t___a_p_i.html#gafc061c58bb812cb2a8f25222353634cd">ioport_ctrl_t</a></td></tr>
 <tr class="separator:gafc061c58bb812cb2a8f25222353634cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ga25ef8d1291cc073dd48f57b16d91c13e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_o_p_o_r_t___a_p_i.html#ga25ef8d1291cc073dd48f57b16d91c13e">ioport_pwpr_t</a> </td></tr>
-<tr class="separator:ga25ef8d1291cc073dd48f57b16d91c13e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
 <a name="structioport__pin__cfg__t" id="structioport__pin__cfg__t"></a>
@@ -209,7 +202,7 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="textblock"><p>Pin identifier and Pin Function Setting (PFS) value </p>
+<div class="textblock"><p>Pin identifier and pin configuration value </p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -217,7 +210,7 @@ Enumerations</h2></td></tr>
 <td class="fieldname">
 pin_cfg</td>
 <td class="fielddoc">
-Pin PFS configuration - Use ioport_cfg_options_t parameters to configure. </td></tr>
+Pin configuration - Use ioport_cfg_options_t parameters to configure. </td></tr>
 <tr><td class="fieldtype">
 <a id="a5e6a7a38da64dabdfc229f1727616bd0"></a><a class="el" href="group___b_s_p___i_o.html#ga0adbfd4b7db319886d667acb4804d80a">bsp_io_port_pin_t</a></td>
 <td class="fieldname">
@@ -239,7 +232,7 @@ Pin identifier. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="textblock"><p>Multiple pin configuration data for loading into each GPIO register by R_IOPORT_Init() </p>
+<div class="textblock"><p>Multiple pin configuration data for loading into registers by <a class="el" href="group___i_o_p_o_r_t.html#ga24938047dccc62c4426ff543489454de">R_IOPORT_Open()</a> </p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -317,12 +310,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialize internal driver data and initial pin configurations. Called during startup. Do not call this API during runtime. Use <a class="el" href="group___i_o_p_o_r_t___a_p_i.html#ac962e87038418a6a525ac9f763687c19">ioport_api_t::pinsCfg</a> for runtime reconfiguration of multiple pins. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga24938047dccc62c4426ff543489454de">R_IOPORT_Open()</a> </li>
-</ul>
-</dd></dl>
+<p>Initialize internal driver data and initial pin configurations. Called during startup. Do not call this API during runtime. Use <a class="el" href="group___i_o_p_o_r_t___a_p_i.html#ac962e87038418a6a525ac9f763687c19">ioport_api_t::pinsCfg</a> for runtime reconfiguration of multiple pins.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. Must be declared by user. Elements set here. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_cfg</td><td>Pointer to pin configuration data array. </td></tr>
   </table>
   </dd>
@@ -341,10 +332,7 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Close the API. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga91d4fde6e5f7cdf57b99af5b5f89f1cc">R_IOPORT_Close()</a></li>
-</ul>
-</dd></dl>
+<p>Close the API.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -365,12 +353,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Configure multiple pins. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga3daa7097b08c7f623a741e2e481cf89f">R_IOPORT_PinsCfg()</a> </li>
-</ul>
-</dd></dl>
+<p>Configure multiple pins.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_cfg</td><td>Pointer to pin configuration data array. </td></tr>
   </table>
   </dd>
@@ -389,12 +375,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Configure settings for an individual pin. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#gab518fc544fe2b59722e30bd0a28ef430">R_IOPORT_PinCfg()</a> </li>
-</ul>
-</dd></dl>
+<p>Configure settings for an individual pin.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pin</td><td>Pin to be read. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cfg</td><td>Configuration options for the pin. </td></tr>
   </table>
@@ -414,12 +398,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Read the event input data of the specified pin and return the level. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga01fe1fa97720d982173bf110032fa21f">R_IOPORT_PinEventInputRead()</a> </li>
-</ul>
-</dd></dl>
+<p>Read the event input data of the specified pin and return the level.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pin</td><td>Pin to be read. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_pin_event</td><td>Pointer to return the event data. </td></tr>
   </table>
@@ -439,12 +421,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Write pin event data. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#gaa561f3c4df61925e4c24b420b78a5583">R_IOPORT_PinEventOutputWrite()</a> </li>
-</ul>
-</dd></dl>
+<p>Write pin event data.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pin</td><td>Pin event data is to be written to. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pin_value</td><td>Level to be written to pin output event. </td></tr>
   </table>
@@ -464,12 +444,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Read level of a pin. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#gadb3ad72c9add6d73eb896c58c36f34ee">R_IOPORT_PinRead()</a> </li>
-</ul>
-</dd></dl>
+<p>Read level of a pin.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pin</td><td>Pin to be read. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_pin_value</td><td>Pointer to return the pin level. </td></tr>
   </table>
@@ -489,12 +467,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Write specified level to a pin. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga1b17ca2e38acde207881e7e4ba2a7e28">R_IOPORT_PinWrite()</a> </li>
-</ul>
-</dd></dl>
+<p>Write specified level to a pin.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pin</td><td>Pin to be written to. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td>State to be written to the pin. </td></tr>
   </table>
@@ -514,14 +490,12 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set the direction of one or more pins on a port. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#gab83a07936c37ad904c329f8209d735e1">R_IOPORT_PortDirectionSet()</a> </li>
-</ul>
-</dd></dl>
+<p>Set the direction of one or more pins on a port.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">port</td><td>Port being configured. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">direction_values</td><td>Value controlling direction of pins on port (3 - output (input enable), 2 - output (input disable), 1 input, 0 - Hi-Z). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">direction_values</td><td>Value controlling direction of pins on port. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>Mask controlling which pins on the port are to be configured. </td></tr>
   </table>
   </dd>
@@ -540,12 +514,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Read captured event data for a port. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#gae310ec091b58570972ea46f1f263985d">R_IOPORT_PortEventInputRead()</a> </li>
-</ul>
-</dd></dl>
+<p>Read captured event data for a port.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">port</td><td>Port to be read. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_event_data</td><td>Pointer to return the event data. </td></tr>
   </table>
@@ -565,12 +537,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Write event output data for a port. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga8d3f8c4c90241587fee076b6fb0623ff">R_IOPORT_PortEventOutputWrite()</a> </li>
-</ul>
-</dd></dl>
+<p>Write event output data for a port.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">port</td><td>Port event data will be written to. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">event_data</td><td>Data to be written as event data to specified port. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mask_value</td><td>Each bit set to 1 in the mask corresponds to that bit's value in event data. being written to port. </td></tr>
@@ -591,12 +561,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Read states of pins on the specified port. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#gab84c08b8ac66d18c5636ebc772133e77">R_IOPORT_PortRead()</a> </li>
-</ul>
-</dd></dl>
+<p>Read states of pins on the specified port.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">port</td><td>Port to be read. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_port_value</td><td>Pointer to return the port value. </td></tr>
   </table>
@@ -616,12 +584,10 @@ Pointer to hardware extend configuration. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Write to multiple pins on a port. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#ga31825f3f0295317e5b446d74f791cd68">R_IOPORT_PortWrite()</a> </li>
-</ul>
-</dd></dl>
+<p>Write to multiple pins on a port.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">port</td><td>Port to be written to. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>Value to be written to the port. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>Mask controlling which pins on the port are written to. </td></tr>
@@ -683,7 +649,7 @@ Pointer to the API structure for this instance. </td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>IO port size on this device. </p>
+<p>IO port size. </p>
 <p>IO port type used with ports </p>
 
 </div>
@@ -699,32 +665,7 @@ Pointer to the API structure for this instance. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>IOPORT control block. Allocate an instance specific control block to pass into the IOPORT API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_o_p_o_r_t.html#structioport__instance__ctrl__t">ioport_instance_ctrl_t</a> </li>
-</ul>
-</dd></dl>
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ga25ef8d1291cc073dd48f57b16d91c13e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga25ef8d1291cc073dd48f57b16d91c13e">&#9670;&nbsp;</a></span>ioport_pwpr_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group___i_o_p_o_r_t___a_p_i.html#ga25ef8d1291cc073dd48f57b16d91c13e">ioport_pwpr_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>PFS writing enable/disable. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga25ef8d1291cc073dd48f57b16d91c13eaf67cf250303fd4692c46717f0b7a9412"></a>IOPORT_PFS_WRITE_DISABLE&#160;</td><td class="fielddoc"><p>Disable PFS write access. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga25ef8d1291cc073dd48f57b16d91c13ea5d94e8d4ba61664a407a0d84538fc298"></a>IOPORT_PFS_WRITE_ENABLE&#160;</td><td class="fielddoc"><p>Enable PFS write access. </p>
-</td></tr>
-</table>
+<p>IOPORT control block. Allocate an instance specific control block to pass into the IOPORT API calls. </p>
 
 </div>
 </div>
@@ -734,7 +675,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

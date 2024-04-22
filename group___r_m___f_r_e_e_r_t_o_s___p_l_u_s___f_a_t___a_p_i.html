@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -169,8 +169,7 @@ $(document).ready(function(){initNavTree('group___r_m___f_r_e_e_r_t_o_s___p_l_u_
 <p>Interface for FreeRTOS+FAT port. </p>
 <h1><a class="anchor" id="RM_FREERTOS_PLUS_FAT_SUMMARY"></a>
 Summary</h1>
-<p>The FreeRTOS+FAT port provides notifications for insertion and removal of removable media and provides initialization functions required by FreeRTOS+FAT.</p>
-<p>The FreeRTOS+FAT interface can be implemented by: <a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html">FreeRTOS+FAT Port (rm_freertos_plus_fat)</a> </p>
+<p>The FreeRTOS+FAT port provides notifications for insertion and removal of removable media and provides initialization functions required by FreeRTOS+FAT. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -290,10 +289,7 @@ Sector size in bytes. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Open media device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#ga43e981ad23366dcef897017dae2ade1d">RM_FREERTOS_PLUS_FAT_Open()</a></li>
-</ul>
-</dd></dl>
+<p>Open media device.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -315,10 +311,7 @@ Sector size in bytes. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initializes a media device. If the device is removable, it must be plugged in prior to calling this API. This function blocks until media initialization is complete. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#ga0b57cc55832b6dce144b866a28e2d9bd">RM_FREERTOS_PLUS_FAT_MediaInit</a></li>
-</ul>
-</dd></dl>
+<p>Initializes a media device. If the device is removable, it must be plugged in prior to calling this API. This function blocks until media initialization is complete.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -340,10 +333,7 @@ Sector size in bytes. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initializes a FreeRTOS+FAT FF_Disk_t structure. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#ga66282bce19e633b37185e1e3c48fe576">RM_FREERTOS_PLUS_FAT_DiskInit</a></li>
-</ul>
-</dd></dl>
+<p>Initializes a FreeRTOS+FAT FF_Disk_t structure.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -366,10 +356,7 @@ Sector size in bytes. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Deinitializes a FreeRTOS+FAT FF_Disk_t structure. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#gabd2d76912b7540217a3f8ec17c89457a">RM_FREERTOS_PLUS_FAT_DiskDeinit</a></li>
-</ul>
-</dd></dl>
+<p>Deinitializes a FreeRTOS+FAT FF_Disk_t structure.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -392,10 +379,7 @@ Sector size in bytes. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns information about the media device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#ga54dcb93bccb7c4a39a8ee8237c3402eb">RM_FREERTOS_PLUS_FAT_InfoGet</a></li>
-</ul>
-</dd></dl>
+<p>Returns information about the media device.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -417,10 +401,7 @@ Sector size in bytes. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Close media device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t.html#ga61918aa8d20ab8423b92601dc2cfb25d">RM_FREERTOS_PLUS_FAT_Close()</a></li>
-</ul>
-</dd></dl>
+<p>Close media device.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -524,7 +505,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

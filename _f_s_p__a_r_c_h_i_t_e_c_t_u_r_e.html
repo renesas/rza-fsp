@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -373,7 +373,7 @@ Create a Module Instance in the RZ Configuration Editor</h3>
 <h3><a class="anchor" id="use-the-instance-api"></a>
 Use the Instance API in the Application</h3>
 <p>Call the module's <code>&lt;MODULE&gt;_Open()</code> function. Pass pointers to the generated control structure and configuration structure. The names of these structures are based on the 'Name' field provided in the configuration editor. The control structure is <code>&lt;Name&gt;_ctrl</code> and the configuration structure is <code>&lt;Name&gt;_cfg</code>.</p>
-<dl class="section note"><dt>Note</dt><dd>Each layer in the FSP Stack is responsible for calling the API functions of its dependencies. This means that users are only responsible for calling the API functions at the layer at which they are interfacing. For example, when using RSPI module with a DMAC dependency, the application uses only RSPI APIs. The application starts by calling <a class="el" href="group___r_s_p_i.html#gaa303bc3394f99cd07e2ae96139651529">R_RSPI_Open()</a>. Internally, the RSPI module opens the DMAC. It locates <a class="el" href="group___d_m_a_c.html#ga448a013ad5b91097e45833313d5df354">R_DMAC_Open()</a> by accessing the dependent transfer interface function pointers from the pointers DMAC instances (<a class="el" href="group___s_p_i___a_p_i.html#a312e4358f12551a3f7aaa5f0a09c0501" title="To use SPI DTC/DMA write transfer, link a DTC/DMA instance here. Set to NULL if unused. ">spi_cfg_t::p_transfer_tx</a> and <a class="el" href="group___s_p_i___a_p_i.html#ab38fb6af687bdf7e0ea9143499849bc6" title="To use SPI DTC/DMA read transfer, link a DTC/DMA instance here. Set to NULL if unused. ">spi_cfg_t::p_transfer_rx</a>) to open the DMAC.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Each layer in the FSP Stack is responsible for calling the API functions of its dependencies. This means that users are only responsible for calling the API functions at the layer at which they are interfacing. For example, when using RSPI module with a DMAC dependency, the application uses only RSPI APIs. The application starts by calling <a class="el" href="group___r_s_p_i.html#gaa303bc3394f99cd07e2ae96139651529">R_RSPI_Open()</a>. Internally, the RSPI module opens the DMAC. It locates <a class="el" href="group___d_m_a_c.html#ga448a013ad5b91097e45833313d5df354">R_DMAC_Open()</a> by accessing the dependent transfer interface function pointers from the pointers DMAC instances (<a class="el" href="group___s_p_i___a_p_i.html#a312e4358f12551a3f7aaa5f0a09c0501" title="To use SPI DTC/DMAC write transfer, link a transfer instance here. Set to NULL if unused...">spi_cfg_t::p_transfer_tx</a> and <a class="el" href="group___s_p_i___a_p_i.html#ab38fb6af687bdf7e0ea9143499849bc6" title="To use SPI DTC/DMAC read transfer, link a transfer instance here. Set to NULL if unused. ">spi_cfg_t::p_transfer_rx</a>) to open the DMAC.</dd></dl>
 <p>Refer to the module usage notes for example code to help get started with any particular module. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
@@ -381,7 +381,7 @@ Use the Instance API in the Application</h3>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

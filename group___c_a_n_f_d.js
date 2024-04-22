@@ -7,7 +7,8 @@ var group___c_a_n_f_d =
       [ "rx_fifo_config", "group___c_a_n_f_d.html#aeb6bbed0e4cb76c06a947e009894608a", null ],
       [ "rx_mb_config", "group___c_a_n_f_d.html#a375e575afb5d17c01809a10d32ae59a5", null ],
       [ "global_err_ipl", "group___c_a_n_f_d.html#a6ce35aac50e44ac4353bfd20e12639a4", null ],
-      [ "rx_fifo_ipl", "group___c_a_n_f_d.html#a2bb06b2a4db018ac90193053131ee648", null ]
+      [ "rx_fifo_ipl", "group___c_a_n_f_d.html#a2bb06b2a4db018ac90193053131ee648", null ],
+      [ "common_fifo_config", "group___c_a_n_f_d.html#a1b9ed02a36a3f6e7fdb97bb023650c42", null ]
     ] ],
     [ "canfd_extended_cfg_t", "group___c_a_n_f_d.html#structcanfd__extended__cfg__t", [
       [ "p_afl", "group___c_a_n_f_d.html#a3bcb58bb257835c3618f28751aad29a5", null ],

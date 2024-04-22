@@ -30,9 +30,5 @@ var group___i_o_p_o_r_t___a_p_i =
       [ "p_api", "group___i_o_p_o_r_t___a_p_i.html#a1efa98e218609e4171542ebfae213765", null ]
     ] ],
     [ "ioport_size_t", "group___i_o_p_o_r_t___a_p_i.html#gaf5da96a68757260a2cb370fec69f0836", null ],
-    [ "ioport_ctrl_t", "group___i_o_p_o_r_t___a_p_i.html#gafc061c58bb812cb2a8f25222353634cd", null ],
-    [ "ioport_pwpr_t", "group___i_o_p_o_r_t___a_p_i.html#ga25ef8d1291cc073dd48f57b16d91c13e", [
-      [ "IOPORT_PFS_WRITE_DISABLE", "group___i_o_p_o_r_t___a_p_i.html#gga25ef8d1291cc073dd48f57b16d91c13eaf67cf250303fd4692c46717f0b7a9412", null ],
-      [ "IOPORT_PFS_WRITE_ENABLE", "group___i_o_p_o_r_t___a_p_i.html#gga25ef8d1291cc073dd48f57b16d91c13ea5d94e8d4ba61664a407a0d84538fc298", null ]
-    ] ]
+    [ "ioport_ctrl_t", "group___i_o_p_o_r_t___a_p_i.html#gafc061c58bb812cb2a8f25222353634cd", null ]
 ];

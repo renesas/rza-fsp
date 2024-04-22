@@ -127,8 +127,6 @@ var searchData=
   ['ioport_5fperipheral_5fmode7',['IOPORT_PERIPHERAL_MODE7',['../group___i_o_p_o_r_t.html#ggaebbb969fda93422aaf1878d6f4ff8fe8ae66fce3d3c2f6f91af8c75de2a05ae72',1,'r_ioport.h']]],
   ['ioport_5fperipheral_5fmode8',['IOPORT_PERIPHERAL_MODE8',['../group___i_o_p_o_r_t.html#ggaebbb969fda93422aaf1878d6f4ff8fe8ac3fc51d181290cff176e3aea6b74e37d',1,'r_ioport.h']]],
   ['ioport_5fperipheral_5fmode9',['IOPORT_PERIPHERAL_MODE9',['../group___i_o_p_o_r_t.html#ggaebbb969fda93422aaf1878d6f4ff8fe8a1279dc7076cbf2067f29fc53d5f40f03',1,'r_ioport.h']]],
-  ['ioport_5fpfs_5fwrite_5fdisable',['IOPORT_PFS_WRITE_DISABLE',['../group___i_o_p_o_r_t___a_p_i.html#gga25ef8d1291cc073dd48f57b16d91c13eaf67cf250303fd4692c46717f0b7a9412',1,'r_ioport_api.h']]],
-  ['ioport_5fpfs_5fwrite_5fenable',['IOPORT_PFS_WRITE_ENABLE',['../group___i_o_p_o_r_t___a_p_i.html#gga25ef8d1291cc073dd48f57b16d91c13ea5d94e8d4ba61664a407a0d84538fc298',1,'r_ioport_api.h']]],
   ['isu_5fcolor_5fformat_5fabgr8888',['ISU_COLOR_FORMAT_ABGR8888',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ggac0ba34db6294e57c48437d45dabe3939a386bf614ad86a64569faf84248c9be8d',1,'r_isu_api.h']]],
   ['isu_5fcolor_5fformat_5fargb8888',['ISU_COLOR_FORMAT_ARGB8888',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ggac0ba34db6294e57c48437d45dabe3939a9282ddd7a665d41783b4b58fb17f0029',1,'r_isu_api.h']]],
   ['isu_5fcolor_5fformat_5fbgr888',['ISU_COLOR_FORMAT_BGR888',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ggac0ba34db6294e57c48437d45dabe3939add2e595fb7252ca0e5dfd40a2acb4d84',1,'r_isu_api.h']]],

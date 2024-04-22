@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -320,7 +320,7 @@ Limitations</h2>
 Examples</h1>
 <h2>Basic Example</h2>
 <p>This is a basic example of minimal use of the ISU in an application.</p>
-<div class="fragment"><div class="line"></div><div class="line"><span class="keywordtype">void</span> basic_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <span class="comment">/* Open the ISU driver */</span></div><div class="line">    g_isu_on_isu.<a class="code" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a9fdc7fbd9f3379e25d78b318dd873553">open</a>(&amp;g_isu_ctrl, &amp;g_isu_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Start scaling */</span></div><div class="line">    g_isu_on_isu.<a class="code" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ae53471d8d28e491c0a4d173ba14a94ea">start</a>(&amp;g_isu_ctrl);</div><div class="line"></div><div class="line">    <span class="comment">/* Change image scaling configuration */</span></div><div class="line">    g_isu0_runtime_cfg.output.hsize   = ISU_OUTPUT_HSIZE_2ND;</div><div class="line">    g_isu0_runtime_cfg.output.vsize   = ISU_OUTPUT_VSIZE_2ND;</div><div class="line">    g_isu0_runtime_cfg.output.hstride = ISU_OUTPUT_STRIDE_2ND;</div><div class="line"></div><div class="line">    <span class="comment">/* Scaling with changed paramters */</span></div><div class="line">    g_isu_on_isu.<a class="code" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#aaef1dd64026d894e4822b060033ebd1f">changeCfg</a>(&amp;g_isu_ctrl, &amp;(g_isu0_runtime_cfg));</div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
+<div class="fragment"><div class="line"></div><div class="line"><span class="keywordtype">void</span> basic_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <span class="comment">/* Open the ISU driver */</span></div><div class="line">    g_isu_on_isu.<a class="code" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a9fdc7fbd9f3379e25d78b318dd873553">open</a>(&amp;g_isu_ctrl, &amp;g_isu_cfg);</div><div class="line"></div><div class="line">    <span class="comment">/* Start scaling */</span></div><div class="line">    g_isu_on_isu.<a class="code" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ae53471d8d28e491c0a4d173ba14a94ea">start</a>(&amp;g_isu_ctrl);</div><div class="line"></div><div class="line">    <span class="comment">/* Change image scaling configuration */</span></div><div class="line">    g_isu0_runtime_cfg.output.hsize   = ISU_OUTPUT_HSIZE_2ND;</div><div class="line">    g_isu0_runtime_cfg.output.vsize   = ISU_OUTPUT_VSIZE_2ND;</div><div class="line">    g_isu0_runtime_cfg.output.hstride = ISU_OUTPUT_STRIDE_2ND;</div><div class="line"></div><div class="line">    <span class="comment">/* Scaling with changed paramters */</span></div><div class="line">    g_isu_on_isu.<a class="code" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a3f5591d4a4dd63b0bb98046574668091">changeCfg</a>(&amp;g_isu_ctrl, &amp;(g_isu0_runtime_cfg));</div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:structisu__extended__cfg__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_s_u.html#structisu__extended__cfg__t">isu_extended_cfg_t</a></td></tr>
@@ -496,7 +496,7 @@ Image conversion IRQ number. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

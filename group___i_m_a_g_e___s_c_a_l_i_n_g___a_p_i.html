@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -170,8 +170,7 @@ $(document).ready(function(){initNavTree('group___i_m_a_g_e___s_c_a_l_i_n_g___a_
 <p>Interface for image scaling. </p>
 <h1><a class="anchor" id="IMAGE_SCALING_API_SUMMARY"></a>
 Summary</h1>
-<p>The Image Scaling interface provides a general API for configuring and controlling image scaling.</p>
-<p>Implemented by: <a class="el" href="group___i_s_u.html">Image Scaling Unit (r_isu)</a> </p>
+<p>The Image Scaling interface provides a general API for configuring and controlling image scaling. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -397,8 +396,8 @@ output configuration </td></tr>
 <tr class="separator:a9ca1adb96a69c1e6322b6dd7883d45ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae53471d8d28e491c0a4d173ba14a94ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ae53471d8d28e491c0a4d173ba14a94ea">start</a> )(<a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga0eccd40948bc8aad400dd02199cdf0c2">isu_ctrl_t</a> *const p_ctrl)</td></tr>
 <tr class="separator:ae53471d8d28e491c0a4d173ba14a94ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaef1dd64026d894e4822b060033ebd1f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#aaef1dd64026d894e4822b060033ebd1f">changeCfg</a> )(<a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga0eccd40948bc8aad400dd02199cdf0c2">isu_ctrl_t</a> *const p_api_ctrl, <a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#structisu__runtime__cfg__t">isu_runtime_cfg_t</a> *const p_runtime_cfg)</td></tr>
-<tr class="separator:aaef1dd64026d894e4822b060033ebd1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f5591d4a4dd63b0bb98046574668091"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a3f5591d4a4dd63b0bb98046574668091">changeCfg</a> )(<a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga0eccd40948bc8aad400dd02199cdf0c2">isu_ctrl_t</a> *const p_ctrl, <a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#structisu__runtime__cfg__t">isu_runtime_cfg_t</a> *const p_runtime_cfg)</td></tr>
+<tr class="separator:a3f5591d4a4dd63b0bb98046574668091"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h4 class="groupheader">Field Documentation</h4>
 <a id="a9fdc7fbd9f3379e25d78b318dd873553"></a>
@@ -412,11 +411,7 @@ output configuration </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Open scaling device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_s_u.html#gacc0bd2749596bdd0dc613ddf851a754f">R_ISU_Open()</a> </li>
-</ul>
-</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Open scaling device. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">p_ctrl</td><td>Pointer to scaling interface control block. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_cfg</td><td>Pointer to scaling configuration structure. </td></tr>
@@ -437,11 +432,7 @@ output configuration </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Close scaling device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_s_u.html#ga04054537547f81d4d4056fa657a14f6b">R_ISU_Close()</a> </li>
-</ul>
-</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Close scaling device. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to scaling interface control block. </td></tr>
   </table>
@@ -461,11 +452,7 @@ output configuration </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Start image scaling. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_s_u.html#ga8d2c79487b11f1f3764fea2ae351f44f">R_ISU_Start()</a> </li>
-</ul>
-</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Start image scaling. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to scaling interface control block. </td></tr>
   </table>
@@ -474,22 +461,18 @@ output configuration </td></tr>
 
 </div>
 </div>
-<a id="aaef1dd64026d894e4822b060033ebd1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaef1dd64026d894e4822b060033ebd1f">&#9670;&nbsp;</a></span>changeCfg</h2>
+<a id="a3f5591d4a4dd63b0bb98046574668091"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f5591d4a4dd63b0bb98046574668091">&#9670;&nbsp;</a></span>changeCfg</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  isu_api_t::changeCfg) (<a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga0eccd40948bc8aad400dd02199cdf0c2">isu_ctrl_t</a> *const p_api_ctrl, <a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#structisu__runtime__cfg__t">isu_runtime_cfg_t</a> *const p_runtime_cfg)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  isu_api_t::changeCfg) (<a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga0eccd40948bc8aad400dd02199cdf0c2">isu_ctrl_t</a> *const p_ctrl, <a class="el" href="group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#structisu__runtime__cfg__t">isu_runtime_cfg_t</a> *const p_runtime_cfg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Change image scaling configuration. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_s_u.html#gae979551486af4ef9bd8fc4baa7bd7d9a">R_ISU_ChangeCfg()</a> </li>
-</ul>
-</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Change image scaling configuration. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to scaling interface control block. </td></tr>
   </table>
@@ -649,7 +632,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

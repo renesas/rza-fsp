@@ -4,6 +4,7 @@ var searchData=
   ['ether_5fflow_5fcontrol_5ft',['ether_flow_control_t',['../group___e_t_h_e_r___a_p_i.html#gaebbb8ab534ca83d1769d4d0b71e1943f',1,'r_ether_api.h']]],
   ['ether_5fmulticast_5ft',['ether_multicast_t',['../group___e_t_h_e_r___a_p_i.html#gae306f2239ef51705ac7e2dc962837947',1,'r_ether_api.h']]],
   ['ether_5fphy_5fflow_5fcontrol_5ft',['ether_phy_flow_control_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#ga113895595732b38ac87e4efecacb87de',1,'r_ether_phy_api.h']]],
+  ['ether_5fphy_5finterface_5fstatus_5ft',['ether_phy_interface_status_t',['../group___g_e_t_h_e_r___p_h_y.html#ga42a75f14ab026764468078631e8d0260',1,'r_gether_phy.h']]],
   ['ether_5fphy_5flink_5fspeed_5ft',['ether_phy_link_speed_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#gaf227c12b47e90edc8ec5729bfccf9bfb',1,'r_ether_phy_api.h']]],
   ['ether_5fphy_5flsi_5ftype_5ft',['ether_phy_lsi_type_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5',1,'r_ether_phy_api.h']]],
   ['ether_5fphy_5fmii_5ftype_5ft',['ether_phy_mii_type_t',['../group___e_t_h_e_r___p_h_y___a_p_i.html#gaafbecb98180b1f07abe8449332b5a122',1,'r_ether_phy_api.h']]],
@@ -11,6 +12,6 @@ var searchData=
   ['ether_5fpromiscuous_5ft',['ether_promiscuous_t',['../group___e_t_h_e_r___a_p_i.html#ga3d443f5aaeafc8b8fa20eda633cbede1',1,'r_ether_api.h']]],
   ['ether_5fwake_5fon_5flan_5ft',['ether_wake_on_lan_t',['../group___e_t_h_e_r___a_p_i.html#ga9bc17e8981b3bb4f3d42d31c1f11bcd7',1,'r_ether_api.h']]],
   ['ether_5fzerocopy_5ft',['ether_zerocopy_t',['../group___e_t_h_e_r___a_p_i.html#gad3c9ba84cbe05cc1ff9b37d25318dd07',1,'r_ether_api.h']]],
-  ['external_5firq_5fclk_5fsource_5fdiv_5ft',['external_irq_clk_source_div_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c',1,'r_external_irq_api.h']]],
+  ['external_5firq_5fclock_5fsource_5fdiv_5ft',['external_irq_clock_source_div_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga739b3c56a0ebe492581dc75c41fd1627',1,'r_external_irq_api.h']]],
   ['external_5firq_5ftrigger_5ft',['external_irq_trigger_t',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga2d1960d763da14da209e16fbb972d57c',1,'r_external_irq_api.h']]]
 ];

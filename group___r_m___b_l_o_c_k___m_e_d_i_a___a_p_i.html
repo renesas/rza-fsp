@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -170,11 +170,7 @@ $(document).ready(function(){initNavTree('group___r_m___b_l_o_c_k___m_e_d_i_a___
 <p>Interface for block media memory access. </p>
 <h1><a class="anchor" id="RM_BLOCK_MEDIA_API_SUMMARY"></a>
 Summary</h1>
-<p>The block media interface supports reading, writing, and erasing media devices. All functions are non-blocking if possible. The callback is used to determine when an operation completes.</p>
-<p>Implemented by:</p><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html">SD/MMC Block Media Implementation (rm_block_media_sdmmc)</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html">USB HMSC Block Media Implementation (rm_block_media_usb)</a> </li>
-</ul>
+<p>The block media interface supports reading, writing, and erasing media devices. All functions are non-blocking if possible. The callback is used to determine when an operation completes. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -386,11 +382,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialize block media device. <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a5aa622a8eca72b3722138b467be0d436">rm_block_media_api_t::mediaInit</a> must be called to complete the initialization procedure. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#ga1a4441d532355a2bf38b2f66b023a711">RM_BLOCK_MEDIA_SDMMC_Open</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#gae64afb76b032d30dc7db9fc5fdf9f86a">RM_BLOCK_MEDIA_USB_Open</a></li>
-</ul>
-</dd></dl>
+<p>Initialize block media device. <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a5aa622a8eca72b3722138b467be0d436">rm_block_media_api_t::mediaInit</a> must be called to complete the initialization procedure.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control block. Must be declared by user. Elements set here. </td></tr>
@@ -412,11 +404,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initializes a media device. If the device is removable, it must be plugged in prior to calling this API. This function blocks until media initialization is complete. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#ga60210d60a2409bc31072fb70ad967f1f">RM_BLOCK_MEDIA_SDMMC_MediaInit</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#ga6060a8b8901738a4659daf3c6f2e456e">RM_BLOCK_MEDIA_USB_MediaInit</a></li>
-</ul>
-</dd></dl>
+<p>Initializes a media device. If the device is removable, it must be plugged in prior to calling this API. This function blocks until media initialization is complete.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -437,11 +425,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reads blocks of data from the specified memory device address to the location specified by the caller. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#ga1d5bb5db3172ceb8c98c218154db31e5">RM_BLOCK_MEDIA_SDMMC_Read</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#ga950aac820f1e35ca5592b021006f7a55">RM_BLOCK_MEDIA_USB_Read</a></li>
-</ul>
-</dd></dl>
+<p>Reads blocks of data from the specified memory device address to the location specified by the caller.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -465,11 +449,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Writes blocks of data to the specified device memory address. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#ga8aef1a3d2667ecbb50aba78bba1778c1">RM_BLOCK_MEDIA_SDMMC_Write</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#gab4363b7ad816e58b5190a1621bcedcb1">RM_BLOCK_MEDIA_USB_Write</a></li>
-</ul>
-</dd></dl>
+<p>Writes blocks of data to the specified device memory address.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -493,11 +473,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Erases blocks of data from the memory device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#ga7de8017643a4087d373c95e660f308d8">RM_BLOCK_MEDIA_SDMMC_Erase</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#ga755105d9c3c60cf246cc8bc4149f991a">RM_BLOCK_MEDIA_USB_Erase</a></li>
-</ul>
-</dd></dl>
+<p>Erases blocks of data from the memory device.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -520,10 +496,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Specify callback function and optional context pointer and working memory pointer. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#gaa495bb279277427acb8d0e185dbafea6">RM_BLOCK_MEDIA_SDMMC_CallbackSet()</a></li>
-</ul>
-</dd></dl>
+<p>Specify callback function and optional context pointer and working memory pointer.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -548,11 +521,6 @@ Media insertion status, true if media is not removable. </td></tr>
       </table>
 </div><div class="memdoc">
 <p>Get status of connected device.</p>
-<dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#ga73b4346848877bc43776e371b5fd0d51">RM_BLOCK_MEDIA_SDMMC_StatusGet</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#gacadf6373bed265958589645d78c21574">RM_BLOCK_MEDIA_USB_StatusGet</a></li>
-</ul>
-</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -574,11 +542,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns information about the block media device. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#gafc142e5784f845043f7e87b6ff2ac132">RM_BLOCK_MEDIA_SDMMC_InfoGet</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#ga4393a1dea13b788b21a8cd277882dd79">RM_BLOCK_MEDIA_USB_InfoGet</a></li>
-</ul>
-</dd></dl>
+<p>Returns information about the block media device.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -600,11 +564,7 @@ Media insertion status, true if media is not removable. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Closes the module. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html#gaa5523e82b88c596ba33f52958fdd7bda">RM_BLOCK_MEDIA_SDMMC_Close</a></li>
-<li><a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html#gae7f3cf66b8c12d590c32705ef275711a">RM_BLOCK_MEDIA_USB_Close</a></li>
-</ul>
-</dd></dl>
+<p>Closes the module.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in <a class="el" href="group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a525d6c999d2fc7e5e04b186d50423cd1">rm_block_media_api_t::open</a> call. </td></tr>
@@ -665,11 +625,7 @@ Pointer to the API structure for this instance. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Block media API control block. Allocate an instance specific control block to pass into the block media API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="structrm__block__media__sdmmc__instance__ctrl__t.html">rm_block_media_sdmmc_instance_ctrl_t</a></li>
-<li><a class="el" href="structrm__block__media__usb__instance__ctrl__t.html">rm_block_media_usb_instance_ctrl_t</a> </li>
-</ul>
-</dd></dl>
+<p>Block media API control block. Allocate an instance specific control block to pass into the block media API calls. </p>
 
 </div>
 </div>
@@ -715,7 +671,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

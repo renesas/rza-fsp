@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -170,30 +170,30 @@ $(document).ready(function(){initNavTree('group___g_e_t_h_e_r.html','');});
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga9c0eba5b44eb61dca5e96139e6fda2a2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#ga9c0eba5b44eb61dca5e96139e6fda2a2">R_GETHER_Open</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl, <a class="el" href="group___e_t_h_e_r___a_p_i.html#structether__cfg__t">ether_cfg_t</a> const *const p_cfg)</td></tr>
-<tr class="memdesc:ga9c0eba5b44eb61dca5e96139e6fda2a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">After ETHERC, EDMAC and PHY-LSI are reset in software, an auto negotiation of PHY-LSI is begun. Afterwards, the link signal change interrupt is permitted. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#ae75458ac2a31861195b73120676d670c">ether_api_t::open</a>.  <a href="#ga9c0eba5b44eb61dca5e96139e6fda2a2">More...</a><br /></td></tr>
+<tr class="memdesc:ga9c0eba5b44eb61dca5e96139e6fda2a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">After ETHERC, EDMAC and PHY-LSI are reset in software, an auto negotiation of PHY-LSI is begun. Afterwards, the link signal change interrupt is permitted. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa0c703be12efe73efdd0d47168239470">ether_api_t::open</a>.  <a href="#ga9c0eba5b44eb61dca5e96139e6fda2a2">More...</a><br /></td></tr>
 <tr class="separator:ga9c0eba5b44eb61dca5e96139e6fda2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8c7a0cf1af404830786e0f4786ed36b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#ga8c7a0cf1af404830786e0f4786ed36b1">R_GETHER_Close</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl)</td></tr>
-<tr class="memdesc:ga8c7a0cf1af404830786e0f4786ed36b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables interrupts. Removes power and releases hardware lock. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a1c0bc3caef73e0a216c2fe2edc4fff4b">ether_api_t::close</a>.  <a href="#ga8c7a0cf1af404830786e0f4786ed36b1">More...</a><br /></td></tr>
+<tr class="memdesc:ga8c7a0cf1af404830786e0f4786ed36b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables interrupts. Removes power and releases hardware lock. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a84ae3c1816a60c8fc45ccc2084805088">ether_api_t::close</a>.  <a href="#ga8c7a0cf1af404830786e0f4786ed36b1">More...</a><br /></td></tr>
 <tr class="separator:ga8c7a0cf1af404830786e0f4786ed36b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae016d59c87c057571470a2935a57aab3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#gae016d59c87c057571470a2935a57aab3">R_GETHER_Read</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl, void *const p_buffer, uint32_t *const length_bytes)</td></tr>
-<tr class="memdesc:gae016d59c87c057571470a2935a57aab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive Ethernet frame. Receives data to the location specified by the pointer to the receive buffer. In zero copy mode, the address of the receive buffer is returned. In non zero copy mode, the received data in the internal buffer is copied to the pointer passed by the argument. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a41d56c8843a454690b1969f8f766d65a">ether_api_t::read</a>.  <a href="#gae016d59c87c057571470a2935a57aab3">More...</a><br /></td></tr>
+<tr class="memdesc:gae016d59c87c057571470a2935a57aab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive Ethernet frame. Receives data to the location specified by the pointer to the receive buffer. In zero copy mode, the address of the receive buffer is returned. In non zero copy mode, the received data in the internal buffer is copied to the pointer passed by the argument. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a58975a11436cc5980698b6e843eea3f3">ether_api_t::read</a>.  <a href="#gae016d59c87c057571470a2935a57aab3">More...</a><br /></td></tr>
 <tr class="separator:gae016d59c87c057571470a2935a57aab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab6389f74a46dddbe195fd5a4efca73aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#gab6389f74a46dddbe195fd5a4efca73aa">R_GETHER_BufferRelease</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl)</td></tr>
-<tr class="memdesc:gab6389f74a46dddbe195fd5a4efca73aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move to the next buffer in the circular receive buffer list. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa38e7f82e66fd26fd8d51b11f46ae6e6">ether_api_t::bufferRelease</a>.  <a href="#gab6389f74a46dddbe195fd5a4efca73aa">More...</a><br /></td></tr>
+<tr class="memdesc:gab6389f74a46dddbe195fd5a4efca73aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move to the next buffer in the circular receive buffer list. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a4f988e111dadbfab48e9eccec8d462b5">ether_api_t::bufferRelease</a>.  <a href="#gab6389f74a46dddbe195fd5a4efca73aa">More...</a><br /></td></tr>
 <tr class="separator:gab6389f74a46dddbe195fd5a4efca73aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2b60f8ac3dfedcffa0d6b7b3a312b51b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#ga2b60f8ac3dfedcffa0d6b7b3a312b51b">R_GETHER_Write</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl, void *const p_buffer, uint32_t const frame_length)</td></tr>
-<tr class="memdesc:ga2b60f8ac3dfedcffa0d6b7b3a312b51b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transmit Ethernet frame. Transmits data from the location specified by the pointer to the transmit buffer, with the data size equal to the specified frame length. In the non zero copy mode, transmits data after being copied to the internal buffer. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a92e87f33f0a4e0ccb26464d697cdf233">ether_api_t::write</a>.  <a href="#ga2b60f8ac3dfedcffa0d6b7b3a312b51b">More...</a><br /></td></tr>
+<tr class="memdesc:ga2b60f8ac3dfedcffa0d6b7b3a312b51b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transmit Ethernet frame. Transmits data from the location specified by the pointer to the transmit buffer, with the data size equal to the specified frame length. In the non zero copy mode, transmits data after being copied to the internal buffer. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa61e5ba4dd1de3a50864c0b1970c3b51">ether_api_t::write</a>.  <a href="#ga2b60f8ac3dfedcffa0d6b7b3a312b51b">More...</a><br /></td></tr>
 <tr class="separator:ga2b60f8ac3dfedcffa0d6b7b3a312b51b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7280977fc26137e2fdaf652d650e0175"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#ga7280977fc26137e2fdaf652d650e0175">R_GETHER_LinkProcess</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl)</td></tr>
-<tr class="memdesc:ga7280977fc26137e2fdaf652d650e0175"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Link up processing, the Link down processing, and the magic packet detection processing are executed. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a125ca4ee69c6c63e1db42708324c0fb3">ether_api_t::linkProcess</a>.  <a href="#ga7280977fc26137e2fdaf652d650e0175">More...</a><br /></td></tr>
+<tr class="memdesc:ga7280977fc26137e2fdaf652d650e0175"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Link up processing, the Link down processing, and the magic packet detection processing are executed. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#ae11e3e3521df4c3efe6e0dafecddee72">ether_api_t::linkProcess</a>.  <a href="#ga7280977fc26137e2fdaf652d650e0175">More...</a><br /></td></tr>
 <tr class="separator:ga7280977fc26137e2fdaf652d650e0175"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaac407ed3fc8ae8e6ed98a2655ee8c00c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#gaac407ed3fc8ae8e6ed98a2655ee8c00c">R_GETHER_WakeOnLANEnable</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl)</td></tr>
-<tr class="memdesc:gaac407ed3fc8ae8e6ed98a2655ee8c00c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The setting of ETHERC is changed from normal sending and receiving mode to magic packet detection mode. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#afabb87ef0be65717bb7675a4a004e3ad">ether_api_t::wakeOnLANEnable</a>.  <a href="#gaac407ed3fc8ae8e6ed98a2655ee8c00c">More...</a><br /></td></tr>
+<tr class="memdesc:gaac407ed3fc8ae8e6ed98a2655ee8c00c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The setting of ETHERC is changed from normal sending and receiving mode to magic packet detection mode. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#acde8967c0512722ca73a1596daf654ea">ether_api_t::wakeOnLANEnable</a>.  <a href="#gaac407ed3fc8ae8e6ed98a2655ee8c00c">More...</a><br /></td></tr>
 <tr class="separator:gaac407ed3fc8ae8e6ed98a2655ee8c00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1433a154970bdf2e09928c4631717dc4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#ga1433a154970bdf2e09928c4631717dc4">R_GETHER_CallbackSet</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_api_ctrl, void(*p_callback)(<a class="el" href="group___e_t_h_e_r___a_p_i.html#structether__callback__args__t">ether_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___e_t_h_e_r___a_p_i.html#structether__callback__args__t">ether_callback_args_t</a> *const p_callback_memory)</td></tr>
 <tr class="separator:ga1433a154970bdf2e09928c4631717dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab8cbb949266413cc4a598e641d30bf76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#gab8cbb949266413cc4a598e641d30bf76">R_GETHER_RxBufferUpdate</a> (<a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl, __attribute__((unused)) void *const p_buffer)</td></tr>
-<tr class="memdesc:gab8cbb949266413cc4a598e641d30bf76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the buffer pointer of the current rx buffer descriptor. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa714b8287d1cef38d8442850dd9b9fb5">ether_api_t::rxBufferUpdate</a>.  <a href="#gab8cbb949266413cc4a598e641d30bf76">More...</a><br /></td></tr>
+<tr class="memdesc:gab8cbb949266413cc4a598e641d30bf76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the buffer pointer of the current rx buffer descriptor. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a6d088fd3b1a5326af7bedad146491d74">ether_api_t::rxBufferUpdate</a>.  <a href="#gab8cbb949266413cc4a598e641d30bf76">More...</a><br /></td></tr>
 <tr class="separator:gab8cbb949266413cc4a598e641d30bf76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab669c8be88de12133986ee28096ee01b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___g_e_t_h_e_r.html#gab669c8be88de12133986ee28096ee01b">R_GETHER_TxStatusGet</a> (__attribute__((unused)) <a class="el" href="group___e_t_h_e_r___a_p_i.html#gad9e606976602503ffeb95f3e2c717e6f">ether_ctrl_t</a> *const p_ctrl, __attribute__((unused)) void *const p_buffer_address)</td></tr>
 <tr class="separator:gab669c8be88de12133986ee28096ee01b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -427,7 +427,7 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="textblock"><p>GETHER control block. DO NOT INITIALIZE. Initialization occurs when <a class="el" href="group___e_t_h_e_r___a_p_i.html#ae75458ac2a31861195b73120676d670c">ether_api_t::open</a> is called. </p>
+<div class="textblock"><p>GETHER control block. DO NOT INITIALIZE. Initialization occurs when <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa0c703be12efe73efdd0d47168239470">ether_api_t::open</a> is called. </p>
 </div><table class="memberdecls">
 <tr><td colspan="2"><h3>Data Fields</h3></td></tr>
 <tr class="memitem:a5a47551251fa2ce32c2eb47789bfc1ec"><td class="memItemLeft" align="right" valign="top"><a id="a5a47551251fa2ce32c2eb47789bfc1ec"></a>
@@ -564,15 +564,17 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>After ETHERC, EDMAC and PHY-LSI are reset in software, an auto negotiation of PHY-LSI is begun. Afterwards, the link signal change interrupt is permitted. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#ae75458ac2a31861195b73120676d670c">ether_api_t::open</a>. </p>
+<p>After ETHERC, EDMAC and PHY-LSI are reset in software, an auto negotiation of PHY-LSI is begun. Afterwards, the link signal change interrupt is permitted. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa0c703be12efe73efdd0d47168239470">ether_api_t::open</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Channel opened successfully. </td></tr>
     <tr><td class="paramname">FSP_ERR_ASSERTION</td><td>Pointer to ETHER control block or configuration structure is NULL. </td></tr>
     <tr><td class="paramname">FSP_ERR_ALREADY_OPEN</td><td>Control block has already been opened or channel is being used by another instance. Call close() then open() to reconfigure. </td></tr>
+    <tr><td class="paramname">FSP_ERR_ETHER_ERROR_PHY_COMMUNICATION</td><td>Initialization of PHY-LSI failed. </td></tr>
     <tr><td class="paramname">FSP_ERR_INVALID_CHANNEL</td><td>Invalid channel number is given. </td></tr>
     <tr><td class="paramname">FSP_ERR_INVALID_POINTER</td><td>Pointer to MAC address is NULL. </td></tr>
     <tr><td class="paramname">FSP_ERR_INVALID_ARGUMENT</td><td>Interrupt is not enabled. </td></tr>
+    <tr><td class="paramname">FSP_ERR_ETHER_PHY_ERROR_LINK</td><td>Initialization of PHY-LSI failed. </td></tr>
   </table>
   </dd>
 </dl>
@@ -595,7 +597,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>Disables interrupts. Removes power and releases hardware lock. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a1c0bc3caef73e0a216c2fe2edc4fff4b">ether_api_t::close</a>. </p>
+<p>Disables interrupts. Removes power and releases hardware lock. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a84ae3c1816a60c8fc45ccc2084805088">ether_api_t::close</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Channel successfully closed. </td></tr>
@@ -639,7 +641,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>Receive Ethernet frame. Receives data to the location specified by the pointer to the receive buffer. In zero copy mode, the address of the receive buffer is returned. In non zero copy mode, the received data in the internal buffer is copied to the pointer passed by the argument. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a41d56c8843a454690b1969f8f766d65a">ether_api_t::read</a>. </p>
+<p>Receive Ethernet frame. Receives data to the location specified by the pointer to the receive buffer. In zero copy mode, the address of the receive buffer is returned. In non zero copy mode, the received data in the internal buffer is copied to the pointer passed by the argument. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a58975a11436cc5980698b6e843eea3f3">ether_api_t::read</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Processing completed successfully. </td></tr>
@@ -671,7 +673,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>Move to the next buffer in the circular receive buffer list. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa38e7f82e66fd26fd8d51b11f46ae6e6">ether_api_t::bufferRelease</a>. </p>
+<p>Move to the next buffer in the circular receive buffer list. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a4f988e111dadbfab48e9eccec8d462b5">ether_api_t::bufferRelease</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Processing completed successfully. </td></tr>
@@ -717,7 +719,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>Transmit Ethernet frame. Transmits data from the location specified by the pointer to the transmit buffer, with the data size equal to the specified frame length. In the non zero copy mode, transmits data after being copied to the internal buffer. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a92e87f33f0a4e0ccb26464d697cdf233">ether_api_t::write</a>. </p>
+<p>Transmit Ethernet frame. Transmits data from the location specified by the pointer to the transmit buffer, with the data size equal to the specified frame length. In the non zero copy mode, transmits data after being copied to the internal buffer. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa61e5ba4dd1de3a50864c0b1970c3b51">ether_api_t::write</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Processing completed successfully. </td></tr>
@@ -750,7 +752,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>The Link up processing, the Link down processing, and the magic packet detection processing are executed. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a125ca4ee69c6c63e1db42708324c0fb3">ether_api_t::linkProcess</a>. </p>
+<p>The Link up processing, the Link down processing, and the magic packet detection processing are executed. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#ae11e3e3521df4c3efe6e0dafecddee72">ether_api_t::linkProcess</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Link is up. </td></tr>
@@ -780,7 +782,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>The setting of ETHERC is changed from normal sending and receiving mode to magic packet detection mode. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#afabb87ef0be65717bb7675a4a004e3ad">ether_api_t::wakeOnLANEnable</a>. </p>
+<p>The setting of ETHERC is changed from normal sending and receiving mode to magic packet detection mode. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#acde8967c0512722ca73a1596daf654ea">ether_api_t::wakeOnLANEnable</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Processing completed successfully. </td></tr>
@@ -831,7 +833,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
         </tr>
       </table>
 </div><div class="memdoc">
-<p>(end addtogroup GETHER) Updates the user callback with the option to provide memory for the callback argument structure. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#adf0c97c99905ea98b0225d2525008f4e">ether_api_t::callbackSet</a>.</p>
+<p>(end addtogroup GETHER) Updates the user callback with the option to provide memory for the callback argument structure. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aaeb0eaa99a7a62dfa5b65494db7f1ab4">ether_api_t::callbackSet</a>.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Callback updated successfully. </td></tr>
@@ -870,7 +872,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
       </table>
 </div><div class="memdoc">
 
-<p>Change the buffer pointer of the current rx buffer descriptor. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#aa714b8287d1cef38d8442850dd9b9fb5">ether_api_t::rxBufferUpdate</a>. </p>
+<p>Change the buffer pointer of the current rx buffer descriptor. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a6d088fd3b1a5326af7bedad146491d74">ether_api_t::rxBufferUpdate</a>. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Processing completed successfully. </td></tr>
@@ -909,7 +911,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Provides status of Ethernet driver in the user provided pointer. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#a6fde51a3fef6b43ed0fada563fadfb4e">ether_api_t::txStatusGet</a>.</p>
+<p>Provides status of Ethernet driver in the user provided pointer. Implements <a class="el" href="group___e_t_h_e_r___a_p_i.html#ad52cabec533efaaef3258caade1e0640">ether_api_t::txStatusGet</a>.</p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">FSP_SUCCESS</td><td>Transmit buffer address is stored in provided p_buffer_address. </td></tr>
@@ -929,7 +931,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

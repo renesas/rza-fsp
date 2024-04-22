@@ -48,6 +48,7 @@ var group___b_s_p___m_c_u =
     [ "R_BSP_CACHE_CleanRange", "group___b_s_p___m_c_u.html#gaab5da4c80f7255ce96e3808dd22ff59e", null ],
     [ "R_BSP_CACHE_InvalidateRange", "group___b_s_p___m_c_u.html#gad2ded52ed898f2826dc446495dbd73d3", null ],
     [ "R_BSP_CACHE_CleanInvalidateRange", "group___b_s_p___m_c_u.html#ga8d763f54ace7c6464bf8317ee9feb749", null ],
+    [ "R_BSP_TLB_Invalidate", "group___b_s_p___m_c_u.html#ga896cbfb6fccbe29c68482bf92df6fcce", null ],
     [ "__sinf", "group___b_s_p___m_c_u.html#ga73859f9b8df6981b869024d0b9a86bdb", null ],
     [ "__cosf", "group___b_s_p___m_c_u.html#ga64ff048b8398edee6c87652cce7553fd", null ],
     [ "__sincosf", "group___b_s_p___m_c_u.html#ga2fdd7030166ab85ca5bd585be0fba4f8", null ],

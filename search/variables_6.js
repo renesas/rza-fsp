@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['g',['g',['../group___d_i_s_p_l_a_y___a_p_i.html#a1204de3d634d238b2e55e47fcece5f6f',1,'display_brightness_t::g()'],['../group___d_i_s_p_l_a_y___a_p_i.html#a17df68c0dd89b50b244b249f6229647d',1,'display_contrast_t::g()'],['../group___d_i_s_p_l_a_y___a_p_i.html#a1bb7c07570cceff27193459a9440682b',1,'display_gamma_correction_t::g()']]],
+  ['gain',['gain',['../group___d_i_s_p_l_a_y___a_p_i.html#a5085d35033caceccf2b0e020ac39350d',1,'gamma_correction_t']]],
   ['gb',['gb',['../group___c_r_u.html#a8746a3bb0cf44ebd6cd8c2d4c064e14d',1,'linearmatrix_cfg_t']]],
   ['general_5fcall_5fenable',['general_call_enable',['../group___i2_c___s_l_a_v_e___a_p_i.html#a7b1c0bee47fa93f32b4466b72c30f68c',1,'i2c_slave_cfg_t']]],
   ['gg',['gg',['../group___c_r_u.html#a6b7b6e98bd361220feac83a166651cc8',1,'linearmatrix_cfg_t']]],

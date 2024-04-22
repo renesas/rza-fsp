@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -252,7 +252,7 @@ Block</li>
 </ul>
 </td><td>Normal </td><td>Select the transfer mode. </td></tr>
 <tr>
-<td>Transfer Source Size</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Source Data Size</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 1 Byte</li>
 <li>
@@ -270,9 +270,9 @@ Block</li>
 <li>
 128 Bytes</li>
 </ul>
-</td><td>2 Bytes </td><td>Select the transfer source size. </td></tr>
+</td><td>2 Bytes </td><td>Select the source data size. </td></tr>
 <tr>
-<td>Transfer Destination Size</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Destination Data Size</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 1 Byte</li>
 <li>
@@ -290,7 +290,7 @@ Block</li>
 <li>
 128 Bytes</li>
 </ul>
-</td><td>2 Bytes </td><td>Select the transfer destination size. </td></tr>
+</td><td>2 Bytes </td><td>Select the destination data size. </td></tr>
 <tr>
 <td>Destination Address Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -346,17 +346,17 @@ Transfer with Setting 1 and Setting 2 alternately</li>
 </ul>
 </td><td>DMA transfer only once </td><td>When Next0 Register Set Transfer completes, Next1 Register Set Transfer occurs </td></tr>
 <tr>
-<td>Setting 1 Destination Pointer</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination pointer. </td></tr>
+<td>Setting 1 Destination Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination address. </td></tr>
 <tr>
-<td>Setting 1 Source Pointer</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source pointer. </td></tr>
+<td>Setting 1 Source Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source address. </td></tr>
 <tr>
-<td>Setting 1 Number of Transfers</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the bytes of transfers. </td></tr>
+<td>Setting 1 Total Number of Transfer Bytes</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the total number of transfer bytes. </td></tr>
 <tr>
-<td>Setting 2 Destination Pointer</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination pointer.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<td>Setting 2 Destination Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination address.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
 <tr>
-<td>Setting 2 Source Pointer</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source pointer.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<td>Setting 2 Source Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source address.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
 <tr>
-<td>Setting 2 Number of Transfers</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the bytes of transfers.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<td>Setting 2 Total Number of Transfer Bytes</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the total number of transfer bytes.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
 </table>
 </p>
 <dl class="section warning"><dt>Warning</dt><dd>"DMA Activation Request Source Select", "Low Detection Enable", "High Detection Enable", and "DACK output" must be set according to the DMAC transfer source. For details, see 'DMA Transfer Request Detection Operation Setting Table' of User's Manual.</dd></dl>
@@ -1250,7 +1250,7 @@ p_next1_register_setting</td>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

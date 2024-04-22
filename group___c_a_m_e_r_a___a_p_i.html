@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -170,8 +170,7 @@ $(document).ready(function(){initNavTree('group___c_a_m_e_r_a___a_p_i.html','');
 <p>Interface for camera. </p>
 <h1><a class="anchor" id="Camera_API_SUMMARY"></a>
 Summary</h1>
-<p>The Camera interface provides a general API for configuring and controlling camera panels.</p>
-<p>Implemented by: <a class="el" href="group___c_r_u.html">Camera Data Receiving Unit (r_cru)</a> </p>
+<p>The Camera interface provides a general API for configuring and controlling camera panels. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -386,10 +385,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initial configuration. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___c_r_u.html#gaf61771c8ef716625da9759acb0fef575">R_CRU_Open()</a></li>
-</ul>
-</dd></dl>
+<p>Initial configuration.</p>
 <dl class="section note"><dt>Note</dt><dd>To reconfigure after calling this function, call <a class="el" href="group___c_a_m_e_r_a___a_p_i.html#a9755767d2b969147dc77dc46357e60e6">cru_api_t::close</a> first. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -412,10 +408,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Closes the driver and allows reconfiguration. May reduce power consumption. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___c_r_u.html#ga24872cf9f20f5416c285543119b501ee">R_CRU_Close()</a></li>
-</ul>
-</dd></dl>
+<p>Closes the driver and allows reconfiguration. May reduce power consumption.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -436,10 +429,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Start a capture. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___c_r_u.html#gab8c802da2f0ee6b92a1c3f428bbfd8e9">R_CRU_CaptureStart()</a></li>
-</ul>
-</dd></dl>
+<p>Start a capture.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -460,10 +450,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Stop a capture </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___c_r_u.html#ga3872588403b232d925a0ba256fd7ade2">R_CRU_CaptureStop()</a></li>
-</ul>
-</dd></dl>
+<p>Stop a capture</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control structure. </td></tr>
@@ -484,10 +471,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check scan status. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___c_r_u.html#ga056b17e812e349116f2a7f49504af1aa">R_CRU_StatusGet()</a></li>
-</ul>
-</dd></dl>
+<p>Check scan status.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to control handle structure </td></tr>
@@ -564,10 +548,7 @@ Pointer to the API structure for this instance. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>CRU control block. Allocate an instance specific control block to pass into the CRU API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___c_r_u.html#structcru__instance__ctrl__t">cru_instance_ctrl_t</a> </li>
-</ul>
-</dd></dl>
+<p>CRU control block. Allocate an instance specific control block to pass into the CRU API calls. </p>
 
 </div>
 </div>
@@ -601,7 +582,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

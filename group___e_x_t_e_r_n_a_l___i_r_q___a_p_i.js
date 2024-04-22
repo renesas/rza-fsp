@@ -9,7 +9,7 @@ var group___e_x_t_e_r_n_a_l___i_r_q___a_p_i =
       [ "ipl", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a21219682d6af73d780e49a7e67e53f22", null ],
       [ "irq", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a568e65aafea692dff0f64c3b66df2c2a", null ],
       [ "trigger", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ac9c027f165cdd6273959c0338cfb212d", null ],
-      [ "clk_source_div", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a67f5f231d026357697b6a20d68b559ff", null ],
+      [ "clock_source_div", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ada84d3b2cc9231ba2c74852da2723482", null ],
       [ "filter_enable", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#aa77181dcffe927e006c2ed112c1a62ad", null ],
       [ "p_callback", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ac8dadd8ef06c625a7b02c2eb06da7959", null ],
       [ "p_context", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a4237b56a314b7e145aefb59e6e1def1b", null ],
@@ -19,7 +19,7 @@ var group___e_x_t_e_r_n_a_l___i_r_q___a_p_i =
       [ "open", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a639337eee77555b934cbf8238e0f8449", null ],
       [ "enable", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a9cb81e4b2d313458c747cdc401179a66", null ],
       [ "disable", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a6ecb5664f627d1b731a4fd0a74e5f2bc", null ],
-      [ "callbackSet", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a4a407b8899a042692026e65d98535f6e", null ],
+      [ "callbackSet", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a36986e495396d0adb98953771245d6cd", null ],
       [ "close", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ad0c4d6063af093a3a19a63924aae61ac", null ]
     ] ],
     [ "external_irq_instance_t", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__instance__t", [
@@ -32,12 +32,13 @@ var group___e_x_t_e_r_n_a_l___i_r_q___a_p_i =
       [ "EXTERNAL_IRQ_TRIG_FALLING", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57caace14d51313fed5f17da4b9828fd5412", null ],
       [ "EXTERNAL_IRQ_TRIG_RISING", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57ca2d7a4f8fd21fad6f5a671336152d46b0", null ],
       [ "EXTERNAL_IRQ_TRIG_BOTH_EDGE", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57ca0a2ebac83c3e8ca3da64e703dda65b71", null ],
-      [ "EXTERNAL_IRQ_TRIG_LEVEL_LOW", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57cae0ae8739569bb4721c7ed289397b9c4f", null ]
+      [ "EXTERNAL_IRQ_TRIG_LEVEL_LOW", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57cae0ae8739569bb4721c7ed289397b9c4f", null ],
+      [ "EXTERNAL_IRQ_TRIG_LEVEL_HIGH", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga2d1960d763da14da209e16fbb972d57ca95c925c82cb30d0d54b8de8981c0cdd7", null ]
     ] ],
-    [ "external_irq_clk_source_div_t", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c", [
-      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_1", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1ca3fb5a9b7bb9b2bea52b1530e6c109e35", null ],
-      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_8", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1ca1410fd90337fc1f10823958c1bf392fd", null ],
-      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_32", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1cad75058ebcc84ca9dd929d6d6059b0c2a", null ],
-      [ "EXTERNAL_IRQ_CLK_SOURCE_DIV_64", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga6f45dea9e9f4c275e5033d8023806d1ca9e9f3234c8d045b869b6de1d25ae68d9", null ]
+    [ "external_irq_clock_source_div_t", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga739b3c56a0ebe492581dc75c41fd1627", [
+      [ "EXTERNAL_IRQ_CLOCK_SOURCE_DIV_1", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga739b3c56a0ebe492581dc75c41fd1627a9ee6a36c6bbdc9b1069bd5e06f1a192c", null ],
+      [ "EXTERNAL_IRQ_CLOCK_SOURCE_DIV_8", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga739b3c56a0ebe492581dc75c41fd1627ab1c40a1e2d013685daa2fcacceaabc1c", null ],
+      [ "EXTERNAL_IRQ_CLOCK_SOURCE_DIV_32", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga739b3c56a0ebe492581dc75c41fd1627ab11f45aa743a808016349e025dfaeab6", null ],
+      [ "EXTERNAL_IRQ_CLOCK_SOURCE_DIV_64", "group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#gga739b3c56a0ebe492581dc75c41fd1627a3a5c0edf12dd982f046de8160799eb22", null ]
     ] ]
 ];

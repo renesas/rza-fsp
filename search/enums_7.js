@@ -24,7 +24,6 @@ var searchData=
   ['ioport_5fevent_5foutput_5foperation_5ft',['ioport_event_output_operation_t',['../group___i_o_p_o_r_t.html#ga6baec76057e6dbc11b3de637ba3ca76e',1,'r_ioport.h']]],
   ['ioport_5fevent_5fpin_5fselection_5ft',['ioport_event_pin_selection_t',['../group___i_o_p_o_r_t.html#gac5793f51f8a5eb8095c52f9d633f94c3',1,'r_ioport.h']]],
   ['ioport_5fperipheral_5ft',['ioport_peripheral_t',['../group___i_o_p_o_r_t.html#gaebbb969fda93422aaf1878d6f4ff8fe8',1,'r_ioport.h']]],
-  ['ioport_5fpwpr_5ft',['ioport_pwpr_t',['../group___i_o_p_o_r_t___a_p_i.html#ga25ef8d1291cc073dd48f57b16d91c13e',1,'r_ioport_api.h']]],
   ['isu_5fcolor_5fformat_5ft',['isu_color_format_t',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#gac0ba34db6294e57c48437d45dabe3939',1,'r_isu_api.h']]],
   ['isu_5fdata_5fswap_5ft',['isu_data_swap_t',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga7c214f0e1e718c86124435897b34eb58',1,'r_isu_api.h']]],
   ['isu_5fstate_5ft',['isu_state_t',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga811a3c362886d58bd7a3faad1dca3a2a',1,'r_isu_api.h']]]

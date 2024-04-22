@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -205,6 +205,8 @@ Functions</h2></td></tr>
 <tr class="separator:gad2ded52ed898f2826dc446495dbd73d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8d763f54ace7c6464bf8317ee9feb749"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga8d763f54ace7c6464bf8317ee9feb749">R_BSP_CACHE_CleanInvalidateRange</a> (uint64_t base_address, uint64_t length)</td></tr>
 <tr class="separator:ga8d763f54ace7c6464bf8317ee9feb749"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga896cbfb6fccbe29c68482bf92df6fcce"><td class="memItemLeft" align="right" valign="top">__STATIC_INLINE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga896cbfb6fccbe29c68482bf92df6fcce">R_BSP_TLB_Invalidate</a> (void)</td></tr>
+<tr class="separator:ga896cbfb6fccbe29c68482bf92df6fcce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga73859f9b8df6981b869024d0b9a86bdb"><td class="memItemLeft" align="right" valign="top">BSP_TFU_INLINE float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga73859f9b8df6981b869024d0b9a86bdb">__sinf</a> (float angle)</td></tr>
 <tr class="separator:ga73859f9b8df6981b869024d0b9a86bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga64ff048b8398edee6c87652cce7553fd"><td class="memItemLeft" align="right" valign="top">BSP_TFU_INLINE float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___b_s_p___m_c_u.html#ga64ff048b8398edee6c87652cce7553fd">__cosf</a> (float angle)</td></tr>
@@ -1131,7 +1133,7 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set a clock frequency.</p>
+<p>DEPRECATED: Set a clock frequency.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">clock</td><td>Element number of the array that defines the frequency of each clock. </td></tr>
@@ -1441,6 +1443,26 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="ga896cbfb6fccbe29c68482bf92df6fcce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga896cbfb6fccbe29c68482bf92df6fcce">&#9670;&nbsp;</a></span>R_BSP_TLB_Invalidate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__STATIC_INLINE void R_BSP_TLB_Invalidate </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>TLB Invalidate All, EL3</p>
+<p>Invalidates cached copies of translation table entries from TLBs </p>
+
+</div>
+</div>
 <a id="ga73859f9b8df6981b869024d0b9a86bdb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga73859f9b8df6981b869024d0b9a86bdb">&#9670;&nbsp;</a></span>__sinf()</h2>
 
@@ -1696,7 +1718,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

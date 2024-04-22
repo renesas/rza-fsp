@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v2.0.2</span>
+   &#160;<span id="projectnumber">Release v3.0.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -170,12 +170,7 @@ $(document).ready(function(){initNavTree('group___e_x_t_e_r_n_a_l___i_r_q___a_p_
 <p>Interface for detecting external interrupts. </p>
 <h1><a class="anchor" id="EXTERNAL_IRQ_API_Summary"></a>
 Summary</h1>
-<p>The External IRQ Interface is for configuring interrupts to fire when a trigger condition is detected on an external IRQ pin.</p>
-<p>The External IRQ Interface can be implemented by:</p><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html">External IRQ (r_intc_nmi)</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html">External IRQ (r_intc_irq)</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html">External IRQ (r_intc_tint)</a> </li>
-</ul>
+<p>The External IRQ Interface is for configuring interrupts to fire when a trigger condition is detected on an external IRQ pin. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -197,8 +192,8 @@ Typedefs</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga2d1960d763da14da209e16fbb972d57c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga2d1960d763da14da209e16fbb972d57c">external_irq_trigger_t</a> </td></tr>
 <tr class="separator:ga2d1960d763da14da209e16fbb972d57c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6f45dea9e9f4c275e5033d8023806d1c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c">external_irq_clk_source_div_t</a> </td></tr>
-<tr class="separator:ga6f45dea9e9f4c275e5033d8023806d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga739b3c56a0ebe492581dc75c41fd1627"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga739b3c56a0ebe492581dc75c41fd1627">external_irq_clock_source_div_t</a> </td></tr>
+<tr class="separator:ga739b3c56a0ebe492581dc75c41fd1627"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
 <a name="structexternal__irq__callback__args__t" id="structexternal__irq__callback__args__t"></a>
@@ -256,16 +251,16 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="g
 <tr class="separator:a21219682d6af73d780e49a7e67e53f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a568e65aafea692dff0f64c3b66df2c2a"><td class="memItemLeft" align="right" valign="top"><a id="a568e65aafea692dff0f64c3b66df2c2a"></a>
 IRQn_Type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a568e65aafea692dff0f64c3b66df2c2a">irq</a></td></tr>
-<tr class="memdesc:a568e65aafea692dff0f64c3b66df2c2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">GIC interrupt number assigned to this instance. <br /></td></tr>
+<tr class="memdesc:a568e65aafea692dff0f64c3b66df2c2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interrupt number assigned to this instance. <br /></td></tr>
 <tr class="separator:a568e65aafea692dff0f64c3b66df2c2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9c027f165cdd6273959c0338cfb212d"><td class="memItemLeft" align="right" valign="top"><a id="ac9c027f165cdd6273959c0338cfb212d"></a>
 <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga2d1960d763da14da209e16fbb972d57c">external_irq_trigger_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ac9c027f165cdd6273959c0338cfb212d">trigger</a></td></tr>
 <tr class="memdesc:ac9c027f165cdd6273959c0338cfb212d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger setting. <br /></td></tr>
 <tr class="separator:ac9c027f165cdd6273959c0338cfb212d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67f5f231d026357697b6a20d68b559ff"><td class="memItemLeft" align="right" valign="top"><a id="a67f5f231d026357697b6a20d68b559ff"></a>
-<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c">external_irq_clk_source_div_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a67f5f231d026357697b6a20d68b559ff">clk_source_div</a></td></tr>
-<tr class="memdesc:a67f5f231d026357697b6a20d68b559ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digital filter clock divisor setting. <br /></td></tr>
-<tr class="separator:a67f5f231d026357697b6a20d68b559ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada84d3b2cc9231ba2c74852da2723482"><td class="memItemLeft" align="right" valign="top"><a id="ada84d3b2cc9231ba2c74852da2723482"></a>
+<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga739b3c56a0ebe492581dc75c41fd1627">external_irq_clock_source_div_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ada84d3b2cc9231ba2c74852da2723482">clock_source_div</a></td></tr>
+<tr class="memdesc:ada84d3b2cc9231ba2c74852da2723482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digital filter clock divisor setting. <br /></td></tr>
+<tr class="separator:ada84d3b2cc9231ba2c74852da2723482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa77181dcffe927e006c2ed112c1a62ad"><td class="memItemLeft" align="right" valign="top"><a id="aa77181dcffe927e006c2ed112c1a62ad"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#aa77181dcffe927e006c2ed112c1a62ad">filter_enable</a></td></tr>
 <tr class="memdesc:aa77181dcffe927e006c2ed112c1a62ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digital filter enable/disable setting. <br /></td></tr>
@@ -333,8 +328,8 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <tr class="separator:a9cb81e4b2d313458c747cdc401179a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ecb5664f627d1b731a4fd0a74e5f2bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a6ecb5664f627d1b731a4fd0a74e5f2bc">disable</a> )(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga3dc909b21d5ebe0d1d671221e4190246">external_irq_ctrl_t</a> *const p_ctrl)</td></tr>
 <tr class="separator:a6ecb5664f627d1b731a4fd0a74e5f2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a407b8899a042692026e65d98535f6e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a4a407b8899a042692026e65d98535f6e">callbackSet</a> )(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga3dc909b21d5ebe0d1d671221e4190246">external_irq_ctrl_t</a> *const p_api_ctrl, void(*p_callback)(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *const p_callback_memory)</td></tr>
-<tr class="separator:a4a407b8899a042692026e65d98535f6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36986e495396d0adb98953771245d6cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#a36986e495396d0adb98953771245d6cd">callbackSet</a> )(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga3dc909b21d5ebe0d1d671221e4190246">external_irq_ctrl_t</a> *const p_ctrl, void(*p_callback)(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *const p_callback_memory)</td></tr>
+<tr class="separator:a36986e495396d0adb98953771245d6cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0c4d6063af093a3a19a63924aae61ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ad0c4d6063af093a3a19a63924aae61ac">close</a> )(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga3dc909b21d5ebe0d1d671221e4190246">external_irq_ctrl_t</a> *const p_ctrl)</td></tr>
 <tr class="separator:ad0c4d6063af093a3a19a63924aae61ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -350,12 +345,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initial configuration. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html#ga22b4030a01652c42e160e109c5772beb">R_INTC_NMI_ExternalIrqOpen()</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html#ga40d3aae06a43698ad595661ba287c279">R_INTC_IRQ_ExternalIrqOpen()</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html#gab01a60894ce57e9089bbdff30d38334f">R_INTC_TINT_ExternalIrqOpen()</a></li>
-</ul>
-</dd></dl>
+<p>Initial configuration.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">p_ctrl</td><td>Pointer to control block. Must be declared by user. Value set here. </td></tr>
@@ -377,12 +367,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enable callback when an external trigger condition occurs. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html#ga037bcbc05ae66d3cab50fcc159f04d52">R_INTC_NMI_ExternalIrqEnable()</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html#ga72be4cc60c1dbd8e2924568cf4cfb7ba">R_INTC_IRQ_ExternalIrqEnable()</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html#ga61a1dc7902ccb186b915b33b5d38a03d">R_INTC_TINT_ExternalIrqEnable()</a></li>
-</ul>
-</dd></dl>
+<p>Enable callback when an external trigger condition occurs.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in Open call for this external interrupt. </td></tr>
@@ -403,12 +388,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Disable callback when external trigger condition occurs. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html#ga213e64c8943eae69a17b77273c459ff2">R_INTC_NMI_ExternalIrqDisable()</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html#gab5e021772ee4e4e203ae1f6190a690e0">R_INTC_IRQ_ExternalIrqDisable()</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html#gad244de976bca311f089962b82d3f850b">R_INTC_TINT_ExternalIrqDisable()</a></li>
-</ul>
-</dd></dl>
+<p>Disable callback when external trigger condition occurs.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in Open call for this external interrupt. </td></tr>
@@ -418,26 +398,21 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 
 </div>
 </div>
-<a id="a4a407b8899a042692026e65d98535f6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a407b8899a042692026e65d98535f6e">&#9670;&nbsp;</a></span>callbackSet</h2>
+<a id="a36986e495396d0adb98953771245d6cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36986e495396d0adb98953771245d6cd">&#9670;&nbsp;</a></span>callbackSet</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  external_irq_api_t::callbackSet) (<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga3dc909b21d5ebe0d1d671221e4190246">external_irq_ctrl_t</a> *const p_api_ctrl, void( *p_callback)(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *const p_callback_memory)</td>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>(*  external_irq_api_t::callbackSet) (<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga3dc909b21d5ebe0d1d671221e4190246">external_irq_ctrl_t</a> *const p_ctrl, void(*p_callback)(<a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#structexternal__irq__callback__args__t">external_irq_callback_args_t</a> *const p_callback_memory)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Specify callback function and optional context pointer and working memory pointer. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html#ga52b9b9595c41fcfef9abf3ed0dc05a14">R_INTC_NMI_ExternalIrqCallbackSet()</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html#gaf37cb360e6d2cf2a02fd27351f03c9b4">R_INTC_IRQ_ExternalIrqCallbackSet()</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html#ga3237412fedf68db30556824a96b2ecb6">R_INTC_TINT_ExternalIrqCallbackSet()</a></li>
-</ul>
-</dd></dl>
+<p>Specify callback function and optional context pointer and working memory pointer.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to the Extneral IRQ control block. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Pointer to the External IRQ control block. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_callback</td><td>Callback function </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_context</td><td>Pointer to send to callback function </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p_working_memory</td><td>Pointer to volatile memory where callback structure can be allocated. Callback arguments allocated here are only valid during the callback. </td></tr>
@@ -458,12 +433,7 @@ void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Allow driver to be reconfigured. May reduce power consumption. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html#ga87b6b8010db2fcb6e7e9de9e42b5306a">R_INTC_NMI_ExternalIrqClose()</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html#gace7f959c11f27f74e34702079aec5fac">R_INTC_IRQ_ExternalIrqClose()</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html#gaafe713f813011a846a754d9137fda61b">R_INTC_TINT_ExternalIrqClose()</a></li>
-</ul>
-</dd></dl>
+<p>Allow driver to be reconfigured. May reduce power consumption.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">p_ctrl</td><td>Control block set in Open call for this external interrupt. </td></tr>
@@ -524,12 +494,7 @@ Pointer to the API structure for this instance. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>External IRQ control block. Allocate an instance specific control block to pass into the external IRQ API calls. </p><dl class="section user"><dt>Implemented as</dt><dd><ul>
-<li><a class="el" href="group___i_n_t_c___n_m_i.html#structintc__nmi__instance__ctrl__t">intc_nmi_instance_ctrl_t</a></li>
-<li><a class="el" href="group___i_n_t_c___i_r_q.html#structintc__irq__instance__ctrl__t">intc_irq_instance_ctrl_t</a></li>
-<li><a class="el" href="group___i_n_t_c___t_i_n_t.html#structintc__tint__instance__ctrl__t">intc_tint_instance_ctrl_t</a> </li>
-</ul>
-</dd></dl>
+<p>External IRQ control block. Allocate an instance specific control block to pass into the external IRQ API calls. </p>
 
 </div>
 </div>
@@ -555,30 +520,32 @@ Pointer to the API structure for this instance. </td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga2d1960d763da14da209e16fbb972d57cae0ae8739569bb4721c7ed289397b9c4f"></a>EXTERNAL_IRQ_TRIG_LEVEL_LOW&#160;</td><td class="fielddoc"><p>Low level trigger. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga2d1960d763da14da209e16fbb972d57ca95c925c82cb30d0d54b8de8981c0cdd7"></a>EXTERNAL_IRQ_TRIG_LEVEL_HIGH&#160;</td><td class="fielddoc"><p>High level trigger. </p>
+</td></tr>
 </table>
 
 </div>
 </div>
-<a id="ga6f45dea9e9f4c275e5033d8023806d1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6f45dea9e9f4c275e5033d8023806d1c">&#9670;&nbsp;</a></span>external_irq_clk_source_div_t</h2>
+<a id="ga739b3c56a0ebe492581dc75c41fd1627"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga739b3c56a0ebe492581dc75c41fd1627">&#9670;&nbsp;</a></span>external_irq_clock_source_div_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga6f45dea9e9f4c275e5033d8023806d1c">external_irq_clk_source_div_t</a></td>
+          <td class="memname">enum <a class="el" href="group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#ga739b3c56a0ebe492581dc75c41fd1627">external_irq_clock_source_div_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>External IRQ input pin digital filtering sample clock divisor settings. The digital filter rejects trigger conditions that are shorter than 3 periods of the filter clock. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga6f45dea9e9f4c275e5033d8023806d1ca3fb5a9b7bb9b2bea52b1530e6c109e35"></a>EXTERNAL_IRQ_CLK_SOURCE_DIV_1&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 1. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga739b3c56a0ebe492581dc75c41fd1627a9ee6a36c6bbdc9b1069bd5e06f1a192c"></a>EXTERNAL_IRQ_CLOCK_SOURCE_DIV_1&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 1. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga6f45dea9e9f4c275e5033d8023806d1ca1410fd90337fc1f10823958c1bf392fd"></a>EXTERNAL_IRQ_CLK_SOURCE_DIV_8&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 8. </p>
+<tr><td class="fieldname"><a id="gga739b3c56a0ebe492581dc75c41fd1627ab1c40a1e2d013685daa2fcacceaabc1c"></a>EXTERNAL_IRQ_CLOCK_SOURCE_DIV_8&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 8. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga6f45dea9e9f4c275e5033d8023806d1cad75058ebcc84ca9dd929d6d6059b0c2a"></a>EXTERNAL_IRQ_CLK_SOURCE_DIV_32&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 32. </p>
+<tr><td class="fieldname"><a id="gga739b3c56a0ebe492581dc75c41fd1627ab11f45aa743a808016349e025dfaeab6"></a>EXTERNAL_IRQ_CLOCK_SOURCE_DIV_32&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 32. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga6f45dea9e9f4c275e5033d8023806d1ca9e9f3234c8d045b869b6de1d25ae68d9"></a>EXTERNAL_IRQ_CLK_SOURCE_DIV_64&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 64. </p>
+<tr><td class="fieldname"><a id="gga739b3c56a0ebe492581dc75c41fd1627a3a5c0edf12dd982f046de8160799eb22"></a>EXTERNAL_IRQ_CLOCK_SOURCE_DIV_64&#160;</td><td class="fielddoc"><p>Filter using clock source divided by 64. </p>
 </td></tr>
 </table>
 
@@ -590,7 +557,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v2.0.2 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.0.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

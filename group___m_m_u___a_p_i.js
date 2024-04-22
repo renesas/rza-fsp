@@ -1,13 +1,15 @@
 var group___m_m_u___a_p_i =
 [
-    [ "mmu_cfg_t", "group___m_m_u___a_p_i.html#structmmu__cfg__t", null ],
+    [ "mmu_cfg_t", "group___m_m_u___a_p_i.html#structmmu__cfg__t", [
+      [ "p_extend", "group___m_m_u___a_p_i.html#a7a3a5bf2d47327a7f68a7952ee784732", null ]
+    ] ],
     [ "mmu_api_t", "group___m_m_u___a_p_i.html#structmmu__api__t", [
       [ "open", "group___m_m_u___a_p_i.html#a6ebad907515bb7ce1731559bfc83f98d", null ],
       [ "close", "group___m_m_u___a_p_i.html#a4fe3b9d0cbe3cb5d9f4c269a82e7c8f0", null ],
-      [ "allocateTable", "group___m_m_u___a_p_i.html#a3160d7a25d8f666e2e9d6a6e9fac35a1", null ],
-      [ "writeTableLink", "group___m_m_u___a_p_i.html#ab5d69874bbded0217170facd020cce3c", null ],
-      [ "writeTable", "group___m_m_u___a_p_i.html#a0a63a602130dae718f45cf9d782270fa", null ],
-      [ "writeTableFault", "group___m_m_u___a_p_i.html#abf1953dd2e312287306d7db65fae2f7b", null ]
+      [ "allocateTable", "group___m_m_u___a_p_i.html#a542cb5c59baa02e1a14b298dcaad91ed", null ],
+      [ "writeTableLink", "group___m_m_u___a_p_i.html#aafbac004925a339d3f2623e8f3d07bee", null ],
+      [ "writeTable", "group___m_m_u___a_p_i.html#a5bc2265826a9badac98d298658ef6918", null ],
+      [ "writeTableFault", "group___m_m_u___a_p_i.html#a1fc3446c1f69eb435aedccb3ac98f54c", null ]
     ] ],
     [ "mmu_instance_t", "group___m_m_u___a_p_i.html#structmmu__instance__t", [
       [ "p_ctrl", "group___m_m_u___a_p_i.html#a85c9d73fc89836dac83ca1fbab2f0192", null ],
