@@ -57,9 +57,9 @@
   #include "ux_user.h"
  #endif
 
-#if USB_CFG_HOST_MODE
- #include "rm_usbx_port_cfg.h"
-#endif
+ #if USB_CFG_HOST_MODE
+  #include "rm_usbx_port_cfg.h"
+ #endif
 
 /* Include library header files.  */
 
@@ -115,7 +115,7 @@ typedef long SLONG;
  #endif
 
  #ifndef UX_MAX_CLASS_DRIVER
-  #define UX_MAX_CLASS_DRIVER                    2
+  #define UX_MAX_CLASS_DRIVER                    8
  #endif
 
  #ifndef UX_MAX_SLAVE_CLASS_DRIVER
@@ -139,7 +139,7 @@ typedef long SLONG;
  #endif
 
  #ifndef UX_MAX_ISO_TD
-  #define UX_MAX_ISO_TD                          8
+  #define UX_MAX_ISO_TD                          128
  #endif
 
  #ifndef UX_HOST_ENUM_THREAD_STACK_SIZE

@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale.  Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability.  No license, express or implied, to any
- * intellectual property right is granted by Renesas.  This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION.  RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /******************************************************************************
  * Includes   <System Includes> , "Project Includes"
@@ -429,9 +415,10 @@ void usb_hhub_registration (usb_utr_t * ptr, usb_hcdreg_t * callback)
  *               : usb_cb_t     complete    : callback function
  * Return value    : uint16_t                 : DONE/ERROR
  ******************************************************************************/
-uint16_t usb_hhub_get_hub_information (usb_utr_t * ptr, uint16_t hubaddr, usb_cb_t complete)
+usb_er_t usb_hhub_get_hub_information (usb_utr_t * ptr, uint16_t hubaddr, usb_cb_t complete)
 {
     usb_er_t qerr;
+    usb_er_t retval = USB_OK;
 
     /* Request */
     g_usb_shhub_class_request[ptr->ip][0] = USB_GET_DESCRIPTOR | USB_DEV_TO_HOST | USB_CLASS | USB_DEVICE;
@@ -457,41 +444,47 @@ uint16_t usb_hhub_get_hub_information (usb_utr_t * ptr, uint16_t hubaddr, usb_cb
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
-        return USB_HUB_QOVR;
+        retval = USB_HUB_QOVR;
+
+        return retval;
     }
    #else                               /* #if USB_IP_EHCI_OHCI == 1 */
     qerr = usb_hstd_transfer_start_req(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
-        return USB_HUB_QOVR;
+        retval = USB_HUB_QOVR;
+
+        return retval;
     }
    #endif                              /* #if USB_IP_EHCI_OHCI == 1 */
 
     if (USB_OK == qerr)
     {
-        usb_cpu_delay_xms(1);
+   #if (BSP_CFG_RTOS != 1)
+        retval = class_trans_wait_tmo(ptr, (uint16_t) USB_VALUE_3000);
+   #endif
     }
     else
     {
-        return USB_ERROR;
+        retval = USB_ERROR;
     }
   #else                                /* (BSP_CFG_RTOS == 2) */
    #if USB_IP_EHCI_OHCI == 1
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
-        return USB_HUB_QOVR;
+        retval = USB_HUB_QOVR;
     }
    #else                               /* #if USB_IP_EHCI_OHCI == 1 */
     qerr = usb_hstd_transfer_start_req(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
-        return USB_HUB_QOVR;
+        retval = USB_HUB_QOVR;
     }
    #endif                              /* #if USB_IP_EHCI_OHCI == 1 */
   #endif                               /* (BSP_CFG_RTOS == 2) */
 
-    return USB_OK;
+    return retval;
 }
 
 /******************************************************************************
@@ -1054,7 +1047,9 @@ static void usb_hhub_enumeration (usb_clsinfo_t * ptr)
             /* Get HUB descriptor */
             g_usb_shhub_process[ptr->ip] = USB_MSG_CLS_CHECKREQUEST;
             checkerr =
-                usb_hhub_get_hub_information(ptr, g_usb_shhub_dev_addr[ptr->ip], usb_hhub_class_request_complete);
+                (uint16_t) usb_hhub_get_hub_information(ptr,
+                                                        g_usb_shhub_dev_addr[ptr->ip],
+                                                        usb_hhub_class_request_complete);
 
             /* Submit overlap error */
             if (USB_HUB_QOVR == checkerr)
@@ -2497,7 +2492,7 @@ static void usb_hhub_port_reset (usb_utr_t * ptr, uint16_t hubaddr, uint16_t por
 static void usb_hhub_check_class (usb_utr_t * ptr, uint16_t ** table)
 {
   #if (BSP_CFG_RTOS != 0)
-    uint16_t retval;
+    usb_er_t retval;
     uint8_t  string;
    #if USB_IP_EHCI_OHCI == 1
     usb_er_t err;
@@ -2708,7 +2703,7 @@ static void usb_hhub_check_class (usb_utr_t * ptr, uint16_t ** table)
     g_usb_shhub_info_data[ptr->ip][g_usb_shhub_dev_addr[ptr->ip]].port_num = g_usb_hhub_descriptor[ptr->ip][2];
 
     /* return to MGR */
-    usb_hstd_return_enu_mgr(ptr, retval);
+    usb_hstd_return_enu_mgr(ptr, (uint16_t) retval);
   #else                                /* (BSP_CFG_RTOS == 2) */
     usb_clsinfo_t * p_blf;
     usb_clsinfo_t * cp;

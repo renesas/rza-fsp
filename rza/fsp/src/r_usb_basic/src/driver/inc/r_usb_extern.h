@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2023] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale.  Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability.  No license, express or implied, to any
- * intellectual property right is granted by Renesas.  This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION.  RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 #ifndef R_USB_EXTERN_H
 #define R_USB_EXTERN_H
 
@@ -363,7 +349,7 @@ void     usb_cstd_clr_pipe_cnfg(usb_utr_t * ptr, uint16_t pipe_no);
 void     usb_cstd_set_nak(usb_utr_t * ptr, uint16_t pipe);
 uint16_t usb_cstd_get_buf_size(usb_utr_t * ptr, uint16_t pipe);
 
-#if ((USB_CFG_MODE &USB_CFG_HOST) == USB_CFG_HOST)
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 uint8_t    * usb_hstd_write_fifo(usb_utr_t * ptr, uint16_t count, uint16_t pipemode, uint8_t * write_p);
 uint8_t    * usb_hstd_read_fifo(usb_utr_t * ptr, uint16_t count, uint16_t pipemode, uint8_t * read_p);
 void         usb_hstd_forced_termination(usb_utr_t * ptr, uint16_t pipe, uint16_t status);
@@ -372,7 +358,7 @@ void         usb_hstd_nrdy_endprocess(usb_utr_t * ptr, uint16_t pipe);
 
 #endif                                 /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
-#if ((USB_CFG_MODE &USB_CFG_PERI) == USB_CFG_PERI)
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 uint8_t * usb_pstd_write_fifo(uint16_t count, uint16_t pipemode, uint8_t * write_p, usb_utr_t * p_utr);
 uint8_t * usb_pstd_read_fifo(uint16_t count, uint16_t pipemode, uint8_t * read_p, usb_utr_t * p_utr);
 void      usb_pstd_forced_termination(uint16_t pipe, uint16_t status, usb_utr_t * p_utr);
@@ -534,7 +520,7 @@ uint16_t usb_hhub_check_descriptor(uint8_t * table, uint16_t spec);
 void     usb_hhub_open(usb_utr_t * ptr, uint16_t devaddr, uint16_t data2);
 void     usb_hhub_close(usb_utr_t * ptr, uint16_t hubaddr, uint16_t data2);
 void     usb_hhub_registration(usb_utr_t * ptr, usb_hcdreg_t * callback);
-uint16_t usb_hhub_get_hub_information(usb_utr_t * ptr, uint16_t hubaddr, usb_cb_t complete);
+usb_er_t usb_hhub_get_hub_information(usb_utr_t * ptr, uint16_t hubaddr, usb_cb_t complete);
 uint16_t usb_hhub_get_port_information(usb_utr_t * ptr, uint16_t hubaddr, uint16_t port, usb_cb_t complete);
 void     usb_hhub_task(void);
 uint16_t usb_hhub_get_string_descriptor1(usb_utr_t * ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete);
