@@ -121,5 +121,6 @@ var searchData=
   ['mtu3_5ftcnt_5fclear_5ftgrb',['MTU3_TCNT_CLEAR_TGRB',['../group___m_t_u3.html#gga031ed640883cba19cb1243d46ea54709a7ab7fef8e1167140423f0d3bd325853b',1,'r_mtu3.h']]],
   ['multicast',['multicast',['../group___e_t_h_e_r___a_p_i.html#ad157df08c8edb7dac37ee3a05229641c',1,'ether_cfg_t']]],
   ['mute',['mute',['../group___i2_s___a_p_i.html#ade8bbdbcd534fb6c85d54f770b851d5f',1,'i2s_api_t']]],
-  ['modules',['Modules',['../group___r_e_n_e_s_a_s___m_o_d_u_l_e_s.html',1,'']]]
+  ['modules',['Modules',['../group___r_e_n_e_s_a_s___m_o_d_u_l_e_s.html',1,'']]],
+  ['monitoring',['Monitoring',['../group___r_e_n_e_s_a_s___m_o_n_i_t_o_r_i_n_g___m_o_d_u_l_e_s.html',1,'']]]
 ];

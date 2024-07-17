@@ -16,7 +16,7 @@ var searchData=
   ['bsp_5fethernet_5fchannel_5f0',['BSP_ETHERNET_CHANNEL_0',['../group___b_s_p___i_o.html#gga7a9217abd402bee215bab2874db8dbcdadf0b3becd8ccf61e2336c87d51ebdb92',1,'bsp_io.h']]],
   ['bsp_5fethernet_5fchannel_5f1',['BSP_ETHERNET_CHANNEL_1',['../group___b_s_p___i_o.html#gga7a9217abd402bee215bab2874db8dbcdac1123d8c4918b71283ddd440f9f6b679',1,'bsp_io.h']]],
   ['bsp_5fethernet_5fmode_5fmii',['BSP_ETHERNET_MODE_MII',['../group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a96490fa59d311791525aa664edd21abd',1,'bsp_io.h']]],
-  ['bsp_5fethernet_5fmode_5frmii',['BSP_ETHERNET_MODE_RMII',['../group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a2a654e5a38c212f306093f5e60218a22',1,'bsp_io.h']]],
+  ['bsp_5fethernet_5fmode_5frgmii',['BSP_ETHERNET_MODE_RGMII',['../group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a98278ff23704409bc902d440a42d2771',1,'bsp_io.h']]],
   ['bsp_5fethernet_5fvoltage_5f18',['BSP_ETHERNET_VOLTAGE_18',['../group___b_s_p___i_o.html#gga0eaa3fb56a6c45bb8725d7ccc3c7c67ea188654c0888f5e6daa99f0f456128ce4',1,'bsp_io.h']]],
   ['bsp_5fethernet_5fvoltage_5f25',['BSP_ETHERNET_VOLTAGE_25',['../group___b_s_p___i_o.html#gga0eaa3fb56a6c45bb8725d7ccc3c7c67eaaadd11c1476569d301871c45eae8d9eb',1,'bsp_io.h']]],
   ['bsp_5fethernet_5fvoltage_5f33',['BSP_ETHERNET_VOLTAGE_33',['../group___b_s_p___i_o.html#gga0eaa3fb56a6c45bb8725d7ccc3c7c67ea74ec767baac2681f30afba30a09b80f5',1,'bsp_io.h']]],

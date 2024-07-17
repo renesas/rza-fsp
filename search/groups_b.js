@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['rza3ul',['RZA3UL',['../group___b_s_p___m_p_u___r_z_a3_u_l.html',1,'']]],
-  ['renesas_20serial_20peripheral_20interface_20_28r_5frspi_29',['Renesas Serial Peripheral Interface (r_rspi)',['../group___r_s_p_i.html',1,'']]]
+  ['quad_20serial_20peripheral_20interface_20flash_20_28r_5fspibsc_29',['Quad Serial Peripheral Interface Flash (r_spibsc)',['../group___s_p_i_b_s_c.html',1,'']]]
 ];

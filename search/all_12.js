@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['timers',['Timers',['../group___r_e_n_e_s_a_s___t_i_m_e_r_s___m_o_d_u_l_e_s.html',1,'']]],
+  ['transfer',['Transfer',['../group___r_e_n_e_s_a_s___t_r_a_n_s_f_e_r___m_o_d_u_l_e_s.html',1,'']]],
   ['tclk_5fmiss',['tclk_miss',['../group___c_r_u.html#a241902bdc7fb7ab7642c543a98339555',1,'cru_extended_cfg_t']]],
   ['tclk_5fprepare',['tclk_prepare',['../group___c_r_u.html#a66f719f81e7c63022a97ac377bd04439',1,'cru_extended_cfg_t']]],
   ['tclk_5fsettle',['tclk_settle',['../group___c_r_u.html#a8d9f0d07e2c9d5a594d979cd77cf0284',1,'cru_extended_cfg_t']]],

@@ -305,6 +305,7 @@ var searchData=
   ['refresh',['refresh',['../group___w_d_t___a_p_i.html#a0d1533024396b8280b7240c781a09a44',1,'wdt_api_t']]],
   ['reload',['reload',['../group___t_r_a_n_s_f_e_r___a_p_i.html#a3af1d98295baf9bd92251f55c95f8868',1,'transfer_api_t']]],
   ['remotewakeup',['remoteWakeup',['../group___u_s_b___a_p_i.html#a176bf067655f5a302737da5be82670d7',1,'usb_api_t']]],
+  ['rtos',['RTOS',['../group___r_e_n_e_s_a_s___r_t_o_s___m_o_d_u_l_e_s.html',1,'']]],
   ['reset',['reset',['../group___t_i_m_e_r___a_p_i.html#ab1c62157861ef1ea8393bb3cafd72102',1,'timer_api_t::reset()'],['../group___t_r_a_n_s_f_e_r___a_p_i.html#a9c096c8d0e78dfbf8b3809a4598b8619',1,'transfer_api_t::reset()']]],
   ['reset_5fcontrol',['reset_control',['../group___w_d_t___a_p_i.html#aaa3b53f7c79a5f385cc6a8f987623b10',1,'wdt_cfg_t']]],
   ['resolution',['resolution',['../group___a_d_c___a_p_i.html#a6926363295e23a6121e91095b9f6e28d',1,'adc_cfg_t']]],

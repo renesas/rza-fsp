@@ -187,7 +187,7 @@ var group___b_s_p___i_o =
       [ "BSP_I3C_VOLTAGE_12", "group___b_s_p___i_o.html#ggac4cc2c33eed8a21f90fac99d323a2b85a341c63122ad909d8ea4a615bdb3a9f8d", null ]
     ] ],
     [ "bsp_ethernet_mode_t", "group___b_s_p___i_o.html#ga96797df60510eb9bc4a73613de51fae5", [
-      [ "BSP_ETHERNET_MODE_RMII", "group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a2a654e5a38c212f306093f5e60218a22", null ],
+      [ "BSP_ETHERNET_MODE_RGMII", "group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a98278ff23704409bc902d440a42d2771", null ],
       [ "BSP_ETHERNET_MODE_MII", "group___b_s_p___i_o.html#gga96797df60510eb9bc4a73613de51fae5a96490fa59d311791525aa664edd21abd", null ]
     ] ],
     [ "bsp_i3c_mode_t", "group___b_s_p___i_o.html#gaf63bd80b976004bd5ed7fd251fcdf1b4", [

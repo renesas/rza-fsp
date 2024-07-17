@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['quad_20serial_20peripheral_20interface_20flash_20_28r_5fspibsc_29',['Quad Serial Peripheral Interface Flash (r_spibsc)',['../group___s_p_i_b_s_c.html',1,'']]]
+  ['networking',['Networking',['../group___r_e_n_e_s_a_s___n_e_t_w_o_r_k_i_n_g___m_o_d_u_l_e_s.html',1,'']]]
 ];

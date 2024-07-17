@@ -196,5 +196,6 @@ var searchData=
   ['cru_5finterrupt_5fenable_5ft',['cru_interrupt_enable_t',['../group___c_r_u.html#gac40390adf960f8752130b9be958ff46b',1,'r_cru.h']]],
   ['cycle_5fend_5fipl',['cycle_end_ipl',['../group___t_i_m_e_r___a_p_i.html#a07302c8caf4d9b811e7350a96615d98d',1,'timer_cfg_t']]],
   ['cycle_5fend_5firq',['cycle_end_irq',['../group___t_i_m_e_r___a_p_i.html#a37fb0f08b16d9e2408909c4f2cc7acbb',1,'timer_cfg_t']]],
+  ['connectivity',['Connectivity',['../group___r_e_n_e_s_a_s___c_o_n_n_e_c_t_i_v_i_t_y___m_o_d_u_l_e_s.html',1,'']]],
   ['common_20error_20codes',['Common Error Codes',['../group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html',1,'']]]
 ];

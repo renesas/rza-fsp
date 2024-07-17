@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['storage',['Storage',['../group___r_e_n_e_s_a_s___s_t_o_r_a_g_e___m_o_d_u_l_e_s.html',1,'']]],
+  ['system',['System',['../group___r_e_n_e_s_a_s___s_y_s_t_e_m___m_o_d_u_l_e_s.html',1,'']]],
   ['sd_2fmmc_20block_20media_20implementation_20_28rm_5fblock_5fmedia_5fsdmmc_29',['SD/MMC Block Media Implementation (rm_block_media_sdmmc)',['../group___r_m___b_l_o_c_k___m_e_d_i_a___s_d_m_m_c.html',1,'']]],
   ['sampling_5ftime',['sampling_time',['../group___a_d_c.html#af94b7b8c31dab35dcb7bf1bfe1670d6d',1,'adc_c_extended_cfg_t']]],
   ['scan_5fend_5fb_5fipl',['scan_end_b_ipl',['../group___a_d_c___a_p_i.html#ab82e85d4750158ef07146b6c8145e347',1,'adc_cfg_t']]],
