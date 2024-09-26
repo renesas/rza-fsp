@@ -332,7 +332,7 @@ fsp_err_t R_SCI_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * co
     /* Negate driver enable if RS-485 mode is enabled. */
     r_sci_negate_de_pin(p_ctrl);
 
-    /* Enable the SCI channel and reset the registers to their initial state. */
+    /* Enable the SCI */
     R_BSP_MODULE_START(FSP_IP_SCI, p_cfg->channel);
 
     /* Initialize registers as defined in section "SCI Initialization (Asynchronous Mode)" in the user's manual

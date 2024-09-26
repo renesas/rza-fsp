@@ -9,7 +9,7 @@
 
 /*******************************************************************************************************************//**
  * @defgroup RM_BLOCK_MEDIA_API Block Media Interface
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @brief Interface for block media memory access
  *
  * @section RM_BLOCK_MEDIA_API_SUMMARY Summary

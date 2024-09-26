@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_GRAPHICS_INTERFACES
  * @defgroup IMAGE_SCALING_API Image Scaling Interface
  * @brief Interface for image scaling.
  *

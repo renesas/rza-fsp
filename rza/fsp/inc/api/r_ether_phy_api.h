@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_NETWORKING_INTERFACES
  * @defgroup ETHER_PHY_API Ethernet PHY Interface
  * @brief Interface for Ethernet PHY functions.
  *

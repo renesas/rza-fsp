@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_SYSTEM_INTERFACES
  * @defgroup MMU_API Memory Managing Unit Interface
  * @brief Interface for Memory Managing Unit(MMU) functions.
  *

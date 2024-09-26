@@ -1026,8 +1026,11 @@ fsp_err_t R_CANFD_InfoGet (can_ctrl_t * const p_api_ctrl, can_info_t * const p_i
                              (CANFD_PRV_CFDFESTS_RFXEMP_Msk | CANFD_PRV_CFDFESTS_CFXEMP_Msk);
 #endif
 
-    /* Clear error flags */
-    *(cfdcerfl_base[interlaced_channel]) &= ~((uint32_t) UINT16_MAX);
+    /* Clear error flags if the error IRQ is not enabled. */
+    if (p_ctrl->p_cfg->error_irq < 0)
+    {
+        *(cfdcerfl_base[interlaced_channel]) = 0;
+    }
 
     return FSP_SUCCESS;
 }

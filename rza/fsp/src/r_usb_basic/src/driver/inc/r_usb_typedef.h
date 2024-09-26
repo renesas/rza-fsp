@@ -99,6 +99,12 @@ typedef struct usb_utr
 #if USB_NUM_USBIP == 2
         usb_regadr1_t ipp1;                    /* USB module start address(USBA) */
 #endif                                         /* USB_NUM_USBIP == 2 */
+#if (BSP_CFG_RTOS == 1)                        /* Azure RTOS */
+ #if (defined(USB_CFG_PPRN_USE) || defined(USB_CFG_PCDC_USE))
+        uint32_t timeout;
+        uint8_t  is_timeout;
+ #endif /* define(USB_CFG_PPRN_USE) ||  defined(USB_CFG_PCDC_USE) */
+#endif                                 /* (BSP_CFG_RTOS == 1) */
     };
 } usb_message_t;
 

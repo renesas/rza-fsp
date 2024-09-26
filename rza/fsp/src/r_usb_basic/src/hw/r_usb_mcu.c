@@ -676,17 +676,30 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
          * b7 IEN7 Interrupt enable bit
          */
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-        R_BSP_IrqCfgEnable(cfg->irq_d0, cfg->ipl_d0, (void *) cfg); /* Enable D0FIFO interrupt */
+        if (cfg->irq_d0 >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->irq_d0, cfg->ipl_d0, (void *) cfg); /* Enable D0FIFO interrupt */
+        }
 
-        R_BSP_IrqCfgEnable(cfg->irq_d1, cfg->ipl_d1, (void *) cfg); /* Enable D1FIFO interrupt */
+        if (cfg->irq_d1 >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->irq_d1, cfg->ipl_d1, (void *) cfg); /* Enable D1FIFO interrupt */
+        }
 #endif  /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
 
 #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
-        R_BSP_IrqCfgEnable(cfg->irq_r, cfg->ipl_r, (void *) cfg);   /* USBR enable */
+        if (cfg->irq_r >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->irq_r, cfg->ipl_r, (void *) cfg); /* USBR enable */
+        }
 #endif /* BSP_MCU_GROUP_RZT2M */
-        R_BSP_IrqCfgEnable(cfg->irq, cfg->ipl, (void *) cfg);       /* USBI enable */
+        if (cfg->irq >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->irq, cfg->ipl, (void *) cfg); /* USBI enable */
+        }
+
 #if defined(BSP_MCU_GROUP_RZA3UL)
-        R_BSP_IrqCfgEnable(USB_VAL_124, cfg->ipl, (void *) cfg);    /* USBI enable */
+        R_BSP_IrqCfgEnable(USB_VAL_124, cfg->ipl, (void *) cfg);  /* USBI enable */
 #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     }
 
@@ -706,14 +719,23 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
          * b7 IEN7 Interrupt enable bit
          */
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-        R_BSP_IrqCfgEnable(cfg->hsirq_d0, cfg->hsipl_d0, (void *) cfg); /* Enable D0FIFO interrupt */
+        if (cfg->hsirq_d0 >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->hsirq_d0, cfg->hsipl_d0, (void *) cfg); /* Enable D0FIFO interrupt */
+        }
 
-        R_BSP_IrqCfgEnable(cfg->hsirq_d1, cfg->hsipl_d1, (void *) cfg); /* Enable D1FIFO interrupt */
+        if (cfg->hsirq_d1 >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->hsirq_d1, cfg->hsipl_d1, (void *) cfg); /* Enable D1FIFO interrupt */
+        }
  #endif /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
+        if (cfg->hsirq >= 0)
+        {
+            R_BSP_IrqCfgEnable(cfg->hsirq, cfg->hsipl, (void *) cfg); /* USBIR enable */
+        }
 
-        R_BSP_IrqCfgEnable(cfg->hsirq, cfg->hsipl, (void *) cfg);       /* USBIR enable */
  #if defined(BSP_MCU_GROUP_RZA3UL)
-        R_BSP_IrqCfgEnable(USB_VAL_129, cfg->hsipl, (void *) cfg);      /* USBI enable */
+        R_BSP_IrqCfgEnable(USB_VAL_129, cfg->hsipl, (void *) cfg);    /* USBI enable */
  #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
 #endif /* defined(BSP_MCU_GROUP_RA6M3) */
     }
@@ -791,7 +813,10 @@ void usb_cpu_int_enable (void)
      * b6 IEN6 Interrupt enable bit
      * b7 IEN7 Interrupt enable bit
      */
-    R_BSP_IrqCfgEnable(host_cfg->irq, host_cfg->ipl, host_cfg); /* USBI enable */
+    if (host_cfg->irq >= 0)
+    {
+        R_BSP_IrqCfgEnable(host_cfg->irq, host_cfg->ipl, host_cfg); /* USBI enable */
+    }
 
  #if defined(BSP_MCU_GROUP_RA6M3)
 
@@ -805,7 +830,10 @@ void usb_cpu_int_enable (void)
      * b6 IEN6 Interrupt enable bit
      * b7 IEN7 Interrupt enable bit
      */
-    R_BSP_IrqCfgEnable(host_cfg->hsirq, host_cfg->hsipl, host_cfg); /* USBIR enable */
+    if (host_cfg->hsirq >= 0)
+    {
+        R_BSP_IrqCfgEnable(host_cfg->hsirq, host_cfg->hsipl, host_cfg); /* USBIR enable */
+    }
  #endif /* defined(BSP_MCU_GROUP_RA6M3) */
 }
 

@@ -8,7 +8,7 @@
 #define R_I2C_SLAVE_API_H
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_CONNECTIVITY_INTERFACES
  * @defgroup I2C_SLAVE_API I2C Slave Interface
  * @brief Interface for I2C slave communication.
  *
@@ -95,8 +95,8 @@ typedef struct st_i2c_slave_cfg
     bool      clock_stretching_enable;                       ///< Low Hold SCL during reception for the period between the 9th and the 1st clock cycle
 
     /** DTC support */
-    transfer_instance_t const * p_transfer_tx;                ///< DTC instance for I2C transmit.Set to NULL if unused.
-    transfer_instance_t const * p_transfer_rx;                ///< DTC instance for I2C receive. Set to NULL if unused.
+    transfer_instance_t const * p_transfer_tx;               ///< DTC instance for I2C transmit.Set to NULL if unused.
+    transfer_instance_t const * p_transfer_rx;               ///< DTC instance for I2C receive. Set to NULL if unused.
 
     /** Parameters to control software behavior */
     void (* p_callback)(i2c_slave_callback_args_t * p_args); ///< Pointer to callback function

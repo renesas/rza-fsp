@@ -185,6 +185,7 @@
 
 #define USB_OK                                 (0U)
 #define USB_ERROR                              (0xff)
+#define USB_ERR_TMOUT                          (0xfe)
 #define USB_QOVR                               (0xd5) /* Submit overlap error */
 #define USB_PAR                                (0xef) /* parameter error */
 
@@ -558,6 +559,7 @@
 #define USB_CTRL_WRITING                       (18U)
 #define USB_DATA_READING                       (19U)
 #define USB_DATA_WRITING                       (20U)
+#define USB_DATA_FIFO_ERR                      (21U)
 
 /* Utr member (segment) */
 #define USB_TRAN_CONT                          (0x00U)
@@ -881,22 +883,15 @@
  #define USB_PRINTF5(FORM, x1, x2, x3, x4, x5)            (printf((FORM), (x1), (x2), (x3), (x4), (x5)))
  #define USB_PRINTF6(FORM, x1, x2, x3, x4, x5, x6)        (printf((FORM), (x1), (x2), (x3), (x4), (x5), (x6)))
  #define USB_PRINTF7(FORM, x1, x2, x3, x4, x5, x6, x7)    (printf((FORM), (x1), (x2), (x3), (x4), (x5), (x6), (x7)))
- #define USB_PRINTF8(FORM,                                                \
-                     x1,                                                  \
-                     x2,                                                  \
-                     x3,                                                  \
-                     x4,                                                  \
-                     x5,                                                  \
-                     x6,                                                  \
-                     x7,                                                  \
-                     x8)                                  (printf((FORM), \
-                                                                  (x1),   \
-                                                                  (x2),   \
-                                                                  (x3),   \
-                                                                  (x4),   \
-                                                                  (x5),   \
-                                                                  (x6),   \
-                                                                  (x7),   \
+ #define USB_PRINTF8(FORM,                                                                                          \
+                     x1,                                                                                            \
+                     x2,                                                                                            \
+                     x3,                                                                                            \
+                     x4,                                                                                            \
+                     x5,                                                                                            \
+                     x6,                                                                                            \
+                     x7,                                                                                            \
+                     x8)                                  (printf((FORM), (x1), (x2), (x3), (x4), (x5), (x6), (x7), \
                                                                   (x8)))
 #else                                  /* defined(USB_DEBUG_ON) */
  #define USB_PRINTF0(FORM)

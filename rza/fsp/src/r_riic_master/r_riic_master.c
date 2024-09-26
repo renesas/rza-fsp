@@ -868,6 +868,11 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
                                       (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == p_extend->timeout_mode) |
                                       (uint8_t) (p_extend->timeout_scl_low << R_RIIC0_ICMR2_TMOL_Pos));
 
+    /* Set the response as ACK */
+    p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write Enable */
+    p_ctrl->p_reg->ICMR3_b.ACKBT = 0UL; /* Write */
+    p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
+
     /* Enable timeout function */
     p_ctrl->p_reg->ICFER_b.TMOE = 1UL;
 
@@ -940,6 +945,7 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_ctrl)
              */
             p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
             p_ctrl->p_reg->ICMR3_b.ACKBT = 1UL;
+            p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
         }
 
 #if RIIC_MASTER_CFG_DMAC_ENABLE
@@ -1032,6 +1038,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
         /* We are done loading ICDRT, wait for TEND to send a stop/restart */
         if (0U == p_ctrl->remain)
         {
+            /* Disable the Transmit Data Empty Interrupt. */
             p_ctrl->p_reg->ICIER_b.TIE = 0UL;
 
             /* Wait for the value to reflect at the peripheral.
@@ -1323,6 +1330,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
          */
         p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
         p_ctrl->p_reg->ICMR3_b.ACKBT = 1UL;
+        p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
     }
     /* If next data = final byte, send STOP or RESTART */
     else if (1U == p_ctrl->remain)
@@ -1335,12 +1343,12 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
             R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
             p_ctrl->p_reg->ICIER_b.TIE = 1UL;
 
-            p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
-
             /* This bit clears to 0 automatically by issuing stop condition.
              * For restart condition, clear bit by software.
              */
+            p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
             p_ctrl->p_reg->ICMR3_b.ACKBT = 0UL;
+            p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
 
             /* Request RIIC to issue the restart condition */
             p_ctrl->p_reg->ICCR2 = IIC_MASTER_ICCR2_RS_BIT_MASK;
@@ -1356,7 +1364,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
             /* Clear STOP flag and set SP.
              * It is ok to clear other status' as this transaction is over.
              */
-            p_ctrl->p_reg->ICSR2 &= (uint8_t) ~(IIC_MASTER_ICSR2_STOP_BIT);;
+            p_ctrl->p_reg->ICSR2 &= (uint8_t) ~(IIC_MASTER_ICSR2_STOP_BIT);
 
             /* Request RIIC to issue the stop condition */
             p_ctrl->p_reg->ICCR2 = IIC_MASTER_ICCR2_SP_BIT_MASK; /* It is safe to write 0's to other bits. */

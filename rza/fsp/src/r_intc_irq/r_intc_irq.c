@@ -81,6 +81,7 @@ const external_irq_api_t g_external_irq_on_intc_irq =
  *                                        Call the associated Close function to reconfigure the channel.
  * @retval FSP_ERR_IP_CHANNEL_NOT_PRESENT The channel requested in p_cfg is not available on the device selected in
  *                                        r_bsp_cfg.h.
+ * @retval FSP_ERR_UNSUPPORTED            An input argument is not supported by selected mode.
  *
  * @note This function is reentrant for different channels. It is not reentrant for the same channel.
  **********************************************************************************************************************/
@@ -92,6 +93,13 @@ fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(INTC_IRQ_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
     FSP_ASSERT(NULL != p_cfg);
+
+    /* Verify the configuration trigger source is correct */
+    FSP_ERROR_RETURN((EXTERNAL_IRQ_TRIG_FALLING == p_cfg->trigger) ||
+                     (EXTERNAL_IRQ_TRIG_RISING == p_cfg->trigger) ||
+                     (EXTERNAL_IRQ_TRIG_BOTH_EDGE == p_cfg->trigger) ||
+                     (EXTERNAL_IRQ_TRIG_LEVEL_LOW == p_cfg->trigger),
+                     FSP_ERR_UNSUPPORTED);
     FSP_ERROR_RETURN(0 != ((1U << p_cfg->channel) & BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK),
                      FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 #endif

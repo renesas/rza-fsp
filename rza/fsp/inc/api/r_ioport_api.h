@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_SYSTEM_INTERFACES
  * @defgroup IOPORT_API I/O Port Interface
  * @brief Interface  for accessing I/O ports and configuring I/O functionality.
  *

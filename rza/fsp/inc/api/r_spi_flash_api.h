@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @defgroup SPI_FLASH_API SPI Flash Interface
  * @brief Interface for accessing external SPI flash devices.
  *

@@ -31,6 +31,10 @@
   #include "rm_block_media_api.h"
  #endif                                /* defined(USB_CFG_PMSC_USE) */
 
+ #if defined(USB_CFG_PCDC_USE)
+  #include "r_usb_pcdc_cfg.h"
+ #endif                                /* defined(USB_CFG_PCDC_USE) */
+
  #if defined(USB_CFG_HHID_USE) && !defined(USB_CFG_OTG_USE)
   #include "r_usb_hhid_cfg.h"
   #define USB_MAX_CONNECT_DEVICE_NUM    3
@@ -484,7 +488,7 @@ static void usb_peri_usbx_transfer_complete_cb (usb_utr_t * p_mess, uint16_t dat
 
     pipe = p_mess->keyword;
 
-  #if defined(USB_CFG_PPRN_USE)
+  #if (defined(USB_CFG_PPRN_USE) || defined(USB_CFG_PCDC_USE))
     if (USB_NO == p_mess->is_timeout)
     {
         if (USB_DATA_FIFO_ERR == g_p_usb_pstd_pipe[pipe]->status)
@@ -492,12 +496,13 @@ static void usb_peri_usbx_transfer_complete_cb (usb_utr_t * p_mess, uint16_t dat
             g_usb_peri_usbx_is_fifo_error[pipe] = USB_YES;
         }
 
+        /* Wake up the device driver which is waiting on a semaphore. */
         tx_semaphore_put(&g_usb_peri_usbx_sem[pipe]);
     }
 
   #else                                /* defined(USB_CFG_PPRN_USE) */
     tx_semaphore_put(&g_usb_peri_usbx_sem[pipe]);
-  #endif  /* defined(USB_CFG_PPRN_USE) */
+  #endif  /* defined(USB_CFG_PPRN_USE) || defined(USB_CFG_PCDC_USE) */
     hw_usb_write_pipesel(p_mess, pipe);
     pipe_reg = hw_usb_read_pipecfg(p_mess);
 
@@ -593,10 +598,14 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                 tran_data.p_tranadr    = transfer_request->ux_slave_transfer_request_data_pointer; /* Data address */
                 tran_data.tranlen      = size;                                                     /* Data Size */
                 tran_data.complete     = usb_peri_usbx_transfer_complete_cb;                       /* Callback function */
-  #if defined(USB_CFG_PPRN_USE)
-                tran_data.timeout    = transfer_request->ux_slave_transfer_request_timeout;        /* Timeout Setting */
-                tran_data.is_timeout = USB_NO;                                                     /* Timeout Status */
-  #endif  /* defined(USB_CFG_PPRN_USE) */
+  #if (defined(USB_CFG_PPRN_USE) || defined(USB_CFG_PCDC_USE))
+
+                /* Set the timeout value for the this transfer request*/
+                tran_data.timeout = transfer_request->ux_slave_transfer_request_timeout;
+
+                /* Set the transfer request timeout status */
+                tran_data.is_timeout = USB_NO;
+  #endif                               /* defined(USB_CFG_PPRN_USE) || defined(USB_CFG_PCDC_USE) */
 
   #if (USB_CFG_DMA == USB_CFG_ENABLE)
                 if (0 != g_p_usbx_transfer_tx)
@@ -689,7 +698,7 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                 }
                 else
                 {
-  #if defined(USB_CFG_PPRN_USE)
+  #if (defined(USB_CFG_PPRN_USE) || defined(USB_CFG_PCDC_USE))
                     if (USB_ERR_TMOUT == err)
                     {
                         status = (uint32_t) UX_TRANSFER_TIMEOUT;
@@ -699,9 +708,9 @@ static UINT usb_peri_usbx_to_basic (UX_SLAVE_DCD * dcd, UINT function, VOID * pa
                         status = (uint32_t) UX_TRANSFER_ERROR;
                     }
 
-  #else                                /* define(USB_CFG_PPRN_USE) */
+  #else
                     status = (uint32_t) UX_TRANSFER_ERROR;
-  #endif                               /* define(USB_CFG_PPRN_USE) */
+  #endif                               /* define(USB_CFG_PPRN_USE) || define(USB_CFG_PCDC_USE) */
                 }
             }
             else

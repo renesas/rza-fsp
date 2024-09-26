@@ -19,7 +19,7 @@
 FSP_HEADER
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @defgroup SDMMC_API SD/MMC Interface
  * @brief Interface for accessing SD, eMMC, and SDIO devices.
  *

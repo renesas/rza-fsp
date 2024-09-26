@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_GRAPHICS_INTERFACES
  * @defgroup DISPLAY_API Display Interface
  * @brief Interface for LCD panel displays.
  *

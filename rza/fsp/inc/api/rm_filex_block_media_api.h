@@ -8,7 +8,7 @@
  #define RM_FILEX_BLOCK_MEDIA_API_H
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @defgroup RM_FILEX_BLOCK_MEDIA_API FileX Block Media Port Interface
  * @brief Interface for FileX Block Media port.
  *

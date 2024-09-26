@@ -100,7 +100,7 @@ typedef enum e_ioport_peripheral
 
 #endif
 
-#ifndef BSP_OVERRIDE_IOPORT_OPTIONS_T
+#ifndef BSP_OVERRIDE_IOPORT_CFG_OPTIONS_T
 
 /** Options to configure pin functions  */
 typedef enum e_ioport_cfg_options

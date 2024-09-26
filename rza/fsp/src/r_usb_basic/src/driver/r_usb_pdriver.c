@@ -34,6 +34,9 @@
    #include "ux_host_class_storage.h"
   #endif                               /* defined(USB_CFG_HMSC_USE) */
  #endif                                /* defined(USB_CFG_OTG_USE) */
+ #if defined(USB_CFG_PCDC_USE)
+  #include "r_usb_pcdc_cfg.h"
+ #endif                                /* defined(USB_CFG_PCDC_USE) */
 #endif                                 /* #if (BSP_CFG_RTOS == 1) */
 
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
@@ -1330,6 +1333,17 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
     usb_utr_t * p_tran_data;
   #endif                               /* BSP_CFG_RTOS == 2 */
 
+  #if (BSP_CFG_RTOS == 1)
+   #if (defined(USB_CFG_PCDC_USE) || defined(USB_CFG_PPRN_USE))
+    UINT           status;
+    CHAR         * p_sem_name;
+    ULONG          cur_sem_count_value;
+    TX_THREAD    * p_suspend_thread;
+    ULONG          suspend_t_count;
+    TX_SEMAPHORE * p_next_sem;
+   #endif                              /* (defined(USB_CFG_PCDC_USE) ||  defined(USB_CFG_PPRN_USE) */
+  #endif                               /* #if (BSP_CFG_RTOS == 1) */
+
     pipenum = ptr->keyword;
     if (USB_PIPE0 == pipenum)
     {
@@ -1370,9 +1384,30 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
         return USB_ERROR;
     }
 
-    *p_tran_data              = *ptr;
-    p_tran_data->cur_task_hdl = tx_thread_identify();
+    *p_tran_data                           = *ptr;
+    p_tran_data->cur_task_hdl              = tx_thread_identify();
     g_usb_peri_usbx_is_fifo_error[pipenum] = USB_NO;
+    #if (defined(USB_CFG_PCDC_USE) || defined(USB_CFG_PPRN_USE))
+    status = tx_semaphore_info_get(&g_usb_peri_usbx_sem[pipenum],
+                                   &p_sem_name,
+                                   &cur_sem_count_value,
+                                   &p_suspend_thread,
+                                   &suspend_t_count,
+                                   &p_next_sem);
+    if (TX_SUCCESS == status)
+    {
+        /* Check IOCTL timeout value has been set to the transfer request
+         * and check if transfer request semaphore count value is got
+         * incremented, due to the previous transfer request timeout.
+         * If both conditions true, then clear the previous transfer request semaphore,
+         * before starting current transfer request. */
+        if ((TX_WAIT_FOREVER != ptr->timeout) && (cur_sem_count_value > 0))
+        {
+            /* Clear the previous transfer request semaphore,if timeout has occurred. */
+            tx_semaphore_get(&g_usb_peri_usbx_sem[pipenum], TX_NO_WAIT);
+        }
+    }
+    #endif                             /* defined(USB_CFG_PCDC_USE) || defined(USB_CFG_PPRN_USE) */
 
     /* Send message */
     err = USB_SND_MSG(USB_PCD_MBX, (usb_msg_t *) p_tran_data);
@@ -1380,7 +1415,8 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
     {
         USB_REL_BLK(1, p_tran_data);
     }
-   #else                                /* BSP_CFG_RTOS == 1 */
+
+   #else                               /* BSP_CFG_RTOS == 1 */
     ptr->msghead = (usb_mh_t) USB_NULL;
     ptr->msginfo = USB_MSG_PCD_SUBMITUTR;
 
@@ -1427,9 +1463,38 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
             }
         }
 
-    #else                              /* defined(USB_CFG_PPRN_USE) */
+    #elif defined(USB_CFG_PCDC_USE)
+        UINT tx_err;
+
+        /* Wait for the transfer request semaphore to wake up */
+        tx_err = tx_semaphore_get(&g_usb_peri_usbx_sem[pipenum], p_tran_data->timeout);
+
+        /* Check the error status code, and if this transfer is not successful end this
+         * transfer and return error code to the caller function.*/
+        if (TX_SUCCESS != tx_err)
+        {
+            /* Set transfer request timeout status */
+            p_tran_data->is_timeout = USB_YES;
+
+            /* Once Time out occurs for this transfer request, terminate data transmission
+             * or reception. */
+            usb_pstd_forced_termination(pipenum, (uint16_t) USB_DATA_STOP, p_tran_data);
+            USB_REL_BLK(1, p_tran_data);
+            err = USB_ERR_TMOUT;
+        }
+        else
+        {
+            /* Check for the FIFO error flag status */
+            if (USB_YES == g_usb_peri_usbx_is_fifo_error[pipenum])
+            {
+                g_usb_peri_usbx_is_fifo_error[pipenum] = USB_NO;
+                err = USB_ERR_FIFO_ACCESS;
+            }
+        }
+
+    #else
         tx_semaphore_get(&g_usb_peri_usbx_sem[pipenum], TX_WAIT_FOREVER);
-    #endif  /* defined(USB_CFG_PPRN_USE) */
+    #endif                             /* defined(USB_CFG_PPRN_USE) */
     }
    #endif                              /* #if (BSP_CFG_RTOS == 1) */
   #endif                               /* (BSP_CFG_RTOS == 0) */

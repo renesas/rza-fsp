@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_MONITORING_INTERFACES
  * @defgroup WDT_API WDT Interface
  * @brief Interface for watch dog timer functions.
  *

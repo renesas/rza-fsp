@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_GRAPHICS_INTERFACES
  * @defgroup CAMERA_API Camera Interface
  * @brief Interface for camera.
  *

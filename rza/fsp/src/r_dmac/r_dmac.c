@@ -92,6 +92,7 @@ const transfer_api_t g_transfer_on_dmac =
     .disable       = R_DMAC_Disable,
     .close         = R_DMAC_Close,
     .reload        = R_DMAC_Reload,
+    .callbackSet   = R_DMAC_CallbackSet,
 };
 
 /*******************************************************************************************************************//**
@@ -135,6 +136,11 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
 
     p_ctrl->p_cfg = p_cfg;
     p_ctrl->p_reg = p_reg;
+
+    /* Set callback and context pointers, if configured */
+    p_ctrl->p_callback        = p_extend->p_callback;
+    p_ctrl->p_context         = p_extend->p_context;
+    p_ctrl->p_callback_memory = NULL;
 
     /* Supply clock to DMAC module. */
     R_BSP_MODULE_START(FSP_IP_DMAC_NS, p_extend->channel);
@@ -439,6 +445,34 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
 
         p_ctrl->p_reg->CHCFG |= R_DMA_CHCFG_REN_Msk;
     }
+
+    return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Updates the user callback with the option to provide memory for the callback argument structure.
+ *
+ * @retval  FSP_SUCCESS                  Callback updated successfully.
+ * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
+ * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
+ **********************************************************************************************************************/
+fsp_err_t R_DMAC_CallbackSet (transfer_ctrl_t * const      p_api_ctrl,
+                              void (                     * p_callback)(dmac_callback_args_t *),
+                              void const * const           p_context,
+                              dmac_callback_args_t * const p_callback_memory)
+{
+    FSP_PARAMETER_NOT_USED(p_callback_memory);
+
+    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) p_api_ctrl;
+
+#if DMAC_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(NULL != p_ctrl);
+    FSP_ASSERT(p_callback);
+    FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
+#endif
+
+    p_ctrl->p_callback = p_callback;
+    p_ctrl->p_context  = p_context;
 
     return FSP_SUCCESS;
 }
@@ -863,13 +897,12 @@ void dmac_int_isr (IRQn_Type const irq)
         }
     }
 
-    /* Call user callback */
+    /* Call the callback routine if one is available */
     if (NULL != p_extend->p_callback)
     {
         dmac_callback_args_t args;
-        args.p_context = p_extend->p_context;
-        args.event     = DMAC_EVENT_TRANSFER_END;
-        p_extend->p_callback(&args);
+        args.p_context = p_ctrl->p_context;
+        p_ctrl->p_callback(&args);
     }
 
     /* Restore context if RTOS is used */
@@ -884,17 +917,15 @@ void dmac_err_isr (IRQn_Type const irq)
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
 
-    dmac_instance_ctrl_t * p_ctrl   = (dmac_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-    dmac_extended_cfg_t  * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
     /* Clear the error bit and software reset. */
     p_ctrl->p_reg->CHCTRL_b.SWRST = 1;
 
     /* Call user callback */
     dmac_callback_args_t args;
-    args.p_context = p_extend->p_context;
-    args.event     = DMAC_EVENT_TRANSFER_ERROR;
-    p_extend->p_callback(&args);
+    args.p_context = p_ctrl->p_context;
+    p_ctrl->p_callback(&args);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE

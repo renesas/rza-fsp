@@ -111,88 +111,97 @@ typedef long SLONG;
 /*  Generic USBX Project constants follow.  */
 
  #ifndef UX_PERIODIC_RATE
-  #define UX_PERIODIC_RATE                       1000
+  #define UX_PERIODIC_RATE                           1000
  #endif
 
  #ifndef UX_MAX_CLASS_DRIVER
-  #define UX_MAX_CLASS_DRIVER                    8
+  #define UX_MAX_CLASS_DRIVER                        8
  #endif
 
  #ifndef UX_MAX_SLAVE_CLASS_DRIVER
-  #define UX_MAX_SLAVE_CLASS_DRIVER              2
+  #define UX_MAX_SLAVE_CLASS_DRIVER                  2
  #endif
 
  #ifndef UX_MAX_HCD
-  #define UX_MAX_HCD                             2
+  #define UX_MAX_HCD                                 2
  #endif
 
  #ifndef UX_MAX_DEVICES
-  #define UX_MAX_DEVICES                         8
+  #define UX_MAX_DEVICES                             8
  #endif
 
  #ifndef UX_MAX_ED
-  #define UX_MAX_ED                              80
+  #define UX_MAX_ED                                  80
  #endif
 
  #ifndef UX_MAX_TD
-  #define UX_MAX_TD                              32
+  #define UX_MAX_TD                                  32
  #endif
 
  #ifndef UX_MAX_ISO_TD
-  #define UX_MAX_ISO_TD                          128
+  #define UX_MAX_ISO_TD                              128
  #endif
 
  #ifndef UX_HOST_ENUM_THREAD_STACK_SIZE
-  #define UX_HOST_ENUM_THREAD_STACK_SIZE         (2 * 1024)
+  #define UX_HOST_ENUM_THREAD_STACK_SIZE             (2 * 1024)
  #endif
 
  #ifndef UX_THREAD_STACK_SIZE
-  #define UX_THREAD_STACK_SIZE                   (1 * 1024)
+  #define UX_THREAD_STACK_SIZE                       (1 * 1024)
  #endif
 
  #ifndef UX_THREAD_PRIORITY_ENUM
-  #define UX_THREAD_PRIORITY_ENUM                20
+  #define UX_THREAD_PRIORITY_ENUM                    20
  #endif
 
  #ifndef UX_THREAD_PRIORITY_CLASS
-  #define UX_THREAD_PRIORITY_CLASS               20
+  #define UX_THREAD_PRIORITY_CLASS                   20
  #endif
 
  #ifndef UX_THREAD_PRIORITY_KEYBOARD
-  #define UX_THREAD_PRIORITY_KEYBOARD            20
+  #define UX_THREAD_PRIORITY_KEYBOARD                20
  #endif
 
  #ifndef UX_THREAD_PRIORITY_HCD
-  #define UX_THREAD_PRIORITY_HCD                 2
+  #define UX_THREAD_PRIORITY_HCD                     2
  #endif
 
  #ifndef UX_THREAD_PRIORITY_DCD
-  #define UX_THREAD_PRIORITY_DCD                 2
+  #define UX_THREAD_PRIORITY_DCD                     2
  #endif
 
  #ifndef UX_NO_TIME_SLICE
-  #define UX_NO_TIME_SLICE                       0
+  #define UX_NO_TIME_SLICE                           0
  #endif
 
  #ifndef UX_MAX_SLAVE_LUN
-  #define UX_MAX_SLAVE_LUN                       2
+  #define UX_MAX_SLAVE_LUN                           2
  #endif
 
  #ifndef UX_MAX_HOST_LUN
-  #define UX_MAX_HOST_LUN                        2
+  #define UX_MAX_HOST_LUN                            2
  #endif
 
  #ifndef UX_HOST_CLASS_STORAGE_MAX_MEDIA
-  #define UX_HOST_CLASS_STORAGE_MAX_MEDIA        2
+  #define UX_HOST_CLASS_STORAGE_MAX_MEDIA            2
  #endif
 
  #ifndef UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH
-  #define UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH    256
+  #define UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH        256
  #endif
 
  #ifndef UX_SLAVE_REQUEST_DATA_MAX_LENGTH
-  #define UX_SLAVE_REQUEST_DATA_MAX_LENGTH       2048
+  #define UX_SLAVE_REQUEST_DATA_MAX_LENGTH           2048
  #endif
+
+/* Defined, this value represents the maximum number of bytes that a storage payload can send/receive.
+ * The default is 8K bytes but can be reduced in memory constrained environments.  */
+ #define UX_HOST_CLASS_STORAGE_MEMORY_BUFFER_SIZE    (1024 * 8)
+
+/* Defined, this value represents the maximum size of single transfers for the SCSI data phase.
+ * By default it's 1024.
+ */
+ #define UX_HOST_CLASS_STORAGE_MAX_TRANSFER_SIZE     (1024 * 8)
 
  #ifndef UX_USE_IO_INSTRUCTIONS
 

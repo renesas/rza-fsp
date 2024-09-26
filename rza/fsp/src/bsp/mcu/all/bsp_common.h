@@ -21,10 +21,11 @@
 /* Different compiler support. */
 #include "../../inc/api/fsp_common_api.h"
 #include "bsp_compiler_support.h"
-#include "bsp_cfg.h"
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
+
+#include "bsp_cfg.h"
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU
@@ -43,7 +44,7 @@ FSP_HEADER
 #if 1 == BSP_CFG_RTOS                  /* ThreadX */
  #include "tx_user.h"
  #if defined(TX_ENABLE_EVENT_TRACE) || defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY)
-  #include "tx_api.h"
+  #include "tx_port.h"
   #define FSP_CONTEXT_SAVE       tx_isr_start((uint32_t) irq);
   #define FSP_CONTEXT_RESTORE    tx_isr_end((uint32_t) irq);
  #else

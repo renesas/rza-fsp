@@ -8,7 +8,7 @@
 #define R_ADC_API_H
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_ANALOG_INTERFACES
  * @defgroup ADC_API ADC Interface
  * @brief Interface for A/D Converters.
  *
@@ -55,6 +55,8 @@ typedef enum e_adc_mode
 
 #endif
 
+#ifndef BSP_OVERRIDE_ADC_RESOLUTION_T
+
 /** ADC data resolution definitions */
 typedef enum e_adc_resolution
 {
@@ -65,6 +67,7 @@ typedef enum e_adc_resolution
     ADC_RESOLUTION_16_BIT = 4,         ///< 16 bit resolution
     ADC_RESOLUTION_24_BIT = 5,         ///< 24 bit resolution
 } adc_resolution_t;
+#endif
 
 /** ADC data alignment definitions  */
 typedef enum e_adc_alignment

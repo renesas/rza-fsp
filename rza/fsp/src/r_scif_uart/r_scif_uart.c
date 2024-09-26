@@ -268,7 +268,7 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
 
     scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
 
-    /* Enable the SCIF channel and reset the registers to their initial state. */
+    /* Enable the SCIF channel */
     R_BSP_MODULE_START(FSP_IP_SCIF, p_cfg->channel);
 
     /* Initialize registers as defined in section "SCIFA Initialization in Asynchronous Mode" in the user's
@@ -1260,30 +1260,30 @@ static void r_scif_uart_config_set (scif_uart_instance_ctrl_t * const p_ctrl, ua
  * @param[in] rtrg  Parameter on configuration table
  * @return RTRG Field value
  **********************************************************************************************************************/
-static uint32_t r_scif_uart_make_rtrg (scif_uart_receive_trigger_t rtrg)
+static uint32_t r_scif_uart_make_rtrg (scif_uart_rx_fifo_trigger_t rtrg)
 {
     uint32_t value = 0;
     switch (rtrg)
     {
-        case SCIF_UART_RECEIVE_TRIGGER_ONE:
+        case SCIF_UART_RX_FIFO_TRIGGER_ONE:
         {
             /* stay RTRG as 0 */
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_QUARTER:
+        case SCIF_UART_RX_FIFO_TRIGGER_QUARTER:
         {
             value = 1 << R_SCIFA0_FCR_RTRG_Pos;
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_HALF:
+        case SCIF_UART_RX_FIFO_TRIGGER_HALF:
         {
             value = 2 << R_SCIFA0_FCR_RTRG_Pos;
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_MAX:
+        case SCIF_UART_RX_FIFO_TRIGGER_MAX:
         {
             value = 3 << R_SCIFA0_FCR_RTRG_Pos;
             break;
@@ -1305,96 +1305,96 @@ static uint32_t r_scif_uart_make_rtrg (scif_uart_receive_trigger_t rtrg)
  * @param[in] rtrg  Parameter on configuration table
  * @return RFTC|RTRGS Field value
  **********************************************************************************************************************/
-static uint32_t r_scif_uart_make_rftc (scif_uart_receive_trigger_t rtrg)
+static uint32_t r_scif_uart_make_rftc (scif_uart_rx_fifo_trigger_t rtrg)
 {
     uint32_t value = 0;
     switch (rtrg)
     {
-        case SCIF_UART_RECEIVE_TRIGGER_1:
+        case SCIF_UART_RX_FIFO_TRIGGER_1:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (1 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_2:
+        case SCIF_UART_RX_FIFO_TRIGGER_2:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (2 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_3:
+        case SCIF_UART_RX_FIFO_TRIGGER_3:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (3 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_4:
+        case SCIF_UART_RX_FIFO_TRIGGER_4:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (4 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_5:
+        case SCIF_UART_RX_FIFO_TRIGGER_5:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (5 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_6:
+        case SCIF_UART_RX_FIFO_TRIGGER_6:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (6 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_7:
+        case SCIF_UART_RX_FIFO_TRIGGER_7:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (7 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_8:
+        case SCIF_UART_RX_FIFO_TRIGGER_8:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (8 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_9:
+        case SCIF_UART_RX_FIFO_TRIGGER_9:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (9 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_10:
+        case SCIF_UART_RX_FIFO_TRIGGER_10:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (10 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_11:
+        case SCIF_UART_RX_FIFO_TRIGGER_11:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (11 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_12:
+        case SCIF_UART_RX_FIFO_TRIGGER_12:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (12 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_13:
+        case SCIF_UART_RX_FIFO_TRIGGER_13:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (13 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_14:
+        case SCIF_UART_RX_FIFO_TRIGGER_14:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (14 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_15:
+        case SCIF_UART_RX_FIFO_TRIGGER_15:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (15 << R_SCIFA0_FTCR_RFTC_Pos);
             break;

@@ -17,6 +17,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
+#include <stdbool.h>
 #include "bsp_feature.h"
 
 /***********************************************************************************************************************
@@ -30,10 +31,6 @@
 #ifndef __IOM                          /*!< Fallback for older CMSIS versions                                     */
  #define __IOM    volatile
 #endif
-
-#define bool      _Bool
-#define true      1
-#define false     0
 
 /* Define overrides required for this MCU. */
 #define BSP_OVERRIDE_TRANSFER_INFO_T

@@ -67,7 +67,7 @@
  *       of the BSP initialization.
  **********************************************************************************************************************/
 
-void R_BSP_SoftwareDelay (uint32_t delay, bsp_delay_units_t units)
+BSP_SECTION_FLASH_GAP void R_BSP_SoftwareDelay (uint32_t delay, bsp_delay_units_t units)
 {
     uint32_t iclk_hz;
     uint32_t cycles_requested;

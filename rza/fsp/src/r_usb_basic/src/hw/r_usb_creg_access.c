@@ -3442,9 +3442,7 @@ void hw_usb_clear_aclrm (usb_utr_t * ptr, uint16_t pipeno)
  ******************************************************************************/
 void hw_usb_set_sqclr (usb_utr_t * ptr, uint16_t pipeno)
 {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
     volatile uint16_t * p_reg;
- #endif                                /*   #if !defined(BSP_MCU_GROUP_RZA3UL) */
 
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
@@ -3457,10 +3455,8 @@ void hw_usb_set_sqclr (usb_utr_t * ptr, uint16_t pipeno)
             }
             else
             {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
                 p_reg     = ((uint16_t *) &(USB_M0->PIPE1CTR) + (pipeno - 1));
                 (*p_reg) |= USB_SQCLR;
-  #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
             }
         }
         else

@@ -25,6 +25,7 @@
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
 #include "task.h"
 
 /* Standard libraries includes. */
@@ -39,6 +40,8 @@
 
 /* Renesas includes. */
 #include "r_gether.h"
+#include "hal_data.h"
+#include "rm_freertos_plus_tcp.h"
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -65,16 +68,20 @@
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)
  **********************************************************************************************************************/
-extern ether_instance_t * gp_freertos_ether;
 
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
-static TaskHandle_t xRxHanderTaskHandle        = NULL;
-static TaskHandle_t xCheckLinkStatusTaskHandle = NULL;
 
-/* Pointer to the interface object of this NIC */
-static NetworkInterface_t * pxFSPInterface = NULL;
+void vEtherISRCallbackInstance0(ether_callback_args_t * p_args);
+void vEtherISRCallbackInstance1(ether_callback_args_t * p_args);
+
+extern void * __freertos_plus_tcp_array_start;
+extern void * __freertos_plus_tcp_array_end;
+static network_interface_instance_t ** p_network_instance_list;
+static uint32_t max_network_instance;
+static uint32_t freertos_plus_tcp_initialized = false;
+static network_interface_instance_t * p_gether_network_instance_ch[BSP_FEATURE_GETHER_MAX_CHANNELS];
 
 /***********************************************************************************************************************
  * Exported global function
@@ -89,9 +96,11 @@ NetworkInterface_t * pxFSP_Eth_FillInterfaceDescriptor(BaseType_t xEMACIndex, Ne
 /***********************************************************************************************************************
  * Prototype declaration of private functions
  **********************************************************************************************************************/
-static BaseType_t prvNetworkInterfaceInput(void);
-static void       prvRXHandlerTask(void * pvParameters);
-static void       prvCheckLinkStatusTask(void * pvParameters);
+static BaseType_t                     prvNetworkInterfaceInput(network_interface_instance_t * p_network_interface);
+static void                           prvRXHandlerTask(void * pvParameters);
+static void                           prvCheckLinkStatusTask(void * pvParameters);
+static network_interface_instance_t * prvGetNetworkInterface(NetworkInterface_t * pxInterface);
+static void                           prvNetworkInterfaceModuleInitialize(void);
 
 static BaseType_t xFSP_Eth_NetworkInterfaceInitialise(NetworkInterface_t * pxInterface);
 static BaseType_t xFSP_Eth_NetworkInterfaceOutput(NetworkInterface_t              * pxInterface,
@@ -104,15 +113,35 @@ static BaseType_t xFSP_Eth_GetPhyLinkStatus(struct xNetworkInterface * pxInterfa
  **********************************************************************************************************************/
 static BaseType_t xFSP_Eth_NetworkInterfaceInitialise (NetworkInterface_t * pxInterface)
 {
-    static BaseType_t tasksCreated = pdFALSE;
-    fsp_err_t         err;
-    BaseType_t        xReturn = pdFAIL;
+    fsp_err_t  err;
+    BaseType_t xReturn = pdFAIL;
+    network_interface_instance_t * p_network_interface = NULL;
 
-    configASSERT(NULL != gp_freertos_ether);
+    prvNetworkInterfaceModuleInitialize();
 
-    pxFSPInterface = pxInterface;
+    uint32_t loop;
+    for (loop = 0; loop < max_network_instance; loop++)
+    {
+        if ((p_network_instance_list[loop]->pxFSPInterface == NULL) ||
+            (0 == strcmp(p_network_instance_list[loop]->pcName, pxInterface->pcName)))
+        {
+            p_network_interface = p_network_instance_list[loop];
+            break;
+        }
+    }
 
-    if (ETHER_ZEROCOPY_ENABLE == gp_freertos_ether->p_cfg->zerocopy)
+    if (NULL == p_network_interface)
+    {
+        return pdFAIL;
+    }
+
+    configASSERT(NULL != p_network_interface->pxEther);
+
+    p_gether_network_instance_ch[p_network_interface->pxEther->p_cfg->channel] = p_network_interface;
+
+    p_network_interface->pxFSPInterface = pxInterface;
+
+    if (ETHER_ZEROCOPY_ENABLE == p_network_interface->pxEther->p_cfg->zerocopy)
     {
         /*NOTE:Currently does not support zero copy mode*/
         while (1)
@@ -121,16 +150,33 @@ static BaseType_t xFSP_Eth_NetworkInterfaceInitialise (NetworkInterface_t * pxIn
         }
     }
 
-    err = gp_freertos_ether->p_api->open(gp_freertos_ether->p_ctrl, gp_freertos_ether->p_cfg);
+    err = p_network_interface->pxEther->p_api->open(p_network_interface->pxEther->p_ctrl,
+                                                    p_network_interface->pxEther->p_cfg);
 
     if ((FSP_SUCCESS != err) && (FSP_ERR_ALREADY_OPEN != err))
     {
-        gp_freertos_ether->p_api->close(gp_freertos_ether->p_ctrl);
+        p_network_interface->pxEther->p_api->close(p_network_interface->pxEther->p_ctrl);
 
         return pdFAIL;
     }
 
-    err = gp_freertos_ether->p_api->linkProcess(gp_freertos_ether->p_ctrl);
+    if (FSP_SUCCESS == err)
+    {
+        FreeRTOS_FillEndPoint(pxInterface,
+                              &p_network_interface->xEndPoint,
+                              p_network_interface->ucIpv4,
+                              p_network_interface->ucMask,
+                              p_network_interface->ucGateway,
+                              p_network_interface->ucDns,
+                              p_network_interface->pxEther->p_cfg->p_mac_address);
+#if (ipconfigUSE_DHCP != 0)
+        {
+            p_network_interface->xEndPoint.bits.bWantDHCP = pdTRUE;
+        }
+#endif                                 /* ipconfigUSE_DHCP */
+    }
+
+    err = p_network_interface->pxEther->p_api->linkProcess(p_network_interface->pxEther->p_ctrl);
 
     if (FSP_SUCCESS != err)
     {
@@ -138,27 +184,28 @@ static BaseType_t xFSP_Eth_NetworkInterfaceInitialise (NetworkInterface_t * pxIn
     }
 
     /* prevent tasks from repeatedly creating when reconnected from the network */
-    if (NULL == xRxHanderTaskHandle)
+    if (NULL == p_network_interface->xRxHanderTaskHandle)
     {
         xTaskCreate(prvRXHandlerTask,
                     "RXHandlerTask",
                     configMINIMAL_STACK_SIZE,
-                    NULL,
+                    p_network_interface,
                     configMAX_PRIORITIES - 1,
-                    &xRxHanderTaskHandle);
+                    &p_network_interface->xRxHanderTaskHandle);
     }
 
-    if (NULL == xCheckLinkStatusTaskHandle)
+    if (NULL == p_network_interface->xCheckLinkStatusTaskHandle)
     {
         xTaskCreate(prvCheckLinkStatusTask,
                     "CheckLinkStatusTask",
                     configMINIMAL_STACK_SIZE,
-                    NULL,
+                    p_network_interface,
                     configMAX_PRIORITIES - 1,
-                    &xCheckLinkStatusTaskHandle);
+                    &p_network_interface->xCheckLinkStatusTaskHandle);
     }
 
-    if ((FSP_SUCCESS == err) && (NULL != xRxHanderTaskHandle) && (NULL != xCheckLinkStatusTaskHandle))
+    if ((FSP_SUCCESS == err) && (NULL != p_network_interface->xRxHanderTaskHandle) &&
+        (NULL != p_network_interface->xCheckLinkStatusTaskHandle))
     {
         xReturn = pdPASS;
     }
@@ -177,7 +224,9 @@ static BaseType_t xFSP_Eth_NetworkInterfaceOutput (NetworkInterface_t           
     fsp_err_t  err;
     BaseType_t xReturn = pdPASS;
 
-    FSP_PARAMETER_NOT_USED(pxInterface);
+    network_interface_instance_t * p_network_interface = prvGetNetworkInterface(pxInterface);
+
+    configASSERT(NULL != p_network_interface);
 
     /* Simple network interfaces (as opposed to more efficient zero copy network
      * interfaces) just use Ethernet peripheral driver library functions to copy
@@ -188,9 +237,9 @@ static BaseType_t xFSP_Eth_NetworkInterfaceOutput (NetworkInterface_t           
         pxNetworkBuffer->xDataLength = MINIMUM_ETHERNET_FRAME_SIZE;
     }
 
-    err = gp_freertos_ether->p_api->write(gp_freertos_ether->p_ctrl,
-                                          pxNetworkBuffer->pucEthernetBuffer,
-                                          (uint32_t) pxNetworkBuffer->xDataLength);
+    err = p_network_interface->pxEther->p_api->write(p_network_interface->pxEther->p_ctrl,
+                                                     pxNetworkBuffer->pucEthernetBuffer,
+                                                     (uint32_t) pxNetworkBuffer->xDataLength);
 
     if (FSP_SUCCESS == err)
     {
@@ -219,10 +268,11 @@ static BaseType_t xFSP_Eth_NetworkInterfaceOutput (NetworkInterface_t           
 static BaseType_t xFSP_Eth_GetPhyLinkStatus (struct xNetworkInterface * pxInterface)
 {
     BaseType_t xReturn = pdPASS;
+    network_interface_instance_t * p_network_interface = prvGetNetworkInterface(pxInterface);
 
-    FSP_PARAMETER_NOT_USED(pxInterface);
+    configASSERT(NULL != p_network_interface);
 
-    if (FSP_SUCCESS == gp_freertos_ether->p_api->linkProcess(gp_freertos_ether->p_ctrl))
+    if (FSP_SUCCESS == p_network_interface->pxEther->p_api->linkProcess(p_network_interface->pxEther->p_ctrl))
     {
         xReturn = pdPASS;
     }
@@ -242,11 +292,12 @@ void vEtherISRCallback (ether_callback_args_t * p_args) {
 
     /* If EDMAC FR (Frame Receive Event) or FDE (Receive Descriptor Empty Event)
      * interrupt occurs, wake up xRxHanderTask. */
+    network_interface_instance_t * p_network_interface = p_gether_network_instance_ch[p_args->channel];
     if (p_args->status_eesr & ETHER_EDMAC_INTERRUPT_FACTOR_RECEPTION)
     {
-        if (xRxHanderTaskHandle != NULL)
+        if (p_network_interface->xRxHanderTaskHandle != NULL)
         {
-            vTaskNotifyGiveFromISR(xRxHanderTaskHandle, &xHigherPriorityTaskWoken);
+            vTaskNotifyGiveFromISR(p_network_interface->xRxHanderTaskHandle, &xHigherPriorityTaskWoken);
         }
 
         /* If xHigherPriorityTaskWoken is now set to pdTRUE then a context switch
@@ -266,20 +317,41 @@ void vNetworkInterfaceAllocateRAMToBuffers (
 
 NetworkInterface_t * pxFSP_Eth_FillInterfaceDescriptor (BaseType_t xEMACIndex, NetworkInterface_t * pxInterface)
 {
-    static char pcName[17];
+    char * pcName = NULL;
+    network_interface_instance_t * p_network_interface = NULL;
+
+    prvNetworkInterfaceModuleInitialize();
 
     /* This function pxFSP_Eth_FillInterfaceDescriptor() adds a network-interface. */
+    uint32_t loop;
+    for (loop = 0; loop < max_network_instance; loop++)
+    {
+        if (p_network_instance_list[loop]->pcName[0] == '\0')
+        {
+            p_network_interface = p_network_instance_list[loop];
 
-    snprintf(pcName, sizeof(pcName), "eth%u", (unsigned) xEMACIndex);
+            break;
+        }
+    }
 
-    memset(pxInterface, '\0', sizeof(*pxInterface));
-    pxInterface->pcName             = pcName;              /* Just for logging, debugging. */
-    pxInterface->pvArgument         = (void *) xEMACIndex; /* Has only meaning for the driver functions. */
-    pxInterface->pfInitialise       = xFSP_Eth_NetworkInterfaceInitialise;
-    pxInterface->pfOutput           = xFSP_Eth_NetworkInterfaceOutput;
-    pxInterface->pfGetPhyLinkStatus = xFSP_Eth_GetPhyLinkStatus;
+    if (NULL != p_network_interface)
+    {
+        pcName = p_network_interface->pcName;
 
-    FreeRTOS_AddNetworkInterface(pxInterface);
+        if (NULL != pcName)
+        {
+            snprintf(pcName, sizeof(p_network_interface->pcName), "eth%u", (unsigned) xEMACIndex);
+
+            memset(pxInterface, '\0', sizeof(*pxInterface));
+            pxInterface->pcName             = pcName;              /* Just for logging, debugging. */
+            pxInterface->pvArgument         = (void *) xEMACIndex; /* Has only meaning for the driver functions. */
+            pxInterface->pfInitialise       = xFSP_Eth_NetworkInterfaceInitialise;
+            pxInterface->pfOutput           = xFSP_Eth_NetworkInterfaceOutput;
+            pxInterface->pfGetPhyLinkStatus = xFSP_Eth_GetPhyLinkStatus;
+
+            FreeRTOS_AddNetworkInterface(pxInterface);
+        }
+    }
 
     return pxInterface;
 }
@@ -303,7 +375,7 @@ NetworkInterface_t * pxFillInterfaceDescriptor (BaseType_t xEMACIndex, NetworkIn
 /***********************************************************************************************************************
  * private functions
  **********************************************************************************************************************/
-static BaseType_t prvNetworkInterfaceInput (void) {
+static BaseType_t prvNetworkInterfaceInput (network_interface_instance_t * p_network_interface) {
     BaseType_t xResult = pdFAIL;
     fsp_err_t  err;
 
@@ -317,14 +389,14 @@ static BaseType_t prvNetworkInterfaceInput (void) {
 
     if (NULL != pxBufferDescriptor)
     {
-        err = gp_freertos_ether->p_api->read(gp_freertos_ether->p_ctrl,
-                                             (void *) pxBufferDescriptor->pucEthernetBuffer,
-                                             &xBytesReceived);
+        err = p_network_interface->pxEther->p_api->read(p_network_interface->pxEther->p_ctrl,
+                                                        (void *) pxBufferDescriptor->pucEthernetBuffer,
+                                                        &xBytesReceived);
 
         pxBufferDescriptor->xDataLength = (size_t) xBytesReceived;
-        pxBufferDescriptor->pxInterface = pxFSPInterface;
+        pxBufferDescriptor->pxInterface = p_network_interface->pxFSPInterface;
         pxBufferDescriptor->pxEndPoint  =
-            FreeRTOS_MatchingEndpoint(pxFSPInterface, pxBufferDescriptor->pucEthernetBuffer);
+            FreeRTOS_MatchingEndpoint(p_network_interface->pxFSPInterface, pxBufferDescriptor->pucEthernetBuffer);
 
         /* When driver received any data. */
         if ((FSP_SUCCESS == err) || (FSP_ERR_ETHER_ERROR_NO_DATA == err))
@@ -361,11 +433,36 @@ static BaseType_t prvNetworkInterfaceInput (void) {
     return xResult;
 }
 
+static void prvNetworkInterfaceModuleInitialize (void)
+{
+    if (false == freertos_plus_tcp_initialized)
+    {
+        p_network_instance_list = (network_interface_instance_t **) &__freertos_plus_tcp_array_start;
+        max_network_instance    =
+            (uint32_t) ((uintptr_t) &__freertos_plus_tcp_array_end - (uintptr_t) &__freertos_plus_tcp_array_start) /
+            sizeof(uintptr_t);
+        freertos_plus_tcp_initialized = true;
+    }
+}
+
+static network_interface_instance_t * prvGetNetworkInterface (NetworkInterface_t * pxInterface)
+{
+    uint32_t loop;
+    for (loop = 0; loop < max_network_instance; loop++)
+    {
+        if (p_network_instance_list[loop]->pxFSPInterface == pxInterface)
+        {
+            return p_network_instance_list[loop];
+        }
+    }
+
+    return NULL;
+}
+
 static void prvRXHandlerTask (void * pvParameters) {
     BaseType_t xResult = pdFALSE;
 
     /* Avoid compiler warning about unreferenced parameter. */
-    (void) pvParameters;
 
     for ( ; ; )
     {
@@ -375,23 +472,23 @@ static void prvRXHandlerTask (void * pvParameters) {
 
         do
         {
-            xResult = prvNetworkInterfaceInput();
+            xResult = prvNetworkInterfaceInput(pvParameters);
         } while (pdFAIL != xResult);
     }
 }
 
 static void prvCheckLinkStatusTask (void * pvParameters) {
     /* Remove compiler warning about unused parameter. */
-    (void) pvParameters;
+    network_interface_instance_t * p_network_interface = pvParameters;
 
-    fsp_err_t            current_link_status  = FSP_ERR_ETHER_ERROR_LINK;
-    fsp_err_t            previous_link_status = FSP_ERR_ETHER_ERROR_LINK;
-    const IPStackEvent_t xNetworkDownEvent    = {eNetworkDownEvent, pxFSPInterface};
+    fsp_err_t      current_link_status  = FSP_ERR_ETHER_ERROR_LINK;
+    fsp_err_t      previous_link_status = FSP_ERR_ETHER_ERROR_LINK;
+    IPStackEvent_t xNetworkDownEvent    = {eNetworkDownEvent, p_network_interface->pxFSPInterface};
 
     for ( ; ; )
     {
         vTaskDelay(ETHER_LINK_STATUS_CHECK_INTERVAL);
-        current_link_status = gp_freertos_ether->p_api->linkProcess(gp_freertos_ether->p_ctrl);
+        current_link_status = p_network_interface->pxEther->p_api->linkProcess(p_network_interface->pxEther->p_ctrl);
 
         /* Link status is changed. */
         if (previous_link_status != current_link_status)
@@ -401,7 +498,7 @@ static void prvCheckLinkStatusTask (void * pvParameters) {
                 /* Link status changed to up. */
                 previous_link_status = current_link_status;
 
-                vIPNetworkUpCalls(pxFSPInterface->pxEndPoint);
+                vIPNetworkUpCalls(p_network_interface->pxFSPInterface->pxEndPoint);
             }
             else if ((FSP_ERR_ETHER_ERROR_LINK == current_link_status) ||
                      (FSP_ERR_ETHER_PHY_ERROR_LINK == current_link_status))

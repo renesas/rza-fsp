@@ -55,7 +55,7 @@ static uint32_t     route;
  *
  * @retval       None
  **********************************************************************************************************************/
-void bsp_irq_cfg (void)
+BSP_SECTION_FLASH_GAP void bsp_irq_cfg (void)
 {
     InitGicv3();
 

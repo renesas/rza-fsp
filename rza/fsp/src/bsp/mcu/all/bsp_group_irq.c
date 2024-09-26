@@ -40,7 +40,7 @@
  *
  * @retval     FSP_ERR_UNSUPPORTED          NMI Group IRQ are not supported in RZ/A3UL.
  **********************************************************************************************************************/
-fsp_err_t R_BSP_GroupIrqWrite (bsp_grp_irq_t irq, void (* p_callback)(bsp_grp_irq_t irq))
+BSP_SECTION_FLASH_GAP fsp_err_t R_BSP_GroupIrqWrite (bsp_grp_irq_t irq, void (* p_callback)(bsp_grp_irq_t irq))
 {
     (void) irq;
     (void) p_callback;

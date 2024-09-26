@@ -35,6 +35,11 @@ uint32_t SystemCoreClock BSP_SECTION_EARLY_INIT;
 #if defined(__ARMCC_VERSION)
 extern void (* Image$$INIT_ARRAY$$Base[])(void);
 extern void (* Image$$INIT_ARRAY$$Limit[])(void);
+ #if defined(__ARMCC_USING_STANDARDLIB)
+  #include <rt_misc.h>
+extern uint32_t Image$$ARM_LIB_HEAP$$ZI$$Base;
+extern uint32_t Image$$ARM_LIB_HEAP$$ZI$$Length;
+ #endif
 #elif defined(__GNUC__)
 
 extern void (* __init_array_start[])(void);
@@ -90,16 +95,15 @@ void SystemInit (void)
     /* Initialize clock variables to be used with R_BSP_SoftwareDelay. */
     bsp_clock_freq_var_init();
 #else
-
-#if BSP_FEATURE_TFU_SUPPORTED
+ #if BSP_FEATURE_TFU_SUPPORTED
     R_BSP_MODULE_START(FSP_IP_TFU, 0U);
-#endif
+ #endif
 
-#if BSP_CFG_EARLY_INIT
+ #if BSP_CFG_EARLY_INIT
 
     /* Initialize uninitialized BSP variables early for use in R_BSP_WarmStart. */
     bsp_init_uninitialized_vars();
-#endif
+ #endif
 
     /* Call pre clock initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_RESET);
@@ -115,6 +119,10 @@ void SystemInit (void)
 
     /* Initialize static constructors */
  #if defined(__ARMCC_VERSION)
+  #if defined(__ARMCC_USING_STANDARDLIB)
+    __rt_lib_init((uint32_t) &Image$$ARM_LIB_HEAP$$ZI$$Base,
+                  (uint32_t) &Image$$ARM_LIB_HEAP$$ZI$$Base + (uint32_t) &Image$$ARM_LIB_HEAP$$ZI$$Length);
+  #else
     int32_t count = Image$$INIT_ARRAY$$Limit - Image$$INIT_ARRAY$$Base;
     for (int32_t i = 0; i < count; i++)
     {
@@ -122,12 +130,14 @@ void SystemInit (void)
             (void (*)(void))((uint32_t) &Image$$INIT_ARRAY$$Base + (uint32_t) Image$$INIT_ARRAY$$Base[i]);
         p_init_func();
     }
+  #endif
  #elif defined(__GNUC__)
     int32_t count = (int32_t) (__init_array_end - __init_array_start);
     for (int32_t i = 0; i < count; i++)
     {
         __init_array_start[i]();
     }
+
  #elif defined(__ICCARM__)
     void const * pibase = __section_begin("SHT$$PREINIT_ARRAY");
     void const * ilimit = __section_end("SHT$$INIT_ARRAY");

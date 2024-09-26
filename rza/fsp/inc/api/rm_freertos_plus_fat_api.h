@@ -8,7 +8,7 @@
  #define RM_FREERTOS_PLUS_FAT_API_H
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @defgroup RM_FREERTOS_PLUS_FAT_API FreeRTOS+FAT Port Interface
  * @brief Interface for FreeRTOS+FAT port.
  *

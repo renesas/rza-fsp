@@ -8,7 +8,7 @@
 #define R_CAN_API_H
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_CONNECTIVITY_INTERFACES
  * @defgroup CAN_API CAN Interface
  * @brief Interface for CAN peripheral
  *

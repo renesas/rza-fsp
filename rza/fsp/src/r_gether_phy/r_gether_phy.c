@@ -976,12 +976,12 @@ static void gether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instanc
 #if (GETHER_PHY_CFG_USE_CUSTOM_PHY_LSI_ENABLE)
         case ETHER_PHY_LSI_TYPE_CUSTOM:
         {
-            if (NULL != p_instance_ctrl->p_ether_phy_cfg->p_extend)
+            if (NULL != p_instance_ctrl->p_gether_phy_cfg->p_extend)
             {
-                ether_phy_extended_cfg_t const * p_callback = p_instance_ctrl->p_ether_phy_cfg->p_extend;
-                if (NULL != p_callback->p_port_custom_init)
+                ether_phy_instance_extend_t const * p_callback = p_instance_ctrl->p_gether_phy_cfg->p_extend;
+                if (NULL != p_callback->p_target_init)
                 {
-                    p_callback->p_port_custom_init(p_instance_ctrl);
+                    p_callback->p_target_init(p_instance_ctrl);
                 }
             }
 
@@ -1026,12 +1026,12 @@ static bool gether_phy_targets_is_support_link_partner_ability (ether_phy_instan
 #if (GETHER_PHY_CFG_USE_CUSTOM_PHY_LSI_ENABLE)
         case ETHER_PHY_LSI_TYPE_CUSTOM:
         {
-            if (NULL != p_instance_ctrl->p_ether_phy_cfg->p_extend)
+            if (NULL != p_instance_ctrl->p_gether_phy_cfg->p_extend)
             {
-                ether_phy_extended_cfg_t const * p_callback = p_instance_ctrl->p_ether_phy_cfg->p_extend;
-                if (NULL != p_callback->p_port_custom_link_partner_ability_get)
+                ether_phy_instance_extend_t const * p_callback = p_instance_ctrl->p_gether_phy_cfg->p_extend;
+                if (NULL != p_callback->p_target_link_partner_ability_get)
                 {
-                    result = p_callback->p_port_custom_link_partner_ability_get(p_instance_ctrl, line_speed_duplex);
+                    result = p_callback->p_target_link_partner_ability_get(p_instance_ctrl, line_speed_duplex);
                 }
             }
 

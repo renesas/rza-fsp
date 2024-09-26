@@ -131,6 +131,7 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Open (rm_block_media_ctrl_t * const p_ctrl, rm_bloc
     p_instance_ctrl->device_address = RM_BLOCK_MEDIA_USB_INVALID_DEVICE_ADDRESS;
 
 #if 2 == BSP_CFG_RTOS
+
     /* Event group create */
     p_instance_ctrl->event_group = xEventGroupCreate();
 #endif
@@ -286,35 +287,37 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Read (rm_block_media_ctrl_t * const p_ctrl,
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
 #if BSP_CFG_RTOS == 0
+    usb_er_t usb_err;
+
     /* Wait USB read sequence(READ10) */
     do
     {
         /* Check Detach */
         data = usb_hmsc_get_dev_sts(p_drive);
-        rm_block_media_usb_waitloop();                                           /* Task Schedule */
-        err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
-    } while ((err != USB_OK) && (data != USB_FALSE));
+        rm_block_media_usb_waitloop();                                               /* Task Schedule */
+        usb_err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
+    } while ((usb_err != USB_OK) && (data != USB_FALSE));
 
     if (err == USB_OK)
     {
         /* Complete R_USB_HmscStrgReadSector() */
-        err = p_mess->result;          /* Set result for R_USB_HmscStrgReadSector() */
+        usb_err = p_mess->result;      /* Set result for R_USB_HmscStrgReadSector() */
         USB_REL_BLK(USB_HSTRG_MPL, (usb_mh_t) p_mess);
     }
     else
     {
         /* Device detach */
-        rm_block_media_usb_waitloop();                                           /* Task Schedule */
-        err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
-        if (USB_OK == err)
+        rm_block_media_usb_waitloop();                                               /* Task Schedule */
+        usb_err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
+        if (USB_OK == usb_err)
         {
             USB_REL_BLK(USB_HSTRG_MPL, (usb_mh_t) p_mess);
         }
 
-        err = USB_ERROR;
+        usb_err = USB_ERROR;
     }
 
-    if (err != USB_OK)
+    if (usb_err != USB_OK)
     {
         return FSP_ERR_USB_FAILED;
     }
@@ -380,16 +383,18 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Write (rm_block_media_ctrl_t * const p_ctrl,
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
 #if BSP_CFG_RTOS == 0
+    usb_er_t usb_err;
+
     /* Wait USB write sequence(WRITE10) */
     do
     {
         /* Check Detach */
         data = usb_hmsc_get_dev_sts(p_drive);
-        rm_block_media_usb_waitloop();                                           /* Task Schedule */
-        err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
-    } while ((err != USB_OK) && (data != USB_FALSE));
+        rm_block_media_usb_waitloop();                                               /* Task Schedule */
+        usb_err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
+    } while ((usb_err != USB_OK) && (data != USB_FALSE));
 
-    if (err == USB_OK)
+    if (usb_err == USB_OK)
     {
         /* Complete R_USB_HmscStrgReadSector() */
         err = p_mess->result;          /* Set result for R_USB_HmscStrgReadSector() */
@@ -398,17 +403,17 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Write (rm_block_media_ctrl_t * const p_ctrl,
     else
     {
         /* Device detach */
-        rm_block_media_usb_waitloop();                                           /* Task Schedule */
-        err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
-        if (USB_OK == err)
+        rm_block_media_usb_waitloop();                                               /* Task Schedule */
+        usb_err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
+        if (USB_OK == usb_err)
         {
             USB_REL_BLK(USB_HSTRG_MPL, (usb_mh_t) p_mess);
         }
 
-        err = USB_ERROR;
+        usb_err = USB_ERROR;
     }
 
-    if (err != USB_OK)
+    if (usb_err != USB_OK)
     {
         return FSP_ERR_USB_FAILED;
     }
@@ -469,36 +474,39 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Erase (rm_block_media_ctrl_t * const p_ctrl,
     {
         err = R_USB_HMSC_StorageWriteSector(p_drive, &g_block_media_usb_erase_data[0], block_address + i, 1U);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
 #if BSP_CFG_RTOS == 0
+        usb_er_t usb_err;
+
         /* Wait USB write sequence(WRITE10) */
         do
         {
             /* Check Detach */
             data = usb_hmsc_get_dev_sts(p_drive);
-            rm_block_media_usb_waitloop();                                           /* Task Schedule */
-            err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
-        } while ((err != USB_OK) && (data != USB_FALSE));
+            rm_block_media_usb_waitloop();                                               /* Task Schedule */
+            usb_err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
+        } while ((usb_err != USB_OK) && (data != USB_FALSE));
 
-        if (err == USB_OK)
+        if (usb_err == USB_OK)
         {
             /* Complete R_USB_HmscStrgReadSector() */
-            err = p_mess->result;      /* Set result for R_USB_HmscStrgReadSector() */
+            usb_err = p_mess->result;  /* Set result for R_USB_HmscStrgReadSector() */
             USB_REL_BLK(USB_HSTRG_MPL, (usb_mh_t) p_mess);
         }
         else
         {
             /* Device detach */
-            rm_block_media_usb_waitloop();                                           /* Task Schedule */
-            err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
-            if (USB_OK == err)
+            rm_block_media_usb_waitloop();                                               /* Task Schedule */
+            usb_err = USB_TRCV_MSG(USB_HSTRG_MBX, (usb_msg_t **) &p_mess, (uint16_t) 0); /* Receive read complete msg */
+            if (USB_OK == usb_err)
             {
                 USB_REL_BLK(USB_HSTRG_MPL, (usb_mh_t) p_mess);
             }
 
-            err = USB_ERROR;
+            usb_err = USB_ERROR;
         }
 
-        if (err != USB_OK)
+        if (usb_err != USB_OK)
         {
             return FSP_ERR_USB_FAILED;
         }
@@ -525,8 +533,8 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Erase (rm_block_media_ctrl_t * const p_ctrl,
  *
  * @return See @ref RENESAS_ERROR_CODES or functions called by this function for other possible return codes.
  **********************************************************************************************************************/
-fsp_err_t RM_BLOCK_MEDIA_USB_CallbackSet (rm_block_media_ctrl_t * const          p_api_ctrl,
-                                          void (                               * p_callback ) (
+fsp_err_t RM_BLOCK_MEDIA_USB_CallbackSet (rm_block_media_ctrl_t * const p_api_ctrl,
+                                          void (                      * p_callback)(
                                               rm_block_media_callback_args_t *),
                                           void const * const                     p_context,
                                           rm_block_media_callback_args_t * const p_callback_memory)
@@ -540,11 +548,13 @@ fsp_err_t RM_BLOCK_MEDIA_USB_CallbackSet (rm_block_media_ctrl_t * const         
 #endif
 
 #if BSP_TZ_SECURE_BUILD
+
     /* Get security state of p_callback */
     bool callback_is_secure =
         (NULL == cmse_check_address_range((void *) p_callback, sizeof(void *), CMSE_AU_NONSECURE));
 
  #if RM_BLOCK_MEDIA_USB_CFG_PARAM_CHECKING_ENABLE
+
     /* In secure projects, p_callback_memory must be provided in non-secure space if p_callback is non-secure */
     rm_block_media_callback_args_t * const p_callback_memory_checked = cmse_check_pointed_object(p_callback_memory,
                                                                                                  CMSE_AU_NONSECURE);
@@ -668,6 +678,7 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Close (rm_block_media_ctrl_t * const p_ctrl)
     usb_instance_t * p_usb = (usb_instance_t *) p_extended_cfg->p_usb;
 
 #if 2 == BSP_CFG_RTOS
+
     /* Event group delete */
     vEventGroupDelete(p_instance_ctrl->event_group);
 #endif
@@ -710,6 +721,7 @@ static void rm_block_media_usb_call_callback (rm_block_media_usb_instance_ctrl_t
     p_args->p_context = p_instance_ctrl->p_context;
 
 #if BSP_TZ_SECURE_BUILD
+
     /* p_callback can point to a secure function or a non-secure function. */
     if (!cmse_is_nsfptr(p_instance_ctrl->p_callback))
     {
@@ -722,7 +734,9 @@ static void rm_block_media_usb_call_callback (rm_block_media_usb_instance_ctrl_t
         blockmedia_usb_prv_ns_callback p_callback = (blockmedia_usb_prv_ns_callback) (p_instance_ctrl->p_callback);
         p_callback(p_args);
     }
+
 #else
+
     /* If the project is not Trustzone Secure, then it will never need to change security state in order to call the callback. */
     p_instance_ctrl->p_callback(p_args);
 #endif

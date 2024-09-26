@@ -371,8 +371,8 @@ fsp_err_t R_IOPORT_PortWrite (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, 
  *
  * @retval FSP_SUCCESS                  Pin written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The pin and/or level not valid
- * @retval FSP_ERR_NOT_OPEN             The module has not been opene
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_NOT_OPEN             The module has not been opened
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different pins.
  **********************************************************************************************************************/

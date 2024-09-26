@@ -55,38 +55,38 @@ typedef enum e_mtu3_clock_edge
 /** Time Prescaler Select */
 typedef enum e_mtu3_clock_div
 {
-    MTU3_CLOCK_DIV_1  = 0x0,                      ///< CLOCK divided by 1  (common ch)
-    MTU3_CLOCK_DIV_4  = 0x1,                      ///< CLOCK divided by 4  (common ch)
-    MTU3_CLOCK_DIV_16 = 0x2,                      ///< CLOCK divided by 16 (common ch)
-    MTU3_CLOCK_DIV_64 = 0x3,                      ///< CLOCK divided by 64 (common ch)
-    MTU3_CLOCK_DIV_2  = 0x8,                      ///< CLOCK divided by 2 (common ch)
-    MTU3_CLOCK_DIV_8  = 0x10,                     ///< CLOCK divided by 8 (common ch)
-    MTU3_CLOCK_DIV_32 = 0x18,                     ///< CLOCK divided by 32 (common ch)
+    MTU3_CLOCK_DIV_1  = 0x0,                  ///< CLOCK divided by 1  (common ch)
+    MTU3_CLOCK_DIV_4  = 0x1,                  ///< CLOCK divided by 4  (common ch)
+    MTU3_CLOCK_DIV_16 = 0x2,                  ///< CLOCK divided by 16 (common ch)
+    MTU3_CLOCK_DIV_64 = 0x3,                  ///< CLOCK divided by 64 (common ch)
+    MTU3_CLOCK_DIV_2  = 0x8,                  ///< CLOCK divided by 2 (common ch)
+    MTU3_CLOCK_DIV_8  = 0x10,                 ///< CLOCK divided by 8 (common ch)
+    MTU3_CLOCK_DIV_32 = 0x18,                 ///< CLOCK divided by 32 (common ch)
 
-    MTU3_CLOCK_DIV_MTCLKA_CH_0     = 0x4,         ///< External clock: counts on MTCLKA pin input (ch0)
-    MTU3_CLOCK_DIV_MTCLKB_CH_0     = 0x5,         ///< External clock: counts on MTCLKB pin input (ch0)
-    MTU3_CLOCK_DIV_MTCLKC_CH_0     = 0x6,         ///< External clock: counts on MTCLKC pin input (ch0)
-    MTU3_CLOCK_DIV_MTCLKD_CH_0     = 0x7,         ///< External clock: counts on MTCLKD pin input (ch0)
-    MTU3_CLOCK_DIV_256_CH_0  = 0x20,              ///< CLOCK divided by 256 (ch0)
-    MTU3_CLOCK_DIV_1024_CH_0 = 0x28,              ///< CLOCK divided by 1024 (ch0)
-    MTU3_CLOCK_DIV_MTIOC1A_CH_0    = 0x38,        ///< External clock: counts on MTIOC1A pin input (ch0)
+    MTU3_CLOCK_DIV_MTCLKA_CH_0  = 0x4,        ///< External clock: counts on MTCLKA pin input (ch0)
+    MTU3_CLOCK_DIV_MTCLKB_CH_0  = 0x5,        ///< External clock: counts on MTCLKB pin input (ch0)
+    MTU3_CLOCK_DIV_MTCLKC_CH_0  = 0x6,        ///< External clock: counts on MTCLKC pin input (ch0)
+    MTU3_CLOCK_DIV_MTCLKD_CH_0  = 0x7,        ///< External clock: counts on MTCLKD pin input (ch0)
+    MTU3_CLOCK_DIV_256_CH_0     = 0x20,       ///< CLOCK divided by 256 (ch0)
+    MTU3_CLOCK_DIV_1024_CH_0    = 0x28,       ///< CLOCK divided by 1024 (ch0)
+    MTU3_CLOCK_DIV_MTIOC1A_CH_0 = 0x38,       ///< External clock: counts on MTIOC1A pin input (ch0)
 
-    MTU3_CLOCK_DIV_MTCLKA_CH_1     = 0x4,         ///< External clock: counts on MTCLKA pin input (ch1)
-    MTU3_CLOCK_DIV_MTCLKB_CH_1     = 0x5,         ///< External clock: counts on MTCLKB pin input (ch1)
-    MTU3_CLOCK_DIV_256_CH_1  = 0x6,               ///< CLOCK divided by 256 (ch1)
-    MTU3_CLOCK_DIV_TCNT_CH1        = 0x7,         ///< Overflow/underflow of MTU2.TCNT
-    MTU3_CLOCK_DIV_1024_CH_1 = 0x20,              ///< CLOCK divided by 1024 (ch1)
+    MTU3_CLOCK_DIV_MTCLKA_CH_1 = 0x4,         ///< External clock: counts on MTCLKA pin input (ch1)
+    MTU3_CLOCK_DIV_MTCLKB_CH_1 = 0x5,         ///< External clock: counts on MTCLKB pin input (ch1)
+    MTU3_CLOCK_DIV_256_CH_1    = 0x6,         ///< CLOCK divided by 256 (ch1)
+    MTU3_CLOCK_DIV_TCNT_CH1    = 0x7,         ///< Overflow/underflow of MTU2.TCNT
+    MTU3_CLOCK_DIV_1024_CH_1   = 0x20,        ///< CLOCK divided by 1024 (ch1)
 
-    MTU3_CLOCK_DIV_MTCLKA_CH_2     = 0x4,         ///< External clock: counts on MTCLKA pin input (ch2)
-    MTU3_CLOCK_DIV_MTCLKB_CH_2     = 0x5,         ///< External clock: counts on MTCLKB pin input (ch2)
-    MTU3_CLOCK_DIV_MTCLKC_CH_2     = 0x6,         ///< External clock: counts on MTCLKC pin input (ch2)
-    MTU3_CLOCK_DIV_1024_CH_2 = 0x7,               ///< CLOCK divided by 1024 (ch2)
-    MTU3_CLOCK_DIV_256_CH_2  = 0x20,              ///< CLOCK divided by 256 (ch2)
+    MTU3_CLOCK_DIV_MTCLKA_CH_2 = 0x4,         ///< External clock: counts on MTCLKA pin input (ch2)
+    MTU3_CLOCK_DIV_MTCLKB_CH_2 = 0x5,         ///< External clock: counts on MTCLKB pin input (ch2)
+    MTU3_CLOCK_DIV_MTCLKC_CH_2 = 0x6,         ///< External clock: counts on MTCLKC pin input (ch2)
+    MTU3_CLOCK_DIV_1024_CH_2   = 0x7,         ///< CLOCK divided by 1024 (ch2)
+    MTU3_CLOCK_DIV_256_CH_2    = 0x20,        ///< CLOCK divided by 256 (ch2)
 
-    MTU3_CLOCK_DIV_256_CH_3_4_6_7_8  = 0x4,       ///< CLOCK divided by 256 (ch3-4, 6-8)
-    MTU3_CLOCK_DIV_1024_CH_3_4_6_7_8 = 0x5,       ///< CLOCK divided by 1024 (ch3-4, 6-8)
-    MTU3_CLOCK_DIV_MTCLKA_CH_3_4_6_7_8     = 0x6, ///< External clock: counts on MTCLKA pin input (ch3-4, 6-8)
-    MTU3_CLOCK_DIV_MTCLKB_CH_3_4_6_7_8     = 0x7, ///< External clock: counts on MTCLKB pin input (ch3-4, 6-8)
+    MTU3_CLOCK_DIV_256_CH_3_4_6_7_8    = 0x4, ///< CLOCK divided by 256 (ch3-4, 6-8)
+    MTU3_CLOCK_DIV_1024_CH_3_4_6_7_8   = 0x5, ///< CLOCK divided by 1024 (ch3-4, 6-8)
+    MTU3_CLOCK_DIV_MTCLKA_CH_3_4_6_7_8 = 0x6, ///< External clock: counts on MTCLKA pin input (ch3-4, 6-8)
+    MTU3_CLOCK_DIV_MTCLKB_CH_3_4_6_7_8 = 0x7, ///< External clock: counts on MTCLKB pin input (ch3-4, 6-8)
 } mtu3_clock_div_t;
 
 /** Counter Clear Source Select */
@@ -132,10 +132,10 @@ typedef enum e_mtu3_noise_filter_external
 
 typedef enum e_mtu3_noise_filter_clock
 {
-    MTU3_NOISE_FILTER_CLOCK_DIV_1  = 0U,       ///< CLK/1 - fast sampling
-    MTU3_NOISE_FILTER_CLOCK_DIV_8  = 1U,       ///< CLK/8
-    MTU3_NOISE_FILTER_CLOCK_DIV_32 = 2U,       ///< CLK/32 - slow sampling
-    MTU3_NOISE_FILTER_CLOCK_SOURCE = 3U,       ///< Clock source for counting
+    MTU3_NOISE_FILTER_CLOCK_DIV_1  = 0U, ///< CLK/1 - fast sampling
+    MTU3_NOISE_FILTER_CLOCK_DIV_8  = 1U, ///< CLK/8
+    MTU3_NOISE_FILTER_CLOCK_DIV_32 = 2U, ///< CLK/32 - slow sampling
+    MTU3_NOISE_FILTER_CLOCK_SOURCE = 3U, ///< Clock source for counting
 } mtu3_noise_filter_clock_t;
 
 typedef enum e_mtu3_noise_filter_external_clock
@@ -222,11 +222,11 @@ typedef struct st_mtu3_extended_cfg
     mtu3_output_pin_t mtioc_ctrl_setting; ///< I/O Control A, B
 
     /* Debounce filter for MTIOCxA or MTIOCxB input signal pin. */
-    mtu3_noise_filter_t noise_filter_mtioc_setting;
-    mtu3_noise_filter_clock_t   noise_filter_mtioc_clk;
+    mtu3_noise_filter_t       noise_filter_mtioc_setting;
+    mtu3_noise_filter_clock_t noise_filter_mtioc_clk;
 
     /* Debounce filter for MTCLKx input signal pin. */
-    mtu3_noise_filter_mtclk_t  noise_filter_mtclk_setting;
+    mtu3_noise_filter_mtclk_t          noise_filter_mtclk_setting;
     mtu3_noise_filter_external_clock_t noise_filter_mtclk_clk;
 
     /* A/D Converter Activation by TGRA Input Capture/Compare Match. */
@@ -260,6 +260,9 @@ fsp_err_t R_MTU3_Start(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_MTU3_Reset(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_MTU3_PeriodSet(timer_ctrl_t * const p_ctrl, uint32_t const period_counts);
 fsp_err_t R_MTU3_DutyCycleSet(timer_ctrl_t * const p_ctrl, uint32_t const duty_cycle_counts, uint32_t const pin);
+fsp_err_t R_MTU3_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
+                                 uint32_t const              compare_match_value,
+                                 timer_compare_match_t const match_channel);
 fsp_err_t R_MTU3_InfoGet(timer_ctrl_t * const p_ctrl, timer_info_t * const p_info);
 fsp_err_t R_MTU3_StatusGet(timer_ctrl_t * const p_ctrl, timer_status_t * const p_status);
 fsp_err_t R_MTU3_CounterSet(timer_ctrl_t * const p_ctrl, uint32_t counter);

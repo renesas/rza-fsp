@@ -40,6 +40,9 @@
 #define MTU3_CLK_TPSC_NUM                   (15U) /* TPSC and TPSC2 setting range */
 #define MTU3_MAX_COUNT                      (UINT16_MAX + 1U)
 
+#define MTU3_TIORH_IOA3_Msk                 (0x08U)
+#define MTU3_TIORH_IOB3_Msk                 (0x80U)
+
 /* Noise fileter offset address */
 #define MTU0_NOISEFILTER_OFFSET_ADDRESS     (0x0000U)
 #define MTU1_NOISEFILTER_OFFSET_ADDRESS     (0x0001U)
@@ -198,8 +201,8 @@ static void     r_mtu3_call_callback(mtu3_instance_ctrl_t * p_ctrl, timer_event_
  * ISR prototypes
  **********************************************************************************************************************/
 void mtu3_counter_overflow_isr(IRQn_Type const irq);
-void mtu3_capture_a_isr(IRQn_Type const irq);
-void mtu3_capture_b_isr(IRQn_Type const irq);
+void mtu3_capture_compare_a_isr(IRQn_Type const irq);
+void mtu3_capture_compare_b_isr(IRQn_Type const irq);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -415,18 +418,19 @@ static const uint8_t mtu3_tstr_val[BSP_FEATURE_MTU3_MAX_CHANNELS] =
 /* MTU3 implementation of timer interface  */
 const timer_api_t g_timer_on_mtu3 =
 {
-    .open         = R_MTU3_Open,
-    .stop         = R_MTU3_Stop,
-    .start        = R_MTU3_Start,
-    .reset        = R_MTU3_Reset,
-    .enable       = R_MTU3_Enable,
-    .disable      = R_MTU3_Disable,
-    .periodSet    = R_MTU3_PeriodSet,
-    .dutyCycleSet = R_MTU3_DutyCycleSet,
-    .infoGet      = R_MTU3_InfoGet,
-    .statusGet    = R_MTU3_StatusGet,
-    .callbackSet  = R_MTU3_CallbackSet,
-    .close        = R_MTU3_Close,
+    .open            = R_MTU3_Open,
+    .stop            = R_MTU3_Stop,
+    .start           = R_MTU3_Start,
+    .reset           = R_MTU3_Reset,
+    .enable          = R_MTU3_Enable,
+    .disable         = R_MTU3_Disable,
+    .periodSet       = R_MTU3_PeriodSet,
+    .dutyCycleSet    = R_MTU3_DutyCycleSet,
+    .compareMatchSet = R_MTU3_CompareMatchSet,
+    .infoGet         = R_MTU3_InfoGet,
+    .statusGet       = R_MTU3_StatusGet,
+    .callbackSet     = R_MTU3_CallbackSet,
+    .close           = R_MTU3_Close,
 };
 
 /*******************************************************************************************************************//**
@@ -587,7 +591,7 @@ fsp_err_t R_MTU3_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
      * Reference section "Note on Cycle Setting" */
     uint32_t new_period_counts = period_counts - 1U;
 
-    /* If the counter is not counting, update period register and reset counter. */
+    /* If the counter is not counting, update period register, buffer register and reset counter. */
     if (0U == mtu3_get_tstr(p_instance_ctrl))
     {
         if (MTU3_CHANNEL_8 == p_instance_ctrl->p_cfg->channel)
@@ -596,10 +600,14 @@ fsp_err_t R_MTU3_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
             {
                 *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg +
                                tgra_ofs_addr[p_instance_ctrl->p_cfg->channel]) = new_period_counts;
+                *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                               tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel]) = new_period_counts;
             }
             else if (MTU3_TCNT_CLEAR_TGRB == p_extend->mtu3_clear)
             {
                 *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgra_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                               MTU3_TGRB_D_OFFSET_LONG) = new_period_counts;
+                *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel] +
                                MTU3_TGRB_D_OFFSET_LONG) = new_period_counts;
             }
             else
@@ -613,11 +621,23 @@ fsp_err_t R_MTU3_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
             {
                 *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg +
                                tgra_ofs_addr[p_instance_ctrl->p_cfg->channel]) = (uint16_t) new_period_counts;
+                if ((MTU3_CHANNEL_1 != p_instance_ctrl->p_cfg->channel) &&
+                    (MTU3_CHANNEL_2 != p_instance_ctrl->p_cfg->channel))
+                {
+                    *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                                   tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel]) = (uint16_t) new_period_counts;
+                }
             }
             else if (MTU3_TCNT_CLEAR_TGRB == p_extend->mtu3_clear)
             {
                 *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgra_ofs_addr[p_instance_ctrl->p_cfg->channel] +
                                MTU3_TGRB_D_OFFSET_WORD) = (uint16_t) new_period_counts;
+                if ((MTU3_CHANNEL_1 != p_instance_ctrl->p_cfg->channel) &&
+                    (MTU3_CHANNEL_2 != p_instance_ctrl->p_cfg->channel))
+                {
+                    *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                                   MTU3_TGRB_D_OFFSET_WORD) = (uint16_t) new_period_counts;
+                }
             }
             else
             {
@@ -732,11 +752,15 @@ fsp_err_t R_MTU3_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
             {
                 *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgra_ofs_addr[p_instance_ctrl->p_cfg->channel] +
                                MTU3_TGRB_D_OFFSET_LONG) = new_duty_cycle_counts;
+                *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                               MTU3_TGRB_D_OFFSET_LONG) = new_duty_cycle_counts;
             }
             else if (MTU3_TCNT_CLEAR_TGRB == p_extend->mtu3_clear)
             {
                 *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg +
                                tgra_ofs_addr[p_instance_ctrl->p_cfg->channel]) = new_duty_cycle_counts;
+                *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                               tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel]) = new_duty_cycle_counts;
             }
             else
             {
@@ -749,11 +773,23 @@ fsp_err_t R_MTU3_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
             {
                 *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgra_ofs_addr[p_instance_ctrl->p_cfg->channel] +
                                MTU3_TGRB_D_OFFSET_WORD) = (uint16_t) new_duty_cycle_counts;
+                if ((MTU3_CHANNEL_1 != p_instance_ctrl->p_cfg->channel) &&
+                    (MTU3_CHANNEL_2 != p_instance_ctrl->p_cfg->channel))
+                {
+                    *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                                   MTU3_TGRB_D_OFFSET_WORD) = (uint16_t) new_duty_cycle_counts;
+                }
             }
             else if (MTU3_TCNT_CLEAR_TGRB == p_extend->mtu3_clear)
             {
                 *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg +
                                tgra_ofs_addr[p_instance_ctrl->p_cfg->channel]) = (uint16_t) new_duty_cycle_counts;
+                if ((MTU3_CHANNEL_1 != p_instance_ctrl->p_cfg->channel) &&
+                    (MTU3_CHANNEL_2 != p_instance_ctrl->p_cfg->channel))
+                {
+                    *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                                   tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel]) = (uint16_t) new_duty_cycle_counts;
+                }
             }
             else
             {
@@ -829,6 +865,88 @@ fsp_err_t R_MTU3_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
 
     FSP_RETURN(FSP_ERR_UNSUPPORTED);
 #endif
+}
+
+/*******************************************************************************************************************//**
+ * Set value for compare match feature. Implements @ref timer_api_t::compareMatchSet.
+ *
+ * @note This API should be used when timer is stop counting. And shall not be used along with PWM operation.
+ *
+ * Example:
+ * @snippet r_mtu3_example.c R_MTU3_CompareMatchSet
+ *
+ * @retval FSP_SUCCESS              Set the compare match value successfully.
+ * @retval FSP_ERR_ASSERTION        p_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN         The instance is not opened.
+ **********************************************************************************************************************/
+fsp_err_t R_MTU3_CompareMatchSet (timer_ctrl_t * const        p_ctrl,
+                                  uint32_t const              compare_match_value,
+                                  timer_compare_match_t const match_channel)
+{
+    mtu3_instance_ctrl_t * p_instance_ctrl = (mtu3_instance_ctrl_t *) p_ctrl;
+
+#if MTU3_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(0U != compare_match_value);
+    FSP_ASSERT(compare_match_value <= MTU3_MAX_COUNT);
+    FSP_ERROR_RETURN(MTU3_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+#endif
+
+    if (MTU3_CHANNEL_8 == p_instance_ctrl->p_cfg->channel)
+    {
+        if (TIMER_COMPARE_MATCH_A == match_channel)
+        {
+            *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                           tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel]) = compare_match_value - 1U;
+        }
+        else if (TIMER_COMPARE_MATCH_B == match_channel)
+        {
+            *(uint32_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                           MTU3_TGRB_D_OFFSET_LONG) = compare_match_value - 1U;
+        }
+        else
+        {
+            /* Do nothing. */
+        }
+    }
+    else if ((MTU3_CHANNEL_1 == p_instance_ctrl->p_cfg->channel) ||
+             (MTU3_CHANNEL_2 == p_instance_ctrl->p_cfg->channel))
+    {
+        /* Channel 1 and 2 without TGRC and TGRD should write TGRA and TGRB */
+        if (TIMER_COMPARE_MATCH_A == match_channel)
+        {
+            *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                           tgra_ofs_addr[p_instance_ctrl->p_cfg->channel]) = (uint16_t) (compare_match_value - 1U);
+        }
+        else if (TIMER_COMPARE_MATCH_B == match_channel)
+        {
+            *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgra_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                           MTU3_TGRB_D_OFFSET_WORD) = (uint16_t) (compare_match_value - 1U);
+        }
+        else
+        {
+            /* Do nothing. */
+        }
+    }
+    else
+    {
+        if (TIMER_COMPARE_MATCH_A == match_channel)
+        {
+            *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg +
+                           tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel]) = (uint16_t) (compare_match_value - 1U);
+        }
+        else if (TIMER_COMPARE_MATCH_B == match_channel)
+        {
+            *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgrc_ofs_addr[p_instance_ctrl->p_cfg->channel] +
+                           MTU3_TGRB_D_OFFSET_WORD) = (uint16_t) (compare_match_value - 1U);
+        }
+        else
+        {
+            /* Do nothing. */
+        }
+    }
+
+    return FSP_SUCCESS;
 }
 
 /*******************************************************************************************************************//**
@@ -1654,12 +1772,12 @@ static void r_mtu3_call_callback (mtu3_instance_ctrl_t * p_ctrl, timer_event_t e
 }
 
 /*******************************************************************************************************************//**
- * Common processing for input capture interrupt.
+ * Common processing for input capture or compare interrupt.
  *
  * @param[in]  irq    Interrupt ID
- * @param[in]  event  Which input capture event occurred
+ * @param[in]  event  Which input capture or compare event occurred
  **********************************************************************************************************************/
-static void r_mtu3_capture_common_isr (IRQn_Type const irq, mtu3_prv_capture_event_t event)
+static void r_mtu3_ccmp_common_isr (IRQn_Type const irq, mtu3_prv_capture_event_t event)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1668,8 +1786,15 @@ static void r_mtu3_capture_common_isr (IRQn_Type const irq, mtu3_prv_capture_eve
     mtu3_instance_ctrl_t * p_instance_ctrl = (mtu3_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
     uint32_t               counter         = 0U;
 
-    /* Get captured value. */
-    if (event == MTU3_PRV_CAPTURE_EVENT_A)
+    timer_event_t event_base = TIMER_EVENT_CAPTURE_A;
+
+    /* Get captured A value. */
+
+    /* When use input capture A, IOA3 bit should be 1.
+     * (See section 'Timer I/O Control Register (TIOR)' of the RZ microprocessor manual) */
+    if ((event == MTU3_PRV_CAPTURE_EVENT_A) && (*((uint8_t *) p_instance_ctrl->p_reg +
+                                                  tior_ofs_addr[p_instance_ctrl->p_cfg->channel]) &
+                                                MTU3_TIORH_IOA3_Msk))
     {
         if (MTU3_CHANNEL_8 == p_instance_ctrl->p_cfg->channel)
         {
@@ -1682,7 +1807,13 @@ static void r_mtu3_capture_common_isr (IRQn_Type const irq, mtu3_prv_capture_eve
                 *(uint16_t *) ((uint8_t *) p_instance_ctrl->p_reg + tgra_ofs_addr[p_instance_ctrl->p_cfg->channel]);
         }
     }
-    else if (event == MTU3_PRV_CAPTURE_EVENT_B)
+    /* Get captured B value. */
+
+    /* When use input capture B, IOB3 bit should be 1.
+     * (See section 'Timer I/O Control Register (TIOR)' of the RZ microprocessor manual) */
+    else if ((event == MTU3_PRV_CAPTURE_EVENT_B) && (*((uint8_t *) p_instance_ctrl->p_reg +
+                                                       tior_ofs_addr[p_instance_ctrl->p_cfg->channel]) &
+                                                     MTU3_TIORH_IOB3_Msk))
     {
         if (MTU3_CHANNEL_8 == p_instance_ctrl->p_cfg->channel)
         {
@@ -1697,17 +1828,17 @@ static void r_mtu3_capture_common_isr (IRQn_Type const irq, mtu3_prv_capture_eve
                                MTU3_TGRB_D_OFFSET_WORD);
         }
     }
+    /* When use output compare A or B, IOA3/IOB3 bit should be 0.
+     * (See section 'Timer I/O Control Register (TIOR)' of the RZ microprocessor manual) */
     else
     {
-        /* Do nothing. */
+        event_base = TIMER_EVENT_COMPARE_A;
     }
 
     /* If a callback is provided, then call it with the captured counter value. */
     if (NULL != p_instance_ctrl->p_callback)
     {
-        r_mtu3_call_callback(p_instance_ctrl,
-                             (timer_event_t) ((uint32_t) TIMER_EVENT_CAPTURE_A + (uint32_t) event),
-                             counter);
+        r_mtu3_call_callback(p_instance_ctrl, (timer_event_t) ((uint32_t) event_base + (uint32_t) event), counter);
     }
 
     /* Restore context if RTOS is used */
@@ -1735,21 +1866,21 @@ void mtu3_counter_overflow_isr (IRQn_Type const irq)
 }
 
 /*******************************************************************************************************************//**
- * Interrupt triggered by a capture A source.
+ * Interrupt triggered by a capture or compare A source.
  *
  * Calls callback if one was provided in the open function.
  **********************************************************************************************************************/
-void mtu3_capture_a_isr (IRQn_Type const irq)
+void mtu3_capture_compare_a_isr (IRQn_Type const irq)
 {
-    r_mtu3_capture_common_isr(irq, MTU3_PRV_CAPTURE_EVENT_A);
+    r_mtu3_ccmp_common_isr(irq, MTU3_PRV_CAPTURE_EVENT_A);
 }
 
 /*******************************************************************************************************************//**
- * Interrupt triggered by a capture B source.
+ * Interrupt triggered by a capture or compare B source.
  *
  * Calls callback if one was provided in the open function.
  **********************************************************************************************************************/
-void mtu3_capture_b_isr (IRQn_Type const irq)
+void mtu3_capture_compare_b_isr (IRQn_Type const irq)
 {
-    r_mtu3_capture_common_isr(irq, MTU3_PRV_CAPTURE_EVENT_B);
+    r_mtu3_ccmp_common_isr(irq, MTU3_PRV_CAPTURE_EVENT_B);
 }

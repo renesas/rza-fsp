@@ -54,18 +54,19 @@ void gtm_int_isr(IRQn_Type const irq);
 /** GTM Implementation of General Timer Driver  */
 const timer_api_t g_timer_on_gtm =
 {
-    .open         = R_GTM_Open,
-    .stop         = R_GTM_Stop,
-    .start        = R_GTM_Start,
-    .reset        = R_GTM_Reset,
-    .enable       = R_GTM_Enable,
-    .disable      = R_GTM_Disable,
-    .periodSet    = R_GTM_PeriodSet,
-    .dutyCycleSet = R_GTM_DutyCycleSet,
-    .infoGet      = R_GTM_InfoGet,
-    .statusGet    = R_GTM_StatusGet,
-    .callbackSet  = R_GTM_CallbackSet,
-    .close        = R_GTM_Close,
+    .open            = R_GTM_Open,
+    .stop            = R_GTM_Stop,
+    .start           = R_GTM_Start,
+    .reset           = R_GTM_Reset,
+    .enable          = R_GTM_Enable,
+    .disable         = R_GTM_Disable,
+    .periodSet       = R_GTM_PeriodSet,
+    .dutyCycleSet    = R_GTM_DutyCycleSet,
+    .compareMatchSet = R_GTM_CompareMatchSet,
+    .infoGet         = R_GTM_InfoGet,
+    .statusGet       = R_GTM_StatusGet,
+    .callbackSet     = R_GTM_CallbackSet,
+    .close           = R_GTM_Close,
 };
 
 /*******************************************************************************************************************//**
@@ -270,6 +271,24 @@ fsp_err_t R_GTM_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_c
     (void) p_ctrl;
     (void) duty_cycle_counts;
     (void) pin;
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Placeholder for unsupported compareMatch function. Implements @ref timer_api_t::compareMatchSet.
+ *
+ * @retval FSP_ERR_UNSUPPORTED      GTM compare match is not supported.
+ **********************************************************************************************************************/
+fsp_err_t R_GTM_CompareMatchSet (timer_ctrl_t * const        p_ctrl,
+                                 uint32_t const              compare_match_value,
+                                 timer_compare_match_t const match_channel)
+{
+    /* This function isn't supported. It is defined only to implement a required function of timer_api_t.
+     * Mark the input parameter as unused since this function isn't supported. */
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+    FSP_PARAMETER_NOT_USED(compare_match_value);
+    FSP_PARAMETER_NOT_USED(match_channel);
 
     return FSP_ERR_UNSUPPORTED;
 }

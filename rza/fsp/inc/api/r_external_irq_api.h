@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_INPUT_INTERFACES
  * @defgroup EXTERNAL_IRQ_API External IRQ Interface
  * @brief Interface for detecting external interrupts.
  *

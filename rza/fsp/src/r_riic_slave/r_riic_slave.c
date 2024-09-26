@@ -864,12 +864,12 @@ static void iic_rxi_slave (iic_slave_instance_ctrl_t * p_ctrl)
 
         /* The below code enables/services 0 byte writes from Master.*/
 
-        /* Since address match detected, enable STOP detection in case of Master Read Slave Write Operation;
-         * and enable STOP and START (RESTART) detection in case of Master Write Slave Read Operation.
-         * This is done so that RESTART handling is not missed if the user callback takes long and the Master
-         * issues the restart on the bus.
+        /* For 7-bit address: slave addr | R/W + data
+         * For 10-bit addresss:
+         * read:  slave high addr | W + slave low addr + data + stop
+         * write: slave high addr | W + slave low addr + restart + slave high addr | R + data + stop
          */
-        if (address_and_intent & 1U)
+        if ((p_ctrl->p_cfg->addr_mode == I2C_SLAVE_ADDR_MODE_7BIT) && (address_and_intent & 1U))
         {
             p_ctrl->p_reg->ICSR2 &= (uint8_t) ~(ICSR2_STOP_BIT);
         }

@@ -36,19 +36,14 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+typedef transfer_callback_args_t dmac_callback_args_t;
+
 /** Events that can trigger a callback function. */
 typedef enum e_dmac_event
 {
     DMAC_EVENT_TRANSFER_END   = 0,     ///< DMA transfer has completed.
     DMAC_EVENT_TRANSFER_ERROR = 1,     ///< A bus error occurred during DMA transfer.
 } dmac_event_t;
-
-/** Callback function parameter data. */
-typedef struct st_dmac_callback_args
-{
-    dmac_event_t event;                ///< Event code
-    void const * p_context;            ///< Placeholder for user data.  Set in r_transfer_t::open function in ::transfer_cfg_t.
-} dmac_callback_args_t;
 
 /** Transfer size specifies the size of each individual transfer. */
 typedef enum e_dmac_transfer_size
@@ -125,6 +120,10 @@ typedef struct st_dmac_instance_ctrl
 
     /* Pointer to base register. */
     R_DMA0_Type * p_reg;
+
+    void (* p_callback)(dmac_callback_args_t *); // Pointer to callback
+    dmac_callback_args_t * p_callback_memory;    // Pointer to optional callback argument memory
+    void const           * p_context;
 } dmac_instance_ctrl_t;
 
 /** DMAC transfer configuration extension. This extension is required. */
@@ -152,8 +151,9 @@ typedef struct st_dmac_extended_cfg
 
     /** Callback for transfer end interrupt. */
     void (* p_callback)(dmac_callback_args_t * cb_data);
+    dmac_callback_args_t * p_callback_memory;
 
-    /** Placeholder for user data.  Passed to the user p_callback in ::dmac_callback_args_t. */
+    /** Placeholder for user data.  Passed to the user p_callback in ::transfer_callback_args_t. */
     void const * p_context;
 } dmac_extended_cfg_t;
 
@@ -199,6 +199,10 @@ fsp_err_t R_DMAC_Reload(transfer_ctrl_t * const p_api_ctrl,
                         void const            * p_src,
                         void                  * p_dest,
                         uint32_t const          num_transfers);
+fsp_err_t R_DMAC_CallbackSet(transfer_ctrl_t * const      p_api_ctrl,
+                             void (                     * p_callback)(dmac_callback_args_t *),
+                             void const * const           p_context,
+                             dmac_callback_args_t * const p_callback_memory);
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
