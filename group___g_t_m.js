@@ -21,5 +21,6 @@ var group___g_t_m =
     [ "R_GTM_StatusGet", "group___g_t_m.html#gaa95357cd0d4d8c43f7a2523d4c3b24f7", null ],
     [ "R_GTM_Stop", "group___g_t_m.html#ga89c7ca62fbb288cd5f44e5c773c699cf", null ],
     [ "R_GTM_Open", "group___g_t_m.html#ga329fac4f1af8dee4e45200fd0ce5a9a5", null ],
+    [ "R_GTM_CompareMatchSet", "group___g_t_m.html#ga4cfb37b2ba2dfedecaf9bf45a9f93fa8", null ],
     [ "R_GTM_CallbackSet", "group___g_t_m.html#ga0213edecdcc056ecf3353c3b59a85bd9", null ]
 ];

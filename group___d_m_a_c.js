@@ -1,9 +1,5 @@
 var group___d_m_a_c =
 [
-    [ "dmac_callback_args_t", "group___d_m_a_c.html#structdmac__callback__args__t", [
-      [ "event", "group___d_m_a_c.html#acbb757e2682ab3615c890c7fc1dd3203", null ],
-      [ "p_context", "group___d_m_a_c.html#a48a5473d21e29781083979724b5d930d", null ]
-    ] ],
     [ "dmac_next1_register_setting_t", "group___d_m_a_c.html#structdmac__next1__register__setting__t", [
       [ "p_src", "group___d_m_a_c.html#aa36cf2ad3decd60034a2ed450c4119b1", null ],
       [ "p_dest", "group___d_m_a_c.html#a4059c3a7f20fc21e5dd6f7f00347127c", null ],
@@ -84,5 +80,6 @@ var group___d_m_a_c =
     [ "R_DMAC_Disable", "group___d_m_a_c.html#ga6b64368039ad6617f091a20b5ac16206", null ],
     [ "R_DMAC_InfoGet", "group___d_m_a_c.html#gade7f6c387756ca9728194ac15f01fc43", null ],
     [ "R_DMAC_Close", "group___d_m_a_c.html#ga3423bb11f0d76dbe760ed01cf03ccd45", null ],
-    [ "R_DMAC_Reload", "group___d_m_a_c.html#ga697b9273351d29eb3e0c9319dce2e382", null ]
+    [ "R_DMAC_Reload", "group___d_m_a_c.html#ga697b9273351d29eb3e0c9319dce2e382", null ],
+    [ "R_DMAC_CallbackSet", "group___d_m_a_c.html#ga0ceeef1307c7e022a38aabfafcfb7e01", null ]
 ];

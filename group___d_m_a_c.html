@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.1.0</span>
+   &#160;<span id="projectnumber">Release v3.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -190,6 +190,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga3423bb11f0d76dbe760ed01cf03ccd45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga697b9273351d29eb3e0c9319dce2e382"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga697b9273351d29eb3e0c9319dce2e382">R_DMAC_Reload</a> (<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga665f80fc984ccf7585606be8eeccbb98">transfer_ctrl_t</a> *const p_api_ctrl, void const *p_src, void *p_dest, uint32_t const num_transfers)</td></tr>
 <tr class="separator:ga697b9273351d29eb3e0c9319dce2e382"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ceeef1307c7e022a38aabfafcfb7e01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga0ceeef1307c7e022a38aabfafcfb7e01">R_DMAC_CallbackSet</a> (<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga665f80fc984ccf7585606be8eeccbb98">transfer_ctrl_t</a> *const p_api_ctrl, void(*p_callback)(<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *const p_callback_memory)</td></tr>
+<tr class="separator:ga0ceeef1307c7e022a38aabfafcfb7e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Driver for the DMAC peripheral on RZ MPUs. This module implements the <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html">Transfer Interface</a>. </p>
@@ -322,8 +324,6 @@ Requested by a transfer destination module</li>
 <tr>
 <td>Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback that is called at the end of the transfer. </td></tr>
 <tr>
-<td>Context</td><td>Manual Entry</td><td>NULL </td><td>Pointer to the context structure passed through the callback argument. </td></tr>
-<tr>
 <td>Transfer End Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the transfer end interrupt. </td></tr>
 <tr>
 <td>Transfer End Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the transfer end interrupt priority. </td></tr>
@@ -381,8 +381,6 @@ Examples</h1>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> dmac_minimal_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line"></div><div class="line">    <span class="comment">/* Open the transfer instance with initial configuration. */</span></div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = <a class="code" href="group___d_m_a_c.html#ga448a013ad5b91097e45833313d5df354">R_DMAC_Open</a>(&amp;g_transfer_ctrl, &amp;g_transfer_cfg);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Enable the DMAC to handle incoming transfer requests. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#gaf72221183919d50cbd8ee1ca528aa20b">R_DMAC_Enable</a>(&amp;g_transfer_ctrl);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:structdmac__callback__args__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__callback__args__t">dmac_callback_args_t</a></td></tr>
-<tr class="separator:structdmac__callback__args__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structdmac__next1__register__setting__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__next1__register__setting__t">dmac_next1_register_setting_t</a></td></tr>
 <tr class="separator:structdmac__next1__register__setting__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structdmac__instance__ctrl__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__instance__ctrl__t">dmac_instance_ctrl_t</a></td></tr>
@@ -419,36 +417,6 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga873499bc88e96b4626d26f6591372cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
-<a name="structdmac__callback__args__t" id="structdmac__callback__args__t"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#structdmac__callback__args__t">&#9670;&nbsp;</a></span>dmac_callback_args_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct dmac_callback_args_t</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="textblock"><p>Callback function parameter data. </p>
-</div><table class="fieldtable">
-<tr><th colspan="3">Data Fields</th></tr>
-<tr><td class="fieldtype">
-<a id="acbb757e2682ab3615c890c7fc1dd3203"></a><a class="el" href="group___d_m_a_c.html#ga18702f75ef373da38e9655e5600c2e23">dmac_event_t</a></td>
-<td class="fieldname">
-event</td>
-<td class="fielddoc">
-Event code. </td></tr>
-<tr><td class="fieldtype">
-<a id="a48a5473d21e29781083979724b5d930d"></a>void const  *</td>
-<td class="fieldname">
-p_context</td>
-<td class="fielddoc">
-Placeholder for user data. Set in r_transfer_t::open function in <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__cfg__t">transfer_cfg_t</a>. </td></tr>
-</table>
-
-</div>
-</div>
 <a name="structdmac__next1__register__setting__t" id="structdmac__next1__register__setting__t"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#structdmac__next1__register__setting__t">&#9670;&nbsp;</a></span>dmac_next1_register_setting_t</h2>
 
@@ -562,7 +530,7 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <a class="el" href="group___d_m_a_c.html#ga81ff959e77bb3e4e37a7e4e68d23a02b">dmac_channel_scheduling_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#adcec47da500a02cb015f31beab5f6ddb">channel_scheduling</a></td></tr>
 <tr class="memdesc:adcec47da500a02cb015f31beab5f6ddb"><td class="mdescLeft">&#160;</td><td class="mdescRight">DMA channel scheduling. <br /></td></tr>
 <tr class="separator:adcec47da500a02cb015f31beab5f6ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1aa5df5a650e272348c4bd6c71ad4392"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#a1aa5df5a650e272348c4bd6c71ad4392">p_callback</a> )(<a class="el" href="group___d_m_a_c.html#structdmac__callback__args__t">dmac_callback_args_t</a> *cb_data)</td></tr>
+<tr class="memitem:a1aa5df5a650e272348c4bd6c71ad4392"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#a1aa5df5a650e272348c4bd6c71ad4392">p_callback</a> )(<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *cb_data)</td></tr>
 <tr class="separator:a1aa5df5a650e272348c4bd6c71ad4392"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a179371bb68b6d1ae0f7c1da5a2c46d34"><td class="memItemLeft" align="right" valign="top">void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#a179371bb68b6d1ae0f7c1da5a2c46d34">p_context</a></td></tr>
 <tr class="separator:a179371bb68b6d1ae0f7c1da5a2c46d34"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -605,7 +573,7 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void(*  dmac_extended_cfg_t::p_callback) (<a class="el" href="group___d_m_a_c.html#structdmac__callback__args__t">dmac_callback_args_t</a> *cb_data)</td>
+          <td class="memname">void(*  dmac_extended_cfg_t::p_callback) (<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *cb_data)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -624,7 +592,7 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Placeholder for user data. Passed to the user p_callback in <a class="el" href="group___d_m_a_c.html#structdmac__callback__args__t">dmac_callback_args_t</a>. </p>
+<p>Placeholder for user data. Passed to the user p_callback in <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">transfer_callback_args_t</a>. </p>
 
 </div>
 </div>
@@ -1244,13 +1212,62 @@ p_next1_register_setting</td>
 
 </div>
 </div>
+<a id="ga0ceeef1307c7e022a38aabfafcfb7e01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0ceeef1307c7e022a38aabfafcfb7e01">&#9670;&nbsp;</a></span>R_DMAC_CallbackSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> R_DMAC_CallbackSet </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga665f80fc984ccf7585606be8eeccbb98">transfer_ctrl_t</a> *const&#160;</td>
+          <td class="paramname"><em>p_api_ctrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void(*)(<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *)&#160;</td>
+          <td class="paramname"><em>p_callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void const *const&#160;</td>
+          <td class="paramname"><em>p_context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *const&#160;</td>
+          <td class="paramname"><em>p_callback_memory</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Updates the user callback with the option to provide memory for the callback argument structure.</p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FSP_SUCCESS</td><td>Callback updated successfully. </td></tr>
+    <tr><td class="paramname">FSP_ERR_ASSERTION</td><td>A required pointer is NULL. </td></tr>
+    <tr><td class="paramname">FSP_ERR_NOT_OPEN</td><td>The control block has not been opened. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.7-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.1.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.2.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

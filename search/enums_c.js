@@ -16,5 +16,9 @@ var searchData=
   ['usb_5fspeed_5ft',['usb_speed_t',['../group___u_s_b___a_p_i.html#ga624cde5d2f6383faa35fd05108285a23',1,'r_usb_basic_api.h']]],
   ['usb_5fstatus_5ft',['usb_status_t',['../group___u_s_b___a_p_i.html#ga56bea25fbffdbda134044c49d40d5e40',1,'r_usb_basic_api.h']]],
   ['usb_5ftransfer_5ft',['usb_transfer_t',['../group___u_s_b___a_p_i.html#ga0c47f1426b999f2cd8aea9adca06fbde',1,'r_usb_basic_api.h']]],
-  ['usb_5ftransfer_5ftype_5ft',['usb_transfer_type_t',['../group___u_s_b___a_p_i.html#ga751140ad5635fcb0934d0ca466e795c0',1,'r_usb_basic_api.h']]]
+  ['usb_5ftransfer_5ftype_5ft',['usb_transfer_type_t',['../group___u_s_b___a_p_i.html#ga751140ad5635fcb0934d0ca466e795c0',1,'r_usb_basic_api.h']]],
+  ['usb_5ftypec_5fconnection_5fstatus_5ft',['usb_typec_connection_status_t',['../group___u_s_b___a_p_i.html#gae1abccb216b62fc538787fb2feba93bd',1,'r_usb_basic_api.h']]],
+  ['usb_5ftypec_5fmode_5ft',['usb_typec_mode_t',['../group___u_s_b___a_p_i.html#gaa0c54c3c911dd9238e39549c9337fa4b',1,'r_usb_basic_api.h']]],
+  ['usb_5ftypec_5fplug_5ft',['usb_typec_plug_t',['../group___u_s_b___a_p_i.html#ga77f5defa0e521a8142d8cbefe041720a',1,'r_usb_basic_api.h']]],
+  ['usb_5ftypec_5fvbus_5fstatus_5ft',['usb_typec_vbus_status_t',['../group___u_s_b___a_p_i.html#ga354e0b84a8f986a76dabc295f68d5ecb',1,'r_usb_basic_api.h']]]
 ];

@@ -151,6 +151,7 @@ var group___m_t_u3 =
     [ "R_MTU3_Reset", "group___m_t_u3.html#gab23024474f1c7bb662f4f9dfc091d85c", null ],
     [ "R_MTU3_PeriodSet", "group___m_t_u3.html#ga0d64e832230506418738a816a38489e4", null ],
     [ "R_MTU3_DutyCycleSet", "group___m_t_u3.html#ga5e4eda78ae4a5cb31e85eb682d6fe248", null ],
+    [ "R_MTU3_CompareMatchSet", "group___m_t_u3.html#ga919743a366cdd773ad49ece6bb029baf", null ],
     [ "R_MTU3_InfoGet", "group___m_t_u3.html#ga0c1fcecad7205ef9928305c960c7e494", null ],
     [ "R_MTU3_StatusGet", "group___m_t_u3.html#ga8e02f073acf66a66ef6e525c8b57454e", null ],
     [ "R_MTU3_CounterSet", "group___m_t_u3.html#ga8cddfd80a2cfb39a4c69703c8e672368", null ],

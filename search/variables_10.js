@@ -41,5 +41,6 @@ var searchData=
   ['txmb_5ftxi_5fenable',['txmb_txi_enable',['../group___c_a_n_f_d.html#ab3421077c295a40773c6cad2fb638176',1,'canfd_extended_cfg_t']]],
   ['txstatusget',['txStatusGet',['../group___e_t_h_e_r___a_p_i.html#ad52cabec533efaaef3258caade1e0640',1,'ether_api_t']]],
   ['type',['type',['../group___c_a_n___a_p_i.html#a79046fddb934fd7ea0d0cc70b8d7f26d',1,'can_frame_t::type()'],['../group___u_s_b___a_p_i.html#a210e81fd550ee15650d2261c72c3f46f',1,'usb_cfg_t::type()']]],
+  ['typecinfoget',['typecInfoGet',['../group___u_s_b___a_p_i.html#aa5e803d92c801159322824c9f882f2f1',1,'usb_api_t']]],
   ['typeget',['typeGet',['../group___u_s_b___h_h_i_d___a_p_i.html#a8d389924204b9b1e5d0c523089a33729',1,'usb_hhid_api_t']]]
 ];

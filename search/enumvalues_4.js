@@ -1,8 +1,14 @@
 var searchData=
 [
+  ['ether_5fevent_5ferr_5fglobal',['ETHER_EVENT_ERR_GLOBAL',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a5407dfdc90714dc920d15e2255e7f352',1,'r_ether_api.h']]],
   ['ether_5fevent_5finterrupt',['ETHER_EVENT_INTERRUPT',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a1d528f77a7fdfb14f6fe93179ac2b5ee',1,'r_ether_api.h']]],
   ['ether_5fevent_5flink_5foff',['ETHER_EVENT_LINK_OFF',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a910e3b1bc2c7ad6d12ed9851f995dd20',1,'r_ether_api.h']]],
   ['ether_5fevent_5flink_5fon',['ETHER_EVENT_LINK_ON',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973ae80e4569638a5a44618fa437270b0e7d',1,'r_ether_api.h']]],
+  ['ether_5fevent_5frx_5fcomplete',['ETHER_EVENT_RX_COMPLETE',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a118f12d6a25a71bb430e76c2b1842d4a',1,'r_ether_api.h']]],
+  ['ether_5fevent_5frx_5fmessage_5flost',['ETHER_EVENT_RX_MESSAGE_LOST',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973ac704f1554ad4ee63876e46bde19504a3',1,'r_ether_api.h']]],
+  ['ether_5fevent_5ftx_5faborted',['ETHER_EVENT_TX_ABORTED',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a3285ee91ebe4d886519059dcfd509a94',1,'r_ether_api.h']]],
+  ['ether_5fevent_5ftx_5fbuffer_5fempty',['ETHER_EVENT_TX_BUFFER_EMPTY',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a052805436818f77bba1db2b599973b55',1,'r_ether_api.h']]],
+  ['ether_5fevent_5ftx_5fcomplete',['ETHER_EVENT_TX_COMPLETE',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a4d43dd3828844f2e4218dc1357af86a1',1,'r_ether_api.h']]],
   ['ether_5fevent_5fwakeon_5flan',['ETHER_EVENT_WAKEON_LAN',['../group___e_t_h_e_r___a_p_i.html#ggad029483e98651bf40e3e3439ed6d1973a11318f9e3ab9d48c75dacd4b1ec0b9de',1,'r_ether_api.h']]],
   ['ether_5fflow_5fcontrol_5fdisable',['ETHER_FLOW_CONTROL_DISABLE',['../group___e_t_h_e_r___a_p_i.html#ggaebbb8ab534ca83d1769d4d0b71e1943fa04286bec07833e734be9efc76b3d64c3',1,'r_ether_api.h']]],
   ['ether_5fflow_5fcontrol_5fenable',['ETHER_FLOW_CONTROL_ENABLE',['../group___e_t_h_e_r___a_p_i.html#ggaebbb8ab534ca83d1769d4d0b71e1943fa767652e19b674e659fd8a62d39963e1a',1,'r_ether_api.h']]],

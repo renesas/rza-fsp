@@ -63,6 +63,7 @@ var group___u_a_r_t___a_p_i =
     ] ],
     [ "uart_parity_t", "group___u_a_r_t___a_p_i.html#ga6bcc37e31dd40c204b4ac6f6189e8878", [
       [ "UART_PARITY_OFF", "group___u_a_r_t___a_p_i.html#gga6bcc37e31dd40c204b4ac6f6189e8878acdbc0c60cf74e4febad92afc44b88641", null ],
+      [ "UART_PARITY_ZERO", "group___u_a_r_t___a_p_i.html#gga6bcc37e31dd40c204b4ac6f6189e8878aa59d216d22b58e7d95e093c8e7ca1c84", null ],
       [ "UART_PARITY_EVEN", "group___u_a_r_t___a_p_i.html#gga6bcc37e31dd40c204b4ac6f6189e8878ad908a637b1dd23f93b149dd2d8bdfdb8", null ],
       [ "UART_PARITY_ODD", "group___u_a_r_t___a_p_i.html#gga6bcc37e31dd40c204b4ac6f6189e8878ad90cc425f5ba447773a44a75be6593e2", null ]
     ] ],

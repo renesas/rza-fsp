@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.1.0</span>
+   &#160;<span id="projectnumber">Release v3.2.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -444,8 +444,8 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga36efdf7f56d322b9c824d65adf27ecd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga35ae53403c6836d8df6dac29cb777601"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga35ae53403c6836d8df6dac29cb777601">scif_uart_rs485_de_polarity_t</a> </td></tr>
 <tr class="separator:ga35ae53403c6836d8df6dac29cb777601"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5d3f2e170b79de59f46ae864fc993e95"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga5d3f2e170b79de59f46ae864fc993e95">scif_uart_receive_trigger_t</a> </td></tr>
-<tr class="separator:ga5d3f2e170b79de59f46ae864fc993e95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0930f62cc69514b8b34db1bf63ba32db"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga0930f62cc69514b8b34db1bf63ba32db">scif_uart_rx_fifo_trigger_t</a> </td></tr>
+<tr class="separator:ga0930f62cc69514b8b34db1bf63ba32db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaaee66fa30e6f9f0efb538ecb91a9ad89"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_c_i_f___u_a_r_t.html#gaaee66fa30e6f9f0efb538ecb91a9ad89">scif_uart_rts_trigger_t</a> </td></tr>
 <tr class="separator:gaaee66fa30e6f9f0efb538ecb91a9ad89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -582,7 +582,7 @@ p_baud_setting</td>
 <td class="fielddoc">
 Register settings for a desired baud rate. </td></tr>
 <tr><td class="fieldtype">
-<a id="a1067241f2267052cd8240d136c0cba9c"></a><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga5d3f2e170b79de59f46ae864fc993e95">scif_uart_receive_trigger_t</a></td>
+<a id="a020009f285e0fe3e38b632ca567a1f30"></a><a class="el" href="group___s_c_i_f___u_a_r_t.html#ga0930f62cc69514b8b34db1bf63ba32db">scif_uart_rx_fifo_trigger_t</a></td>
 <td class="fieldname">
 rx_fifo_trigger</td>
 <td class="fielddoc">
@@ -748,56 +748,56 @@ RS-485 settings. </td></tr>
 
 </div>
 </div>
-<a id="ga5d3f2e170b79de59f46ae864fc993e95"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5d3f2e170b79de59f46ae864fc993e95">&#9670;&nbsp;</a></span>scif_uart_receive_trigger_t</h2>
+<a id="ga0930f62cc69514b8b34db1bf63ba32db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0930f62cc69514b8b34db1bf63ba32db">&#9670;&nbsp;</a></span>scif_uart_rx_fifo_trigger_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group___s_c_i_f___u_a_r_t.html#ga5d3f2e170b79de59f46ae864fc993e95">scif_uart_receive_trigger_t</a></td>
+          <td class="memname">enum <a class="el" href="group___s_c_i_f___u_a_r_t.html#ga0930f62cc69514b8b34db1bf63ba32db">scif_uart_rx_fifo_trigger_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Receive FIFO trigger configuration. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ad8eb49bdf41e9867d8a6d0986b9343a6"></a>SCIF_UART_RECEIVE_TRIGGER_ONE&#160;</td><td class="fielddoc"><p>Interrupt at least one byte is in FIFO. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba1c928e6973fa285ef947809c3be3eaf9"></a>SCIF_UART_RX_FIFO_TRIGGER_ONE&#160;</td><td class="fielddoc"><p>Interrupt at least one byte is in FIFO. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ab85d375110c92593e11c02c28acf75a0"></a>SCIF_UART_RECEIVE_TRIGGER_QUARTER&#160;</td><td class="fielddoc"><p>Interrupt at least quarter of FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba91a663246f4c57f2885cb21291e26640"></a>SCIF_UART_RX_FIFO_TRIGGER_QUARTER&#160;</td><td class="fielddoc"><p>Interrupt at least quarter of FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95adf5efc0954d8d3ee2e132940e8010e16"></a>SCIF_UART_RECEIVE_TRIGGER_HALF&#160;</td><td class="fielddoc"><p>Interrupt at least half of FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbaf53e151960d2ec05ecdd10251254fdbb"></a>SCIF_UART_RX_FIFO_TRIGGER_HALF&#160;</td><td class="fielddoc"><p>Interrupt at least half of FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a8c61ea1a1f8a53bd2ef81a135ce6fb65"></a>SCIF_UART_RECEIVE_TRIGGER_MAX&#160;</td><td class="fielddoc"><p>Interrupt at almost full in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba6867cddb6377c683168b9f05826080db"></a>SCIF_UART_RX_FIFO_TRIGGER_MAX&#160;</td><td class="fielddoc"><p>Interrupt at almost full in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a2b6427033846f866ffd254b632b07a9b"></a>SCIF_UART_RECEIVE_TRIGGER_1&#160;</td><td class="fielddoc"><p>Interrupt at least 1 byte is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbac4f6ea8ebc06e6681ac44189de8cb091"></a>SCIF_UART_RX_FIFO_TRIGGER_1&#160;</td><td class="fielddoc"><p>Interrupt at least 1 byte is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95af3ba973f1fdbd89fb035e63925eba079"></a>SCIF_UART_RECEIVE_TRIGGER_2&#160;</td><td class="fielddoc"><p>Interrupt at least 2 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba19b1d5bfbed0c88cd47fc5deeede5830"></a>SCIF_UART_RX_FIFO_TRIGGER_2&#160;</td><td class="fielddoc"><p>Interrupt at least 2 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ac1a24c19641762ce694726ef9da404e1"></a>SCIF_UART_RECEIVE_TRIGGER_3&#160;</td><td class="fielddoc"><p>Interrupt at least 3 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbac9f379cf7b3602901d7a7951900720b6"></a>SCIF_UART_RX_FIFO_TRIGGER_3&#160;</td><td class="fielddoc"><p>Interrupt at least 3 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a94ab8d8849528a45bd87bc014ff2352a"></a>SCIF_UART_RECEIVE_TRIGGER_4&#160;</td><td class="fielddoc"><p>Interrupt at least 4 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba4c49fe77a7eb6ebd3844049fe13f1db3"></a>SCIF_UART_RX_FIFO_TRIGGER_4&#160;</td><td class="fielddoc"><p>Interrupt at least 4 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ac644a3e7327d3998cf0e300c6fa38b4e"></a>SCIF_UART_RECEIVE_TRIGGER_5&#160;</td><td class="fielddoc"><p>Interrupt at least 5 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba88080512883e01dd070705129360928b"></a>SCIF_UART_RX_FIFO_TRIGGER_5&#160;</td><td class="fielddoc"><p>Interrupt at least 5 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ae81d37bcbe15cf0adbee5556a96ce7f3"></a>SCIF_UART_RECEIVE_TRIGGER_6&#160;</td><td class="fielddoc"><p>Interrupt at least 6 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbab8db130c91e06312e1ed2dbbf64d4e8b"></a>SCIF_UART_RX_FIFO_TRIGGER_6&#160;</td><td class="fielddoc"><p>Interrupt at least 6 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a6532d2cfae53c35e93bf72db2e17e954"></a>SCIF_UART_RECEIVE_TRIGGER_7&#160;</td><td class="fielddoc"><p>Interrupt at least 7 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba4691deee4fafd57c446f6175b34d9197"></a>SCIF_UART_RX_FIFO_TRIGGER_7&#160;</td><td class="fielddoc"><p>Interrupt at least 7 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a479ec5b31c57f9fae8c4d6a7aac71b50"></a>SCIF_UART_RECEIVE_TRIGGER_8&#160;</td><td class="fielddoc"><p>Interrupt at least 8 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbaad29dff634ae75c41c864920b6c2905e"></a>SCIF_UART_RX_FIFO_TRIGGER_8&#160;</td><td class="fielddoc"><p>Interrupt at least 8 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a8ecbc830c93a7b39eef1409cf89bc98a"></a>SCIF_UART_RECEIVE_TRIGGER_9&#160;</td><td class="fielddoc"><p>Interrupt at least 9 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbadf30ed241c4f85d524da7119075c19e9"></a>SCIF_UART_RX_FIFO_TRIGGER_9&#160;</td><td class="fielddoc"><p>Interrupt at least 9 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ae9eba978351e7f07759323c1e3d2e3e5"></a>SCIF_UART_RECEIVE_TRIGGER_10&#160;</td><td class="fielddoc"><p>Interrupt at least 10 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbaa318a3a44156deda78ad012bd2b8fc0c"></a>SCIF_UART_RX_FIFO_TRIGGER_10&#160;</td><td class="fielddoc"><p>Interrupt at least 10 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a2488b7b352248b736ad778549ba64f3f"></a>SCIF_UART_RECEIVE_TRIGGER_11&#160;</td><td class="fielddoc"><p>Interrupt at least 11 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba656dea4a24c63f80118dd7122ca1a745"></a>SCIF_UART_RX_FIFO_TRIGGER_11&#160;</td><td class="fielddoc"><p>Interrupt at least 11 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a849bd498e980ed5291b9fade846d748f"></a>SCIF_UART_RECEIVE_TRIGGER_12&#160;</td><td class="fielddoc"><p>Interrupt at least 12 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba19b8cb6fec7c4809a40230f72b108366"></a>SCIF_UART_RX_FIFO_TRIGGER_12&#160;</td><td class="fielddoc"><p>Interrupt at least 12 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a020affbf40082d7c07ab5fa8a0fe802e"></a>SCIF_UART_RECEIVE_TRIGGER_13&#160;</td><td class="fielddoc"><p>Interrupt at least 13 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba7c9ad8185b435feac996371be51e0ee7"></a>SCIF_UART_RX_FIFO_TRIGGER_13&#160;</td><td class="fielddoc"><p>Interrupt at least 13 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95a19329bac313a91e73554cf5571941a7e"></a>SCIF_UART_RECEIVE_TRIGGER_14&#160;</td><td class="fielddoc"><p>Interrupt at least 14 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dba209eb8920fd179b11dcf6b61478f9350"></a>SCIF_UART_RX_FIFO_TRIGGER_14&#160;</td><td class="fielddoc"><p>Interrupt at least 14 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga5d3f2e170b79de59f46ae864fc993e95ae66c9b5ef3fc1aac931dd80766cdfe3c"></a>SCIF_UART_RECEIVE_TRIGGER_15&#160;</td><td class="fielddoc"><p>Interrupt at least 15 bytes is in FIFO or 15ETU past from last receive. </p>
+<tr><td class="fieldname"><a id="gga0930f62cc69514b8b34db1bf63ba32dbab9e3e0889abb90ee00c5bf15e2f66bbe"></a>SCIF_UART_RX_FIFO_TRIGGER_15&#160;</td><td class="fielddoc"><p>Interrupt at least 15 bytes is in FIFO or 15ETU past from last receive. </p>
 </td></tr>
 </table>
 
@@ -1270,7 +1270,7 @@ RS-485 settings. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.1.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.2.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>
