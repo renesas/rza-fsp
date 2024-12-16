@@ -38,6 +38,8 @@ var group___b_s_p___m_c_u =
     [ "R_BSP_HardwareInit", "group___b_s_p___m_c_u.html#ga8bad719318543adaef254ce1796613f0", null ],
     [ "R_FSP_SystemClockHzGet", "group___b_s_p___m_c_u.html#ga992632ae2e45c2f962855fe4bbe98a63", null ],
     [ "R_FSP_SystemClockHzSet", "group___b_s_p___m_c_u.html#ga59f4ee93e461288010bbfd59bdd1023e", null ],
+    [ "R_BSP_ClockSelectorSet", "group___b_s_p___m_c_u.html#ga6a8598c7564c37b201a19003d188de7f", null ],
+    [ "R_BSP_ClockDividerSet", "group___b_s_p___m_c_u.html#gac27f5c8e3abd9d557b79ff1bdde2f932", null ],
     [ "R_FSP_CurrentIrqGet", "group___b_s_p___m_c_u.html#gaa45b494ded530db90d720d5082c1d6d9", null ],
     [ "R_BSP_UniqueIdGet", "group___b_s_p___m_c_u.html#ga06a4e46c5cc56d1007d6a4204c999f79", null ],
     [ "R_BSP_SoftwareDelay", "group___b_s_p___m_c_u.html#ga04da4b0c795fdf43432869f4a87065fe", null ],

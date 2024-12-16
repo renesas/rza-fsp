@@ -99,9 +99,12 @@ var searchData=
   ['image_20scaling_20interface',['Image Scaling Interface',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html',1,'']]],
   ['introduction',['Introduction',['../index.html',1,'']]],
   ['infoget',['infoGet',['../group___a_d_c___a_p_i.html#acc68017ee284386b5d13c027bc10bf87',1,'adc_api_t::infoGet()'],['../group___c_a_n___a_p_i.html#aba27908c89442250d365d4a44304e3c1',1,'can_api_t::infoGet()'],['../group___t_i_m_e_r___a_p_i.html#aeaea79f26305c493566e4b45ae9e294c',1,'timer_api_t::infoGet()'],['../group___t_r_a_n_s_f_e_r___a_p_i.html#ad18824ffdf72b5e6a0c588289620fc84',1,'transfer_api_t::infoGet()'],['../group___u_a_r_t___a_p_i.html#aa6d5231c2b45a6479fc513d087924a50',1,'uart_api_t::infoGet()'],['../group___u_s_b___a_p_i.html#ab949f26c92755db4b62eab8214c49ae6',1,'usb_api_t::infoGet()'],['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a031bb4fa56552052a1c361edfb7072cf',1,'rm_block_media_api_t::infoGet()'],['../group___r_m___f_r_e_e_r_t_o_s___p_l_u_s___f_a_t___a_p_i.html#a0f2cf2904b6b2b3c93ededa4483517c9',1,'rm_freertos_plus_fat_api_t::infoGet()']]],
+  ['init_5fprocess_5fparams',['init_process_params',['../group___r_m___h_s400_x.html#a5af51eb4d4038952763bba41f2dee7b7',1,'rm_hs400x_instance_ctrl_t']]],
   ['initialized',['initialized',['../group___s_d_m_m_c___a_p_i.html#aeaa9941f75b2d6b637be1b24e36c8cb2',1,'sdmmc_status_t::initialized()'],['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#aca37bc956233e8fad915ae41ba9a960c',1,'rm_block_media_status_t::initialized()']]],
   ['input',['input',['../group___d_i_s_p_l_a_y___a_p_i.html#af1c92072b2aa6751e9c304ebc780549c',1,'display_cfg_t::input()'],['../group___d_i_s_p_l_a_y___a_p_i.html#a3788baae818e1ef16792c63b74ab04b6',1,'display_runtime_cfg_t::input()'],['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a311b7d0bd1e66156ca57ef03ccdb2117',1,'isu_cfg_t::input()'],['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#a7017a21568f7ec6438779a433b7f718d',1,'isu_runtime_cfg_t::input()']]],
   ['input_5fmode',['input_mode',['../group___a_d_c.html#adc8e8849121eeb6991ae00b028a8a4b5',1,'adc_c_extended_cfg_t']]],
+  ['instance',['instance',['../group___r_m___r_a_i___d_a_t_a___s_h_i_p_p_e_r___a_p_i.html#a984698cef6775208bef233d822cb8e40',1,'rai_data_shipper_callback_args_t']]],
+  ['instance_5fid',['instance_id',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#aa6392eead822cf4c507eaea2c3b33ff7',1,'rai_data_collector_error_callback_args_t::instance_id()'],['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#a521055ef058b9c76036e3ad20805c936',1,'rai_data_collector_callback_args_t::instance_id()'],['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#adf1fea26f00714929a7097badebc6a5c',1,'rai_data_collector_cfg_t::instance_id()']]],
   ['int_5firq',['int_irq',['../group___i2_s___a_p_i.html#a0e0f9e4893c775c1317b19c01fb59cd0',1,'i2s_cfg_t']]],
   ['intc_5firq_5finstance_5fctrl_5ft',['intc_irq_instance_ctrl_t',['../group___i_n_t_c___i_r_q.html#structintc__irq__instance__ctrl__t',1,'']]],
   ['intc_5fnmi_5finstance_5fctrl_5ft',['intc_nmi_instance_ctrl_t',['../group___i_n_t_c___n_m_i.html#structintc__nmi__instance__ctrl__t',1,'']]],
@@ -263,8 +266,10 @@ var searchData=
   ['isu_5fstate_5fidle',['ISU_STATE_IDLE',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#gga811a3c362886d58bd7a3faad1dca3a2aace599513eec1605e4e257c920193f102',1,'r_isu_api.h']]],
   ['isu_5fstate_5ft',['isu_state_t',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#ga811a3c362886d58bd7a3faad1dca3a2a',1,'r_isu_api.h']]],
   ['isu_5fstatus_5ft',['isu_status_t',['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#structisu__status__t',1,'']]],
+  ['input',['Input',['../group___r_e_n_e_s_a_s___i_n_p_u_t___i_n_t_e_r_f_a_c_e_s.html',1,'']]],
   ['input',['Input',['../group___r_e_n_e_s_a_s___i_n_p_u_t___m_o_d_u_l_e_s.html',1,'']]],
   ['interfaces',['Interfaces',['../group___r_e_n_e_s_a_s___i_n_t_e_r_f_a_c_e_s.html',1,'']]],
   ['i2c_20master_20on_20riic_20_28r_5friic_5fmaster_29',['I2C Master on RIIC (r_riic_master)',['../group___r_i_i_c___m_a_s_t_e_r.html',1,'']]],
-  ['i2c_20slave_20_28r_5friic_5fslave_29',['I2C Slave (r_riic_slave)',['../group___r_i_i_c___s_l_a_v_e.html',1,'']]]
+  ['i2c_20slave_20_28r_5friic_5fslave_29',['I2C Slave (r_riic_slave)',['../group___r_i_i_c___s_l_a_v_e.html',1,'']]],
+  ['i2c_20communication_20device_20_28rm_5fcomms_5fi2c_29',['I2C Communication Device (rm_comms_i2c)',['../group___r_m___c_o_m_m_s___i2_c.html',1,'']]]
 ];

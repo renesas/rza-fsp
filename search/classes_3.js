@@ -23,5 +23,6 @@ var searchData=
   ['dmac_5fextended_5fcfg_5ft',['dmac_extended_cfg_t',['../group___d_m_a_c.html#structdmac__extended__cfg__t',1,'']]],
   ['dmac_5fextended_5finfo_5ft',['dmac_extended_info_t',['../group___d_m_a_c.html#structdmac__extended__info__t',1,'']]],
   ['dmac_5finstance_5fctrl_5ft',['dmac_instance_ctrl_t',['../group___d_m_a_c.html#structdmac__instance__ctrl__t',1,'']]],
+  ['dmac_5flink_5fcfg_5ft',['dmac_link_cfg_t',['../group___d_m_a_c.html#structdmac__link__cfg__t',1,'']]],
   ['dmac_5fnext1_5fregister_5fsetting_5ft',['dmac_next1_register_setting_t',['../group___d_m_a_c.html#structdmac__next1__register__setting__t',1,'']]]
 ];

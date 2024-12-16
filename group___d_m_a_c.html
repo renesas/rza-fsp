@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.2.0</span>
+   &#160;<span id="projectnumber">Release v3.3.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -192,6 +192,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga697b9273351d29eb3e0c9319dce2e382"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0ceeef1307c7e022a38aabfafcfb7e01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga0ceeef1307c7e022a38aabfafcfb7e01">R_DMAC_CallbackSet</a> (<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga665f80fc984ccf7585606be8eeccbb98">transfer_ctrl_t</a> *const p_api_ctrl, void(*p_callback)(<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *), void const *const p_context, <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">dmac_callback_args_t</a> *const p_callback_memory)</td></tr>
 <tr class="separator:ga0ceeef1307c7e022a38aabfafcfb7e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab8611c711811bdf6ae170ff6084c1f45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#gab8611c711811bdf6ae170ff6084c1f45">R_DMAC_LinkDescriptorSet</a> (<a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga665f80fc984ccf7585606be8eeccbb98">transfer_ctrl_t</a> *const p_api_ctrl, <a class="el" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> *p_descriptor)</td></tr>
+<tr class="separator:gab8611c711811bdf6ae170ff6084c1f45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Driver for the DMAC peripheral on RZ MPUs. This module implements the <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html">Transfer Interface</a>. </p>
@@ -242,11 +244,29 @@ This module can be added to the Stacks tab via New Stack &gt; Transfer &gt; Tran
 <tr>
 <th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
 <tr>
-<td>Name</td><td>Name must be a valid C symbol</td><td>g_transfer0 </td><td>Module name. </td></tr>
+<td>General &gt; Name</td><td>Name must be a valid C symbol</td><td>g_transfer0 </td><td>Module name. </td></tr>
 <tr>
-<td>Channel</td><td>Must be a valid integer between 0 and 15.</td><td>0 </td><td>Specify the hardware channel. </td></tr>
+<td>General &gt; Channel</td><td>Must be a valid integer between 0 and 15.</td><td>0 </td><td>Specify the hardware channel. </td></tr>
 <tr>
-<td>Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>General &gt; Activation Source</td><td>Refer to the RZA Configuration tool for available options.</td><td>SOFTWARE_TRIGGER </td><td>Select the DMAC transfer start event. </td></tr>
+<tr>
+<td>General &gt; DMAC Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Register Mode</li>
+<li>
+Link mode</li>
+</ul>
+</td><td>Register Mode </td><td>Select DMAC Mode. </td></tr>
+<tr>
+<td>General &gt; Channel Priority</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Fixed</li>
+<li>
+Round Robin</li>
+</ul>
+</td><td>module.driver.transfer_on_dmac.channel_priority.fixed </td><td>Channel Priority </td></tr>
+<tr>
+<td>Register Mode &gt; Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 Normal</li>
 <li>
@@ -254,7 +274,7 @@ Block</li>
 </ul>
 </td><td>Normal </td><td>Select the transfer mode. </td></tr>
 <tr>
-<td>Source Data Size</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Register Mode &gt; Source Data Size</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 1 Byte</li>
 <li>
@@ -274,7 +294,7 @@ Block</li>
 </ul>
 </td><td>2 Bytes </td><td>Select the source data size. </td></tr>
 <tr>
-<td>Destination Data Size</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Register Mode &gt; Destination Data Size</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 1 Byte</li>
 <li>
@@ -294,7 +314,7 @@ Block</li>
 </ul>
 </td><td>2 Bytes </td><td>Select the destination data size. </td></tr>
 <tr>
-<td>Destination Address Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Register Mode &gt; Destination Address Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 Fixed</li>
 <li>
@@ -302,7 +322,7 @@ Incremented</li>
 </ul>
 </td><td>Fixed </td><td>Select the address mode for the destination. </td></tr>
 <tr>
-<td>Source Address Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Register Mode &gt; Source Address Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 Fixed</li>
 <li>
@@ -310,9 +330,7 @@ Incremented</li>
 </ul>
 </td><td>Fixed </td><td>Select the address mode for the source. </td></tr>
 <tr>
-<td>Activation Source</td><td>Refer to the RZA Configuration tool for available options.</td><td>SOFTWARE_TRIGGER </td><td>Select the DMAC transfer start event. </td></tr>
-<tr>
-<td>DMA Activation Request Source Select</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Register Mode &gt; DMA Activation Request Source Select</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 Requested by a transfer source module</li>
 <li>
@@ -320,25 +338,9 @@ Requested by a transfer destination module</li>
 </ul>
 </td><td>Requested by a transfer source module </td><td>DMA Activation Request Source Select. </td></tr>
 <tr>
-<td>DMAC Mode</td><td>Register Mode</td><td>Register Mode </td><td>Select DMAC Mode. </td></tr>
+<td>Register Mode &gt; Transfer Interval</td><td>Value must be a non-negative integer</td><td>0 </td><td>Transfer interval </td></tr>
 <tr>
-<td>Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback that is called at the end of the transfer. </td></tr>
-<tr>
-<td>Transfer End Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the transfer end interrupt. </td></tr>
-<tr>
-<td>Transfer End Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the transfer end interrupt priority. </td></tr>
-<tr>
-<td>Transfer Interval</td><td>Value must be a non-negative integer</td><td>0 </td><td>Transfer interval </td></tr>
-<tr>
-<td>Channel Priority</td><td><ul style="margin-top:0;margin-bottom:0;">
-<li>
-Fixed</li>
-<li>
-Round Robin</li>
-</ul>
-</td><td>module.driver.transfer_on_dmac.channel_priority.fixed </td><td>Channel Priority </td></tr>
-<tr>
-<td>Transfer Continuation</td><td><ul style="margin-top:0;margin-bottom:0;">
+<td>Register Mode &gt; Transfer Continuation</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
 DMA transfer only once</li>
 <li>
@@ -346,17 +348,25 @@ Transfer with Setting 1 and Setting 2 alternately</li>
 </ul>
 </td><td>DMA transfer only once </td><td>When Next0 Register Set Transfer completes, Next1 Register Set Transfer occurs </td></tr>
 <tr>
-<td>Setting 1 Destination Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination address. </td></tr>
+<td>Register Mode &gt; Setting 1 Destination Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination address. </td></tr>
 <tr>
-<td>Setting 1 Source Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source address. </td></tr>
+<td>Register Mode &gt; Setting 1 Source Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source address. </td></tr>
 <tr>
-<td>Setting 1 Total Number of Transfer Bytes</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the total number of transfer bytes. </td></tr>
+<td>Register Mode &gt; Setting 1 Total Number of Transfer Bytes</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the total number of transfer bytes. </td></tr>
 <tr>
-<td>Setting 2 Destination Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination address.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<td>Register Mode &gt; Setting 2 Destination Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer destination address.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
 <tr>
-<td>Setting 2 Source Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source address.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<td>Register Mode &gt; Setting 2 Source Address</td><td>Manual Entry</td><td>NULL </td><td>Specify the transfer source address.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
 <tr>
-<td>Setting 2 Total Number of Transfer Bytes</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the total number of transfer bytes.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<td>Register Mode &gt; Setting 2 Total Number of Transfer Bytes</td><td>Value must be a non-negative integer</td><td>1 </td><td>Specify the total number of transfer bytes.(Use only when Transfer with Setting 1 and Setting 2 horizontally is selected in Transfer Continuatuion.) </td></tr>
+<tr>
+<td>Link Mode &gt; Descriptor</td><td>Name must be a valid C symbol</td><td>NULL </td><td>DMAC Link mode descriptor symbol name. </td></tr>
+<tr>
+<td>Interrupts &gt; Callback</td><td>Name must be a valid C symbol</td><td>NULL </td><td>A user callback that is called at the end of the transfer. </td></tr>
+<tr>
+<td>Interrupts &gt; Transfer End Interrupt Enable</td><td>MCU Specific Options</td><td></td><td>Enable the transfer end interrupt. </td></tr>
+<tr>
+<td>Interrupts &gt; Transfer End Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Select the transfer end interrupt priority. </td></tr>
 </table>
 </p>
 <dl class="section warning"><dt>Warning</dt><dd>"DMA Activation Request Source Select", "Low Detection Enable", "High Detection Enable", and "DACK output" must be set according to the DMAC transfer source. For details, see 'DMA Transfer Request Detection Operation Setting Table' of User's Manual.</dd></dl>
@@ -374,15 +384,29 @@ Usage Notes</h1>
 <li><b>Normal Mode</b> - In normal mode, a single data unit is forwarded each time a configured peripheral module event is received by the DMAC channel. The data unit can be 1 byte, 2 bytes, 4 bytes, 8 bytes, 16 bytes, 32 bytes, 64 bytes, or 128 bytes. The source and destination addresses can be fixed or incremented. The 32-bit counter decrements on every transfer. When the counter reaches 0, the peripheral module event no longer triggers the transfer and you can interrupt the CPU to signal that all transfers have finished.</li>
 <li><b>Block Mode</b> - In block mode, the amount of data units transfered by each interrupt. For one DMA request, performs transfers until a DMA transfer completes. When the counter reaches 0, transfers will no longer be triggered by the peripheral module event and the CPU can be interrupted to signal that all transfers have finished.</li>
 </ul>
+<h2>Link Mode</h2>
+<p>In Link mode, a DMA transfer is performed by reading a descriptor placed in the RAM area as the transfer information setting value. The descriptor is configured by <a class="el" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> struct. For more information see 'Link Mode' section in the RZ microprocessor manual.</p>
+<dl class="section note"><dt>Note</dt><dd>1. The descriptor must be 4-byte align. </dd>
+<dd>
+2. To set the transfer source/destination address, see 'Area Maps' chapter in the RZ microprocessor manual for details. If the device supports MMU, specify the physical address for the source/destination address. (Use R_MMU_VAtoPA to convert to a physical address.) </dd>
+<dd>
+3. <a class="el" href="group___d_m_a_c.html#aff95e0ca2f4c68bf9ee8e0de3725d689" title="Channel configuration (Set value for CHCFG_n register). ">dmac_link_cfg_t::channel_cfg</a> and <a class="el" href="group___d_m_a_c.html#aa78aa3a19bd0431a455971975ab43ec6" title="Channel extension configuration (Set value for CHEXT_n register). ">dmac_link_cfg_t::channel_extension_cfg</a> have configuration restrictions same as the DMAC CHCFG_n and CHEXT_n registers. For more information see 'CHCFG_n : Channel Configuration Register n' and 'CHEXT_n : Channel Extension Register n' section in the RZ microprocessor manual. </dd>
+<dd>
+4. Setting the link destination of the last descriptor to the address of the previous descriptor configures the descriptors in a loop. When set the descriptor to a loop, disable Parameter Checking of Build Time Configuration to avoid infinite loop operation.</dd></dl>
 <h1><a class="anchor" id="r-dmac-examples"></a>
 Examples</h1>
 <h2>Basic Example</h2>
 <p>This is a basic example of minimal use of the DMAC in an application.</p>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> dmac_minimal_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line"></div><div class="line">    <span class="comment">/* Open the transfer instance with initial configuration. */</span></div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = <a class="code" href="group___d_m_a_c.html#ga448a013ad5b91097e45833313d5df354">R_DMAC_Open</a>(&amp;g_transfer_ctrl, &amp;g_transfer_cfg);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Enable the DMAC to handle incoming transfer requests. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#gaf72221183919d50cbd8ee1ca528aa20b">R_DMAC_Enable</a>(&amp;g_transfer_ctrl);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> dmac_minimal_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line"></div><div class="line">    <span class="comment">/* Open the transfer instance with initial configuration. */</span></div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = <a class="code" href="group___d_m_a_c.html#ga448a013ad5b91097e45833313d5df354">R_DMAC_Open</a>(&amp;g_transfer_ctrl, &amp;g_transfer_cfg);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Handle any errors. This function should be defined by the user. */</span></div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Enable the DMAC to handle incoming transfer requests. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#gaf72221183919d50cbd8ee1ca528aa20b">R_DMAC_Enable</a>(&amp;g_transfer_ctrl);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">}</div><div class="line"></div></div><!-- fragment --> <h2>Link Mode Example</h2>
+<p>This is an example of an application using the DMAC link mode for continuous transfers. DMAC transfer is triggered by <a class="el" href="group___d_m_a_c.html#ga476c8ffd7c603f3c298a422e4f39b571">R_DMAC_SoftwareStart()</a>.</p>
+<p>In this example, if the MMU is supported, the source and destination addresses are set to non-cached areas of system RAM.</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="preprocessor">#define TRANSFER_LENGTH_0           (2048)</span></div><div class="line"><span class="preprocessor">#define TRANSFER_LENGTH_1           (1024)</span></div><div class="line"><span class="preprocessor">#define TRANSFER_LENGTH_2           (512)</span></div><div class="line"><span class="preprocessor">#define DMAC_CHCFG_SETTING_VALUE    (0x80400420)</span></div><div class="line"><span class="preprocessor">#define DMAC_CHEXT_SETTING_VALUE    (0x00)</span></div><div class="line"></div><div class="line"><span class="preprocessor">#if (UINTPTR_MAX &gt; UINT32_MAX)</span></div><div class="line"></div><div class="line">uint8_t g_src0[TRANSFER_LENGTH_0] BSP_ALIGN_VARIABLE(64)  __attribute__((section(&quot;UNCACHED_BSS&quot;))); <span class="comment">/* Placed at System RAM Non-Cache buffer area */</span></div><div class="line">uint8_t g_dest0[TRANSFER_LENGTH_0] BSP_ALIGN_VARIABLE(64) __attribute__((section(&quot;UNCACHED_BSS&quot;))); <span class="comment">/* Placed at System RAM Non-Cache buffer area */</span></div><div class="line">uint8_t g_src1[TRANSFER_LENGTH_1] BSP_ALIGN_VARIABLE(64)  __attribute__((section(&quot;UNCACHED_BSS&quot;))); <span class="comment">/* Placed at System RAM Non-Cache buffer area */</span></div><div class="line">uint8_t g_dest1[TRANSFER_LENGTH_1] BSP_ALIGN_VARIABLE(64) __attribute__((section(&quot;UNCACHED_BSS&quot;))); <span class="comment">/* Placed at System RAM Non-Cache buffer area */</span></div><div class="line">uint8_t g_src2[TRANSFER_LENGTH_2] BSP_ALIGN_VARIABLE(64)  __attribute__((section(&quot;UNCACHED_BSS&quot;))); <span class="comment">/* Placed at System RAM Non-Cache buffer area */</span></div><div class="line">uint8_t g_dest2[TRANSFER_LENGTH_2] BSP_ALIGN_VARIABLE(64) __attribute__((section(&quot;UNCACHED_BSS&quot;))); <span class="comment">/* Placed at System RAM Non-Cache buffer area */</span></div><div class="line"></div><div class="line"><a class="code" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> transfer0_descriptor BSP_ALIGN_VARIABLE (64) __attribute__((section(&quot;UNCACHED_BSS&quot;))) =</div><div class="line">{</div><div class="line">    .header.link_valid         = <a class="code" href="group___d_m_a_c.html#ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831">DMAC_LINK_VALID_DESCRIPTOR_ENABLE</a>,</div><div class="line">    .header.link_end           = <a class="code" href="group___d_m_a_c.html#gga4a4428a1a93151a05cd0b8e26a1482f5a9df3657ff91e58b325f7feb863044565">DMAC_LINK_END_DISABLE</a>,</div><div class="line">    .header.write_back_disable = <a class="code" href="group___d_m_a_c.html#gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0">DMAC_LINK_WRITE_BACK_DISABLE</a>,</div><div class="line">    .header.interrupt_mask     = <a class="code" href="group___d_m_a_c.html#gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30">DMAC_LINK_INTERRUPT_MASK_DISABLE</a>,</div><div class="line">    .src_addr              = 0x0,                      <span class="comment">/* Source address */</span></div><div class="line">    .dest_addr             = 0x0,                      <span class="comment">/* Destination address */</span></div><div class="line">    .transaction_byte      = TRANSFER_LENGTH_0,        <span class="comment">/* Transaction byte */</span></div><div class="line">    .channel_cfg           = DMAC_CHCFG_SETTING_VALUE, <span class="comment">/* Channel configuration register setting */</span></div><div class="line">    .channel_interval      = 0,                        <span class="comment">/* Channel interval. */</span></div><div class="line">    .channel_extension_cfg = 0,                        <span class="comment">/* Channel extension register setting */</span></div><div class="line">    .next_link_addr        = 0,                        <span class="comment">/* Next link address */</span></div><div class="line">};</div><div class="line"></div><div class="line"><a class="code" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> transfer1_descriptor BSP_ALIGN_VARIABLE (64) __attribute__((section(&quot;UNCACHED_BSS&quot;))) =</div><div class="line">{</div><div class="line">    .header.link_valid         = <a class="code" href="group___d_m_a_c.html#ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831">DMAC_LINK_VALID_DESCRIPTOR_ENABLE</a>,</div><div class="line">    .header.link_end           = <a class="code" href="group___d_m_a_c.html#gga4a4428a1a93151a05cd0b8e26a1482f5a9df3657ff91e58b325f7feb863044565">DMAC_LINK_END_DISABLE</a>,</div><div class="line">    .header.write_back_disable = <a class="code" href="group___d_m_a_c.html#gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0">DMAC_LINK_WRITE_BACK_DISABLE</a>,</div><div class="line">    .header.interrupt_mask     = <a class="code" href="group___d_m_a_c.html#gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30">DMAC_LINK_INTERRUPT_MASK_DISABLE</a>,</div><div class="line">    .src_addr              = 0x0,                      <span class="comment">/* Source address */</span></div><div class="line">    .dest_addr             = 0x0,                      <span class="comment">/* Destination address */</span></div><div class="line">    .transaction_byte      = TRANSFER_LENGTH_1,        <span class="comment">/* Transaction byte */</span></div><div class="line">    .channel_cfg           = DMAC_CHCFG_SETTING_VALUE, <span class="comment">/* Channel configuration register setting */</span></div><div class="line">    .channel_interval      = 0,                        <span class="comment">/* Channel interval. */</span></div><div class="line">    .channel_extension_cfg = 0,                        <span class="comment">/* Channel extension register setting */</span></div><div class="line">    .next_link_addr        = 0,                        <span class="comment">/* Next link address */</span></div><div class="line">};</div><div class="line"></div><div class="line"><a class="code" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> transfer2_descriptor BSP_ALIGN_VARIABLE (64) __attribute__((section(&quot;UNCACHED_BSS&quot;))) =</div><div class="line">{</div><div class="line">    .header.link_valid         = <a class="code" href="group___d_m_a_c.html#ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831">DMAC_LINK_VALID_DESCRIPTOR_ENABLE</a>,</div><div class="line">    .header.link_end           = <a class="code" href="group___d_m_a_c.html#gga4a4428a1a93151a05cd0b8e26a1482f5a40a13502e51ad168077818e194dff1f9">DMAC_LINK_END_ENABLE</a>,</div><div class="line">    .header.write_back_disable = <a class="code" href="group___d_m_a_c.html#gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0">DMAC_LINK_WRITE_BACK_DISABLE</a>,</div><div class="line">    .header.interrupt_mask     = <a class="code" href="group___d_m_a_c.html#gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30">DMAC_LINK_INTERRUPT_MASK_DISABLE</a>,</div><div class="line">    .src_addr              = 0x0,                      <span class="comment">/* Source address */</span></div><div class="line">    .dest_addr             = 0x0,                      <span class="comment">/* Destination address */</span></div><div class="line">    .transaction_byte      = TRANSFER_LENGTH_2,        <span class="comment">/* Transaction byte */</span></div><div class="line">    .channel_cfg           = DMAC_CHCFG_SETTING_VALUE, <span class="comment">/* Channel configuration register setting */</span></div><div class="line">    .channel_interval      = 0,                        <span class="comment">/* Channel interval. */</span></div><div class="line">    .channel_extension_cfg = 0,                        <span class="comment">/* Channel extension register setting */</span></div><div class="line">    .next_link_addr        = 0,                        <span class="comment">/* Next link address */</span></div><div class="line">};</div><div class="line"></div><div class="line"><span class="preprocessor">#else</span></div><div class="line"></div><div class="line">uint8_t g_src0[TRANSFER_LENGTH_0];     <span class="comment">/* Placed at System RAM area */</span></div><div class="line">uint8_t g_dest0[TRANSFER_LENGTH_0];    <span class="comment">/* Placed at System RAM area */</span></div><div class="line">uint8_t g_src1[TRANSFER_LENGTH_1];     <span class="comment">/* Placed at System RAM area */</span></div><div class="line">uint8_t g_dest1[TRANSFER_LENGTH_1];    <span class="comment">/* Placed at System RAM area */</span></div><div class="line">uint8_t g_src2[TRANSFER_LENGTH_2];     <span class="comment">/* Placed at System RAM area */</span></div><div class="line">uint8_t g_dest2[TRANSFER_LENGTH_2];    <span class="comment">/* Placed at System RAM area */</span></div><div class="line"></div><div class="line"><a class="code" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> transfer0_descriptor BSP_ALIGN_VARIABLE (4) =</div><div class="line">{</div><div class="line">    .header.link_valid         = <a class="code" href="group___d_m_a_c.html#ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831">DMAC_LINK_VALID_DESCRIPTOR_ENABLE</a>,</div><div class="line">    .header.link_end           = <a class="code" href="group___d_m_a_c.html#gga4a4428a1a93151a05cd0b8e26a1482f5a9df3657ff91e58b325f7feb863044565">DMAC_LINK_END_DISABLE</a>,</div><div class="line">    .header.write_back_disable = <a class="code" href="group___d_m_a_c.html#gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0">DMAC_LINK_WRITE_BACK_DISABLE</a>,</div><div class="line">    .header.interrupt_mask     = <a class="code" href="group___d_m_a_c.html#gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30">DMAC_LINK_INTERRUPT_MASK_DISABLE</a>,</div><div class="line">    .p_src                 = (<span class="keywordtype">void</span> *) ((uint32_t) &amp;g_src0[0]),  <span class="comment">/* Source address */</span></div><div class="line">    .p_dest                = (<span class="keywordtype">void</span> *) ((uint32_t) &amp;g_dest0[0]), <span class="comment">/* Destination address */</span></div><div class="line">    .transaction_byte      = TRANSFER_LENGTH_0,                 <span class="comment">/* Transaction byte */</span></div><div class="line">    .channel_cfg           = DMAC_CHCFG_SETTING_VALUE,          <span class="comment">/* Channel configuration register setting */</span></div><div class="line">    .channel_interval      = 0,                                 <span class="comment">/* Channel interval. */</span></div><div class="line">    .channel_extension_cfg = 0,                                 <span class="comment">/* Channel extension register setting */</span></div><div class="line">    .p_next_link_addr      = NULL,                              <span class="comment">/* Next link address */</span></div><div class="line">};</div><div class="line"></div><div class="line"><a class="code" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> transfer1_descriptor BSP_ALIGN_VARIABLE (4) =</div><div class="line">{</div><div class="line">    .header.link_valid         = <a class="code" href="group___d_m_a_c.html#ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831">DMAC_LINK_VALID_DESCRIPTOR_ENABLE</a>,</div><div class="line">    .header.link_end           = <a class="code" href="group___d_m_a_c.html#gga4a4428a1a93151a05cd0b8e26a1482f5a9df3657ff91e58b325f7feb863044565">DMAC_LINK_END_DISABLE</a>,</div><div class="line">    .header.write_back_disable = <a class="code" href="group___d_m_a_c.html#gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0">DMAC_LINK_WRITE_BACK_DISABLE</a>,</div><div class="line">    .header.interrupt_mask     = <a class="code" href="group___d_m_a_c.html#gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30">DMAC_LINK_INTERRUPT_MASK_DISABLE</a>,</div><div class="line">    .p_src                 = (<span class="keywordtype">void</span> *) ((uint32_t) &amp;g_src1[0]),  <span class="comment">/* Source address */</span></div><div class="line">    .p_dest                = (<span class="keywordtype">void</span> *) ((uint32_t) &amp;g_dest1[0]), <span class="comment">/* Destination address */</span></div><div class="line">    .transaction_byte      = TRANSFER_LENGTH_1,                 <span class="comment">/* Transaction byte */</span></div><div class="line">    .channel_cfg           = DMAC_CHCFG_SETTING_VALUE,          <span class="comment">/* Channel configuration register setting */</span></div><div class="line">    .channel_interval      = 0,                                 <span class="comment">/* Channel interval. */</span></div><div class="line">    .channel_extension_cfg = 0,                                 <span class="comment">/* Channel extension register setting */</span></div><div class="line">    .p_next_link_addr      = NULL,                              <span class="comment">/* Next link address */</span></div><div class="line">};</div><div class="line"></div><div class="line"><a class="code" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> transfer2_descriptor BSP_ALIGN_VARIABLE (4) =</div><div class="line">{</div><div class="line">    .header.link_valid         = <a class="code" href="group___d_m_a_c.html#ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831">DMAC_LINK_VALID_DESCRIPTOR_ENABLE</a>,</div><div class="line">    .header.link_end           = <a class="code" href="group___d_m_a_c.html#gga4a4428a1a93151a05cd0b8e26a1482f5a40a13502e51ad168077818e194dff1f9">DMAC_LINK_END_ENABLE</a>,</div><div class="line">    .header.write_back_disable = <a class="code" href="group___d_m_a_c.html#gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0">DMAC_LINK_WRITE_BACK_DISABLE</a>,</div><div class="line">    .header.interrupt_mask     = <a class="code" href="group___d_m_a_c.html#gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30">DMAC_LINK_INTERRUPT_MASK_DISABLE</a>,</div><div class="line">    .p_src                 = (<span class="keywordtype">void</span> *) ((uint32_t) &amp;g_src2[0]),  <span class="comment">/* Source address */</span></div><div class="line">    .p_dest                = (<span class="keywordtype">void</span> *) ((uint32_t) &amp;g_dest2[0]), <span class="comment">/* Destination address */</span></div><div class="line">    .transaction_byte      = TRANSFER_LENGTH_2,                 <span class="comment">/* Transaction byte */</span></div><div class="line">    .channel_cfg           = DMAC_CHCFG_SETTING_VALUE,          <span class="comment">/* Channel configuration register setting */</span></div><div class="line">    .channel_interval      = 0,                                 <span class="comment">/* Channel interval. */</span></div><div class="line">    .channel_extension_cfg = 0,                                 <span class="comment">/* Channel extension register setting */</span></div><div class="line">    .p_next_link_addr      = NULL,                              <span class="comment">/* Next link address */</span></div><div class="line">};</div><div class="line"></div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line"><span class="keyword">volatile</span> <span class="keywordtype">bool</span> g_transfer_complete = <span class="keyword">false</span>;</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> dmac_callback (<a class="code" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__callback__args__t">transfer_callback_args_t</a> * p_args)</div><div class="line">{</div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gaf0afcbc9a110ac9366a811d96ee06029">FSP_PARAMETER_NOT_USED</a>(p_args);</div><div class="line">    g_transfer_complete = <span class="keyword">true</span>;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> dmac_link_mode_example (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <span class="keywordflow">for</span> (uint32_t i = 0; i &lt; TRANSFER_LENGTH_0; i++)</div><div class="line">    {</div><div class="line">        g_src0[i] = (uint8_t) (<span class="charliteral">&#39;A&#39;</span> + (i % 26));</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordflow">for</span> (uint32_t i = 0; i &lt; TRANSFER_LENGTH_1; i++)</div><div class="line">    {</div><div class="line">        g_src1[i] = (uint8_t) (<span class="charliteral">&#39;A&#39;</span> + (i % 26));</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordflow">for</span> (uint32_t i = 0; i &lt; TRANSFER_LENGTH_2; i++)</div><div class="line">    {</div><div class="line">        g_src2[i] = (uint8_t) (<span class="charliteral">&#39;A&#39;</span> + (i % 26));</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="preprocessor">#if (UINTPTR_MAX &gt; UINT32_MAX)</span></div><div class="line"></div><div class="line">    <span class="comment">/*  To set the physical address, use R_MMU_VAtoPA function to convert from the virtual address to the physical address. */</span></div><div class="line">    uint64_t * p_src_paddress = 0;</div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;g_src0[0], p_src_paddress);</div><div class="line">    transfer0_descriptor.src_addr = (uint32_t) *p_src_paddress;</div><div class="line"></div><div class="line">    uint64_t * p_dest_paddress = 0;</div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;g_dest0[0], p_dest_paddress);</div><div class="line">    transfer0_descriptor.dest_addr = (uint32_t) *p_dest_paddress;</div><div class="line"></div><div class="line">    uint64_t * p_next_link_paddress = 0;</div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;transfer1_descriptor, p_next_link_paddress);</div><div class="line">    transfer0_descriptor.next_link_addr = (uint32_t) *p_next_link_paddress;</div><div class="line"></div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;g_src1[0], p_src_paddress);</div><div class="line">    transfer1_descriptor.src_addr = (uint32_t) *p_src_paddress;</div><div class="line"></div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;g_dest1[0], p_dest_paddress);</div><div class="line">    transfer1_descriptor.dest_addr = (uint32_t) *p_dest_paddress;</div><div class="line"></div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;transfer2_descriptor, p_next_link_paddress);</div><div class="line">    transfer1_descriptor.next_link_addr = (uint32_t) *p_next_link_paddress;</div><div class="line"></div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;g_src2[0], p_src_paddress);</div><div class="line">    transfer2_descriptor.src_addr = (uint32_t) *p_src_paddress;</div><div class="line"></div><div class="line">    R_MMU_VAtoPA(NULL, (uint64_t) &amp;g_dest2[0], p_dest_paddress);</div><div class="line">    transfer2_descriptor.dest_addr = (uint32_t) *p_dest_paddress;</div><div class="line"><span class="preprocessor">#else</span></div><div class="line">    transfer0_descriptor.p_next_link_addr = &amp;transfer1_descriptor;</div><div class="line">    transfer1_descriptor.p_next_link_addr = &amp;transfer2_descriptor;</div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line">    <span class="comment">/* Open the transfer instance with initial configuration. */</span></div><div class="line">    <a class="code" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> err = <a class="code" href="group___d_m_a_c.html#ga448a013ad5b91097e45833313d5df354">R_DMAC_Open</a>(&amp;g_transfer_ctrl, &amp;g_transfer_cfg);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="comment">/* Reset transfer descriptor. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#gab8611c711811bdf6ae170ff6084c1f45">R_DMAC_LinkDescriptorSet</a>(&amp;g_transfer_ctrl, &amp;transfer0_descriptor);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="comment">/* Trigger the transfer using software. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#ga476c8ffd7c603f3c298a422e4f39b571">R_DMAC_SoftwareStart</a>(&amp;g_transfer_ctrl, (<a class="code" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga11917a0ab2cb8b878937c97691b07fd9">transfer_start_mode_t</a>) NULL);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span> (!g_transfer_complete)</div><div class="line">    {</div><div class="line">        <span class="comment">/* Wait for the first transfer complete interrupt */</span></div><div class="line">    }</div><div class="line"></div><div class="line">    g_transfer_complete = <span class="keyword">false</span>;</div><div class="line"></div><div class="line">    <span class="comment">/* Trigger the transfer using software. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#ga476c8ffd7c603f3c298a422e4f39b571">R_DMAC_SoftwareStart</a>(&amp;g_transfer_ctrl, (<a class="code" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga11917a0ab2cb8b878937c97691b07fd9">transfer_start_mode_t</a>) NULL);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span> (!g_transfer_complete)</div><div class="line">    {</div><div class="line">        <span class="comment">/* Wait for the second transfer complete interrupt */</span></div><div class="line">    }</div><div class="line"></div><div class="line">    g_transfer_complete = <span class="keyword">false</span>;</div><div class="line"></div><div class="line">    <span class="comment">/* Trigger the transfer using software. */</span></div><div class="line">    err = <a class="code" href="group___d_m_a_c.html#ga476c8ffd7c603f3c298a422e4f39b571">R_DMAC_SoftwareStart</a>(&amp;g_transfer_ctrl, (<a class="code" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga11917a0ab2cb8b878937c97691b07fd9">transfer_start_mode_t</a>) NULL);</div><div class="line">    assert(FSP_SUCCESS == err);</div><div class="line"></div><div class="line">    <span class="keywordflow">while</span> (!g_transfer_complete)</div><div class="line">    {</div><div class="line">        <span class="comment">/* Wait for the third transfer complete interrupt */</span></div><div class="line">    }</div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:structdmac__next1__register__setting__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__next1__register__setting__t">dmac_next1_register_setting_t</a></td></tr>
 <tr class="separator:structdmac__next1__register__setting__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structdmac__link__cfg__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a></td></tr>
+<tr class="separator:structdmac__link__cfg__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structdmac__instance__ctrl__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__instance__ctrl__t">dmac_instance_ctrl_t</a></td></tr>
 <tr class="separator:structdmac__instance__ctrl__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structdmac__extended__cfg__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#structdmac__extended__cfg__t">dmac_extended_cfg_t</a></td></tr>
@@ -415,6 +439,14 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga81ff959e77bb3e4e37a7e4e68d23a02b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga873499bc88e96b4626d26f6591372cc7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga873499bc88e96b4626d26f6591372cc7">dmac_mode_select_t</a> </td></tr>
 <tr class="separator:ga873499bc88e96b4626d26f6591372cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac0f8e5b884076714f7b2780fed1fee68"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#gac0f8e5b884076714f7b2780fed1fee68">dmac_link_valid_t</a> </td></tr>
+<tr class="separator:gac0f8e5b884076714f7b2780fed1fee68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4a4428a1a93151a05cd0b8e26a1482f5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga4a4428a1a93151a05cd0b8e26a1482f5">dmac_link_end_t</a> </td></tr>
+<tr class="separator:ga4a4428a1a93151a05cd0b8e26a1482f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga85528156741050dd0e12836da2604329"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga85528156741050dd0e12836da2604329">dmac_link_write_back_t</a> </td></tr>
+<tr class="separator:ga85528156741050dd0e12836da2604329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga26d8829b918ac50911e94bb98affd911"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ga26d8829b918ac50911e94bb98affd911">dmac_link_interrupt_mask_t</a> </td></tr>
+<tr class="separator:ga26d8829b918ac50911e94bb98affd911"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
 <a name="structdmac__next1__register__setting__t" id="structdmac__next1__register__setting__t"></a>
@@ -449,6 +481,72 @@ Destination pointer. </td></tr>
 length</td>
 <td class="fielddoc">
 Transfer Byte. </td></tr>
+</table>
+
+</div>
+</div>
+<a name="structdmac__link__cfg__t" id="structdmac__link__cfg__t"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structdmac__link__cfg__t">&#9670;&nbsp;</a></span>dmac_link_cfg_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct dmac_link_cfg_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"><p>Descriptor structure used in DMAC link mode, and variables of <a class="el" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> must be allocated in the memory area. </p>
+</div><table class="fieldtable">
+<tr><th colspan="3">Data Fields</th></tr>
+<tr><td class="fieldtype">
+<a id="afa4d481f338087d93d371482c8c2434a"></a>union <a class="el" href="group___d_m_a_c.html#uniondmac__link__cfg__t_8____unnamed____">dmac_link_cfg_t</a></td>
+<td class="fieldname">
+__unnamed__</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a010ba2472a0e4e9501cf8571fa058df0"></a>void const  *volatile</td>
+<td class="fieldname">
+p_src</td>
+<td class="fielddoc">
+Source address. </td></tr>
+<tr><td class="fieldtype">
+<a id="abfb258c690661510dd57a10077a17f8b"></a>void *volatile</td>
+<td class="fieldname">
+p_dest</td>
+<td class="fielddoc">
+Destination address. </td></tr>
+<tr><td class="fieldtype">
+<a id="a7b3015ee86fae992ede031cba2242ec2"></a>volatile uint32_t</td>
+<td class="fieldname">
+transaction_byte</td>
+<td class="fielddoc">
+Transaction byte. </td></tr>
+<tr><td class="fieldtype">
+<a id="aff95e0ca2f4c68bf9ee8e0de3725d689"></a>volatile uint32_t</td>
+<td class="fieldname">
+channel_cfg</td>
+<td class="fielddoc">
+Channel configuration (Set value for CHCFG_n register). </td></tr>
+<tr><td class="fieldtype">
+<a id="a711db2abd2d9bae91dbafef2188218c9"></a>volatile uint32_t</td>
+<td class="fieldname">
+channel_interval</td>
+<td class="fielddoc">
+Channel interval (Set value for CHITVL register). </td></tr>
+<tr><td class="fieldtype">
+<a id="aa78aa3a19bd0431a455971975ab43ec6"></a>volatile uint32_t</td>
+<td class="fieldname">
+channel_extension_cfg</td>
+<td class="fielddoc">
+Channel extension configuration (Set value for CHEXT_n register). </td></tr>
+<tr><td class="fieldtype">
+<a id="a50bfdd5f070eaff0092ff624a84bc706"></a>void *volatile</td>
+<td class="fieldname">
+p_next_link_addr</td>
+<td class="fielddoc">
+Next link address. </td></tr>
 </table>
 
 </div>
@@ -518,6 +616,10 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <a class="el" href="group___d_m_a_c.html#ga873499bc88e96b4626d26f6591372cc7">dmac_mode_select_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ad6fb22128d44f4d604cbe77372d5743c">dmac_mode</a></td></tr>
 <tr class="memdesc:ad6fb22128d44f4d604cbe77372d5743c"><td class="mdescLeft">&#160;</td><td class="mdescRight">DMAC Mode. <br /></td></tr>
 <tr class="separator:ad6fb22128d44f4d604cbe77372d5743c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad833a6755c7d4a233ea8243c903354a5"><td class="memItemLeft" align="right" valign="top"><a id="ad833a6755c7d4a233ea8243c903354a5"></a>
+<a class="el" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#ad833a6755c7d4a233ea8243c903354a5">p_descriptor</a></td></tr>
+<tr class="memdesc:ad833a6755c7d4a233ea8243c903354a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The address of the descriptor (DMA Link Mode only) <br /></td></tr>
+<tr class="separator:ad833a6755c7d4a233ea8243c903354a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0029475c4b3893a39d1968b1b853719d"><td class="memItemLeft" align="right" valign="top"><a id="a0029475c4b3893a39d1968b1b853719d"></a>
 <a class="el" href="group___d_m_a_c.html#ga8bd6045e0c047687bd870a11063bb01d">dmac_continuous_setting_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___d_m_a_c.html#a0029475c4b3893a39d1968b1b853719d">continuous_setting</a></td></tr>
 <tr class="memdesc:a0029475c4b3893a39d1968b1b853719d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Next register operation settings. <br /></td></tr>
@@ -851,6 +953,90 @@ p_next1_register_setting</td>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga873499bc88e96b4626d26f6591372cc7a9c4395e96bfe849404b24faa6315b618"></a>DMAC_MODE_SELECT_REGISTER&#160;</td><td class="fielddoc"><p>Register mode. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga873499bc88e96b4626d26f6591372cc7a8bb68933123b0a14e1324905f92f7f41"></a>DMAC_MODE_SELECT_LINK&#160;</td><td class="fielddoc"><p>Link mode. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="gac0f8e5b884076714f7b2780fed1fee68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac0f8e5b884076714f7b2780fed1fee68">&#9670;&nbsp;</a></span>dmac_link_valid_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group___d_m_a_c.html#gac0f8e5b884076714f7b2780fed1fee68">dmac_link_valid_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Indicates the descriptor is enabled or disabled. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggac0f8e5b884076714f7b2780fed1fee68a9cdd907c5124d2db3cab848436230cc6"></a>DMAC_LINK_VALID_DESCRIPTOR_DISABLE&#160;</td><td class="fielddoc"><p>The Descriptor is disabled. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac0f8e5b884076714f7b2780fed1fee68ac2477ddcee37a6e9085dd8e7a9f18831"></a>DMAC_LINK_VALID_DESCRIPTOR_ENABLE&#160;</td><td class="fielddoc"><p>The Descriptor is enabled. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga4a4428a1a93151a05cd0b8e26a1482f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4a4428a1a93151a05cd0b8e26a1482f5">&#9670;&nbsp;</a></span>dmac_link_end_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group___d_m_a_c.html#ga4a4428a1a93151a05cd0b8e26a1482f5">dmac_link_end_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Indicates that the link ends during DMA transfer of this descriptor. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga4a4428a1a93151a05cd0b8e26a1482f5a9df3657ff91e58b325f7feb863044565"></a>DMAC_LINK_END_DISABLE&#160;</td><td class="fielddoc"><p>The link continues. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga4a4428a1a93151a05cd0b8e26a1482f5a40a13502e51ad168077818e194dff1f9"></a>DMAC_LINK_END_ENABLE&#160;</td><td class="fielddoc"><p>The link ends. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga85528156741050dd0e12836da2604329"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga85528156741050dd0e12836da2604329">&#9670;&nbsp;</a></span>dmac_link_write_back_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group___d_m_a_c.html#ga85528156741050dd0e12836da2604329">dmac_link_write_back_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Masks write back execution of the dmac_link_cfg_t::link_valid. When disable, DMAC does not perform write-back operation. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga85528156741050dd0e12836da2604329a503f1bc1c3661d4774e2ecf181e245c8"></a>DMAC_LINK_WRITE_BACK_ENABLE&#160;</td><td class="fielddoc"><p>Set dmac_link_cfg_t::link_valid to disable after the DMA transfer ends. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga85528156741050dd0e12836da2604329ad021f16c86987f6b72b6e8be9952b9c0"></a>DMAC_LINK_WRITE_BACK_DISABLE&#160;</td><td class="fielddoc"><p>Remain dmac_link_cfg_t::link_valid after DMA transfer ends. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga26d8829b918ac50911e94bb98affd911"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga26d8829b918ac50911e94bb98affd911">&#9670;&nbsp;</a></span>dmac_link_interrupt_mask_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group___d_m_a_c.html#ga26d8829b918ac50911e94bb98affd911">dmac_link_interrupt_mask_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>When dmac_link_cfg_t::link_valid is DMAC_LINK_VALID_DESCRIPTOR_DISABLE at loading of header, specifies whether DMA transfer completion interrupt mask or not. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga26d8829b918ac50911e94bb98affd911af70deb9b076e3ffba63b47688b009e30"></a>DMAC_LINK_INTERRUPT_MASK_DISABLE&#160;</td><td class="fielddoc"><p>DMA transfer completion interrupt is asserted. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga26d8829b918ac50911e94bb98affd911aa2caaad8f67849e0323ef830dba29aed"></a>DMAC_LINK_INTERRUPT_MASK_ENABLE&#160;</td><td class="fielddoc"><p>DMA transfer completion interrupt is masked. </p>
 </td></tr>
 </table>
 
@@ -1206,6 +1392,7 @@ p_next1_register_setting</td>
     <tr><td class="paramname">FSP_SUCCESS</td><td>Successful continuous transfer settings. </td></tr>
     <tr><td class="paramname">FSP_ERR_ASSERTION</td><td>An input parameter is invalid. </td></tr>
     <tr><td class="paramname">FSP_ERR_NOT_OPEN</td><td>Handle is not initialized. Call R_DMAC_Open to initialize the control block. </td></tr>
+    <tr><td class="paramname">FSP_ERR_INVALID_MODE</td><td>This API cannot be called during link mode operation or setting not to use the Next1 register. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1261,13 +1448,52 @@ p_next1_register_setting</td>
 
 </div>
 </div>
+<a id="gab8611c711811bdf6ae170ff6084c1f45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab8611c711811bdf6ae170ff6084c1f45">&#9670;&nbsp;</a></span>R_DMAC_LinkDescriptorSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___r_e_n_e_s_a_s___e_r_r_o_r___c_o_d_e_s.html#gadfb1288da0fcc7ae1dc88c58601374f8">fsp_err_t</a> R_DMAC_LinkDescriptorSet </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga665f80fc984ccf7585606be8eeccbb98">transfer_ctrl_t</a> *const&#160;</td>
+          <td class="paramname"><em>p_api_ctrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group___d_m_a_c.html#structdmac__link__cfg__t">dmac_link_cfg_t</a> *&#160;</td>
+          <td class="paramname"><em>p_descriptor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reconfigure the transfer descriptor information with new transfer descriptor.</p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FSP_SUCCESS</td><td>Transfer is configured and will start when trigger occurs. </td></tr>
+    <tr><td class="paramname">FSP_ERR_ASSERTION</td><td>An input parameter is invalid. </td></tr>
+    <tr><td class="paramname">FSP_ERR_NOT_ENABLED</td><td>DMAC is not enabled. The current configuration must not be valid. </td></tr>
+    <tr><td class="paramname">FSP_ERR_INVALID_MODE</td><td>DMA mode is register mode. This function can only be used when the DMA mode is link mode. </td></tr>
+    <tr><td class="paramname">FSP_ERR_NOT_OPEN</td><td>Handle is not initialized. Call R_DMAC_Open to initialize the control block. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.7-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.2.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.3.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

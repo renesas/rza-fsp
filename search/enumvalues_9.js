@@ -1,5 +1,13 @@
 var searchData=
 [
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fdouble',['RAI_DATA_COLLECTOR_DATA_TYPE_DOUBLE',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9a9049a6ff2dca1e204bb5e57da351d4dd',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5ffloat',['RAI_DATA_COLLECTOR_DATA_TYPE_FLOAT',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9ace56e138f29eb40a6a1012d56223aecd',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fint16_5ft',['RAI_DATA_COLLECTOR_DATA_TYPE_INT16_T',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9a297b07b0ca554840975c05c41883bedc',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fint32_5ft',['RAI_DATA_COLLECTOR_DATA_TYPE_INT32_T',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9a21ad8ad0b9780160e96966c98d05d8ef',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fint8_5ft',['RAI_DATA_COLLECTOR_DATA_TYPE_INT8_T',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9a61fbe37ce70208fad4b4fd3b116a8b7f',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fuint16_5ft',['RAI_DATA_COLLECTOR_DATA_TYPE_UINT16_T',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9a0e2e6aefda1bebb8c8c6712f185c41ce',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fuint32_5ft',['RAI_DATA_COLLECTOR_DATA_TYPE_UINT32_T',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9a3127756a0aa87154c1ce330293ec2ec2',1,'rm_rai_data_collector_api.h']]],
+  ['rai_5fdata_5fcollector_5fdata_5ftype_5fuint8_5ft',['RAI_DATA_COLLECTOR_DATA_TYPE_UINT8_T',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#gga5ebafdaaa775caf42d3b0465d9e0abb9ad96b11215dd662c46aed6c7b4ab97903',1,'rm_rai_data_collector_api.h']]],
   ['rm_5fblock_5fmedia_5fevent_5ferror',['RM_BLOCK_MEDIA_EVENT_ERROR',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#ggaa3f328da3b53e36f2682f63d0ae1c96ca1b08744b324298474f730a66fb9a8d44',1,'rm_block_media_api.h']]],
   ['rm_5fblock_5fmedia_5fevent_5fmedia_5finserted',['RM_BLOCK_MEDIA_EVENT_MEDIA_INSERTED',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#ggaa3f328da3b53e36f2682f63d0ae1c96ca824ad009871b7f393b49e7a8a63c6ed9',1,'rm_block_media_api.h']]],
   ['rm_5fblock_5fmedia_5fevent_5fmedia_5fremoved',['RM_BLOCK_MEDIA_EVENT_MEDIA_REMOVED',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#ggaa3f328da3b53e36f2682f63d0ae1c96cae1eaef4a8e7225d6ccee904c4e6795df',1,'rm_block_media_api.h']]],
@@ -27,6 +35,9 @@ var searchData=
   ['rm_5fguix_5fport_5fevent_5fdisplay_5fvsync',['RM_GUIX_PORT_EVENT_DISPLAY_VSYNC',['../group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fadcecd94989239d5c230457cd78c57139',1,'rm_guix_port.h']]],
   ['rm_5fguix_5fport_5fevent_5ferror',['RM_GUIX_PORT_EVENT_ERROR',['../group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fa786df716bcc181803d466f748ec92329',1,'rm_guix_port.h']]],
   ['rm_5fguix_5fport_5fevent_5funderflow',['RM_GUIX_PORT_EVENT_UNDERFLOW',['../group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fa05efaed0e8146dd8f2a957e5f52871ec',1,'rm_guix_port.h']]],
+  ['rm_5fhs400x_5fperiodic_5fmeasurement_5ffrequency_5f0p4hz',['RM_HS400X_PERIODIC_MEASUREMENT_FREQUENCY_0P4HZ',['../group___r_m___h_s400_x___a_p_i.html#gga6ab3f5a23c4ddfcbf416027512700d69a065a54759d825775527b92f4c02342ef',1,'rm_hs400x_api.h']]],
+  ['rm_5fhs400x_5fperiodic_5fmeasurement_5ffrequency_5f1hz',['RM_HS400X_PERIODIC_MEASUREMENT_FREQUENCY_1HZ',['../group___r_m___h_s400_x___a_p_i.html#gga6ab3f5a23c4ddfcbf416027512700d69a71fd810a9f93f8190420c5717a999ba2',1,'rm_hs400x_api.h']]],
+  ['rm_5fhs400x_5fperiodic_5fmeasurement_5ffrequency_5f2hz',['RM_HS400X_PERIODIC_MEASUREMENT_FREQUENCY_2HZ',['../group___r_m___h_s400_x___a_p_i.html#gga6ab3f5a23c4ddfcbf416027512700d69aaeebce78040edb12cb5737d5708df752',1,'rm_hs400x_api.h']]],
   ['rspi_5fdelay_5fcount_5f1',['RSPI_DELAY_COUNT_1',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775acf6c2af3c3fd7da891cd64c6ac082ed7',1,'r_rspi.h']]],
   ['rspi_5fdelay_5fcount_5f2',['RSPI_DELAY_COUNT_2',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a113a034f110841c3f8fb0c726238c7ea',1,'r_rspi.h']]],
   ['rspi_5fdelay_5fcount_5f3',['RSPI_DELAY_COUNT_3',['../group___r_s_p_i.html#gga8f68c8c6c98ee871ad72bbb94c559775a278ef944fd2a6485be24ddc58e154e00',1,'r_rspi.h']]],

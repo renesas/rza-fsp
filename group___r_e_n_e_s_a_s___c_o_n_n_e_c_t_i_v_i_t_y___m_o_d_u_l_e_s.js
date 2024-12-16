@@ -11,5 +11,7 @@ var group___r_e_n_e_s_a_s___c_o_n_n_e_c_t_i_v_i_t_y___m_o_d_u_l_e_s =
     [ "USB Host Human Interface Device Class Driver (r_usb_hhid)", "group___u_s_b___h_h_i_d.html", "group___u_s_b___h_h_i_d" ],
     [ "USB Host Mass Storage Class Driver (r_usb_hmsc)", "group___u_s_b___h_m_s_c.html", "group___u_s_b___h_m_s_c" ],
     [ "USB Peripheral Communications Device Class (r_usb_pcdc)", "group___u_s_b___p_c_d_c.html", null ],
+    [ "I2C Communication Device (rm_comms_i2c)", "group___r_m___c_o_m_m_s___i2_c.html", "group___r_m___c_o_m_m_s___i2_c" ],
+    [ "UART Communication Device (rm_comms_uart)", "group___r_m___c_o_m_m_s___u_a_r_t.html", "group___r_m___c_o_m_m_s___u_a_r_t" ],
     [ "USBX Porting Layer (rm_usbx_port)", "group___u_s_b_x.html", null ]
 ];
