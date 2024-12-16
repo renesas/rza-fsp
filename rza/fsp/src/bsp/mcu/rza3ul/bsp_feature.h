@@ -73,6 +73,7 @@
 
 /* DMAC-Related Definitions */
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                 (16U)
+#define BSP_FEATURE_DMAC_64BIT_SYSTEM                (1U)
 
 /* GETHER-Related Definitions */
 #define BSP_FEATURE_GETHER_MAX_CHANNELS              (2U)

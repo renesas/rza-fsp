@@ -206,6 +206,44 @@ typedef enum e_fsp_priv_clock
     FSP_PRIV_CLOCK_NUM,
 } fsp_priv_clock_t;
 
+#ifndef BSP_OVERRIDE_FSP_PRIV_CLOCK_DIVIDER_T
+
+/* Private enum used in R_BSP_ClockDividerSet. */
+typedef enum e_fsp_priv_clock_divider
+{
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1 = 0,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_LPCLK,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_B,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_C,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_CLK200FIX,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_F,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_B,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_GPU,
+    FSP_PRIV_CLOCK_DIVIDER_NUM,
+} fsp_priv_clock_divider_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_FSP_PRIV_CLOCK_SELECTOR_T
+
+/* Private enum used in R_BSP_ClockSelectorSet. */
+typedef enum e_fsp_priv_clock_selector
+{
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI0 = 0,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI1,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL3_3,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL3_5,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL6_2,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL_GPU2,
+    FSP_PRIV_CLOCK_SELECTOR_NUM,
+} fsp_priv_clock_selector_t;
+
+#endif
+
 typedef struct st_bsp_unique_id
 {
     union
@@ -250,8 +288,10 @@ __STATIC_INLINE fsp_err_t R_BSP_UniqueIdGet ()
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
-uint32_t R_FSP_SystemClockHzGet(fsp_priv_clock_t clock);
-void     R_FSP_SystemClockHzSet(fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div);
+uint32_t  R_FSP_SystemClockHzGet(fsp_priv_clock_t clock);
+void      R_FSP_SystemClockHzSet(fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div);
+fsp_err_t R_BSP_ClockSelectorSet(fsp_priv_clock_selector_t selector, uint32_t clock_sel);
+fsp_err_t R_BSP_ClockDividerSet(fsp_priv_clock_divider_t divider, uint32_t clock_div);
 
 #if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
 

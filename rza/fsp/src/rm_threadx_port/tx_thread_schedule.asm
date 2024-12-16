@@ -20,6 +20,7 @@
 /**************************************************************************/
 /**************************************************************************/
 
+#include "tx_user.h"
 
     .text
     .align 3
@@ -28,7 +29,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _tx_thread_schedule                                  ARMv8-A        */
-/*                                                           6.1.10       */
+/*                                                           6.3.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    William E. Lamie, Microsoft Corporation                             */
@@ -65,9 +66,11 @@
 /*  01-31-2022     Andres Mlinar            Updated comments,             */
 /*                                             added ARMv8.2-A support,   */
 /*                                            resulting in version 6.1.10 */
+/*  10-31-2023     Tiejun Zhou              Modified comment(s), added    */
+/*                                            #include tx_user.h,         */
+/*                                            resulting in version 6.3.0  */
 /*                                                                        */
 /**************************************************************************/
-#include "tx_user.h"
 // VOID   _tx_thread_schedule(VOID)
 // {
     .global _tx_thread_schedule

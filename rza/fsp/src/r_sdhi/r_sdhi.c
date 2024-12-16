@@ -336,6 +336,10 @@ const sdmmc_api_t g_sdmmc_on_sdhi =
     .close       = R_SDHI_Close,
 };
 
+/* Address of Uncached RAM */
+extern uint16_t __uncached_RAM_start;
+extern uint16_t __uncached_RAM_end;
+
 /*******************************************************************************************************************//**
  * @addtogroup SDHI
  * @{
@@ -527,32 +531,74 @@ fsp_err_t R_SDHI_Read (sdmmc_ctrl_t * const p_api_ctrl,
     err = r_sdhi_common_error_check(p_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-    for (uint32_t i = 0; i < sector_count; i++)
+    if ((0U != ((uint32_t) (uintptr_t) p_dest & 0x7U)) || (0U != (p_ctrl->p_cfg->block_size & 7U)) ||
+        ((void *) p_dest < (void *) &__uncached_RAM_start) || ((void *) &__uncached_RAM_end < (void *) p_dest))
     {
+        /* Unaligned access or cached area */
+        for (uint32_t i = 0; i < sector_count; i++)
+        {
+            uint32_t command  = 0U;
+            uint32_t argument = start_sector + i;
+            if (!p_ctrl->sector_addressing)
+            {
+                /* Standard capacity SD cards and some eMMC devices use byte addressing. */
+                argument *= p_ctrl->p_cfg->block_size;
+            }
+
+            command = SDHI_PRV_CMD_READ_SINGLE_BLOCK;
+
+            err = r_sdhi_read_write_common(p_ctrl, 1U, p_ctrl->p_cfg->block_size, command, argument);
+            FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+            r_sdhi_dma_prepare(p_ctrl, false, p_ctrl->buff_physical_address);
+            p_ctrl->p_reg->DM_CM_DTRAN_CTRL_long.L = SDHI_PRV_SDHI_DM_CM_DTRAN_CTRL_DM_START;
+
+            /* Wait for end of response, error or timeout */
+            err = r_sdhi_wait_for_event(p_ctrl, SDHI_PRV_ACCESS_BIT, SDHI_PRV_ACCESS_TIMEOUT_US);
+            p_ctrl->p_reg->CC_EXT_MODE_long.L = SDHI_PRV_SD_DMAEN_DMAEN_CLEAR;
+            FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+            __DSB();
+
+            /* Copy driver buffer data to caller buffer */
+            memcpy(p_dest + (p_ctrl->p_cfg->block_size * i), p_ctrl->p_buff, p_ctrl->p_cfg->block_size);
+        }
+    }
+    else
+    {
+        /* Aligned access : convert Virtual address to the physical address */
+        uint64_t p_dest_pa;
+        err = R_MMU_VAtoPA(p_api_ctrl, (uint64_t) p_dest, &p_dest_pa);
+        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+        /* Configure the transfer interface for reading. */
+        p_ctrl->p_reg->SD_INFO2_MASK_long.L |= SDHI_PRV_SD_INFO2_MASK_BREM_BWEM_MASK;
+        p_ctrl->p_reg->CC_EXT_MODE_long.L    = SDHI_PRV_SD_DMAEN_DMAEN_SET;
         uint32_t command  = 0U;
-        uint32_t argument = start_sector + i;
+        uint32_t argument = start_sector;
         if (!p_ctrl->sector_addressing)
         {
             /* Standard capacity SD cards and some eMMC devices use byte addressing. */
             argument *= p_ctrl->p_cfg->block_size;
         }
 
-        command = SDHI_PRV_CMD_READ_SINGLE_BLOCK;
+        if (sector_count > 1U)
+        {
+            command = SDHI_PRV_CMD_READ_MULTIPLE_BLOCK;
+        }
+        else
+        {
+            command = SDHI_PRV_CMD_READ_SINGLE_BLOCK;
+        }
 
-        err = r_sdhi_read_write_common(p_ctrl, 1U, p_ctrl->p_cfg->block_size, command, argument);
+        err = r_sdhi_read_write_common(p_ctrl, sector_count, p_ctrl->p_cfg->block_size, command, argument);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-        r_sdhi_dma_prepare(p_ctrl, false, p_ctrl->buff_physical_address);
+        r_sdhi_dma_prepare(p_ctrl, false, p_dest_pa);
         p_ctrl->p_reg->DM_CM_DTRAN_CTRL_long.L = SDHI_PRV_SDHI_DM_CM_DTRAN_CTRL_DM_START;
 
         /* Wait for end of response, error or timeout */
         err = r_sdhi_wait_for_event(p_ctrl, SDHI_PRV_ACCESS_BIT, SDHI_PRV_ACCESS_TIMEOUT_US);
         p_ctrl->p_reg->CC_EXT_MODE_long.L = SDHI_PRV_SD_DMAEN_DMAEN_CLEAR;
-        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
-        __DSB();
-
-        /* Copy driver buffer data to caller buffer */
-        memcpy(p_dest + (p_ctrl->p_cfg->block_size * i), p_ctrl->p_buff, p_ctrl->p_cfg->block_size);
     }
 
     return err;
@@ -595,31 +641,75 @@ fsp_err_t R_SDHI_Write (sdmmc_ctrl_t * const  p_api_ctrl,
     /* Check for write protection */
     FSP_ERROR_RETURN(!p_ctrl->device.write_protected, FSP_ERR_CARD_WRITE_PROTECTED);
 
-    for (uint32_t i = 0; i < sector_count; i++)
+    if ((0U != ((uint32_t) (uintptr_t) p_source & 0x7U)) || (0U != (p_ctrl->p_cfg->block_size & 7U)) ||
+        ((void *) p_source < (void *) &__uncached_RAM_start) || ((void *) &__uncached_RAM_end < (void *) p_source))
     {
+        /* Unaligned access or cached area */
+        for (uint32_t i = 0; i < sector_count; i++)
+        {
+            /* Call SDMMC protocol write function */
+            uint32_t command  = 0U;
+            uint32_t argument = start_sector + i;
+            if (!p_ctrl->sector_addressing)
+            {
+                /* Standard capacity SD cards and some eMMC devices use byte addressing. */
+                argument *= p_ctrl->p_cfg->block_size;
+            }
+
+            command = SDHI_PRV_CMD_WRITE_SINGLE_BLOCK;
+
+            err = r_sdhi_read_write_common(p_ctrl, 1U, p_ctrl->p_cfg->block_size, command, argument);
+            FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+            r_sdhi_dma_prepare(p_ctrl, true, p_ctrl->buff_physical_address);
+            memcpy(p_ctrl->p_buff, p_source + (p_ctrl->p_cfg->block_size * i), p_ctrl->p_cfg->block_size);
+            __DSB();
+            p_ctrl->p_reg->DM_CM_DTRAN_CTRL_long.L = SDHI_PRV_SDHI_DM_CM_DTRAN_CTRL_DM_START;
+
+            /* Wait for end of response, error or timeout */
+            err = r_sdhi_wait_for_event(p_ctrl, SDHI_PRV_ACCESS_BIT, SDHI_PRV_ACCESS_TIMEOUT_US);
+            p_ctrl->p_reg->CC_EXT_MODE_long.L = SDHI_PRV_SD_DMAEN_DMAEN_CLEAR;
+            FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+        }
+    }
+    else
+    {
+        /* Aligned access */
+        uint64_t p_source_pa;
+        err = R_MMU_VAtoPA(p_api_ctrl, (uint64_t) p_source, &p_source_pa);
+        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+        /* Configure the transfer interface for writing. */
+        p_ctrl->p_reg->SD_INFO2_MASK_long.L |= SDHI_PRV_SD_INFO2_MASK_BREM_BWEM_MASK;
+        p_ctrl->p_reg->CC_EXT_MODE_long.L    = SDHI_PRV_SD_DMAEN_DMAEN_SET;
+
         /* Call SDMMC protocol write function */
         uint32_t command  = 0U;
-        uint32_t argument = start_sector + i;
+        uint32_t argument = start_sector;
         if (!p_ctrl->sector_addressing)
         {
             /* Standard capacity SD cards and some eMMC devices use byte addressing. */
             argument *= p_ctrl->p_cfg->block_size;
         }
 
-        command = SDHI_PRV_CMD_WRITE_SINGLE_BLOCK;
+        if (sector_count > 1U)
+        {
+            command = SDHI_PRV_CMD_WRITE_MULTIPLE_BLOCK;
+        }
+        else
+        {
+            command = SDHI_PRV_CMD_WRITE_SINGLE_BLOCK;
+        }
 
-        err = r_sdhi_read_write_common(p_ctrl, 1U, p_ctrl->p_cfg->block_size, command, argument);
+        err = r_sdhi_read_write_common(p_ctrl, sector_count, p_ctrl->p_cfg->block_size, command, argument);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-        r_sdhi_dma_prepare(p_ctrl, true, p_ctrl->buff_physical_address);
-        memcpy(p_ctrl->p_buff, p_source + (p_ctrl->p_cfg->block_size * i), p_ctrl->p_cfg->block_size);
-        __DSB();
+        r_sdhi_dma_prepare(p_ctrl, true, p_source_pa);
         p_ctrl->p_reg->DM_CM_DTRAN_CTRL_long.L = SDHI_PRV_SDHI_DM_CM_DTRAN_CTRL_DM_START;
 
         /* Wait for end of response, error or timeout */
         err = r_sdhi_wait_for_event(p_ctrl, SDHI_PRV_ACCESS_BIT, SDHI_PRV_ACCESS_TIMEOUT_US);
         p_ctrl->p_reg->CC_EXT_MODE_long.L = SDHI_PRV_SD_DMAEN_DMAEN_CLEAR;
-        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     }
 
     return err;
@@ -1968,6 +2058,7 @@ static fsp_err_t r_sdhi_sd_card_check (sdhi_instance_ctrl_t * const p_ctrl)
      * extended CSD. If the response does not match the argument, return to check if this is an eMMC device. */
     sdmmc_response_t response;
     response.status = p_ctrl->p_reg->SD_RSP10_long.L;
+
     /* CMD8 is not supported by spec V1.X so we have to try CMD41. */
     if ((FSP_ERR_RESPONSE == err) || (response.status == argument))
     {

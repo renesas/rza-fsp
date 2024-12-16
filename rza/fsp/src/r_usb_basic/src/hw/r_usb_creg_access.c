@@ -3713,7 +3713,7 @@ void hw_usb_set_trenb (usb_utr_t * ptr, uint16_t pipeno)
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         if (USB_CFG_IP0 == ptr->ip)
         {
-            p_reg = (uint16_t *) (uintptr_t) (USB_M0->PIPE1TRE_b.TRENB) + ((pipeno - 1) * 2);
+            p_reg = (uint16_t *) &(USB_M0->PIPE1TRE) + ((pipeno - 1) * 2);
         }
         else
         {
@@ -3758,7 +3758,7 @@ void hw_usb_clear_trenb (usb_utr_t * ptr, uint16_t pipeno)
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         if (USB_CFG_IP0 == ptr->ip)
         {
-            p_reg = (uint16_t *) (uintptr_t) (USB_M0->PIPE1TRE_b.TRENB) + ((pipeno - 1) * 2);
+            p_reg = (uint16_t *) &(USB_M0->PIPE1TRE) + ((pipeno - 1) * 2);
         }
         else
         {
@@ -3804,12 +3804,12 @@ void hw_usb_set_trclr (usb_utr_t * ptr, uint16_t pipeno)
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         if (USB_CFG_IP0 == ptr->ip)
         {
-            p_reg = (uint16_t *) (uintptr_t) (USB_M0->PIPE1TRE_b.TRENB) + ((pipeno - 1) * 2);
+            p_reg = (uint16_t *) &(USB_M0->PIPE1TRE) + ((pipeno - 1) * 2);
         }
         else
         {
   #if !defined(BSP_MCU_GROUP_RZA3UL)
-            p_reg = (uint16_t *) &(USB_M1->PIPE1TRE_b.TRENB) + ((pipeno - 1) * 2);
+            p_reg = (uint16_t *) &(USB_M1->PIPE_TR[0].E) + ((pipeno - 1) * 2);
   #endif
         }
 
@@ -3850,7 +3850,7 @@ void hw_usb_write_pipetrn (usb_utr_t * ptr, uint16_t pipeno, uint16_t data)
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         if (USB_CFG_IP0 == ptr->ip)
         {
-            p_reg = (uint16_t *) (uintptr_t) (USB_M0->PIPE1TRN_b.TRNCNT) + ((pipeno - 1) * 2);
+            p_reg = (uint16_t *) &(USB_M0->PIPE1TRN) + ((pipeno - 1) * 2);
         }
         else
         {

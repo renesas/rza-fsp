@@ -27,14 +27,22 @@
 #define DMAC_PRV_DCTRL_DEFAULT_VALUE             (0x00000000U)
 #define DMAC_PRV_CHCFG_DEFAULT_VALUE             (0x00000000U)
 
+/* Calculate the mask bits for byte alignment from the transfer_size_t. */
+#define DMAC_PRV_MASK_ALIGN_N_BYTES(x)    ((1U << (x)) - 1U)
+#define DMAC_PRV_MASK_ALIGN_4_BYTES              (0x2U)
+
 /* Channel Configuration Register Bit Field Definitions */
 #define DMAC_PRV_CHCFG_SEL_VALUE_MASK            (0x07U)
 #define DMAC_PRV_CHCFG_REQD_VALUE_MASK           (0x01U)
 #define DMAC_PRV_CHCFG_DETECT_MODE_VALUE_MASK    (0x07U)
 #define DMAC_PRV_CHCFG_AM_VALUE_MASK             (0x07U)
+#define DMAC_PRV_CHCFG_SDS_OFFSET                (12U)
 #define DMAC_PRV_CHCFG_SDS_VALUE_MASK            (0x0FU)
+#define DMAC_PRV_CHCFG_DDS_OFFSET                (16U)
 #define DMAC_PRV_CHCFG_DDS_VALUE_MASK            (0x0FU)
+#define DMAC_PRV_CHCFG_SAD_OFFSET                (20U)
 #define DMAC_PRV_CHCFG_SAD_VALUE_MASK            (0x01U)
+#define DMAC_PRV_CHCFG_DAD_OFFSET                (21U)
 #define DMAC_PRV_CHCFG_DAD_VALUE_MASK            (0x01U)
 #define DMAC_PRV_CHCFG_TM_VALUE_MASK             (0x02U)
 #define DMAC_PRV_NEXT_REG_VALUE_MASK             (0x03U)
@@ -57,14 +65,18 @@ void dmac_err_isr(IRQn_Type const irq);
 
 static fsp_err_t r_dmac_prv_enable(dmac_instance_ctrl_t * p_ctrl);
 static void      r_dmac_prv_disable(dmac_instance_ctrl_t * p_ctrl);
-static void      r_dmac_config_transfer_info(dmac_instance_ctrl_t * p_ctrl, transfer_info_t * p_info);
+static void      r_dmac_config_transfer_info_register_mode(dmac_instance_ctrl_t * p_ctrl, transfer_info_t * p_info);
+static void      r_dmac_config_transfer_info_link_mode(dmac_instance_ctrl_t * p_ctrl);
 static void      r_dmac_activation_trigger_enable(dmac_extended_cfg_t const * const p_extend);
 static void      r_dmac_activation_trigger_disable(dmac_extended_cfg_t const * const p_extend);
 
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
 static fsp_err_t r_dma_open_parameter_checking(dmac_instance_ctrl_t * const p_ctrl, transfer_cfg_t const * const p_cfg);
-static fsp_err_t r_dmac_reconfigure_paramter_checking(transfer_info_t const * const p_info);
+static fsp_err_t r_dmac_reconfigure_parameter_checking(transfer_info_t const * const p_info);
 static fsp_err_t r_dmac_enable_parameter_checking(dmac_instance_ctrl_t * const p_ctrl);
+static fsp_err_t r_dmac_enable_parameter_checking_register_mode(dmac_instance_ctrl_t * const p_ctrl);
+static fsp_err_t r_dmac_enable_parameter_checking_link_mode(dmac_instance_ctrl_t * const p_ctrl);
+static fsp_err_t r_dmac_link_descriptor_parameter_checking(dmac_link_cfg_t const * p_descriptor);
 
 #endif
 
@@ -146,7 +158,18 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
     R_BSP_MODULE_START(FSP_IP_DMAC_NS, p_extend->channel);
 
     /* Configure the transfer settings. */
-    r_dmac_config_transfer_info(p_ctrl, p_cfg->p_info);
+    if (DMAC_MODE_SELECT_REGISTER == p_extend->dmac_mode)
+    {
+        r_dmac_config_transfer_info_register_mode(p_ctrl, p_cfg->p_info);
+    }
+    else if (DMAC_MODE_SELECT_LINK == p_extend->dmac_mode)
+    {
+        r_dmac_config_transfer_info_link_mode(p_ctrl);
+    }
+    else
+    {
+        /* Do nothing. */
+    }
 
     /* Mark driver as open by initializing "DMAC" in its ASCII equivalent.*/
     p_ctrl->open = DMAC_ID;
@@ -170,7 +193,7 @@ fsp_err_t R_DMAC_Reconfigure (transfer_ctrl_t * const p_api_ctrl, transfer_info_
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
     FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
-    err = r_dmac_reconfigure_paramter_checking(p_info);
+    err = r_dmac_reconfigure_parameter_checking(p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     FSP_ASSERT(p_ctrl->p_cfg->p_extend != NULL);
     FSP_ASSERT(p_info->p_extend_info != NULL);
@@ -183,13 +206,69 @@ fsp_err_t R_DMAC_Reconfigure (transfer_ctrl_t * const p_api_ctrl, transfer_info_
 #endif
 
     /* Reconfigure the transfer settings. */
-    r_dmac_config_transfer_info(p_ctrl, p_info);
+    r_dmac_config_transfer_info_register_mode(p_ctrl, p_info);
 
     /* Enable the transfer configuration. */
-    err = r_dmac_prv_enable(p_api_ctrl);
+    err = r_dmac_prv_enable(p_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, FSP_ERR_NOT_ENABLED);
 
     return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Reconfigure the transfer descriptor information with new transfer descriptor.
+ *
+ * @retval FSP_SUCCESS              Transfer is configured and will start when trigger occurs.
+ * @retval FSP_ERR_ASSERTION        An input parameter is invalid.
+ * @retval FSP_ERR_NOT_ENABLED      DMAC is not enabled. The current configuration must not be valid.
+ * @retval FSP_ERR_INVALID_MODE     DMA mode is register mode. This function can only be used when the DMA mode is link mode.
+ * @retval FSP_ERR_NOT_OPEN         Handle is not initialized.  Call R_DMAC_Open to initialize the control block.
+ **********************************************************************************************************************/
+fsp_err_t R_DMAC_LinkDescriptorSet (transfer_ctrl_t * const p_api_ctrl, dmac_link_cfg_t * p_descriptor)
+{
+    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) p_api_ctrl;
+
+    fsp_err_t err = FSP_SUCCESS;
+
+#if DMAC_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(p_ctrl != NULL);
+    FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT(p_descriptor != NULL);
+    err = r_dmac_link_descriptor_parameter_checking(p_descriptor);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+#endif
+
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
+#endif
+
+#if DMAC_CFG_PARAM_CHECKING_ENABLE
+    FSP_ERROR_RETURN(p_ctrl->p_reg->CHCFG_b.DMS == 1U, FSP_ERR_INVALID_MODE);
+#endif
+
+    /* Store current descriptor */
+    p_ctrl->p_descriptor = p_descriptor;
+
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
+    /* Set address of the link destination */
+    va = (uint64_t) p_descriptor;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    p_ctrl->p_reg->NXLA = (uint32_t) pa;
+#else
+
+    /* Set address of the link destination */
+    p_ctrl->p_reg->NXLA = (uint32_t) p_descriptor;
+#endif
+
+    err = r_dmac_prv_enable(p_ctrl);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, FSP_ERR_NOT_ENABLED);
+
+    /* Wait descriptor load */
+    FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CHSTAT_b.DL, 0);
+
+    return err;
 }
 
 /*******************************************************************************************************************//**
@@ -367,7 +446,7 @@ fsp_err_t R_DMAC_Close (transfer_ctrl_t * const p_api_ctrl)
 
     p_ctrl->p_reg->CHCTRL = R_DMA_CHCTRL_SWRST_Msk;
 
-    if (NULL != p_extend->p_callback)
+    if (p_extend->dmac_int_irq >= 0)
     {
         R_BSP_IrqDisable(p_extend->dmac_int_irq);
         R_FSP_IsrContextSet(p_extend->dmac_int_irq, NULL);
@@ -385,6 +464,7 @@ fsp_err_t R_DMAC_Close (transfer_ctrl_t * const p_api_ctrl)
  * @retval FSP_SUCCESS           Successful continuous transfer settings.
  * @retval FSP_ERR_ASSERTION     An input parameter is invalid.
  * @retval FSP_ERR_NOT_OPEN      Handle is not initialized.  Call R_DMAC_Open to initialize the control block.
+ * @retval FSP_ERR_INVALID_MODE  This API cannot be called during link mode operation or setting not to use the Next1 register.
  **********************************************************************************************************************/
 fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
                          void const * volatile   p_src,
@@ -399,6 +479,9 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
+    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_extend);
+    FSP_ERROR_RETURN(p_extend->dmac_mode == DMAC_MODE_SELECT_REGISTER, FSP_ERR_INVALID_MODE);
 #endif
 
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
@@ -508,7 +591,7 @@ static fsp_err_t r_dmac_prv_enable (dmac_instance_ctrl_t * p_ctrl)
         r_dmac_activation_trigger_enable(p_extend);
     }
 
-    if ((NULL != p_extend->p_callback) || p_extend->activation_source)
+    if (p_extend->dmac_int_irq >= 0)
     {
         /* Enable transfer end interrupt requests. */
         p_ctrl->p_reg->CHCFG &= ~((uint32_t) R_DMA_CHCFG_DEM_Msk);
@@ -562,7 +645,7 @@ static void r_dmac_prv_disable (dmac_instance_ctrl_t * p_ctrl)
  * @param[in]   p_ctrl         Pointer to control structure.
  * @param       p_info         Pointer to transfer info.
  **********************************************************************************************************************/
-static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer_info_t * p_info)
+static void r_dmac_config_transfer_info_register_mode (dmac_instance_ctrl_t * p_ctrl, transfer_info_t * p_info)
 {
     dmac_extended_cfg_t  * p_extend      = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
     dmac_extended_info_t * p_extend_info = (dmac_extended_info_t *) p_info->p_extend_info;
@@ -671,6 +754,56 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     }
 }
 
+/*******************************************************************************************************************//**
+ * Set the hardware registers for link mode operation.
+ *
+ * @param[in]   p_ctrl         Pointer to control structure.
+ **********************************************************************************************************************/
+static void r_dmac_config_transfer_info_link_mode (dmac_instance_ctrl_t * p_ctrl)
+{
+    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t pa;                       /* Physical Address */
+    uint64_t va;                       /* Virtual Address */
+#endif
+
+    uint32_t dctrl = DMAC_PRV_DCTRL_DEFAULT_VALUE;
+
+    /* Disable transfers if they are currently enabled. */
+    r_dmac_prv_disable(p_ctrl);
+
+    /* Priority control select */
+    dctrl |= ((p_extend->channel_scheduling) & DMAC_PRV_DCTRL_PR_VALUE_MASK) << DMAC_PRV_DCTRL_PR_OFFSET;
+
+    if (p_extend->channel < 8)
+    {
+        p_reg0_7->DCTRL = dctrl;
+    }
+    else
+    {
+        p_reg8_15->DCTRL = dctrl;
+    }
+
+#if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
+    /* Set address of the link destination */
+    va = (uint64_t) (p_extend->p_descriptor);
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    p_ctrl->p_reg->NXLA = (uint32_t) pa;
+#else
+
+    /* Set address of the link destination */
+    p_ctrl->p_reg->NXLA = (uint32_t) (p_extend->p_descriptor);
+#endif
+
+    /* Store current descriptor. */
+    p_ctrl->p_descriptor = p_extend->p_descriptor;
+
+    /* Set link mode */
+    p_ctrl->p_reg->CHCFG_b.DMS = 1U;
+}
+
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
 
 /*******************************************************************************************************************//**
@@ -706,8 +839,17 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
         FSP_ERROR_RETURN(p_extend->dmac_int_irq >= 0, FSP_ERR_IRQ_BSP_DISABLED);
     }
 
-    fsp_err_t err = r_dmac_reconfigure_paramter_checking(p_cfg->p_info);
+    fsp_err_t err = r_dmac_reconfigure_parameter_checking(p_cfg->p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    if (DMAC_MODE_SELECT_LINK == p_extend->dmac_mode)
+    {
+        if (NULL != p_extend->p_descriptor)
+        {
+            err = r_dmac_link_descriptor_parameter_checking(p_extend->p_descriptor);
+            FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+        }
+    }
 
     return FSP_SUCCESS;
 }
@@ -720,9 +862,42 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
  * @retval FSP_SUCCESS              The transfer info is valid.
  * @retval FSP_ERR_ASSERTION        A transfer info setting is invalid.
  **********************************************************************************************************************/
-static fsp_err_t r_dmac_reconfigure_paramter_checking (transfer_info_t const * const p_info)
+static fsp_err_t r_dmac_reconfigure_parameter_checking (transfer_info_t const * const p_info)
 {
     FSP_ASSERT(p_info != NULL);
+
+    return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Checks for errors in the transfer link mode descriptor structure.
+ *
+ * @param[in]   p_descriptor        Pointer link mode descriptor.
+ *
+ * @retval FSP_SUCCESS              The transfer info is valid.
+ * @retval FSP_ERR_ASSERTION        A transfer info setting is invalid.
+ **********************************************************************************************************************/
+static fsp_err_t r_dmac_link_descriptor_parameter_checking (dmac_link_cfg_t const * p_descriptor)
+{
+    dmac_link_cfg_t const * p_current_descriptor = p_descriptor;
+
+    do
+    {
+        /* Start address of the link destination must be 4 byte align.
+         * (See section 'Next Link Address Register n (NXLA_n)' of the RZ microprocessor manual) */
+        FSP_ASSERT(0U == ((uintptr_t) p_current_descriptor & DMAC_PRV_MASK_ALIGN_N_BYTES(DMAC_PRV_MASK_ALIGN_4_BYTES)));
+
+        if (DMAC_LINK_END_ENABLE == p_current_descriptor->header.link_end)
+        {
+            break;
+        }
+
+ #if (BSP_FEATURE_DMAC_64BIT_SYSTEM == 1)
+        p_current_descriptor = (dmac_link_cfg_t *) (uintptr_t) (p_current_descriptor->next_link_addr);
+ #else
+        p_current_descriptor = (dmac_link_cfg_t *) (uintptr_t) (p_current_descriptor->p_next_link_addr);
+ #endif
+    } while (NULL != p_current_descriptor);
 
     return FSP_SUCCESS;
 }
@@ -736,6 +911,36 @@ static fsp_err_t r_dmac_reconfigure_paramter_checking (transfer_info_t const * c
  * @retval      FSP_ERR_ASSERTION      The current configuration is invalid.
  **********************************************************************************************************************/
 static fsp_err_t r_dmac_enable_parameter_checking (dmac_instance_ctrl_t * const p_ctrl)
+{
+    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    FSP_ASSERT(p_extend != NULL);
+
+    fsp_err_t err = FSP_SUCCESS;
+    if (DMAC_MODE_SELECT_REGISTER == p_extend->dmac_mode)
+    {
+        err = r_dmac_enable_parameter_checking_register_mode(p_ctrl);
+    }
+    else if (DMAC_MODE_SELECT_LINK == p_extend->dmac_mode)
+    {
+        err = r_dmac_enable_parameter_checking_link_mode(p_ctrl);
+    }
+    else
+    {
+        /* Do nothing. */
+    }
+
+    return err;
+}
+
+/*******************************************************************************************************************//**
+ * Parameter checking for r_dmac_prv_enable at register mode operation.
+ *
+ * @param[in]   p_ctrl                 Pointer to control structure.
+ *
+ * @retval      FSP_SUCCESS            Alignment on source and destination pointers is valid.
+ * @retval      FSP_ERR_ASSERTION      The current configuration is invalid.
+ **********************************************************************************************************************/
+static fsp_err_t r_dmac_enable_parameter_checking_register_mode (dmac_instance_ctrl_t * const p_ctrl)
 {
     uint32_t   * p_src_cast  = (uint32_t *) &p_ctrl->p_reg->N0SA;
     uint32_t   * p_dest_cast = (uint32_t *) &p_ctrl->p_reg->N0DA;
@@ -759,6 +964,22 @@ static fsp_err_t r_dmac_enable_parameter_checking (dmac_instance_ctrl_t * const 
         FSP_ASSERT(NULL != p_src_next1);
         FSP_ASSERT(NULL != p_dest_next1);
     }
+
+    return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Parameter checking for r_dmac_prv_enable at link mode operation.
+ *
+ * @param[in]   p_ctrl                 Pointer to control structure.
+ *
+ * @retval      FSP_SUCCESS            Alignment on source and destination pointers is valid.
+ * @retval      FSP_ERR_ASSERTION      The current configuration is invalid.
+ **********************************************************************************************************************/
+static fsp_err_t r_dmac_enable_parameter_checking_link_mode (dmac_instance_ctrl_t * const p_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+    FSP_ASSERT(NULL != p_ctrl->p_descriptor);
 
     return FSP_SUCCESS;
 }
@@ -898,7 +1119,7 @@ void dmac_int_isr (IRQn_Type const irq)
     }
 
     /* Call the callback routine if one is available */
-    if (NULL != p_extend->p_callback)
+    if (NULL != p_ctrl->p_callback)
     {
         dmac_callback_args_t args;
         args.p_context = p_ctrl->p_context;
@@ -923,9 +1144,12 @@ void dmac_err_isr (IRQn_Type const irq)
     p_ctrl->p_reg->CHCTRL_b.SWRST = 1;
 
     /* Call user callback */
-    dmac_callback_args_t args;
-    args.p_context = p_ctrl->p_context;
-    p_ctrl->p_callback(&args);
+    if (NULL != p_ctrl->p_callback)
+    {
+        dmac_callback_args_t args;
+        args.p_context = p_ctrl->p_context;
+        p_ctrl->p_callback(&args);
+    }
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE

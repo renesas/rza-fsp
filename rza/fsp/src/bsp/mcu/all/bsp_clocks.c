@@ -31,8 +31,11 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
-static void bsp_prv_clock_pre_setting(fsp_priv_clock_t clock);
-static void bsp_prv_clock_post_setting(fsp_priv_clock_t clock);
+static void             bsp_prv_clock_pre_setting(fsp_priv_clock_t clock);
+static void             bsp_prv_clock_post_setting(fsp_priv_clock_t clock);
+static fsp_priv_clock_t bsp_prv_clock_convert_selector_to_clock(fsp_priv_clock_selector_t selector);
+static fsp_priv_clock_t bsp_prv_clock_convert_divider_to_clock(fsp_priv_clock_divider_t divider);
+static fsp_err_t        bsp_prv_clock_check_pll(fsp_priv_clock_t clock);
 
 /*******************************************************************************************************************//**
  * @internal
@@ -272,7 +275,7 @@ static void bsp_prv_clock_post_setting (fsp_priv_clock_t clock)
  * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
  * @param[in]   clock_sel             Value to set in Source Clock Setting register.
  **********************************************************************************************************************/
-void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
+fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
 {
     uint32_t clock_freq = g_clock_freq[clock];
 
@@ -415,7 +418,7 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
                 ;
             }
 
-            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+            uint32_t clock_div = (uint32_t) ((R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk & R_CPG->CPG_PL3A_DDIV) >>
                                              R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Pos);
             if (BSP_CLOCKS_PL3C_DIV_32 == clock_div)
             {
@@ -473,7 +476,7 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
                 ;
             }
 
-            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+            uint32_t clock_div = (uint32_t) ((R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Msk & R_CPG->CPG_PL3A_DDIV) >>
                                              R_CPG_CPG_PL3A_DDIV_DIVPL3C_SET_Pos);
             if (BSP_CLOCKS_PL3C_DIV_32 == clock_div)
             {
@@ -531,14 +534,14 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
                 ;
             }
 
-            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+            uint32_t clock_div = (uint32_t) ((R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk & R_CPG->CPG_PL3A_DDIV) >>
                                              R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Pos);
             if (BSP_CLOCKS_PL3F_DIV_32 == clock_div)
             {
                 clock_div++;
             }
 
-            clock_freq = clock_freq >> (clock_div + 1);
+            clock_freq = clock_freq >> (clock_div);
 
             /* Changing settings for the OC0 clock related register, OC1 clock frequency changes at the same time.
              * So it is updated the variable that stored OC1 clock frequency. */
@@ -589,14 +592,14 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
                 ;
             }
 
-            uint32_t clock_div = (uint32_t) (R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk & R_CPG->CPG_PL3A_DDIV >>
+            uint32_t clock_div = (uint32_t) ((R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Msk & R_CPG->CPG_PL3A_DDIV) >>
                                              R_CPG_CPG_PL3A_DDIV_DIVPL3F_SET_Pos);
             if (BSP_CLOCKS_PL3F_DIV_32 == clock_div)
             {
                 clock_div++;
             }
 
-            clock_freq = clock_freq >> (clock_div + 2);
+            clock_freq = clock_freq >> (clock_div);
 
             /* Changing settings for the OC1 clock related register, OC0 clock frequency changes at the same time.
              * So it is updated the variable that stored OC0 clock frequency. */
@@ -607,11 +610,15 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_sel);
+
+            return FSP_ERR_INVALID_ARGUMENT;
             break;
         }
     }
 
     g_clock_freq[clock] = clock_freq;
+
+    return FSP_SUCCESS;
 }
 
 /*******************************************************************************************************************//**
@@ -620,7 +627,7 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel)
  * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
  * @param[in]   clock_div             Value to set in Division Ratio Setting register.
  **********************************************************************************************************************/
-void bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
+fsp_err_t bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
 {
     uint32_t clock_freq = g_clock_freq[clock];
 
@@ -813,11 +820,184 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_div);
+
+            return FSP_ERR_INVALID_ARGUMENT;
             break;
         }
     }
 
     g_clock_freq[clock] = clock_freq;
+
+    return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Convert fsp_priv_clock_divider_t to fsp_priv_clock_t.
+ *
+ * @param[in]   divider                 Element number of the array that defines the clock divider.
+ **********************************************************************************************************************/
+static fsp_priv_clock_t bsp_prv_clock_convert_divider_to_clock (fsp_priv_clock_divider_t divider)
+{
+    fsp_priv_clock_t              ret = FSP_PRIV_CLOCK_NUM;
+    static const fsp_priv_clock_t bsp_prv_clock_convert_divider_to_clock_tbl[] =
+    {
+        FSP_PRIV_CLOCK_ICLK,           /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1,            */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_LPCLK,       */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_A,          */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_A,          */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_B,          */
+        FSP_PRIV_CLOCK_SPI0CLK,        /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_C,          */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_CLK200FIX,  */
+        FSP_PRIV_CLOCK_OC0CLK,         /*  FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_F,          */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_A,           */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_B,           */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_DIVIDER_DIV_GPU,             */
+    };
+    if (divider < FSP_PRIV_CLOCK_DIVIDER_NUM)
+    {
+        ret = bsp_prv_clock_convert_divider_to_clock_tbl[divider];
+    }
+
+    return ret;
+}
+
+/*******************************************************************************************************************//**
+ * Convert fsp_priv_clock_selector_t to fsp_priv_clock_t.
+ *
+ * @param[in]   selector                Element number of the array that defines the clock selector.
+ **********************************************************************************************************************/
+static fsp_priv_clock_t bsp_prv_clock_convert_selector_to_clock (fsp_priv_clock_selector_t selector)
+{
+    fsp_priv_clock_t              ret = FSP_PRIV_CLOCK_NUM;
+    static const fsp_priv_clock_t bsp_prv_clock_convert_selector_to_clock_tbl[] =
+    {
+        FSP_PRIV_CLOCK_SD0CLK,         /*  FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI0,      */
+        FSP_PRIV_CLOCK_SD1CLK,         /*  FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI1,      */
+        FSP_PRIV_CLOCK_SPI0CLK,        /*  FSP_PRIV_CLOCK_SELECTOR_SEL_PLL3_3,     */
+        FSP_PRIV_CLOCK_OC0CLK,         /*  FSP_PRIV_CLOCK_SELECTOR_SEL_PLL3_5,     */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4,       */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_SELECTOR_SEL_PLL6_2,     */
+        FSP_PRIV_CLOCK_NUM,            /*  FSP_PRIV_CLOCK_SELECTOR_SEL_PLL_GPU2,   */
+    };
+    if (selector < FSP_PRIV_CLOCK_SELECTOR_NUM)
+    {
+        ret = bsp_prv_clock_convert_selector_to_clock_tbl[selector];
+    }
+
+    return ret;
+}
+
+/*******************************************************************************************************************//**
+ * Check the PLL works or not
+ *
+ * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
+ **********************************************************************************************************************/
+static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
+{
+    fsp_err_t err = FSP_SUCCESS;
+
+    switch (clock)
+    {
+        /* PLL1 */
+        case FSP_PRIV_CLOCK_ICLK:
+        {
+            if (0 == (R_CPG->CPG_SAMPLL1_MON & R_CPG_CPG_SAMPLL1_MON_PLL1_LOCK_Msk))
+            {
+                err = FSP_ERR_PLL_SRC_INACTIVE;
+            }
+
+            break;
+        }
+
+        /* PLL2 */
+        case FSP_PRIV_CLOCK_SD0CLK:
+        case FSP_PRIV_CLOCK_SD1CLK:
+        case FSP_PRIV_CLOCK_P0CLK:
+        case FSP_PRIV_CLOCK_TSUCLK:
+        {
+            if (0 == (R_CPG->CPG_SIPLL2_MON & R_CPG_CPG_SIPLL2_MON_PLL2_LOCK_Msk))
+            {
+                err = FSP_ERR_PLL_SRC_INACTIVE;
+            }
+
+            break;
+        }
+
+        /* PLL3 */
+        case FSP_PRIV_CLOCK_ATCLK:
+        case FSP_PRIV_CLOCK_I2CLK:
+        case FSP_PRIV_CLOCK_P1CLK:
+        case FSP_PRIV_CLOCK_M0CLK:
+        case FSP_PRIV_CLOCK_ZTCLK:
+        case FSP_PRIV_CLOCK_P2CLK:
+        case FSP_PRIV_CLOCK_SPI0CLK:
+        case FSP_PRIV_CLOCK_SPI1CLK:
+        case FSP_PRIV_CLOCK_M2CLK:
+        case FSP_PRIV_CLOCK_OC0CLK:
+        case FSP_PRIV_CLOCK_OC1CLK:
+        {
+            if (0 == (R_CPG->CPG_SIPLL3_MON & R_CPG_CPG_SIPLL3_MON_PLL3_LOCK_Msk))
+            {
+                err = FSP_ERR_PLL_SRC_INACTIVE;
+            }
+
+            break;
+        }
+
+        /* PLL4 */
+        case FSP_PRIV_CLOCK_S0CLK:
+        {
+            if (0 == (R_CPG->CPG_SAMPLL4_MON & R_CPG_CPG_SAMPLL4_MON_PLL4_LOCK_Msk))
+            {
+                err = FSP_ERR_PLL_SRC_INACTIVE;
+            }
+
+            break;
+        }
+
+        /* PLL5 */
+        case FSP_PRIV_CLOCK_M3CLK:
+        {
+            if (0 == (R_CPG->CPG_SIPLL5_MON & R_CPG_CPG_SIPLL5_MON_PLL5_LOCK_Msk))
+            {
+                err = FSP_ERR_PLL_SRC_INACTIVE;
+            }
+
+            break;
+        }
+
+        /* PLL5 or PLL6 */
+        case FSP_PRIV_CLOCK_HPCLK:
+        {
+            if (0 != (R_CPG->CPG_PL6_ETH_SSEL & R_CPG_CPG_PL6_ETH_SSEL_SEL_PLL6_2_SET_Msk))
+            {
+                /* PLL5 */
+                if (0 == (R_CPG->CPG_SIPLL5_MON & R_CPG_CPG_SIPLL5_MON_PLL5_LOCK_Msk))
+                {
+                    err = FSP_ERR_PLL_SRC_INACTIVE;
+                }
+            }
+            else
+            {
+                /* PLL6 */
+                if (0 == (R_CPG->CPG_PLL6_MON & R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk))
+                {
+                    err = FSP_ERR_PLL_SRC_INACTIVE;
+                }
+            }
+
+            break;
+        }
+
+        /* Other */
+        default:
+        {
+            err = FSP_ERR_INVALID_ARGUMENT;
+            break;
+        }
+    }
+
+    return err;
 }
 
 /** @} (end addtogroup BSP_MCU_PRV) */
@@ -852,6 +1032,70 @@ void R_FSP_SystemClockHzSet (fsp_priv_clock_t clock, uint32_t clock_sel, uint32_
     bsp_prv_clock_selector_set(clock, clock_sel);
     bsp_prv_clock_divider_set(clock, clock_div);
     bsp_prv_clock_post_setting(clock);
+}
+
+/*******************************************************************************************************************//**
+ * Set a clock selector.
+ *
+ * @param[in]   selector              Element number of the array that defines the clock selector.
+ * @param[in]   clock_sel             Value to set in Mux Control register.
+ *
+ * @retval FSP_SUCCESS                Selector configuration changes completed.
+ * @retval FSP_ERR_INVALID_ARGUMENT   Undefined selector specified.
+ * @retval FSP_ERR_PLL_SRC_INACTIVE   Clock source PLL is reset state.
+ *
+ * @note This function assumes that a source clock is supplied.
+ * If the source clock is not supplied, the selector setting process cannot be completed successfully.
+ **********************************************************************************************************************/
+fsp_err_t R_BSP_ClockSelectorSet (fsp_priv_clock_selector_t selector, uint32_t clock_sel)
+{
+    fsp_err_t err = FSP_ERR_INVALID_ARGUMENT;
+
+    fsp_priv_clock_t clock = bsp_prv_clock_convert_selector_to_clock(selector);
+    if (clock != FSP_PRIV_CLOCK_NUM)
+    {
+        err = bsp_prv_clock_check_pll(clock);
+        if (err == FSP_SUCCESS)
+        {
+            bsp_prv_clock_pre_setting(clock);
+            err = bsp_prv_clock_selector_set(clock, clock_sel);
+            bsp_prv_clock_post_setting(clock);
+        }
+    }
+
+    return err;
+}
+
+/*******************************************************************************************************************//**
+ * Set a clock division ratio.
+ *
+ * @param[in]   divider               Element number of the array that defines the clock divider.
+ * @param[in]   clock_div             Value to set in Gear Control register.
+ *
+ * @retval FSP_SUCCESS                Divider configuration changes completed.
+ * @retval FSP_ERR_INVALID_ARGUMENT   Undefined divider specified.
+ * @retval FSP_ERR_PLL_SRC_INACTIVE   Clock source PLL is reset state.
+ *
+ * @note This function assumes that a source clock is supplied.
+ * If the source clock is not supplied, the divider setting process cannot be completed successfully.
+ **********************************************************************************************************************/
+fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t clock_div)
+{
+    fsp_err_t        err   = FSP_ERR_INVALID_ARGUMENT;
+    fsp_priv_clock_t clock = bsp_prv_clock_convert_divider_to_clock(divider);
+
+    if (clock != FSP_PRIV_CLOCK_NUM)
+    {
+        err = bsp_prv_clock_check_pll(clock);
+        if (err == FSP_SUCCESS)
+        {
+            bsp_prv_clock_pre_setting(clock);
+            err = bsp_prv_clock_divider_set(clock, clock_div);
+            bsp_prv_clock_post_setting(clock);
+        }
+    }
+
+    return err;
 }
 
 /** @} (end addtogroup BSP_MCU_PRV) */

@@ -53,7 +53,7 @@ int32_t rm_freertos_plus_fat_write(uint8_t * p_data, uint32_t sector, uint32_t n
                                    FF_Disk_t * p_disk);
 void             rm_freertos_plus_fat_memory_callback(rm_block_media_callback_args_t * p_args);
 static fsp_err_t rm_freertos_plus_fat_wait_event(rm_freertos_plus_fat_instance_ctrl_t * p_instance_ctrl,
-                                                 uint32_t                               timeout);
+                                                 uint64_t                               timeout);
 static fsp_err_t rm_freertos_plus_fat_wait_for_device(rm_freertos_plus_fat_instance_ctrl_t * p_instance_ctrl);
 
 /** FAT HAL API mapping for FreeRTOS_plus_FAT Controller interface */
@@ -496,7 +496,7 @@ void rm_freertos_plus_fat_memory_callback (rm_block_media_callback_args_t * p_ar
  * @retval     FSP_ERR_INTERNAL        Error reported by lower layer driver callback.
  **********************************************************************************************************************/
 static fsp_err_t rm_freertos_plus_fat_wait_event (rm_freertos_plus_fat_instance_ctrl_t * p_instance_ctrl,
-                                                  uint32_t                               timeout)
+                                                  uint64_t                               timeout)
 {
 #if (BSP_CFG_RTOS == 2)                // FreeRTOS
 

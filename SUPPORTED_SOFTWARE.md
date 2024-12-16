@@ -1,6 +1,9 @@
 ## Software Modules Packaged with FSP
 
 ### FSP Top Level Modules
+  * AI
+    * [Data Collector (rm_rai_data_collector)](https://renesas.github.io/rza-fsp/group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r.html)
+    * [Data Shipper (rm_rai_data_shipper)](https://renesas.github.io/rza-fsp/group___r_m___r_a_i___d_a_t_a___s_h_i_p_p_e_r.html)
   * Analog
     * [ADC Driver on r_adc_c](https://renesas.github.io/rza-fsp/group___a_d_c.html)
   * Connectivity
@@ -9,11 +12,14 @@
     * [Azure RTOS USBX HUVC](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/usbx/index.md)
     * [Azure RTOS USBX PCDC](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/usbx/index.md)
     * [CANFD Driver on r_canfd](https://renesas.github.io/rza-fsp/group___c_a_n_f_d.html)
+    * [I2C Communication Device (rm_comms_i2c)](https://renesas.github.io/rza-fsp/group___r_m___c_o_m_m_s___i2_c.html)
     * [I2C Master (r_riic_master)](https://renesas.github.io/rza-fsp/group___r_i_i_c___m_a_s_t_e_r.html)
+    * [I2C Shared Bus (rm_comms_i2c)](https://renesas.github.io/rza-fsp/group___r_m___c_o_m_m_s___i2_c.html)
     * [I2C Slave Driver on r_riic_slave](https://renesas.github.io/rza-fsp/group___r_i_i_c___s_l_a_v_e.html)
     * [I2S Driver on r_ssi](https://renesas.github.io/rza-fsp/group___s_s_i.html)
     * [SPI Driver on r_rspi](https://renesas.github.io/rza-fsp/group___r_s_p_i.html)
     * [UART (r_sci_uart)](https://renesas.github.io/rza-fsp/group___s_c_i___u_a_r_t.html)
+    * [UART Communication Device (rm_comms_uart)](https://renesas.github.io/rza-fsp/group___r_m___c_o_m_m_s___u_a_r_t.html)
     * [UART Driver on r_scif_uart](https://renesas.github.io/rza-fsp/group___s_c_i_f___u_a_r_t.html)
     * [USB HHID (r_usb_hhid)](https://renesas.github.io/rza-fsp/group___u_s_b___h_h_i_d.html)
     * [USB HMSC (r_usb_hmsc)](https://renesas.github.io/rza-fsp/group___u_s_b___h_m_s_c.html)
@@ -71,6 +77,9 @@
   * Security
     * [Azure RTOS NetX Crypto](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/netx-duo/netx-duo-crypto/chapter1.md)
     * [Azure RTOS NetX Secure](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/netx-duo/netx-duo-secure-tls/chapter1.md)
+  * Sensor
+    * [HS300X Temperature/Humidity Sensor (rm_hs300x)](https://renesas.github.io/rza-fsp/group___r_m___h_s300_x.html)
+    * [HS400X Temperature/Humidity Sensor (rm_hs400x)](https://renesas.github.io/rza-fsp/group___r_m___h_s400_x.html)
   * Storage
     * [Azure RTOS FileX on Block Media](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/filex/index.md)
     * [Azure RTOS FileX on LevelX NOR](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/filex/index.md)

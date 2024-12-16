@@ -437,12 +437,12 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile bsp_clock_update_callback_t)(bsp
 void bsp_clock_off(void);
 
 /* Public functions defined in bsp_clocks.c */
-void bsp_clock_init(void);                                                   // Used internally by BSP
-void bsp_prv_clock_selector_set(fsp_priv_clock_t clock, uint32_t clock_sel); // Used internally by BSP
-void bsp_prv_clock_divider_set(fsp_priv_clock_t clock, uint32_t clock_div);  // Used internally by BSP
+void      bsp_clock_init(void);                                                   // Used internally by BSP
+fsp_err_t bsp_prv_clock_selector_set(fsp_priv_clock_t clock, uint32_t clock_sel); // Used internally by BSP
+fsp_err_t bsp_prv_clock_divider_set(fsp_priv_clock_t clock, uint32_t clock_div);  // Used internally by BSP
 
 #if BSP_TZ_NONSECURE_BUILD
-void bsp_clock_freq_var_init(void);                                          // Used internally by BSP
+void bsp_clock_freq_var_init(void);                                               // Used internally by BSP
 
 #endif
 

@@ -186,6 +186,7 @@
 #define USB_OK                                 (0U)
 #define USB_ERROR                              (0xff)
 #define USB_ERR_TMOUT                          (0xfe)
+#define USB_ERR_FIFO_ACCESS                    (0xfd)
 #define USB_QOVR                               (0xd5) /* Submit overlap error */
 #define USB_PAR                                (0xef) /* parameter error */
 
