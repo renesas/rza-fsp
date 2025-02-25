@@ -798,7 +798,6 @@ void hw_usb_hmodule_init (usb_ctrl_t * p_api_ctrl)
         USB_M1->LPSTS |= USB_SUSPENDM;
 
     #if ((USB_CFG_CLKSEL == USB_CFG_12MHZ) || (USB_CFG_CLKSEL == USB_CFG_20MHZ) || (USB_CFG_CLKSEL == USB_CFG_24MHZ))
-
         /* WAIT_LOOP */
         while (USB_PLLLOCK != (USB_M1->PLLSTA & USB_PLLLOCK))
         {
@@ -896,7 +895,7 @@ void hw_usb_hmodule_init (usb_ctrl_t * p_api_ctrl)
         ;                              /* Wait 500us */
     }
 
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
     USB00->COMMCTRL_b.OTG_PERI = 0;    /* Operation mode setting (0 : Host, 1 : Peri) */
 
     USB00->USBCTR &= ~0x00000002U;     /* UTMI+PHY reset release */

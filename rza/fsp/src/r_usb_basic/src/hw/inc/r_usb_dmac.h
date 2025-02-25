@@ -33,7 +33,7 @@
   #define USB_DMAC_PRV_REG(ch)    ((R_DMAC0_Type *) ((R_DMAC1 - R_DMAC0) * ch + R_DMAC0))
  #endif                                /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
 
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
   #define USB_CFG_USE_USBIP        (USB_CFG_IP0)
   #define USB_FIFO_TYPE_D0DMA      (0)                       /* D0FIFO Select */
@@ -105,7 +105,7 @@ extern uint16_t g_usb_cstd_dma_pipe[USB_NUM_USBIP][USB_DMA_USE_CH_MAX]; /* DMA0 
 
 void usb_cstd_dma_driver(void);
 
- #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
 uint16_t usb_cstd_dma_get_crtb(usb_utr_t * p_utr);
 
  #else                                 /*  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL) */
@@ -120,7 +120,7 @@ void     usb_cstd_dma_stop(usb_utr_t * p_utr, uint16_t use_port);
 void     usb_cstd_dfifo_end(usb_utr_t * ptr, uint16_t useport);
 uint32_t hw_usb_get_dxfifo_adr(usb_utr_t * ptr, uint16_t use_port, uint16_t bit_width);
 
- #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
 uint8_t usb_cstd_dma_ref_ch_no(usb_utr_t * p_utr, uint16_t use_port);
 
  #endif                                /*  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL) */

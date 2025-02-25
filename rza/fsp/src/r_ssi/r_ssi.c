@@ -209,7 +209,7 @@ fsp_err_t R_SSI_Open (i2s_ctrl_t * const p_ctrl, i2s_cfg_t const * const p_cfg)
 #endif
 
 #if BSP_FEATURE_SSI_VALID_CHANNEL_MASK == 1
-    uint32_t base_address = (uint32_t) R_SSI0;
+    uintptr_t base_address = (uintptr_t) R_SSI0;
 #else
 
     /* Calculate base address for registers on this channel. */

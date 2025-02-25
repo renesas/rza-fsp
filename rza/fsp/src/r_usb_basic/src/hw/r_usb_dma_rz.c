@@ -37,7 +37,7 @@
 #if (USB_CFG_DMA == USB_CFG_ENABLE)
  #include "r_usb_dmac.h"
 
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Exported global functions (to be accessed by other files)
@@ -79,7 +79,6 @@ void usb_cstd_dma_send_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
     uint16_t  ch;
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
-
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -164,7 +163,6 @@ void usb_cstd_dma_rcv_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
   #endif
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
-
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -363,7 +361,6 @@ void usb_dma_send_complete (usb_utr_t * ptr, uint16_t useport)
     bool       cpu_write = false;
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
-
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -493,7 +490,6 @@ void usb_dma_rcv_setting (usb_utr_t * ptr, uint32_t des_addr, uint16_t useport, 
     uint16_t transfer_count;
 
    #if USB_CFG_USE_USBIP == USB_CFG_IP0
-
     /* USB01 */
     ip = USB_IP0;
    #else                               /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -589,7 +585,6 @@ void usb_dma_send_setting (usb_utr_t * ptr, uint32_t src_adr, uint16_t useport, 
     uint16_t pipe_no;
 
    #if USB_CFG_USE_USBIP == USB_CFG_IP0
-
     /* USB01 */
     ip = USB_IP0;
    #else                               /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -696,7 +691,6 @@ uint16_t usb_dma_get_dxfifo_ir_vect (usb_utr_t * ptr, uint16_t use_port)
     uint16_t vect;
 
   #if USB_CFG_USE_USBIP == USB_CFG_IP0
-
     /* USB0 */
     ip = USB_IP0;
   #else                                /* USB_CFG_USE_USBIP == USB_CFG_IP0 */
@@ -820,7 +814,7 @@ void usb_dma_send_complete_event_set (uint8_t ip_no, uint16_t use_port)
     usb_cfg_t * p_cfg;
     usb_utr_t   utr;
 
-   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
     p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_FDMA1); // @@
    #else /* BSP_MCU_GROUP_RZT2M == 1 */
     if (ip_no)

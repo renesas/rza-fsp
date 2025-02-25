@@ -137,14 +137,14 @@
 /* Doubly linked list */
 typedef struct usb_ohci_list_entry
 {
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t f_link;
     uint32_t b_link;
 #else
     struct usb_ohci_list_entry * f_link;
     struct usb_ohci_list_entry * b_link;
 #endif
-} st_usb_ohci_list_entry_t, * st_usb_ohci_list_entry_p_t;
+} st_usb_ohci_list_entry_t, *st_usb_ohci_list_entry_p_t;
 
 /****************************************************/
 /*  5.2.3 Host Controller Descriptors Definitions   */
@@ -159,7 +159,7 @@ typedef struct  usb_ohci_hc_endpoint_control
     uint32_t k   : 1;                  /*  SKIP                1bit    K=1:go to the next ED           */
     uint32_t f   : 1;                  /*  Format              1bit    F=1:isochronous,F=0:others      */
     uint32_t mps : 16;                 /*  MaxPacketSize       11bit   0-2047  */
-} st_usb_ohci_hc_endpoint_control_t, * st_usb_ohci_hc_endpoint_control_p_t;
+} st_usb_ohci_hc_endpoint_control_t, *st_usb_ohci_hc_endpoint_control_p_t;
 
 typedef struct  usb_ohci_hc_transfer_control
 {
@@ -177,7 +177,7 @@ typedef struct  usb_ohci_hc_transfer_control
                                        /*                  11:DATA1    */
     uint32_t ec : 2;                   /*  Error count */
     uint32_t cc : 4;                   /*  condition code  */
-} st_usb_ohci_hc_transfer_control_t, * st_usb_ohci_hc_transfer_control_p_t;
+} st_usb_ohci_hc_transfer_control_t, *st_usb_ohci_hc_transfer_control_p_t;
 
 /* Host Controller Endpoint Descriptor, refer to Section 4.2, Endpoint Descriptor */
 typedef struct usb_ohci_hc_endpoint_descriptor
@@ -186,7 +186,7 @@ typedef struct usb_ohci_hc_endpoint_descriptor
     uint32_t tail_p;                           /* physical pointer to USB_OHCI_HC_TRANSFER_DESCRIPTOR */
     uint32_t head_p;                           /* flags + phys ptr to USB_OHCI_HC_TRANSFER_DESCRIPTOR */
     uint32_t next_ed;                          /* phys ptr to USB_OHCI_HC_ENDPOINT_DESCRIPTOR */
-} st_usb_ohci_hc_endpoint_descriptor_t, * st_usb_ohci_hc_endpoint_descriptor_p_t;
+} st_usb_ohci_hc_endpoint_descriptor_t, *st_usb_ohci_hc_endpoint_descriptor_p_t;
 
 /* Host Controller Transfer Descriptor, refer to Section 4.3, Transfer Descriptors */
 typedef struct usb_ohci_hc_transfer_descriptor
@@ -195,7 +195,7 @@ typedef struct usb_ohci_hc_transfer_descriptor
     uint32_t cbp;                                /* current buffer pointer */
     uint32_t next_td;                            /* phys ptr to USB_OHCI_HC_TRANSFER_DESCRIPTOR */
     uint32_t be;                                 /* buffer end */
-} st_usb_ohci_hc_transfer_descriptor_t, * st_usb_ohci_hc_transfer_descriptor_p_t;
+} st_usb_ohci_hc_transfer_descriptor_t, *st_usb_ohci_hc_transfer_descriptor_p_t;
 
 /********************************************************/
 /*  5.2.6 Host Controller Driver Internal Definitions   */
@@ -203,7 +203,7 @@ typedef struct usb_ohci_hc_transfer_descriptor
 /* OHCI USBD Transfer Request */
 typedef struct usb_ohci_request
 {
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t buffer;                   /* Pointer to data to be transferred */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     uint8_t * buffer;                  /* Pointer to data to be transferred */
@@ -213,26 +213,26 @@ typedef struct usb_ohci_request
     uint8_t  max_int_delay;            /* Maximum allowable delay from completion to completion notification to USBD */
     uint8_t  shortxferok;              /* Transfer of less than BufferLength is to be treated as an error unless this is TRUE */
     uint8_t  using_flag;               /* Using Flag */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t setup;                    /* Data for setup packet (control endpoints only) */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     uint8_t * setup;                   /* Data for setup packet (control endpoints only) */
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     uint32_t                 status;   /* Completion status from HCD to USBD */
     st_usb_ohci_list_entry_t hcd_list; /* List of all HCD_TRANSFER_DESCRIPTORs in use for this request */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t driver_request;           /* Driver Request Infomation pointer */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     uint32_t * driver_request;         /* Driver Request Infomation pointer */
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
-} st_usb_ohci_request_t, * st_usb_ohci_request_p_t;
+} st_usb_ohci_request_t, *st_usb_ohci_request_p_t;
 
 /* Each Host Controller Endpoint Descriptor is also doubly linked into a list tracked by HCD. */
 /* Each ED queue is managed via an USB_OHCI_HCD_ED_LIST */
 typedef struct usb_ohci_hcd_ed_list
 {
     st_usb_ohci_list_entry_t head;     /* Head of an HCD_ENDPOINT_DESCRIPTOR list */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t physical_head;            /* Address of location to put the physical head pointer when it changes */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     uint32_t * physical_head;          /* Address of location to put the physical head pointer when it changes */
@@ -240,7 +240,7 @@ typedef struct usb_ohci_hcd_ed_list
     uint16_t bandwidth;                /* Allocated bandwidth on this timeslice. */
     uint8_t  next;                     /* Index to the next HCD_ED_LIST for this timeslice */
     uint8_t  reserved;
-} st_usb_ohci_hcd_ed_list_t, * st_usb_ohci_hcd_ed_list_p_t;
+} st_usb_ohci_hcd_ed_list_t, *st_usb_ohci_hcd_ed_list_p_t;
 
 /* Refer to Section 4.4 Host Controller Communications Area */
 typedef struct usb_ohci_hcca_block
@@ -250,12 +250,12 @@ typedef struct usb_ohci_hcca_block
     uint32_t hcca_pad1         : 16;
     uint32_t hcca_done_head;
     uint32_t reserve[30];
-} st_usb_ohci_hcca_block_t, * st_usb_ohci_hcca_block_p_t;
+} st_usb_ohci_hcca_block_t, *st_usb_ohci_hcca_block_p_t;
 
 /* HCD Device Data (Refer to Section 5.2.6 Host Controller Driver Internal Definitions) */
 typedef struct usb_ohci_hcd_device_data
 {
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t hcca;
 #else                                  /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_hcca_block_p_t hcca;
@@ -277,7 +277,7 @@ typedef struct usb_ohci_hcd_device_data
     uint8_t  sostallhit;
     uint8_t  root_device[USB_OHCI_MAXROOTPORTS];
     uint8_t  using_flag;
-} st_usb_ohci_hcd_device_data_t, * st_usb_ohci_hcd_device_data_p_t;
+} st_usb_ohci_hcd_device_data_t, *st_usb_ohci_hcd_device_data_p_t;
 
 /************************************/
 /*  5.2.5 Host Controller Endpoints */
@@ -288,12 +288,12 @@ typedef struct usb_ohci_iso_transfer_info
     uint16_t size;                     /* Transfer Size */
     uint8_t  control_cc;               /* Control CC */
     uint8_t  psw_cc;                   /* PSW CC */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t buffer;                   /* Data Buffer pointer */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     uint8_t * buffer;                  /* Data Buffer pointer */
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
-} st_usb_ohci_iso_transfer_info_t, * st_usb_ohci_iso_transfer_info_p_t;
+} st_usb_ohci_iso_transfer_info_t, *st_usb_ohci_iso_transfer_info_p_t;
 
 /* Ext. struct */
 typedef struct usb_ohci_iso_info
@@ -306,13 +306,13 @@ typedef struct usb_ohci_iso_info
     uint8_t start_p;                                                       /* Transfer start infomaition pointer (for in/out) */
     uint8_t end_p;                                                         /* Transfer end infomaition pointer (for in/out) */
     uint8_t complete_p;                                                    /* Transfer complete information pointer (for in/out) */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t usb_drequest;                                                 /* USBD Transfer Request pointer */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_request_p_t usb_drequest;                                  /* USBD Transfer Request pointer */
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_iso_transfer_info_t transfer_info[USB_OHCI_ISO_MAX_FRAME]; /* Transfer Infomation */
-} st_usb_ohci_iso_info_t, * st_usb_ohci_iso_info_p_t;
+} st_usb_ohci_iso_info_t, *st_usb_ohci_iso_info_p_t;
 
 typedef struct usb_ohci_hcd_endpoint
 {
@@ -320,13 +320,13 @@ typedef struct usb_ohci_hcd_endpoint
     uint8_t list_index;
     uint8_t using_flag;
     uint8_t reserved[1];
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t device_data;
 #else                                  /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_hcd_device_data_p_t device_data;
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_hc_endpoint_control_t control;
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t hcd_ed;
     uint32_t hcd_head_p;
     uint32_t hcd_tail_p;
@@ -339,12 +339,12 @@ typedef struct usb_ohci_hcd_endpoint
     uint32_t                 bandwidth;
     uint32_t                 max_packet;
     st_usb_ohci_list_entry_t link;     /* Ext. */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t iso_info;                 /* Ext. */
 #else /* #if    defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_iso_info_p_t iso_info; /* Ext. */
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
-} st_usb_ohci_hcd_endpoint_t, * st_usb_ohci_hcd_endpoint_p_t;
+} st_usb_ohci_hcd_endpoint_t, *st_usb_ohci_hcd_endpoint_p_t;
 
 /********************************************************/
 /*  5.2.4 Host Controller Driver Descriptor Definitions */
@@ -358,7 +358,7 @@ typedef struct usb_ohci_hcd_endpoint_descriptor
     uint8_t                  reserved[1];
     uint32_t                 physical_address;
     st_usb_ohci_list_entry_t link;
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t endpoint;
 #else                                  /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_hcd_endpoint_p_t endpoint;
@@ -366,7 +366,7 @@ typedef struct usb_ohci_hcd_endpoint_descriptor
     uint32_t                             reclamation_frame;
     st_usb_ohci_list_entry_t             paused_link;
     st_usb_ohci_hc_endpoint_descriptor_t hc_ed;
-} st_usb_ohci_hcd_endpoint_descriptor_t, * st_usb_ohci_hcd_endpoint_descriptor_p_t;
+} st_usb_ohci_hcd_endpoint_descriptor_t, *st_usb_ohci_hcd_endpoint_descriptor_p_t;
 
 /* HCD Transfer Descriptor */
 typedef struct usb_ohci_hcd_transfer_descriptor
@@ -375,18 +375,18 @@ typedef struct usb_ohci_hcd_transfer_descriptor
     uint8_t  using_flag     : 4;
     uint8_t  cancel_pending : 4;
     uint32_t physical_address;
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t next_hcd_td;
 #else                                  /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     struct usb_ohci_hcd_transfer_descriptor * next_hcd_td;
 #endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_list_entry_t request_list;
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t usb_drequest;
 #else                                  /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     struct usb_ohci_request * usb_drequest;
-#endif /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#endif /* #if   defined(BSP_MCU_GROUP_RZA_USB) */
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint32_t endpoint;
 #else                                  /* #if   defined(BSP_MCU_GROUP_RZA3UL) */
     st_usb_ohci_hcd_endpoint_p_t endpoint;
@@ -394,7 +394,7 @@ typedef struct usb_ohci_hcd_transfer_descriptor
     uint32_t transfer_count;
     st_usb_ohci_hc_transfer_descriptor_t hc_td;
     uint32_t dummy[4];
-} st_usb_ohci_hcd_transfer_descriptor_t, * st_usb_ohci_hcd_transfer_descriptor_p_t;
+} st_usb_ohci_hcd_transfer_descriptor_t, *st_usb_ohci_hcd_transfer_descriptor_p_t;
 
 /* HCD Transfer Descriptor for Isochronous */
 typedef struct usb_ohci_hc_iso_transfer_control
@@ -405,7 +405,7 @@ typedef struct usb_ohci_hc_iso_transfer_control
     uint32_t fc     : 3;               /*  Frame count */
     uint32_t dummy  : 1;
     uint32_t cc     : 4;               /*  condition code  */
-} st_usb_ohci_hc_iso_transfer_control_t, * st_usb_ohci_hc_iso_transfer_control_p_t;
+} st_usb_ohci_hc_iso_transfer_control_t, *st_usb_ohci_hc_iso_transfer_control_p_t;
 
 typedef union usb_ohci_offset_psw
 {
@@ -420,7 +420,7 @@ typedef union usb_ohci_offset_psw
         uint16_t offset : 13;
         uint16_t cc     : 3;
     } offset;
-} u_usb_ohci_offset_psw_t, * u_usb_ohci_offset_psw_p_t;
+} u_usb_ohci_offset_psw_t, *u_usb_ohci_offset_psw_p_t;
 
 typedef struct usb_ohci_hc_iso_transfer_descriptor
 {
@@ -429,6 +429,6 @@ typedef struct usb_ohci_hc_iso_transfer_descriptor
     uint32_t                next_td;
     uint32_t                be;
     u_usb_ohci_offset_psw_t usb_ohci_offset_psw[8];
-} st_usb_ohci_hc_iso_transfer_descriptor_t, * st_usb_ohci_hc_iso_transfer_descriptor_p_t;
+} st_usb_ohci_hc_iso_transfer_descriptor_t, *st_usb_ohci_hc_iso_transfer_descriptor_p_t;
 
 #endif                                 /* R_USB_HOHCI_TYPEDEF_H */

@@ -136,7 +136,7 @@ extern usb_instance_ctrl_t g_usb_cstd_event[];
 extern usb_hdl_t           g_usb_cur_task_hdl[];
 #else                                  /* #if (BSP_CFG_RTOS != 0) */
 extern usb_event_t g_usb_cstd_event;
- #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+ #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
   #if USB_CFG_DMA == USB_CFG_ENABLE
 extern usb_dma_int_t gs_usb_cstd_dma_int;
 
@@ -233,7 +233,7 @@ void     usb_pstd_change_device_state(uint16_t state, uint16_t keyword, usb_cb_t
 void     usb_pstd_driver_registration(usb_pcdreg_t * registinfo);
 void     usb_pstd_driver_release(void);
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 uint16_t usb_pstd_get_pipe_buf_value(uint16_t pipe_no);
 
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
@@ -264,7 +264,7 @@ uint8_t usb_hstd_make_pipe_reg_info(uint16_t               ip_no,
                                     uint8_t              * descriptor,
                                     usb_pipe_table_reg_t * pipe_table_work);
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 uint16_t usb_hstd_get_pipe_buf_value(uint16_t pipe_no);
 
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
@@ -760,7 +760,7 @@ void usb_host_usbx_attach_init(uint8_t module_number);
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
 #endif /* #if (BSP_CFG_RTOS == 1) */
 
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
 extern uint64_t r_usb_pa_to_va(uint64_t paddr);
 extern uint64_t r_usb_va_to_pa(uint64_t vaddr);
 
@@ -776,7 +776,9 @@ void usb_host_usbx_attach_init(uint8_t module_number);
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
 
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-uint32_t usb_peri_usbx_initialize_complete(void);
+uint32_t usb_peri_usbx_initialize_complete (void);
+uint32_t usb_peri_usbx_initialize (uint32_t dcd_io);
+uint32_t usb_peri_usbx_uninitialize (uint32_t dcd_io);
 
  #endif                                /* #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
 

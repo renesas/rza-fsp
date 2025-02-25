@@ -218,9 +218,9 @@ usb_er_t usb_hstd_transfer_start_req (usb_utr_t * ptr)
     uint16_t devsel;
  #if (BSP_CFG_RTOS == 0)
     uint16_t connect_inf = 0;
- #else                                 /* (BSP_CFG_RTOS == 0) */
+ #elif (BSP_CFG_RTOS == 2)
     usb_utr_t * p_tran_data;
- #endif /* BSP_CFG_RTOS == 0 */
+ #endif                                /* BSP_CFG_RTOS == 0 */
 
     pipenum = ptr->keyword;
 
@@ -276,6 +276,7 @@ usb_er_t usb_hstd_transfer_start_req (usb_utr_t * ptr)
 
         return USB_ERROR;
     }
+
   #else
     FSP_PARAMETER_NOT_USED(connect_inf);
   #endif                               /* USB_IP_EHCI_OHCI == 0 */
@@ -290,6 +291,7 @@ usb_er_t usb_hstd_transfer_start_req (usb_utr_t * ptr)
     {
         USB_PRINTF1("### usb_hstd_transfer_start_req snd_msg error (%ld)\n", err);
     }
+
  #elif (BSP_CFG_RTOS == 2)             /* (BSP_CFG_RTOS == 0) */
     p_tran_data = (usb_utr_t *) pvPortMalloc(sizeof(usb_utr_t));
     if (NULL == p_tran_data)
@@ -592,6 +594,7 @@ static void usb_hstd_set_submitutr (usb_utr_t * ptr)
         {
             usb_cstd_pipe_msg_clear(ptr, pipenum);
         }
+
   #else                                /* #if (BSP_CFG_RTOS == 2) */
         if (USB_PIPE0 == pipenum)
         {
@@ -609,6 +612,7 @@ static void usb_hstd_set_submitutr (usb_utr_t * ptr)
     }
 
   #if (BSP_CFG_RTOS != 0)
+
     /* Pipe Transfer Process check */
     if (USB_NULL != g_p_usb_hstd_pipe[ptr->ip][pipenum])
     {
@@ -644,14 +648,12 @@ static void usb_hstd_set_submitutr (usb_utr_t * ptr)
         {
             usb_hstd_setup_start(ptr);
         }
-
         /* Control Read Data */
         else if (USB_DATARDCNT == g_usb_hstd_ctsq[ptr->ip])
         {
             pp = g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0];
             usb_hstd_ctrl_read_start(ptr, pp->tranlen, (uint8_t *) pp->p_tranadr); /* Control read start */
         }
-
         /* Control Write Data */
         else if (USB_DATAWRCNT == g_usb_hstd_ctsq[ptr->ip])
         {
@@ -920,6 +922,7 @@ static void usb_hstd_interrupt (usb_utr_t * ptr)
         case USB_INT_PDDETINT0:
         {
    #if defined(BSP_MCU_GROUP_RA6M3)
+
             /* Port0 PDDETINT interrupt function */
             if (USB_IP1 == ptr->ip)
             {
@@ -950,6 +953,7 @@ static void usb_hstd_interrupt (usb_utr_t * ptr)
                 usb_compliance_disp((void *) &disp_param);
                 usb_hstd_ctrl_end(ptr, (uint16_t) USB_DATA_STOP);
             }
+
   #else                                /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
             /* User program */
             hw_usb_clear_enb_sofe(ptr);
@@ -1205,6 +1209,7 @@ void usb_hstd_hcd_task (void * stacd)
     (void) stacd;
 
   #if (BSP_CFG_RTOS != 0)
+
     /* WAIT_LOOP */
     while (1)
     {
@@ -1350,6 +1355,7 @@ void usb_hstd_hcd_task (void * stacd)
                 usb_hstd_ovrcr_enable(ptr);                      /* Interrupt Enable */
                 usb_hstd_vbus_control(ptr, (uint16_t) USB_VBON); /* USB VBUS control ON */
   #if USB_CFG_BC == USB_CFG_DISABLE
+
                 /* 100ms wait */
                 usb_cpu_delay_xms((uint16_t) USB_VALUE_100U);
   #endif                                                         /* USB_CFG_BC == USB_CFG_DISABLE */
@@ -1414,6 +1420,7 @@ void usb_hstd_hcd_task (void * stacd)
             case USB_MSG_HCD_CLR_STALL_RESULT:
             {
   #if (BSP_CFG_RTOS != 0)
+
                 /** Do nothing when running in RTOS
                  * The result will be checked immediately after issuing a "USB_MSG_HCD_CLR_STALL" request. **/
   #else                                /* #if (BSP_CFG_RTOS != 0) */
@@ -1538,6 +1545,7 @@ void usb_hstd_hcd_task (void * stacd)
     {
         continue;
     }
+
   #else
     if (result == 2)
     {
@@ -1611,6 +1619,7 @@ void usb_hstd_send_start (usb_utr_t * ptr, uint16_t pipe)
         }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
+
         /* D0FIFO DMA */
         case USB_D0USE:
 
@@ -2312,7 +2321,7 @@ void usb_hstd_suspend_complete (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
  #if defined(BSP_MCU_GROUP_RA6M3)
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USBHS_USB_INT_RESUME);
  #else
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H0_EHCI_INT_IRQn);
   #else
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_HI);
@@ -2321,11 +2330,19 @@ void usb_hstd_suspend_complete (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
     }
     else
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if USB_NUM_USBIP == 2
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H1_EHCI_INT_IRQn);
- #else
+  #else
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_HI);
- #endif
+  #endif
+ #else                                 /* #if USB_NUM_USBIP == 2 */
+  #if defined(BSP_MCU_GROUP_RZA_USB)
+        p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H0_EHCI_INT_IRQn);
+  #else                                /* #if defined(BSP_MCU_GROUP_RZA_USB) */
+        p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_HI);
+  #endif /* #if defined(BSP_MCU_GROUP_RZA_USB) */
+ #endif /* #if USB_NUM_USBIP == 2 */
     }
 
     ctrl.p_context = (void *) p_cfg->p_context;
@@ -2368,7 +2385,7 @@ void usb_hstd_resume_complete (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
  #if defined(BSP_MCU_GROUP_RA6M3)
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USBHS_USB_INT_RESUME);
  #else
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H0_EHCI_INT_IRQn);
   #else
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_HI);
@@ -2377,11 +2394,19 @@ void usb_hstd_resume_complete (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
     }
     else
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if USB_NUM_USBIP == 2
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H1_EHCI_INT_IRQn);
- #else
+  #else
         p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_HI);
- #endif
+  #endif
+ #else                                 /* #if USB_NUM_USBIP == 2 */
+  #if defined(BSP_MCU_GROUP_RZA_USB)
+        p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H0_EHCI_INT_IRQn);
+  #else                                /* #if defined(BSP_MCU_GROUP_RZA_USB) */
+        p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_HI);
+  #endif /* #if defined(BSP_MCU_GROUP_RZA_USB) */
+ #endif /* #if USB_NUM_USBIP == 2 */
     }
 
     ctrl.p_context = (void *) p_cfg->p_context;

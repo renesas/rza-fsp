@@ -235,6 +235,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                     /* Set device speed */
                     usb_hstd_set_rootport(g_usb_hstd_device_addr[ptr->ip], rootport);
   #if (BSP_CFG_RTOS == 1)
+
                     /* Get Descriptor */
                     usb_hstd_enum_get_descriptor(ptr, g_usb_hstd_device_addr[ptr->ip], g_usb_hstd_enum_seq[ptr->ip]);
   #endif
@@ -306,8 +307,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                            sizeof(p_dev_info->devicedesc));
 
                     /* Configuration Descroptor copy */
-                    memcpy(&p_dev_info->rawconfigdesc,
-                           g_usb_hstd_config_descriptor[ptr->ip],
+                    memcpy(&p_dev_info->rawconfigdesc, g_usb_hstd_config_descriptor[ptr->ip],
                            sizeof(p_dev_info->rawconfigdesc));
 
                     /* Driver open */
@@ -340,8 +340,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                         g_usb_hstd_enum_seq[ptr->ip] = 5; /* Skip EnumSeq 5 */
    #if (BSP_CFG_RTOS == 1)
                         p_descriptor_table = (uint8_t *) g_usb_hstd_config_descriptor[ptr->ip];
-                        usb_hstd_enum_set_configuration(ptr,
-                                                        g_usb_hstd_device_addr[ptr->ip],
+                        usb_hstd_enum_set_configuration(ptr, g_usb_hstd_device_addr[ptr->ip],
                                                         (uint16_t) (p_descriptor_table[USB_CON_B_CONFIGURATION_VALUE]));
    #endif
   #endif                               /* USB_HOST_COMPLIANCE_MODE */
@@ -448,7 +447,6 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
         }
     }
 
-  #if (BSP_CFG_RTOS != 1)
     /* Device Enumeration */
     if (USB_DEVICEENUMERATION == enume_mode)
     {
@@ -462,61 +460,58 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
 
             case 5:
             {
-   #if (BSP_CFG_RTOS != 0)
+  #if (BSP_CFG_RTOS != 0)
                 usb_cpu_delay_xms((uint16_t) 1);
-                (*g_usb_hstd_enumaration_process[5])(ptr,
-                                                     g_usb_hstd_device_addr[ptr->ip],
+                (*g_usb_hstd_enumaration_process[5])(ptr, g_usb_hstd_device_addr[ptr->ip],
                                                      g_usb_hstd_enum_seq[ptr->ip]);
-   #endif                              /* (BSP_CFG_RTOS != 0) */
+  #endif                               /* (BSP_CFG_RTOS != 0) */
                 break;
             }
 
             case 6:
             {
-   #if (BSP_CFG_RTOS == 1)
+  #if (BSP_CFG_RTOS == 1)
                 usbx_status = _ux_host_stack_class_device_scan(g_p_usbx_device[ptr->ip]);
                 if (UX_SUCCESS != usbx_status)
                 {
                     if (usbx_status == UX_NO_CLASS_MATCH)
                     {
-    #if defined(USB_CFG_OTG_USE)
+   #if defined(USB_CFG_OTG_USE)
                         UX_HCD * p_hcd;
                         p_hcd = UX_DEVICE_HCD_GET(g_p_usbx_device[ptr->ip]);
                         p_hcd->ux_hcd_otg_capabilities |= UX_HCD_OTG_CAPABLE;
-    #endif                             /* defined (USB_CFG_OTG_USE) */
+   #endif                              /* defined (USB_CFG_OTG_USE) */
                         usbx_status = _ux_host_stack_class_interface_scan(g_p_usbx_device[ptr->ip]);
                     }
                 }
-   #else                               /* (BSP_CFG_RTOS == 1) */
+
+  #else                                /* (BSP_CFG_RTOS == 1) */
                 descriptor_table = (uint8_t *) g_usb_hstd_config_descriptor[ptr->ip];
 
                 /* Device state */
                 g_usb_hstd_device_info[ptr->ip][g_usb_hstd_device_addr[ptr->ip]][2] = descriptor_table[5];
 
-                (*g_usb_hstd_enumaration_process[6])(ptr,
-                                                     g_usb_hstd_device_addr[ptr->ip],
+                (*g_usb_hstd_enumaration_process[6])(ptr, g_usb_hstd_device_addr[ptr->ip],
                                                      (uint16_t) (descriptor_table[5]));
-   #endif                              /* (BSP_CFG_RTOS == 1) */
+  #endif                               /* (BSP_CFG_RTOS == 1) */
                 break;
             }
 
-   #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
+  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
             case 7:
             {
                 enume_mode = USB_NOTTPL;
                 break;
             }
-   #endif                              /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
+  #endif                               /* USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
             default:
             {
-                (*g_usb_hstd_enumaration_process[g_usb_hstd_enum_seq[ptr->ip]])(ptr,
-                                                                                g_usb_hstd_device_addr[ptr->ip],
+                (*g_usb_hstd_enumaration_process[g_usb_hstd_enum_seq[ptr->ip]])(ptr, g_usb_hstd_device_addr[ptr->ip],
                                                                                 g_usb_hstd_enum_seq[ptr->ip]);
                 break;
             }
         }
     }
-  #endif
 
     return enume_mode;
  #else                                 /* USB_IP_EHCI_OHCI == 1 */
@@ -618,6 +613,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                                 driver->devaddr = g_usb_hstd_device_addr[ptr->ip];
                                 flg             = 1; /* break; */
                             }
+
   #else /* (BSP_CFG_RTOS == 2) */
                             g_usb_hstd_check_enu_result[ptr->ip] = USB_OK;
 
@@ -736,8 +732,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                 {
                     case 1:
                     {
-                        (*g_usb_hstd_enumaration_process[1])(ptr,
-                                                             (uint16_t) USB_DEVICE_0,
+                        (*g_usb_hstd_enumaration_process[1])(ptr, (uint16_t) USB_DEVICE_0,
                                                              g_usb_hstd_device_addr[ptr->ip]);
 
                         descriptor_table = (uint8_t *) g_usb_hstd_device_descriptor[ptr->ip];
@@ -753,8 +748,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
                     case 5:
                     {
   #if (BSP_CFG_RTOS != 0)
-                        (*g_usb_hstd_enumaration_process[5])(ptr,
-                                                             g_usb_hstd_device_addr[ptr->ip],
+                        (*g_usb_hstd_enumaration_process[5])(ptr, g_usb_hstd_device_addr[ptr->ip],
                                                              g_usb_hstd_enum_seq[ptr->ip]);
   #endif                               /* (BSP_CFG_RTOS == 2) */
                         break;
@@ -766,8 +760,7 @@ static uint16_t usb_hstd_enumeration (usb_utr_t * ptr)
 
                         /* Device state */
                         g_usb_hstd_device_info[ptr->ip][g_usb_hstd_device_addr[ptr->ip]][2] = descriptor_table[5];
-                        (*g_usb_hstd_enumaration_process[6])(ptr,
-                                                             g_usb_hstd_device_addr[ptr->ip],
+                        (*g_usb_hstd_enumaration_process[6])(ptr, g_usb_hstd_device_addr[ptr->ip],
                                                              (uint16_t) (descriptor_table[5]));
                         break;
                     }
@@ -1254,6 +1247,7 @@ void usb_hstd_enum_get_descriptor (usb_utr_t * ptr, uint16_t addr, uint16_t cnt_
             usb_shstd_std_req_msg[ptr->ip].p_tranadr = g_usb_hstd_config_descriptor[ptr->ip];
             break;
         }
+
  #else                                 /* USB_IP_EHCI_OHCI == 1 */
         case 0:
 
@@ -2069,7 +2063,6 @@ uint16_t usb_hstd_set_feature (usb_utr_t * ptr, uint16_t addr, uint16_t epnum, u
 
     return usb_hstd_cmd_submit(ptr);
  #else                                 /* (BSP_CFG_RTOS == 2) */
-
     return usb_hstd_cmd_submit(ptr, complete);
  #endif /* (BSP_CFG_RTOS == 2) */
 }
@@ -2118,7 +2111,6 @@ uint16_t usb_hstd_get_config_desc (usb_utr_t * ptr, uint16_t addr, uint16_t leng
 
     return usb_hstd_cmd_submit(ptr);
  #else                                 /* (BSP_CFG_RTOS == 2) */
-
     return usb_hstd_cmd_submit(ptr, complete);
  #endif /* (BSP_CFG_RTOS == 2) */
 }
@@ -2211,7 +2203,6 @@ uint16_t usb_hstd_get_string_desc (usb_utr_t * ptr, uint16_t addr, uint16_t stri
 
     return usb_hstd_cmd_submit(ptr);
  #else                                 /* (BSP_CFG_RTOS == 2) */
-
     return usb_hstd_cmd_submit(ptr, complete);
  #endif /* (BSP_CFG_RTOS == 2) */
 }
@@ -2401,6 +2392,7 @@ void usb_hstd_mgr_task (void * stacd)
  #endif                                /* USB_IP_EHCI_OHCI == 1 */
 
  #if (BSP_CFG_RTOS == 2)
+
     /* WAIT_LOOP */
     while (1)
     {
@@ -2490,6 +2482,7 @@ void usb_hstd_mgr_task (void * stacd)
                     {
                         /* This Resume Sorce is moved to usb_hResuCont() by nonOS */
  #if (BSP_CFG_RTOS != 0)
+
                         /* WAIT_LOOP */
                         for (md = 0; md < g_usb_hstd_device_num[ptr->ip]; md++)
                         {
@@ -2545,6 +2538,7 @@ void usb_hstd_mgr_task (void * stacd)
                     case USB_RESUME_PROCESS:
                     {
  #if (BSP_CFG_RTOS == 0)
+
                         /* Resume Sequence Number is 0 */
                         usb_hstd_resu_cont(ptr, USB_DEVICEADDR);
  #endif                                /* (BSP_CFG_RTOS == 0) */
@@ -2593,6 +2587,7 @@ void usb_hstd_mgr_task (void * stacd)
                 switch (g_usb_hstd_mgr_mode[ptr->ip])
                 {
  #if (BSP_CFG_RTOS == 0)
+
                     /* Resume */
                     case USB_RESUME_PROCESS:
                     {
@@ -2784,6 +2779,7 @@ void usb_hstd_mgr_task (void * stacd)
                                 g_usb_hstd_mgr_mode[ptr->ip] = USB_DEFAULT;
 
   #if USB_CFG_BC == USB_CFG_ENABLE
+
                                 /* Call Back */
                                 /*USB_BC_ATTACH(ptr, g_usb_hstd_device_addr[ptr->ip], (uint16_t)g_usb_hstd_bc[ptr->ip].state); */
                                 if (USB_BC_STATE_CDP == g_usb_hstd_bc[ptr->ip].state)
@@ -2992,6 +2988,7 @@ void usb_hstd_mgr_task (void * stacd)
         result = 0;
         continue;
     }
+
  #else                                 /* (BSP_CFG_RTOS == 2) */
     if (USB_MGR_BAREMETAL_RCV_ERROR == result)
     {

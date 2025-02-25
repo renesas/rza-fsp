@@ -90,7 +90,7 @@ fsp_err_t R_USB_HHID_MaxPacketSizeGet (usb_ctrl_t * const p_api_ctrl,
     usb_utr_t  utr;
     uint16_t   pipe = 0;
     uint16_t   pipe_bit_map;
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     uint8_t epnum;
 #endif                                 /* #if defined(BSP_MCU_GROUP_RZA3UL) */
 
@@ -144,7 +144,7 @@ fsp_err_t R_USB_HHID_MaxPacketSizeGet (usb_ctrl_t * const p_api_ctrl,
     utr.ipp     = usb_hstd_get_usb_ip_adr(utr.ip);
     utr.keyword = p_ctrl->device_address;
 
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     epnum = R_USB_HstdConvertEndpointNum(utr.ip, (uint8_t) pipe);
     pipe  = R_USB_HstdGetPipeID(utr.keyword, epnum);
 #endif                                 /* #if defined(BSP_MCU_GROUP_RZA3UL) */

@@ -44,8 +44,7 @@ uint32_t g_usb_cstd_dma_fraction_adr[USB_NUM_USBIP][USB_DMA_USE_CH_MAX];  /* fra
 uint32_t g_fifo_address[USB_NUM_USBIP][USB_FIFO_ACCESS_NUM_MAX][USB_FIFO_ACCSESS_TYPE_NUM] =
 {
     {
- #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
-
+ #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
         /* IP0 */
         /* 32bit                        16bit                           8bit */
         {(uint32_t) 0,               (uint32_t) &USB_M0->CFIFOL,
@@ -80,7 +79,6 @@ uint32_t g_fifo_address[USB_NUM_USBIP][USB_FIFO_ACCESS_NUM_MAX][USB_FIFO_ACCSESS
         /* IP1 */
 
   #if defined(BSP_MCU_GROUP_RA6M3)
-
         /* Little */
    #if USB_CFG_ENDIAN == USB_CFG_LITTLE
         {(uint32_t) &USB_M1->CFIFO,  (uint32_t) &USB_M1->CFIFOH,
@@ -112,7 +110,7 @@ uint32_t g_fifo_address[USB_NUM_USBIP][USB_FIFO_ACCESS_NUM_MAX][USB_FIFO_ACCSESS
  #endif                                /* USB_NUM_USBIP == 2 */
 };
 
- #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : usb_cstd_dma_send_start
@@ -165,7 +163,7 @@ void usb_cstd_dma_send_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
     if (0U != dma_size)
     {
         hw_usb_clear_dreqe(ptr, useport); /* DMA Transfer request disable */
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
         usb_cstd_dma_clear_ir(ptr, useport);
   #endif/* #ifndef BSP_MCU_GROUP_RZT2M */
         if (dma_size >= g_usb_cstd_dma_fifo[ip][ch])
@@ -183,7 +181,6 @@ void usb_cstd_dma_send_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
             else
             {
   #if defined(BSP_MCU_GROUP_RA6M3)
-
                 /* fraction size(1-3) */
                 g_usb_cstd_dma_fraction_size[ip][ch] = g_usb_cstd_dma_size[ip][ch] & USB_BIT_MBW32;
   #else                                /* defined(BSP_MCU_GROUP_RA6M3) */
@@ -271,7 +268,7 @@ void usb_cstd_dma_rcv_start (usb_utr_t * ptr, uint16_t pipe, uint16_t useport)
     {
         hw_usb_clear_dreqe(ptr, useport); /* DMA Transfer request disable */
 
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
         usb_cstd_dma_clear_ir(ptr, useport);
   #endif/* #ifndef BSP_MCU_GROUP_RZT2M */
 
@@ -352,7 +349,6 @@ void usb_cstd_dfifo_end (usb_utr_t * ptr, uint16_t useport)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-
         /* received data size */
         g_usb_pstd_data_cnt[pipe] -= g_usb_cstd_dma_size[ip][channel];
   #endif                               /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_REPI */
@@ -360,7 +356,6 @@ void usb_cstd_dfifo_end (usb_utr_t * ptr, uint16_t useport)
     else
     {
   #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-
         /* received data size */
         g_usb_hstd_data_cnt[ptr->ip][pipe] -= g_usb_cstd_dma_size[ip][channel];
   #endif                               /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
@@ -392,7 +387,7 @@ void usb_cstd_dma_driver (void)
         {
   #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
             utr.ipp = usb_hstd_get_usb_ip_adr(utr.ip);
-   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
             usb_cstd_dma_stop(&utr, gs_usb_cstd_dma_int.buf[gs_usb_cstd_dma_int.rp].fifo_type); /* Stop DMA,FIFO access */
    #endif
             usb_cstd_dma_send_continue(&utr, gs_usb_cstd_dma_int.buf[gs_usb_cstd_dma_int.rp].fifo_type);
@@ -401,7 +396,7 @@ void usb_cstd_dma_driver (void)
         else
         {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
             usb_cstd_dma_stop(&utr, gs_usb_cstd_dma_int.buf[gs_usb_cstd_dma_int.rp].fifo_type); /* Stop DMA,FIFO access */
    #endif
             usb_cstd_dma_send_continue(&utr, gs_usb_cstd_dma_int.buf[gs_usb_cstd_dma_int.rp].fifo_type);
@@ -417,7 +412,7 @@ void usb_cstd_dma_driver (void)
  * End of function usb_cstd_dma_driver
  ******************************************************************************/
  #endif                                /* BSP_CFG_RTOS == 2 */
- #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : usb_cstd_dma_send_restart
@@ -456,7 +451,7 @@ void usb_cstd_dma_send_restart (usb_utr_t * ptr, uint32_t src, uint32_t data_siz
 
     hw_usb_clear_dreqe(ptr, useport);  /* DMA Transfer request disable */
 
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
     usb_cstd_dma_clear_ir(ptr, useport);
   #endif/* #ifndef BSP_MCU_GROUP_RZT2M */
 
@@ -644,7 +639,7 @@ void usb_cstd_dma_send_continue (usb_utr_t * ptr, uint16_t useport)
 /******************************************************************************
  * End of function usb_cstd_dma_send_continue
  ******************************************************************************/
- #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : usb_cstd_dma_get_ir_vect
@@ -664,7 +659,7 @@ uint16_t usb_cstd_dma_get_ir_vect (usb_utr_t * ptr, uint16_t use_port)
     {
         if (USB_D0USE == use_port)
         {
-  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
             vect = ELC_EVENT_USB_FDMA0;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
             vect = ELC_EVENT_USBFS_FIFO_0;
@@ -672,7 +667,7 @@ uint16_t usb_cstd_dma_get_ir_vect (usb_utr_t * ptr, uint16_t use_port)
         }
         else
         {
-  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
             vect = ELC_EVENT_USB_FDMA1;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
             vect = ELC_EVENT_USBFS_FIFO_1;
@@ -721,7 +716,7 @@ uint16_t usb_cstd_dma_get_ir_vect (usb_utr_t * ptr, uint16_t use_port)
  *              : uint16_t  useport     : FIFO select
  * Return value    : none
  ******************************************************************************/
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
 void usb_cstd_dma_clear_ir (usb_utr_t * ptr, uint16_t use_port)
 {
     uint16_t  ip;
@@ -834,7 +829,7 @@ void usb_cstd_dma_send_complete (uint8_t ip_no, uint16_t use_port)
    #endif                                                                                  /* #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
   #endif                                                                                   /* #if (BSP_CFG_RTOS != 0) */
 
-  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) VECTOR_NUMBER_USB_FDMA1);        // @@
   #else                                                                                    /* BSP_MCU_GROUP_RZT2M == 1 */
     if (ip_no)
@@ -890,7 +885,6 @@ void usb_cstd_dma_send_complete (uint8_t ip_no, uint16_t use_port)
         USB_ISND_MSG(USB_PCD_MBX, (usb_msg_t *) p_peri);
    #endif                              /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
     }
-
   #else /* (BSP_CFG_RTOS == 2) */
     gs_usb_cstd_dma_int.buf[gs_usb_cstd_dma_int.wp].ip        = ip_no;
     gs_usb_cstd_dma_int.buf[gs_usb_cstd_dma_int.wp].fifo_type = use_port;
@@ -1082,7 +1076,6 @@ void usb_cstd_dma_rcv_setting (usb_utr_t * ptr, uint32_t des_addr, uint16_t usep
                                                                                       USB_FIFO_ACCESS_TYPE_16BIT);
             block_size = (uint16_t) (((g_usb_cstd_dma_fifo[ip][dma_ch] - 1) / 2) + 1);
         }
-
   #else                                /* defined(BSP_MCU_GROUP_RA6M3) */
         ptr->p_transfer_rx->p_cfg->p_info->p_src = (void *) hw_usb_get_dxfifo_adr(ptr,
                                                                                   useport,
@@ -1152,7 +1145,6 @@ void usb_cstd_dma_send_setting (usb_utr_t * ptr, uint32_t src_adr, uint16_t usep
                                                                                        USB_FIFO_ACCESS_TYPE_16BIT);
             block_size = (block_size / USB_BIT_16_WIDTH);
         }
-
   #else                                /* defined(BSP_MCU_GROUP_RA6M3) */
         ptr->p_transfer_tx->p_cfg->p_info->p_dest = (void *) hw_usb_get_dxfifo_adr(ptr,
                                                                                    useport,

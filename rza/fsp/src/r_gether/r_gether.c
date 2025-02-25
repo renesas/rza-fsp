@@ -649,15 +649,15 @@ fsp_err_t R_GETHER_LinkProcess (ether_ctrl_t * const p_ctrl)
     R_EMAC0_Type          * p_reg_emac;
     R_TOE0_Type           * p_reg_toe;
     R_ETHER0_Type         * p_reg_ether;
-
-    ether_callback_args_t     callback_arg;
-    ether_instance_extend_t * p_ether_instance_extend =
-        (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
+    ether_callback_args_t   callback_arg;
 
 #if (GETHER_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(p_instance_ctrl);
     GETHER_ERROR_RETURN(GETHER_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
+
+    ether_instance_extend_t * p_ether_instance_extend =
+        (ether_instance_extend_t *) p_instance_ctrl->p_gether_cfg->p_extend;
 
     /* Set the base address of I/O register */
     p_reg_emac  = (R_EMAC0_Type *) p_instance_ctrl->p_reg_emac;

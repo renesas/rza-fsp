@@ -43,7 +43,7 @@ uint16_t hw_usb_read_syscfg (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         ret_code = USB_M0->SYSCFG0;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP0 == ptr->ip)
@@ -94,7 +94,7 @@ void hw_usb_write_syscfg (usb_utr_t * ptr, uint16_t data)
   #endif                               /* USB_IP_EHCI_OHCI == 0 */
  #endif                                /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
 /******************************************************************************
@@ -105,7 +105,7 @@ void hw_usb_write_syscfg (usb_utr_t * ptr, uint16_t data)
  ******************************************************************************/
 void hw_usb_set_cnen (uint8_t usb_ip)
 {
-   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
     FSP_PARAMETER_NOT_USED(usb_ip);
     USB_M0->SYSCFG0 |= USB_CNEN;
    #else                               /* BSP_MCU_GROUP_RZT2M == 1 */
@@ -133,7 +133,7 @@ void hw_usb_clear_cnen (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         USB_M0->SYSCFG0 = (uint16_t) (USB_M0->SYSCFG0 & (~USB_CNEN));
    #else                               /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP1 == ptr->ip)
@@ -166,7 +166,7 @@ void hw_usb_set_hse (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         USB_M0->SYSCFG0 |= USB_HSE;
    #else                               /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP1 == ptr->ip)
@@ -202,7 +202,7 @@ void hw_usb_clear_hse (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+   #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         USB_M0->SYSCFG0 = (uint16_t) (USB_M0->SYSCFG0 & (~USB_HSE));
    #else                               /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP1 == ptr->ip)
@@ -239,7 +239,7 @@ void hw_usb_clear_hse (usb_utr_t * ptr)
  ******************************************************************************/
 void hw_usb_set_dcfm (usb_utr_t * p_utr)
 {
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
     FSP_PARAMETER_NOT_USED(p_utr);
     USB_M0->SYSCFG0 |= USB_DCFM;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
@@ -271,7 +271,7 @@ void hw_usb_clear_dcfm (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         USB_M0->SYSCFG0 = (uint16_t) (USB_M0->SYSCFG0 & (~USB_DCFM));
   #else                                /* BSP_MCU_GROUP_RZT2M == 1 */
         if (USB_CFG_IP0 == ptr->ip)
@@ -331,7 +331,7 @@ void hw_usb_set_usbe (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         USB_M0->SYSCFG0 |= USB_USBE;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP0 == ptr->ip)
@@ -370,7 +370,7 @@ void hw_usb_clear_usbe (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         USB_M0->SYSCFG0 = (uint16_t) (USB_M0->SYSCFG0 & (~USB_USBE));
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP0 == ptr->ip)
@@ -501,7 +501,7 @@ uint16_t hw_usb_read_syssts (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         result = USB_M0->SYSSTS0;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP0 == ptr->ip)
@@ -542,7 +542,7 @@ uint16_t hw_usb_read_dvstctr (usb_utr_t * ptr)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA3UL == 1)
+  #if (BSP_MCU_GROUP_RZT2M == 1) || (BSP_MCU_GROUP_RZA_USB == 1)
         result = USB_M0->DVSTCTR0;
   #else                                /* defined(BSP_MCU_GROUP_RZT2M) */
         if (USB_CFG_IP0 == ptr->ip)
@@ -669,7 +669,7 @@ void hw_usb_clear_vbout (usb_utr_t * ptr)
 
  #endif                                /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : hw_usb_set_utst
@@ -683,7 +683,7 @@ void hw_usb_set_utst (usb_utr_t * ptr, uint16_t data)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-   #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+   #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
         USB_M0->TESTMODE = data;
    #else                               /*defined(BSP_MCU_GROUP_RZT2M)*/
         if (USB_CFG_IP0 == ptr->ip)
@@ -710,7 +710,7 @@ void hw_usb_set_utst (usb_utr_t * ptr, uint16_t data)
  ******************************************************************************/
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : hw_usb_read_fifo32
@@ -733,13 +733,13 @@ uint32_t hw_usb_read_fifo32 (usb_utr_t * ptr, uint16_t pipemode)
             {
                 if (USB_CFG_IP1 == ptr->ip)
                 {
-   #if !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZA_USB)
                     data = USB_M1->CFIFO;
    #endif
                 }
                 else
                 {
-   #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+   #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = USB_M0->CFIFO;
    #else                               /* defined(BSP_MCU_GROUP_RZT2M) */
                     USB_DEBUG_HOOK(USB_DEBUG_HOOK_STD | USB_DEBUG_HOOK_CODE2);
@@ -816,7 +816,7 @@ void hw_usb_write_fifo32 (usb_utr_t * ptr, uint16_t pipemode, uint32_t data)
             {
                 if (USB_CFG_IP1 == ptr->ip)
                 {
-   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
                     R_USB_HS0->CFIFO = data;
    #else                               /* BSP_MCU_GROUP_RZT2M */
                     USB_M0->CFIFO = data;
@@ -824,7 +824,7 @@ void hw_usb_write_fifo32 (usb_utr_t * ptr, uint16_t pipemode, uint32_t data)
                 }
                 else
                 {
-   #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+   #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     USB_M0->CFIFO = data;
    #else                               /* defined(BSP_MCU_GROUP_RZT2M) */
                     FSP_PARAMETER_NOT_USED(data);
@@ -902,7 +902,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
             {
                 if (USB_IP1 == ptr->ip)
                 {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
                     data = USB_M1->CFIFO_hword;
   #endif
                 }
@@ -963,7 +963,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
    #if USB_CFG_ENDIAN == USB_CFG_LITTLE
                 case USB_CUSE:
                 {
-    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = ptr->ipp1->CFIFOH;
     #else                              /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
                     data = (uint16_t) ptr->ipp1->CFIFO;
@@ -973,7 +973,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
 
                 case USB_D0USE:
                 {
-    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = ptr->ipp1->D0FIFOH;
     #else                              /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
                     data = (uint16_t) ptr->ipp1->D0FIFO;
@@ -983,7 +983,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
 
                 case USB_D1USE:
                 {
-    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = ptr->ipp1->D1FIFOH;
     #else                              /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
                     data = (uint16_t) ptr->ipp1->D1FIFO;
@@ -993,7 +993,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
    #else                               /* USB_CFG_ENDIAN == USB_CFG_LITTLE */
                 case USB_CUSE:
                 {
-    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = ptr->ipp1->CFIFOL;
     #else                              /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
                     data = (uint16_t) ptr->ipp1->CFIFO;
@@ -1003,7 +1003,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
 
                 case USB_D0USE:
                 {
-    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = ptr->ipp1->D0FIFOL;
     #else                              /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
                     data = (uint16_t) ptr->ipp1->D0FIFO;
@@ -1013,7 +1013,7 @@ uint16_t hw_usb_read_fifo16 (usb_utr_t * ptr, uint16_t pipemode)
 
                 case USB_D1USE:
                 {
-    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+    #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
                     data = ptr->ipp1->D1FIFOL;
     #else                              /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
                     data = (uint16_t) ptr->ipp1->D1FIFO;
@@ -1110,7 +1110,7 @@ void hw_usb_write_fifo16 (usb_utr_t * ptr, uint16_t pipemode, uint16_t data)
  #if USB_NUM_USBIP == 2
     else if (USB_IP1 == ip)
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         switch (pipemode)
         {
             case USB_CUSE:
@@ -1216,7 +1216,7 @@ void hw_usb_write_fifo8 (usb_utr_t * ptr, uint16_t pipemode, uint8_t data)
  #if USB_NUM_USBIP == 2
     else if (USB_IP1 == ip)
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         switch (pipemode)
         {
             case USB_CUSE:
@@ -1271,7 +1271,7 @@ static void * hw_usb_get_fifosel_adr (usb_utr_t * ptr, uint16_t pipemode)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
  #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
         switch (pipemode)
         {
             case USB_CUSE:
@@ -1665,7 +1665,7 @@ static void * hw_usb_get_fifoctr_adr (usb_utr_t * ptr, uint16_t pipemode)
             {
                 if (USB_CFG_IP1 == ptr->ip)
                 {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
                     p_reg = (void *) &(USB_M1->CFIFOCTR);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
                 }
@@ -1681,7 +1681,7 @@ static void * hw_usb_get_fifoctr_adr (usb_utr_t * ptr, uint16_t pipemode)
             {
                 if (USB_CFG_IP1 == ptr->ip)
                 {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
                     p_reg = (void *) &(USB_M1->D0FIFOCTR);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
                 }
@@ -1697,7 +1697,7 @@ static void * hw_usb_get_fifoctr_adr (usb_utr_t * ptr, uint16_t pipemode)
             {
                 if (USB_CFG_IP1 == ptr->ip)
                 {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
                     p_reg = (void *) &(USB_M1->D1FIFOCTR);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
                 }
@@ -1838,7 +1838,7 @@ void hw_usb_write_intenb (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTENB0 = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -1876,7 +1876,7 @@ void hw_usb_set_intenb (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTENB0 |= data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -1967,7 +1967,7 @@ void hw_usb_set_brdyenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BRDYENB = (uint16_t) (USB_M1->BRDYENB | (1 << pipeno));
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2004,7 +2004,7 @@ void hw_usb_clear_brdyenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BRDYENB = (uint16_t) (USB_M1->BRDYENB & (~(1 << pipeno)));
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2062,7 +2062,7 @@ void hw_usb_set_nrdyenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->NRDYENB = (uint16_t) (USB_M1->NRDYENB | (1 << pipeno));
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2099,7 +2099,7 @@ void hw_usb_clear_nrdyenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->NRDYENB = (uint16_t) (USB_M1->NRDYENB & (~(1 << pipeno)));
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2160,7 +2160,7 @@ void hw_usb_set_bempenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
             g_usb_cstd_bemp_skip[USB_IP1][pipeno] = USB_OFF;
             USB_M1->BEMPENB = (uint16_t) (USB_M1->BEMPENB | (1 << pipeno));
   #endif                               /* !defined(BSP_MCU_GROUP_RZT2M) */
@@ -2199,7 +2199,7 @@ void hw_usb_clear_bempenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BEMPENB = (uint16_t) (USB_M1->BEMPENB & (~(1 << pipeno)));
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2267,7 +2267,7 @@ uint16_t hw_usb_read_intsts (uint8_t usb_ip)
     }
     else
     {
-   #if !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZA_USB)
         return USB_M1->INTSTS0;
    #else                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         return 0xFF;
@@ -2299,7 +2299,7 @@ void hw_usb_write_intsts (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTSTS0 = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2386,7 +2386,7 @@ void hw_usb_clear_sts_brdy (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BRDYSTS = (uint16_t) (~(1 << pipeno)) & BRDYSTS_MASK;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2444,7 +2444,7 @@ void hw_usb_clear_status_nrdy (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->NRDYSTS = (uint16_t) ((uint16_t) (~(1 << pipeno)) & NRDYSTS_MASK);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2501,7 +2501,7 @@ void hw_usb_clear_status_bemp (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BEMPSTS = (uint16_t) ((uint16_t) (~(1 << pipeno)) & BEMPSTS_MASK);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2538,7 +2538,7 @@ uint16_t hw_usb_read_frmnum (usb_utr_t * ptr)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             result = USB_M1->FRMNUM;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2576,7 +2576,7 @@ uint16_t hw_usb_read_usbreq (uint8_t usb_ip)
     }
     else
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         result = USB_M1->USBREQ;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
     }
@@ -2604,7 +2604,7 @@ uint16_t hw_usb_read_usbval (uint8_t usb_ip)
     }
     else
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         result = USB_M1->USBVAL;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
     }
@@ -2632,7 +2632,7 @@ uint16_t hw_usb_read_usbindx (uint8_t usb_ip)
     }
     else
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         result = USB_M1->USBINDX;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
     }
@@ -2660,7 +2660,7 @@ uint16_t hw_usb_read_usbleng (uint8_t usb_ip)
     }
     else
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         result = USB_M1->USBLENG;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
     }
@@ -2722,7 +2722,7 @@ uint16_t hw_usb_read_dcpcfg (usb_utr_t * ptr)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             result = USB_M1->DCPCFG;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2760,7 +2760,7 @@ void hw_usb_write_dcpcfg (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->DCPCFG = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2797,7 +2797,7 @@ uint16_t hw_usb_read_dcpmaxp (usb_utr_t * ptr)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             result = USB_M1->DCPMAXP;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2835,7 +2835,7 @@ void hw_usb_write_dcpmxps (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->DCPMAXP = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2871,7 +2871,7 @@ uint16_t hw_usb_read_dcpctr (uint8_t usb_ip)
     }
     else
     {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
         result = USB_M1->DCPCTR;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
     }
@@ -2903,7 +2903,7 @@ void hw_usb_write_pipesel (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->PIPESEL = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2940,7 +2940,7 @@ uint16_t hw_usb_read_pipecfg (usb_utr_t * ptr)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             result = USB_M1->PIPECFG;
   #endif
         }
@@ -2978,7 +2978,7 @@ void hw_usb_write_pipecfg (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->PIPECFG = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -2996,7 +2996,7 @@ void hw_usb_write_pipecfg (usb_utr_t * ptr, uint16_t data)
  * End of function hw_usb_write_pipecfg
  ******************************************************************************/
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : hw_usb_write_pipebuf
@@ -3011,7 +3011,7 @@ void hw_usb_write_pipebuf (usb_utr_t * ptr, uint16_t data)
     if (g_usb_usbmode[ptr->ip] == USB_MODE_PERI)
     {
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
         if (USB_CFG_IP1 == ptr->ip)
         {
             USB_M1->PIPEBUF = data;
@@ -3051,7 +3051,7 @@ uint16_t hw_usb_read_pipebuf (usb_utr_t * ptr)
   #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         if (USB_CFG_IP0 == ptr->ip)
         {
-   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
             result = 0;
    #else                               /* BSP_MCU_GROUP_RZT2M */
             result = USB_M0->PIPEBUF;
@@ -3059,7 +3059,7 @@ uint16_t hw_usb_read_pipebuf (usb_utr_t * ptr)
         }
         else
         {
-   #if !defined(BSP_MCU_GROUP_RZA3UL)
+   #if !defined(BSP_MCU_GROUP_RZA_USB)
             result = USB_M1->PIPEBUF;
    #endif                              /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3107,7 +3107,7 @@ uint16_t hw_usb_read_pipemaxp (usb_utr_t * ptr)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             result = USB_M1->PIPEMAXP;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3145,7 +3145,7 @@ void hw_usb_write_pipemaxp (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->PIPEMAXP = data;
   #endif
         }
@@ -3181,7 +3181,7 @@ void hw_usb_write_pipeperi (usb_utr_t * ptr, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->PIPEPERI = data;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3231,7 +3231,7 @@ uint16_t hw_usb_read_pipectr (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_PIPE0 == pipeno)
             {
                 p_reg = (uint16_t *) &(USB_M1->DCPCTR);
@@ -3319,7 +3319,7 @@ void hw_usb_set_csclr (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             p_reg = (uint16_t *) &(USB_M1->PIPE_CTR[0]) + (pipeno - 1);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3365,7 +3365,7 @@ void hw_usb_set_aclrm (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             p_reg     = (uint16_t *) &(USB_M1->PIPE_CTR[0]) + (pipeno - 1);
             (*p_reg) |= USB_ACLRM;
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
@@ -3407,7 +3407,7 @@ void hw_usb_clear_aclrm (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             p_reg = (uint16_t *) &(USB_M1->PIPE_CTR[0]) + (pipeno - 1);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3461,7 +3461,7 @@ void hw_usb_set_sqclr (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_PIPE0 == pipeno)
             {
                 USB_M1->DCPCTR |= USB_SQCLR;
@@ -3525,7 +3525,7 @@ void hw_usb_set_sqset (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_PIPE0 == pipeno)
             {
                 USB_M1->DCPCTR |= USB_SQSET;
@@ -3591,7 +3591,7 @@ void hw_usb_set_pid (usb_utr_t * ptr, uint16_t pipeno, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_PIPE0 == pipeno)
             {
                 p_reg = ((uint16_t *) &(USB_M1->DCPCTR));
@@ -3658,7 +3658,7 @@ void hw_usb_clear_pid (usb_utr_t * ptr, uint16_t pipeno, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_PIPE0 == pipeno)
             {
                 p_reg = ((uint16_t *) &(USB_M1->DCPCTR));
@@ -3717,7 +3717,7 @@ void hw_usb_set_trenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             p_reg = (uint16_t *) &(USB_M1->PIPE_TR[0].E) + ((pipeno - 1) * 2);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3762,7 +3762,7 @@ void hw_usb_clear_trenb (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             p_reg = (uint16_t *) &(USB_M1->PIPE_TR[0].E) + ((pipeno - 1) * 2);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -3808,8 +3808,8 @@ void hw_usb_set_trclr (usb_utr_t * ptr, uint16_t pipeno)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
-            p_reg = (uint16_t *) &(USB_M1->PIPE_TR[0].E) + ((pipeno - 1) * 2);
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
+            p_reg = (uint16_t *) &(USB_M1->PIPE1TRE_b.TRENB) + ((pipeno - 1) * 2);
   #endif
         }
 
@@ -3854,7 +3854,7 @@ void hw_usb_write_pipetrn (usb_utr_t * ptr, uint16_t pipeno, uint16_t data)
         }
         else
         {
-  #if !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZA_USB)
             p_reg = (uint16_t *) &(USB_M1->PIPE_TR[0].N) + ((pipeno - 1) * 2);
   #endif                               /* #if !defined(BSP_MCU_GROUP_RZA3UL) */
         }
@@ -4023,7 +4023,7 @@ void hw_usb_set_suspendm (uint8_t usb_ip)
   #endif                               /* defined(BSP_MCU_GROUP_RA6M3) */
     }
 
-  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     USB_M0->LPSTS = (uint16_t) (USB_M0->LPSTS | (USB_SUSPENDM));
   #endif                               /* defined(BSP_MCU_GROUP_RZT2M) */
 }
@@ -4047,7 +4047,7 @@ void hw_usb_clear_suspm (uint8_t usb_ip)
   #endif                               /* defined(BSP_MCU_GROUP_RA6M3) */
     }
 
-  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     USB_M0->LPSTS = (uint16_t) (USB_M0->LPSTS & (~USB_SUSPENDM));
   #endif                               /* defined(BSP_MCU_GROUP_RZT2M) */
 }

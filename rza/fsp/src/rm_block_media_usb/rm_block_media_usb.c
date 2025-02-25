@@ -151,6 +151,7 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Open (rm_block_media_ctrl_t * const p_ctrl, rm_bloc
  * @retval     FSP_SUCCESS               Module is initialized and ready to access the memory device.
  * @retval     FSP_ERR_ASSERTION         An input parameter is invalid.
  * @retval     FSP_ERR_NOT_OPEN          Module is not open.
+ * @retval     FSP_ERR_USB_FAILED        Device is detached.
  **********************************************************************************************************************/
 fsp_err_t RM_BLOCK_MEDIA_USB_MediaInit (rm_block_media_ctrl_t * const p_ctrl)
 {
@@ -201,18 +202,13 @@ fsp_err_t RM_BLOCK_MEDIA_USB_MediaInit (rm_block_media_ctrl_t * const p_ctrl)
         {
             break;
         }
+        else if (USB_STATUS_DETACH == event_info.event)
+        {
+            return FSP_ERR_USB_FAILED;
+        }
         else
         {
             usb_set_event(event, &event_info);
-        }
-
-        err = R_USB_InfoGet(&event_info, &state_info, event_info.device_address);
-        if (FSP_SUCCESS == err)
-        {
-            if (USB_STATUS_CONFIGURED != state_info.device_status)
-            {
-                return FSP_ERR_USB_FAILED;
-            }
         }
     }
 #endif
@@ -437,6 +433,7 @@ fsp_err_t RM_BLOCK_MEDIA_USB_Write (rm_block_media_ctrl_t * const p_ctrl,
  * @retval     FSP_ERR_ASSERTION             An input parameter is invalid.
  * @retval     FSP_ERR_NOT_OPEN              Module is not open.
  * @retval     FSP_ERR_NOT_INITIALIZED       Module has not been initialized.
+ * @retval     FSP_ERR_USB_FAILED            Failed to erase.
  *
  * @return See @ref RENESAS_ERROR_CODES or functions called by this function for other possible return codes.
  **********************************************************************************************************************/

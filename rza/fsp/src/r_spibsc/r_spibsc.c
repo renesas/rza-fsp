@@ -1320,6 +1320,7 @@ static fsp_err_t spibsc_write_enable (spibsc_instance_ctrl_t * p_ctrl)
 static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
+#if (BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY)
 
     /* Check if OCTA selected */
     uint32_t ipcont_spi_octa = R_SYSC->SYS_IPCONT_SEL_SPI_OCTA;
@@ -1338,6 +1339,7 @@ static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 
     /* Wait for reset SPI device */
     R_BSP_SoftwareDelay(SPIBSC_PRV_RESET_DURATION_US, BSP_DELAY_UNITS_MICROSECONDS);
+#endif
 
     /* force voltage setting
      * Note: This is required if the boot mode is neither 3 nor 4.
@@ -1348,11 +1350,13 @@ static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 
     /* Supply SPIM clock */
     R_BSP_MODULE_START(FSP_IP_SPI_MULTI, 0);
+#if (BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY)
 
     /* Select SPIM for SPI controller */
     ipcont_spi_octa                &= (uint32_t) ~R_SYSC_SYS_IPCONT_SEL_SPI_OCTA_SEL_SPI_OCTA_Msk;
     R_SYSC->SYS_IPCONT_SEL_SPI_OCTA = ipcont_spi_octa;
     R_SYSC->SYS_IPCONT_SEL_SPI_OCTA;
+#endif
 }
 
 static void spibsc_test_tend (spibsc_instance_ctrl_t * p_ctrl)

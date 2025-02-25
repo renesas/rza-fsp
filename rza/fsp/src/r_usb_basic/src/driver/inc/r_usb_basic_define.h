@@ -75,7 +75,7 @@
 #define USB_HCD_MPL                    (USB_HCD_TSK) /* Memory pool ID */
 
 /* Host Manager Task */
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
  #define USB_MGR_TSK                   (USB_TID_1)   /* Task ID */
  #define USB_MGR_MBX                   (USB_MGR_TSK) /* Mailbox ID */
  #define USB_MGR_MPL                   (USB_MGR_TSK) /* Memory pool ID */
@@ -135,83 +135,88 @@
 #endif
 
 /* H/W function type */
-#define USB_BIT0                               ((uint16_t) 0x0001)
-#define USB_BIT1                               ((uint16_t) 0x0002)
-#define USB_BIT2                               ((uint16_t) 0x0004)
-#define USB_BIT3                               ((uint16_t) 0x0008)
-#define USB_BIT4                               ((uint16_t) 0x0010)
-#define USB_BIT5                               ((uint16_t) 0x0020)
-#define USB_BIT6                               ((uint16_t) 0x0040)
-#define USB_BIT7                               ((uint16_t) 0x0080)
-#define USB_BIT8                               ((uint16_t) 0x0100)
-#define USB_BIT9                               ((uint16_t) 0x0200)
-#define USB_BIT10                              ((uint16_t) 0x0400)
-#define USB_BIT11                              ((uint16_t) 0x0800)
-#define USB_BIT12                              ((uint16_t) 0x1000)
-#define USB_BIT13                              ((uint16_t) 0x2000)
-#define USB_BIT14                              ((uint16_t) 0x4000)
-#define USB_BIT15                              ((uint16_t) 0x8000)
+#define USB_BIT0               ((uint16_t) 0x0001)
+#define USB_BIT1               ((uint16_t) 0x0002)
+#define USB_BIT2               ((uint16_t) 0x0004)
+#define USB_BIT3               ((uint16_t) 0x0008)
+#define USB_BIT4               ((uint16_t) 0x0010)
+#define USB_BIT5               ((uint16_t) 0x0020)
+#define USB_BIT6               ((uint16_t) 0x0040)
+#define USB_BIT7               ((uint16_t) 0x0080)
+#define USB_BIT8               ((uint16_t) 0x0100)
+#define USB_BIT9               ((uint16_t) 0x0200)
+#define USB_BIT10              ((uint16_t) 0x0400)
+#define USB_BIT11              ((uint16_t) 0x0800)
+#define USB_BIT12              ((uint16_t) 0x1000)
+#define USB_BIT13              ((uint16_t) 0x2000)
+#define USB_BIT14              ((uint16_t) 0x4000)
+#define USB_BIT15              ((uint16_t) 0x8000)
 #define USB_BITSET(x)    ((uint16_t) ((uint16_t) 1 << (x)))
 
 /* nonOS Use */
-#define USB_SEQ_0                              ((uint16_t) 0x0000)
-#define USB_SEQ_1                              ((uint16_t) 0x0001)
-#define USB_SEQ_2                              ((uint16_t) 0x0002)
-#define USB_SEQ_3                              ((uint16_t) 0x0003)
-#define USB_SEQ_4                              ((uint16_t) 0x0004)
-#define USB_SEQ_5                              ((uint16_t) 0x0005)
-#define USB_SEQ_6                              ((uint16_t) 0x0006)
-#define USB_SEQ_7                              ((uint16_t) 0x0007)
-#define USB_SEQ_8                              ((uint16_t) 0x0008)
-#define USB_SEQ_9                              ((uint16_t) 0x0009)
-#define USB_SEQ_10                             ((uint16_t) 0x000a)
+#define USB_SEQ_0              ((uint16_t) 0x0000)
+#define USB_SEQ_1              ((uint16_t) 0x0001)
+#define USB_SEQ_2              ((uint16_t) 0x0002)
+#define USB_SEQ_3              ((uint16_t) 0x0003)
+#define USB_SEQ_4              ((uint16_t) 0x0004)
+#define USB_SEQ_5              ((uint16_t) 0x0005)
+#define USB_SEQ_6              ((uint16_t) 0x0006)
+#define USB_SEQ_7              ((uint16_t) 0x0007)
+#define USB_SEQ_8              ((uint16_t) 0x0008)
+#define USB_SEQ_9              ((uint16_t) 0x0009)
+#define USB_SEQ_10             ((uint16_t) 0x000a)
 
 /* USB HUB PIPE No. */
-#define USB_HUB_PIPE                           (9U)
+#define USB_HUB_PIPE           (9U)
 
-#define USB_HUB_P1                             ((uint16_t) 0x0001)
-#define USB_HUB_P2                             ((uint16_t) 0x0002)
-#define USB_HUB_P3                             ((uint16_t) 0x0003)
-#define USB_HUB_P4                             ((uint16_t) 0x0004)
+#define USB_HUB_P1             ((uint16_t) 0x0001)
+#define USB_HUB_P2             ((uint16_t) 0x0002)
+#define USB_HUB_P3             ((uint16_t) 0x0003)
+#define USB_HUB_P4             ((uint16_t) 0x0004)
 
-#define USB_HUB                                (USB_CLASS_REQUEST + 1)
+#define USB_HUB                (USB_CLASS_REQUEST + 1)
 
 /* Interrupt message num */
-#define USB_INTMSGMAX                          ((uint16_t) 15U)
+#define USB_INTMSGMAX          ((uint16_t) 15U)
 
 /* USB Device Connect */
-#define USB_DEV_NO_CONNECT                     ((uint16_t) 0U)
-#define USB_DEV_CONNECTED                      ((uint16_t) 1U)
+#define USB_DEV_NO_CONNECT     ((uint16_t) 0U)
+#define USB_DEV_CONNECTED      ((uint16_t) 1U)
 
-#define USB_OK                                 (0U)
-#define USB_ERROR                              (0xff)
-#define USB_ERR_TMOUT                          (0xfe)
-#define USB_ERR_FIFO_ACCESS                    (0xfd)
-#define USB_QOVR                               (0xd5) /* Submit overlap error */
-#define USB_PAR                                (0xef) /* parameter error */
+#define USB_OK                 (0U)
+#define USB_ERROR              (0xff)
+#define USB_ERR_TMOUT          (0xfe)
+#define USB_ERR_FIFO_ACCESS    (0xfd)
+#define USB_QOVR               (0xd5)  /* Submit overlap error */
+#define USB_PAR                (0xef)  /* parameter error */
 
-#define USB_TRUE                               (1U)
-#define USB_FALSE                              (0U)
+#define USB_TRUE               (1U)
+#define USB_FALSE              (0U)
 
-#define USB_YES                                (1U)
-#define USB_NO                                 (0U)
+#define USB_YES                (1U)
+#define USB_NO                 (0U)
 
-#define USB_CFG_HIGH                           (0U)
-#define USB_CFG_LOW                            (1U)
+#define USB_CFG_HIGH           (0U)
+#define USB_CFG_LOW            (1U)
 
 /******************************************************************************
  * Macro definitions
  ******************************************************************************/
 
 /* The number of USBIP */
-#define USB_NUM_USBIP                          (2U)
+#if !defined(BSP_MCU_GROUP_RZA3M)
+ #define USB_NUM_USBIP                         (2U)
+#else
+ #define USB_NUM_USBIP                         (1U)
+#endif
 
 /* USB module definition */
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
  #define USB_M0                                (R_USB01)
  #define USB00                                 (R_USB00)
- #define USB10                                 (R_USB10)
-
+ #if !defined(BSP_MCU_GROUP_RZA3M)
+  #define USB10                                (R_USB10)
+ #endif
  #define R_USB_HS0_BASE                        (R_USB00)
 #else                                  /* BSP_MCU_GROUP_RZT2M == 1 */
  #define USB_M0                                (R_USBF)
@@ -281,7 +286,7 @@
 #define USB_CFG_PERI                           (2)
 
 #if defined(BSP_MCU_GROUP_RZT2M) || \
-    defined(BSP_MCU_GROUP_RZA3UL)
+    defined(BSP_MCU_GROUP_RZA_USB)
  #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
   #define USB_IP_EHCI_OHCI                     (1)
  #else
@@ -884,15 +889,22 @@
  #define USB_PRINTF5(FORM, x1, x2, x3, x4, x5)            (printf((FORM), (x1), (x2), (x3), (x4), (x5)))
  #define USB_PRINTF6(FORM, x1, x2, x3, x4, x5, x6)        (printf((FORM), (x1), (x2), (x3), (x4), (x5), (x6)))
  #define USB_PRINTF7(FORM, x1, x2, x3, x4, x5, x6, x7)    (printf((FORM), (x1), (x2), (x3), (x4), (x5), (x6), (x7)))
- #define USB_PRINTF8(FORM,                                                                                          \
-                     x1,                                                                                            \
-                     x2,                                                                                            \
-                     x3,                                                                                            \
-                     x4,                                                                                            \
-                     x5,                                                                                            \
-                     x6,                                                                                            \
-                     x7,                                                                                            \
-                     x8)                                  (printf((FORM), (x1), (x2), (x3), (x4), (x5), (x6), (x7), \
+ #define USB_PRINTF8(FORM,                                                \
+                     x1,                                                  \
+                     x2,                                                  \
+                     x3,                                                  \
+                     x4,                                                  \
+                     x5,                                                  \
+                     x6,                                                  \
+                     x7,                                                  \
+                     x8)                                  (printf((FORM), \
+                                                                  (x1),   \
+                                                                  (x2),   \
+                                                                  (x3),   \
+                                                                  (x4),   \
+                                                                  (x5),   \
+                                                                  (x6),   \
+                                                                  (x7),   \
                                                                   (x8)))
 #else                                  /* defined(USB_DEBUG_ON) */
  #define USB_PRINTF0(FORM)

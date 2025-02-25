@@ -24,6 +24,7 @@
     * [USB HHID (r_usb_hhid)](https://renesas.github.io/rza-fsp/group___u_s_b___h_h_i_d.html)
     * [USB HMSC (r_usb_hmsc)](https://renesas.github.io/rza-fsp/group___u_s_b___h_m_s_c.html)
     * [USB PCDC (r_usb_pcdc)](https://renesas.github.io/rza-fsp/group___u_s_b___p_c_d_c.html)
+    * [USB PCDC Communication Device (rm_comms_usb_pcdc)](https://renesas.github.io/rza-fsp/group___r_m___c_o_m_m_s___u_s_b___p_c_d_c.html)
   * Graphics
     * [Azure RTOS GUIX](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/guix/index.md)
     * [CRU Driver on r_cru](https://renesas.github.io/rza-fsp/group___c_r_u.html)
@@ -107,8 +108,11 @@
     * [USB (r_usb_basic)](https://renesas.github.io/rza-fsp/group___u_s_b.html)
     * [USB HHID (r_usb_hhid)](https://renesas.github.io/rza-fsp/group___u_s_b___h_h_i_d.html)
     * [USB PCDC (r_usb_pcdc_class)](https://renesas.github.io/rza-fsp/group___u_s_b___p_c_d_c.html)
+    * [USB PCDC Communication Device (rm_comms_usb_pcdc_class)](https://renesas.github.io/rza-fsp/group___r_m___c_o_m_m_s___u_s_b___p_c_d_c.html)
   * Graphics
     * [Azure RTOS GUIX Port (rm_guix_port)](https://renesas.github.io/rza-fsp/group___r_m___g_u_i_x___p_o_r_t.html)
+    * [MIPI Display (r_mipi_dsi_b)](https://renesas.github.io/rza-fsp/group___m_i_p_i___d_s_i.html)
+    * [MIPI Physical Layer (r_mipi_phy_b)](https://renesas.github.io/rza-fsp/)
   * Networking
     * [FreeRTOS+TCP Wrapper to r_gether (rm_freertos_plus_tcp)](https://renesas.github.io/rza-fsp/group___f_r_e_e_r_t_o_s___p_l_u_s___t_c_p.html)
     * [NetX Duo Ethernet Driver (rm_netxduo_ether)](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/netx-duo/chapter5.md)

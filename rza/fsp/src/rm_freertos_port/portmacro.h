@@ -72,6 +72,7 @@ typedef uint64_t TickType_t;
  #define portTICK_PERIOD_MS         ((TickType_t) 1000 / configTICK_RATE_HZ)
  #define portBYTE_ALIGNMENT         16
  #define portPOINTER_SIZE_TYPE      uint64_t
+ #define portDONT_DISCARD           BSP_DONT_REMOVE
 
 /*-----------------------------------------------------------*/
 

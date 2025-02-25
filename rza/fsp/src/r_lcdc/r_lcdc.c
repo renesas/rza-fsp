@@ -49,12 +49,12 @@
 #define LAYER_DISABLE_ALL                     (0x02000000)
 #define COLOR_FOTMAT_CONVERT                  (0x00000100)
 
-#define TIMING_MAX_1920                       (1920)
-#define TIMING_MAX_1080                       (1080)
+#define TIMING_MAX_H                          (1920)
+#define TIMING_MAX_V                          (1280)
 #define LAYER_MAX_HSIZE                       (1280)
-#define LAYER_MAX_VSIZE                       (800)
+#define LAYER_MAX_VSIZE                       (1280)
 #define LAYER_MAX_HCOOR                       (1280)
-#define LAYER_MAX_VCOOR                       (800)
+#define LAYER_MAX_VCOOR                       (1280)
 
 #define CAST_TO_UINT32                        (0xFFFFFFFFU)
 #define DL_NUM_CMD                            (25)
@@ -109,6 +109,9 @@ const display_api_t g_display_on_lcdc =
     .stop         = R_LCDC_Stop,
     .layerChange  = R_LCDC_LayerChange,
     .bufferChange = R_LCDC_BufferChange,
+    .clut         = R_LCDC_ClutUpdate,
+    .clutEdit     = R_LCDC_ClutEdit,
+    .correction   = R_LCDC_ColorCorrection,
     .colorKeySet  = R_LCDC_ColorKeySet,
     .statusGet    = R_LCDC_StatusGet,
 };
@@ -401,7 +404,7 @@ fsp_err_t R_LCDC_LayerChange (display_ctrl_t const * const        p_api_ctrl,
     FSP_ERROR_RETURN((p_cfg->input.hsize <= LAYER_MAX_HSIZE), FSP_ERR_INVALID_LAYER_SETTING);
     FSP_ERROR_RETURN((p_cfg->input.vsize <= LAYER_MAX_VSIZE), FSP_ERR_INVALID_LAYER_SETTING);
     FSP_ERROR_RETURN((p_cfg->input.coordinate_x <= LAYER_MAX_HCOOR), FSP_ERR_INVALID_LAYER_SETTING);
-    FSP_ERROR_RETURN((p_cfg->input.coordinate_y <= LAYER_MAX_HCOOR), FSP_ERR_INVALID_LAYER_SETTING);
+    FSP_ERROR_RETURN((p_cfg->input.coordinate_y <= LAYER_MAX_VCOOR), FSP_ERR_INVALID_LAYER_SETTING);
 
     /* Check layer number */
     FSP_ERROR_RETURN((layer == 0 || layer == 1), FSP_ERR_INVALID_LAYER_SETTING);
@@ -501,6 +504,54 @@ fsp_err_t R_LCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
     R_LCDC->VI6_DL_BODY_SIZE0_b.UPD0 = 1;
 
     return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Placeholder for unsupported color correction function. Implements display_api_t::correction.
+ *
+ * @retval FSP_ERR_UNSUPPORTED      Color correction is not supported.
+ **********************************************************************************************************************/
+fsp_err_t R_LCDC_ColorCorrection (display_ctrl_t const * const       p_api_ctrl,
+                                  display_correction_t const * const p_correction)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+    FSP_PARAMETER_NOT_USED(p_correction);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Placeholder for unsupported CLUT update function. Implements display_api_t::clut.
+ *
+ * @retval FSP_ERR_UNSUPPORTED      CLUT update is not supported.
+ **********************************************************************************************************************/
+fsp_err_t R_LCDC_ClutUpdate (display_ctrl_t const * const     p_api_ctrl,
+                             display_clut_cfg_t const * const p_clut_cfg,
+                             display_frame_layer_t            layer)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+    FSP_PARAMETER_NOT_USED(p_clut_cfg);
+    FSP_PARAMETER_NOT_USED(layer);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Placeholder for unsupported CLUT edit function. Implements display_api_t::clutEdit.
+ *
+ * @retval FSP_ERR_UNSUPPORTED      CLUT edit is not supported.
+ **********************************************************************************************************************/
+fsp_err_t R_LCDC_ClutEdit (display_ctrl_t const * const p_api_ctrl,
+                           display_frame_layer_t        layer,
+                           uint8_t                      index,
+                           uint32_t                     color)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+    FSP_PARAMETER_NOT_USED(layer);
+    FSP_PARAMETER_NOT_USED(index);
+    FSP_PARAMETER_NOT_USED(color);
+
+    return FSP_ERR_UNSUPPORTED;
 }
 
 /*******************************************************************************************************************//**
@@ -1387,8 +1438,8 @@ static fsp_err_t r_lcdc_open_param_check_display_cycle (display_cfg_t const * co
     h_active = (p_cfg->output.htiming.display_cyc);
     v_active = p_cfg->output.vtiming.display_cyc;
 
-    FSP_ERROR_RETURN((h_active <= TIMING_MAX_1920), FSP_ERR_INVALID_TIMING_SETTING);
-    FSP_ERROR_RETURN((v_active <= TIMING_MAX_1080), FSP_ERR_INVALID_TIMING_SETTING);
+    FSP_ERROR_RETURN((h_active <= TIMING_MAX_H), FSP_ERR_INVALID_TIMING_SETTING);
+    FSP_ERROR_RETURN((v_active <= TIMING_MAX_V), FSP_ERR_INVALID_TIMING_SETTING);
 
     return FSP_SUCCESS;
 }

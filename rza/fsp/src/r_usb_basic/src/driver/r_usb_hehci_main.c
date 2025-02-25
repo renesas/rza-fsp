@@ -112,7 +112,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     uint32_t           addr;
 
     /* EHCI version check */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (USB_EHCI_VERSON != ptr->ipp->CAPL_VERSION_b.InterfaceVersionNumber)
@@ -124,12 +124,14 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (USB_EHCI_VERSON != ptr->ipp1->CAPL_VERSION_b.InterfaceVersionNumber)
         {
             USB_HCI_PRINTF1_R("HCIVERSION Error : %04x\n", ptr->ipp1->CAPL_VERSION_b.InterfaceVersionNumber);
 
             return USB_ERROR;
         }
+  #endif
     }
  #else
     if (USB_EHCI_VERSON != ptr->ipp->CAPL_VERSION_b.HCIVN)
@@ -152,14 +154,16 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     /*  Set Int Threshold  */
     /* =================== */
     /*  */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
-        ptr->ipp->USBCMD_b.InterruptThresholdControl = 1;  /* Interrupt Threshold == 1 micro-frame */
+        ptr->ipp->USBCMD_b.InterruptThresholdControl = 1; /* Interrupt Threshold == 1 micro-frame */
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.InterruptThresholdControl = 1; /* Interrupt Threshold == 1 micro-frame */
+  #endif
     }
  #else
     ptr->ipp->USBCMD_b.ITC = 1;                            /* Interrupt Threshold == 1 micro-frame */
@@ -168,7 +172,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     /* ============================== */
     /*  Set Periodic Frame List Size  */
     /* ============================== */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (ptr->ipp->HCCPARAMS_b.ProgramableFrameListFlag)
@@ -196,6 +200,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (ptr->ipp1->HCCPARAMS_b.ProgramableFrameListFlag)
         {
             if (USB_EHCI_PFL_SIZE == USB_VAL_512)
@@ -218,6 +223,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
                 return USB_ERROR;      /* error */
             }
         }
+  #endif
     }
  #else
     if (USB00->HCCPARAMS_b.PFLF)
@@ -253,7 +259,9 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.RS = 1;    /* Run/Stop = 1 */
+ #endif
     }
 
     /* ============================= */
@@ -272,35 +280,39 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
 
     /* Link PeriodicFrameList to PeriodicSchedule */
     addr = usb_hstd_ehci_get_periodic_frame_list_addr();
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         ptr->ipp->PERIODICLISTBASE = (uint32_t) r_usb_va_to_pa((uint64_t) addr);
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->PERIODICLISTBASE = (uint32_t) r_usb_va_to_pa((uint64_t) addr);
+  #endif
     }
  #else
     USB00->PERIODICLISTBASE = addr;
  #endif
 
     /* Enable Periodic Schedule */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         ptr->ipp->USBCMD_b.PeriodicScheduleEnable = 1;
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.PeriodicScheduleEnable = 1;
+  #endif
     }
  #else
     USB00->USBCMD_b.PSE = 1;
  #endif
 
     timeout = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         while (0 == ptr->ipp->USBSTS_b.PeriodicScheduleStatus)
@@ -318,6 +330,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         while (0 == ptr->ipp1->USBSTS_b.PeriodicScheduleStatus)
         {
             if (timeout > USB_EHCI_TIMEOUT)
@@ -330,6 +343,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
             R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
             timeout++;
         }
+  #endif
     }
  #else
     while (0 == USB00->USBSTS_b.PSCHSTS)
@@ -355,7 +369,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
         return USB_ERROR;
     }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_qh->queue_head_horizontal_link.address = (uint32_t) r_usb_va_to_pa((uint64_t) p_qh);
  #else
     p_qh->queue_head_horizontal_link.address = (uint32_t) p_qh;
@@ -364,21 +378,23 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     p_qh->endpoint1.bit.h = 1;
 
     /* Link QH to AsyncSchuedule */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         ptr->ipp->ASYNCLISTADDR = (uint32_t) r_usb_va_to_pa((uint64_t) p_qh);
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->ASYNCLISTADDR = (uint32_t) r_usb_va_to_pa((uint64_t) p_qh);
+  #endif
     }
  #else
     USB00->ASYNCLISTADDR = (uint32_t) p_qh;
  #endif
 
     /* Enable Asynchronous Schedule */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         ptr->ipp->USBCMD_b.AsynchronousScheduleEnable = 1;
@@ -386,8 +402,10 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.AsynchronousScheduleEnable = 1;
         ptr->ipp1->USBCMD_b.PerPortChangeEventsEnable  = 1;
+  #endif
     }
  #else
     ptr->ipp->USBCMD |= USB_VAL_ASUNSE;
@@ -400,7 +418,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     /* ================ */
     /*  Set Int Enable  */
     /* ================ */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         ptr->ipp->USBINTR_b.InterruptonAsyncAdvanceEnable = 1;
@@ -418,6 +436,7 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->USBINTR_b.InterruptonAsyncAdvanceEnable = 1;
         ptr->ipp1->USBINTR_b.HostSystemErrorEnable         = 1;
         ptr->ipp1->HCRHDESCRIPTORA_b.NOCP            = 1; /*over current off*/
@@ -430,10 +449,11 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
         ptr->ipp1->HCRHDESCRIPTORA_b.NOCP            = 0;
         ptr->ipp1->CONFIGFLAG_b.CF = 1;                  /* CF */
         ptr->ipp1->USBINTR_b.Port1ChangeEventEnable = 1; /* Port1 Change Enable */
+  #endif
     }
  #else
     ptr->ipp->USBINTR         = USB_VAL_INTR;
-    ptr->ipp->CONFIGFLAG_b.CF = 1;                       /* CF */
+    ptr->ipp->CONFIGFLAG_b.CF = 1;     /* CF */
  #endif
 
     /* ================== */
@@ -485,7 +505,7 @@ uint32_t usb_hstd_ehci_port_reset (usb_utr_t * ptr)
 
         /* Wait Port Reset bit was cleared */
         timeout = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         while (1 == ptr->ipp->PORTSC1_b.PortReset)
  #else
         while (1 == ptr->ipp->PORTSC1_b.PTRST)
@@ -508,6 +528,7 @@ uint32_t usb_hstd_ehci_port_reset (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         /* USB00.PORTSC1.BIT.PortReset = 1; */   /* Set Port Reset */
         portsc1_save       = ptr->ipp1->PORTSC1;
         ptr->ipp1->PORTSC1 = USB_VAL_0100 | (portsc1_save & USB_VAL_XFFD5);
@@ -518,11 +539,11 @@ uint32_t usb_hstd_ehci_port_reset (usb_utr_t * ptr)
 
         /* Wait Port Reset bit was cleared */
         timeout = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         while (1 == ptr->ipp1->PORTSC1_b.PortReset)
- #else
+  #else
         while (1 == ptr->ipp1->PORTSC1_b.PTRST)
- #endif
+  #endif
         {
             if (timeout > USB_EHCI_TIMEOUT)
             {
@@ -535,13 +556,14 @@ uint32_t usb_hstd_ehci_port_reset (usb_utr_t * ptr)
             timeout++;
         }
 
- #ifdef USB_CFG_HMSC_USE
+  #ifdef USB_CFG_HMSC_USE
         R_BSP_SoftwareDelay(USB_VAL_100, BSP_DELAY_UNITS_MILLISECONDS);
- #else
+  #else
         R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
- #endif
+  #endif
 
         result = TRUE;
+ #endif                                /* #if USB_NUM_USBIP == 2 */
     }
 
     return result;
@@ -574,14 +596,18 @@ uint32_t usb_hstd_ehci_get_frame_list_size (usb_utr_t * ptr)
     uint32_t frame_list_size = 0;
     uint32_t data;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         data = ptr->ipp->USBCMD_b.FrameListSize;
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         data = ptr->ipp1->USBCMD_b.FrameListSize;
+  #else
+        data = ptr->ipp->USBCMD_b.FrameListSize;
+  #endif
     }
  #else
     data = ptr->ipp->USBCMD_b.FLS;
@@ -633,10 +659,12 @@ void usb_hstd_ehci_wait_micro_frame (usb_utr_t * ptr, uint32_t uframe_no)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         while ((ptr->ipp1->FRINDEX & 0x00000003) == uframe_no)
         {
             ;
         }
+ #endif
     }
 }                                      /* End of function usb_hstd_ehci_wait_micro_frame() */
 
@@ -662,7 +690,11 @@ void usb_hstd_ehci_add_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         async_list_addr = ptr->ipp1->ASYNCLISTADDR;
+ #else
+        async_list_addr = ptr->ipp->ASYNCLISTADDR;
+ #endif
     }
 
     if (0x00000000 == async_list_addr)
@@ -671,7 +703,7 @@ void usb_hstd_ehci_add_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh)
     }
     else
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_qh_base = (st_usb_ehci_qh_t *) (r_usb_pa_to_va(async_list_addr));
  #else
         p_qh_base = (st_usb_ehci_qh_t *) async_list_addr;
@@ -679,7 +711,7 @@ void usb_hstd_ehci_add_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh)
         if (p_qh != p_qh_base)
         {
             /* QH addition */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             tmp.address = (uint32_t) r_usb_pa_to_va(p_qh_base->queue_head_horizontal_link.address);
             tmp.bit.typ = USB_EHCI_TYP_QH;
             p_qh->queue_head_horizontal_link.address = (uint32_t) r_usb_va_to_pa((uint64_t) tmp.address);
@@ -765,12 +797,16 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         periodic_list_addr = ptr->ipp1->PERIODICLISTBASE & USB_VAL_XF000;
+ #else
+        periodic_list_addr = ptr->ipp->PERIODICLISTBASE & USB_VAL_XF000;
+ #endif
     }
 
     if (0x00000000 != periodic_list_addr)
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         periodic_list_addr = (uint32_t) r_usb_pa_to_va(periodic_list_addr);
  #endif
     }
@@ -811,7 +847,7 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
             if (1 == p_current_element->bit.t)
             {
                 p_new_element->address = 0x00000001;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 tmp_element.address = (uint32_t) r_usb_va_to_pa((uint64_t) p_new_element);
  #else
                 tmp_element.address = (uint32_t) p_new_element;
@@ -821,7 +857,7 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
                 break;
             }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             tmp_addr = (uint32_t) r_usb_pa_to_va((uint64_t) (p_current_element->address & USB_VAL_XFFE0));
  #else
             tmp_addr = p_current_element->address & USB_VAL_XFFE0;
@@ -864,7 +900,7 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
             /* If paulrates are compared, and the value of the new element is large, the new element is added. */
             if (pollrate > current_element_pollrate)
             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 tmp_element.address = (uint32_t) r_usb_va_to_pa(tmp_addr);
  #else
                 tmp_element.address = tmp_addr;
@@ -872,7 +908,7 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
                 tmp_element.bit.typ = p_current_element->bit.typ;
                 *p_new_element      = tmp_element;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 tmp_element.address = (uint32_t) r_usb_va_to_pa((uint64_t) p_new_element);
  #else
                 tmp_element.address = (uint32_t) p_new_element;
@@ -883,7 +919,7 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
             }
 
             /* It shifts to the next element.  */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_current_element =
                 (u_usb_ehci_flep_t *) (r_usb_pa_to_va((uint64_t) (p_current_element->address & USB_VAL_XFFE0)));
  #else
@@ -907,7 +943,7 @@ void usb_hstd_ehci_add_periodic (usb_utr_t         * ptr,
  ***********************************************************************************************************************/
 void usb_hstd_ehci_link_qtd (st_usb_ehci_qtd_t * p_qtd1st, st_usb_ehci_qtd_t * p_qtd2nd)
 {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_qtd1st->next_qtd.address = (uint32_t) r_usb_va_to_pa((uint64_t) p_qtd2nd);
  #else
     p_qtd1st->next_qtd.address = (uint32_t) p_qtd2nd;
@@ -927,7 +963,7 @@ void usb_hstd_ehci_clear_qtd (st_usb_ehci_qtd_t * p_qtd_head)
     st_usb_ehci_qtd_t * p_clear_qtd;
     st_usb_ehci_qtd_t * p_next_qtd;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_clear_qtd = (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) p_qtd_head));
  #else
     p_clear_qtd = (st_usb_ehci_qtd_t *) p_qtd_head;
@@ -944,7 +980,7 @@ void usb_hstd_ehci_clear_qtd (st_usb_ehci_qtd_t * p_qtd_head)
 
         if (1 != p_clear_qtd->next_qtd.bit.t)
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_next_qtd =
                 (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) (p_clear_qtd->next_qtd.address & USB_VAL_XFFE0)));
  #else
@@ -973,7 +1009,7 @@ void usb_hstd_ehci_clear_qtd (st_usb_ehci_qtd_t * p_qtd_head)
 void usb_hstd_ehci_inactive_qtd (st_usb_ehci_qtd_t * p_qtd_head)
 {
     st_usb_ehci_qtd_t * p_clear_qtd;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_clear_qtd = (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) p_qtd_head));
  #else
     p_clear_qtd = p_qtd_head;
@@ -996,7 +1032,7 @@ void usb_hstd_ehci_inactive_qtd (st_usb_ehci_qtd_t * p_qtd_head)
             break;
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_clear_qtd =
             (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) (p_clear_qtd->next_qtd.address & USB_VAL_XFFE0)));
  #else
@@ -1035,22 +1071,28 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         if ((ptr->ipp1->ASYNCLISTADDR & USB_VAL_XFFE0) == 0x00000000)
         {
             USB_HCI_PRINTF0_R("usb_hstd_ehci_unlink_qh_for_async Error : ASYNCLISTADDR is not registered. \n");
 
             return;
         }
+ #endif
     }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         p_asynclist = (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) (ptr->ipp->ASYNCLISTADDR & USB_VAL_XFFE0)));
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         p_asynclist = (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) (ptr->ipp1->ASYNCLISTADDR & USB_VAL_XFFE0)));
+  #else
+        p_asynclist = (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) (ptr->ipp->ASYNCLISTADDR & USB_VAL_XFFE0)));
+  #endif
     }
  #else
     p_asynclist = (st_usb_ehci_qh_t *) (ptr->ipp->ASYNCLISTADDR & USB_VAL_XFFE0);
@@ -1060,7 +1102,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     /* check asynclist */
     /*-----------------*/
     /* When the next link of QH is oneself */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (((uint32_t) (uintptr_t) p_qh ==
          r_usb_pa_to_va((uint64_t) (p_qh->queue_head_horizontal_link.address & USB_VAL_XFFE0))))
  #else
@@ -1076,14 +1118,18 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
         }
 
         /* disable Asynchronous Schedule */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         if (USB_IP0 == ptr->ip)
         {
             ptr->ipp->USBCMD_b.AsynchronousScheduleParkModeEnable = 0;
         }
         else
         {
+  #if USB_NUM_USBIP == 2
             ptr->ipp1->USBCMD_b.AsynchronousScheduleParkModeEnable = 0;
+  #else
+            ptr->ipp->USBCMD_b.AsynchronousScheduleParkModeEnable = 0;
+  #endif
         }
  #else
         ptr->ipp->USBCMD_b.ASPME = 0;
@@ -1091,7 +1137,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
 
         /* wait async schedule disabled */
         timeout = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         if (USB_IP0 == ptr->ip)
         {
             while (1 == ptr->ipp->USBSTS_b.PeriodicScheduleStatus)
@@ -1107,6 +1153,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
         }
         else
         {
+  #if USB_NUM_USBIP == 2
             while (1 == ptr->ipp1->USBSTS_b.PeriodicScheduleStatus)
             {
                 if (timeout > USB_EHCI_TIMEOUT)
@@ -1117,6 +1164,18 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
                 usb_cpu_delay_xms(1);
                 timeout++;
             }
+  #else
+            while (1 == ptr->ipp->USBSTS_b.PeriodicScheduleStatus)
+            {
+                if (timeout > USB_EHCI_TIMEOUT)
+                {
+                    break;
+                }
+
+                usb_cpu_delay_xms(1);
+                timeout++;
+            }
+  #endif
         }
  #else
         while (1 == ptr->ipp->USBSTS_b.PSCHSTS)
@@ -1138,8 +1197,13 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
         }
         else
         {
+ #if USB_NUM_USBIP == 2
             /* clear AsyncSchuedule */
             ptr->ipp1->ASYNCLISTADDR = 0;
+ #else
+            /* clear AsyncSchuedule */
+            ptr->ipp->ASYNCLISTADDR = 0;
+ #endif
         }
 
         return;
@@ -1150,7 +1214,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     {
         /* The setting of asynclist is changed to the next QH */
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_asynclist =
             (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) (p_asynclist->queue_head_horizontal_link.address &
                                                              USB_VAL_XFFE0)));
@@ -1163,7 +1227,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     /* scan QH */
     /*---------*/
     p_current_element = p_asynclist;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     current_contents =
         (uint32_t) r_usb_pa_to_va((uint64_t) (p_current_element->queue_head_horizontal_link.address & USB_VAL_XFFE0));
  #else
@@ -1181,7 +1245,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
 
         if (current_contents != (uint32_t) (uintptr_t) p_qh)
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_current_element =
                 (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) (p_current_element->queue_head_horizontal_link.address &
                                                                  USB_VAL_XFFE0)));
@@ -1196,7 +1260,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
                 return;
             }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             current_contents =
                 (uint32_t) r_usb_pa_to_va((uint64_t) (p_current_element->queue_head_horizontal_link.address &
                                                       USB_VAL_XFFE0));
@@ -1206,7 +1270,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
         }
         else
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_current_element->queue_head_horizontal_link.address = (uint32_t) r_usb_va_to_pa(
                 (uint64_t) p_qh->queue_head_horizontal_link.address);
  #else
@@ -1220,14 +1284,16 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     /* unlink QH */
     /*-----------*/
     /* doorbell */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         ptr->ipp->USBCMD_b.InterruptonAsyncAdvanceDoorbell = 1;
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.InterruptonAsyncAdvanceDoorbell = 1;
+  #endif
     }
  #else
     ptr->ipp->USBCMD_b.IAAD = 1;
@@ -1236,7 +1302,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     /* It is necessary to wait here for 1ms */
     usb_cpu_delay_xms(1);
     timeout = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         while (1 == ptr->ipp->USBSTS_b.InterruptonAsyncAdvance)
@@ -1252,6 +1318,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         while (1 == ptr->ipp1->USBSTS_b.InterruptonAsyncAdvance)
         {
             if (timeout > USB_EHCI_TIMEOUT)
@@ -1262,6 +1329,7 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
             usb_cpu_delay_xms(1);
             timeout++;
         }
+  #endif
     }
  #else
     while (1 == ptr->ipp->USBSTS_b.IAAIS)
@@ -1283,8 +1351,10 @@ void usb_hstd_ehci_unlink_qh_for_async (usb_utr_t * ptr, st_usb_ehci_qh_t * p_qh
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         /* USB00.USBSTS.BIT.InterruptonAsyncAdvance = 1; */
         ptr->ipp1->USBSTS &= USB_VAL_1F020;
+ #endif
     }
 
  #ifdef DEBUG_PRINT_ASYNC_SCHEDULING
@@ -1551,7 +1621,7 @@ void usb_hstd_ehci_int_transfer_end (usb_utr_t * ptr)
 
             if (USB_HCI_HCTYPE_EHCI == p_tr_req->devinfo->bit.hctype)
             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 if (0 != (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info)))
  #else
                 if (NULL != p_tr_req->hci_info)
@@ -1562,7 +1632,7 @@ void usb_hstd_ehci_int_transfer_end (usb_utr_t * ptr)
                         /* for isochronous */
                         if (USB_HCI_DEVSPEED_HS == p_tr_req->devinfo->bit.devspeed)
                         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                             p_itd = (st_usb_ehci_itd_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
                             p_itd = (st_usb_ehci_itd_t *) p_tr_req->hci_info;
@@ -1594,7 +1664,7 @@ void usb_hstd_ehci_int_transfer_end (usb_utr_t * ptr)
                         }
                         else
                         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                             p_sitd = (st_usb_ehci_sitd_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
                             p_sitd = (st_usb_ehci_sitd_t *) p_tr_req->hci_info;
@@ -1641,7 +1711,7 @@ void usb_hstd_ehci_int_transfer_end (usb_utr_t * ptr)
                         error_status = 0x00;
 
                         /* for interrupt/control/bulk */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                         p_qh        = (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
                         tmp_qtd_end = (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) (p_qh->qtd_end)));
  #else
@@ -1706,7 +1776,7 @@ void usb_hstd_ehci_int_transfer_end (usb_utr_t * ptr)
                             }
                             else if (0x00 != error_status)
                             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                                 p_qtd_address = (st_usb_ehci_qtd_t *) (uintptr_t) p_qh->current_qtd.address;
 
                                 /* Error Check */
@@ -1759,7 +1829,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
  #ifdef DEBUG_PRINT_PORT_INFOMATION
     usb_hstd_ehci_print_port_information(ptr);
  #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (1 == ptr->ipp->PORTSC1_b.PortOwner)
@@ -1769,10 +1839,12 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (1 == ptr->ipp1->PORTSC1_b.PortOwner)
         {
             return;
         }
+  #endif
     }
  #else
     if (1 == ptr->ipp->PORTSC1_b.PTOWNR)
@@ -1781,7 +1853,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
     }
  #endif
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (1 == ptr->ipp->PORTSC1_b.OvercurrentChange)
@@ -1807,6 +1879,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (1 == ptr->ipp1->PORTSC1_b.OvercurrentChange)
         {
             if (1 == ptr->ipp1->PORTSC1_b.OvercurrentActive)
@@ -1827,6 +1900,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
                 /* port disable */
             }
         }
+  #endif                               /* #if USB_NUM_USBIP == 2 */
     }
  #else
     if (1 == ptr->ipp->PORTSC1_b.OVCC)
@@ -1851,7 +1925,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
     }
  #endif
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (1 == ptr->ipp->PORTSC1_b.ConnectStatusChange)
@@ -1925,6 +1999,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (1 == ptr->ipp1->PORTSC1_b.ConnectStatusChange)
         {
             /* Here is waited for until Current_Connect_Status is fixed */
@@ -1992,6 +2067,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
                 }
             }
         }
+  #endif                               /* #if USB_NUM_USBIP == 2 */
     }
  #else
     if (1 == ptr->ipp->PORTSC1_b.CSC)
@@ -2073,7 +2149,7 @@ void usb_hstd_ehci_int_port_change (usb_utr_t * ptr)
 uint32_t usb_hstd_ehci_get_port_current_connect_status (usb_utr_t * ptr)
 {
     uint32_t n_ports;
-    uint32_t status;
+    uint32_t status = 0;
 
     if (USB_IP0 == ptr->ip)
     {
@@ -2081,7 +2157,11 @@ uint32_t usb_hstd_ehci_get_port_current_connect_status (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         n_ports = ptr->ipp1->HCSPARAMS_b.N_PORTS;
+ #else
+        n_ports = ptr->ipp->HCSPARAMS_b.N_PORTS;
+ #endif
     }
 
     if (ptr->ip >= n_ports)
@@ -2089,7 +2169,7 @@ uint32_t usb_hstd_ehci_get_port_current_connect_status (usb_utr_t * ptr)
         return 0;
     }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         status  = ptr->ipp->PORTSC1_b.CurrentConnectStatus;
@@ -2097,8 +2177,10 @@ uint32_t usb_hstd_ehci_get_port_current_connect_status (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         status  = ptr->ipp1->PORTSC1_b.CurrentConnectStatus;
         status |= ptr->ipp1->PORTSC1_b.PortOwner;
+  #endif
     }
  #else
     status  = ptr->ipp->PORTSC1_b.CCSTS;
@@ -2132,7 +2214,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
     {
         if ((0 != ptr->ipp->USBSTS) && (0 != ptr->ipp->USBINTR))
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp->USBSTS_b.HostSystemError) && (1 == ptr->ipp->USBINTR_b.HostSystemErrorEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_HOST_SYSTEM_ERROR, 0, 0, 0);
@@ -2149,7 +2231,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 ptr->ipp->USBSTS &= USB_VAL_1F010;
             }
  #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp->USBSTS_b.PortChangeDetect) && (1 == ptr->ipp->USBINTR_b.PortChangeDetectEnable))
             {
                 g_usb_port_status[ptr->ip][0] = ptr->ipp->PORTSC1_b.CurrentConnectStatus;
@@ -2168,7 +2250,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 ptr->ipp->USBSTS &= USB_VAL_1F004;
             }
  #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp->USBSTS_b.USBERRINT) && (1 == ptr->ipp->USBINTR_b.USBErrorInterruptEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
@@ -2185,7 +2267,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 ptr->ipp->USBSTS &= USB_VAL_1F002;
             }
  #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp->USBSTS_b.InterruptonAsyncAdvance) &&
                 (1 == ptr->ipp->USBINTR_b.InterruptonAsyncAdvanceEnable))
             {
@@ -2213,7 +2295,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 ptr->ipp->USBSTS &= USB_VAL_1F020;
             }
  #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp->USBSTS_b.FrameListRollover) && (1 == ptr->ipp->USBINTR_b.FrameListRolloverEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_FRAME_LIST_ROLLOVER, 0, 0, 0);
@@ -2230,7 +2312,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 ptr->ipp->USBSTS &= USB_VAL_1F008;
             }
  #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp->USBSTS_b.USBINT) && (1 == ptr->ipp->USBINTR_b.USBInterruptEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBINT, 0, 0, 0);
@@ -2251,9 +2333,10 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         if ((0 != ptr->ipp1->USBSTS) && (0 != ptr->ipp1->USBINTR))
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp1->USBSTS_b.HostSystemError) && (1 == ptr->ipp1->USBINTR_b.HostSystemErrorEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_HOST_SYSTEM_ERROR, 0, 0, 0);
@@ -2261,7 +2344,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1.USBSTS.BIT.HostSystemError = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F010;
             }
- #else
+  #else
             if ((1 == ptr->ipp1->USBSTS_b.HSYSE) && (1 == ptr->ipp1->USBINTR_b.HSEE))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_HOST_SYSTEM_ERROR, 0, 0, 0);
@@ -2269,8 +2352,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1->USBSTS_b.HSYSE = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F010;
             }
- #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #endif
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp1->USBSTS_b.PortChangeDetect) && (1 == ptr->ipp1->USBINTR_b.PortChangeDetectEnable))
             {
                 g_usb_port_status[ptr->ip][0] = ptr->ipp1->PORTSC1_b.CurrentConnectStatus;
@@ -2280,7 +2363,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1.USBSTS.BIT.PortChangeDetect = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F004;
             }
- #else
+  #else
             if ((1 == ptr->ipp1->USBSTS_b.PTCGDET) && (1 == ptr->ipp1->USBINTR_b.PTCGIE))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_PORT_CHANGE_DETECT, 0, 0, 0);
@@ -2288,8 +2371,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1->USBSTS_b.PTCGDET = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F004;
             }
- #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #endif
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp1->USBSTS_b.USBERRINT) && (1 == ptr->ipp1->USBINTR_b.USBErrorInterruptEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
@@ -2297,7 +2380,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1.USBSTS.BIT.USBERRINT = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F002;
             }
- #else
+  #else
             if ((1 == ptr->ipp1->USBSTS_b.USBERRINT) && (1 == ptr->ipp1->USBINTR_b.USBEIE))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBERRINT, 0, 0, 0);
@@ -2305,8 +2388,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1->USBSTS_b.USBERRINT = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F002;
             }
- #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #endif
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp1->USBSTS_b.InterruptonAsyncAdvance) &&
                 (1 == ptr->ipp1->USBINTR_b.InterruptonAsyncAdvanceEnable))
             {
@@ -2320,7 +2403,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1.USBSTS.BIT.InterruptonAsyncAdvance = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F020;
             }
- #else
+  #else
             if ((1 == ptr->ipp1->USBSTS_b.IAAIS) && (1 == ptr->ipp1->USBINTR_b.INTAADVE))
             {
                 usb_hstd_hci_send_message_from_int(ptr,
@@ -2333,8 +2416,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1->USBSTS_b.IAAIS = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F020;
             }
- #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #endif
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp1->USBSTS_b.FrameListRollover) && (1 == ptr->ipp1->USBINTR_b.FrameListRolloverEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_FRAME_LIST_ROLLOVER, 0, 0, 0);
@@ -2342,7 +2425,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1.USBSTS.BIT.FrameListRollover = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F008;
             }
- #else
+  #else
             if ((1 == ptr->ipp1->USBSTS_b.FLROV) && (1 == ptr->ipp1->USBINTR_b.FMLSTROE))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_FRAME_LIST_ROLLOVER, 0, 0, 0);
@@ -2350,8 +2433,8 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1->USBSTS_b.FLROV = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F008;
             }
- #endif
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #endif
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if ((1 == ptr->ipp1->USBSTS_b.USBINT) && (1 == ptr->ipp1->USBINTR_b.USBInterruptEnable))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBINT, 0, 0, 0);
@@ -2359,7 +2442,7 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1.USBSTS.BIT.USBINT = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F001;
             }
- #else
+  #else
             if ((1 == ptr->ipp1->USBSTS_b.USBINT) && (1 == ptr->ipp1->USBINTR_b.USBIE))
             {
                 usb_hstd_hci_send_message_from_int(ptr, USB_HCI_TASK, USB_HCI_MESS_EHCI_USBINT, 0, 0, 0);
@@ -2367,8 +2450,9 @@ void usb_hstd_ehci_interrupt_handler (usb_utr_t * ptr)
                 /* ptr->ipp1->USBSTS_b.USBINT = 1; */
                 ptr->ipp1->USBSTS &= USB_VAL_1F001;
             }
- #endif
+  #endif
         }
+ #endif                                /* #if USB_NUM_USBIP == 2 */
     }
 }                                      /* End of function usb_hstd_ehci_interrupt_handler() */
 
@@ -2561,7 +2645,7 @@ uint16_t usb_hstd_ehci_get_pid_status (st_usb_hci_tr_req_t * p_tr_req)
         {
             if (USB_EP_ISO != p_tr_req->bit.eptype)
             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 p_qh = (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
                 p_qh = (st_usb_ehci_qh_t *) p_tr_req->hci_info;
@@ -2617,12 +2701,14 @@ void usb_hstd_ehci_port_suspend (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         portsc1_save       = ptr->ipp1->PORTSC1;
         ptr->ipp1->PORTSC1 = USB_VAL_SC_WK | (portsc1_save & USB_VAL_XFFD5);
 
         /* ptr->ipp1->PORTSC1_b.SUSPEND       = 1; */    /* Set Suspend */
         portsc1_save       = ptr->ipp1->PORTSC1;
         ptr->ipp1->PORTSC1 = USB_VAL_SUSP | (portsc1_save & USB_VAL_XFFD5);
+ #endif
     }
 }                                      /* End of function usb_hstd_ehci_port_suspend() */
 
@@ -2644,7 +2730,7 @@ void usb_hstd_ehci_port_resume (usb_utr_t * ptr)
         return;
     }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if ((1 == ptr->ipp->PORTSC1_b.Suspend) && (1 == ptr->ipp->PORTSC1_b.PortEnabled_Disabled))
@@ -2665,6 +2751,7 @@ void usb_hstd_ehci_port_resume (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if ((1 == ptr->ipp1->PORTSC1_b.Suspend) && (1 == ptr->ipp1->PORTSC1_b.PortEnabled_Disabled))
         {
             /* Set Force Port Resume */
@@ -2680,6 +2767,7 @@ void usb_hstd_ehci_port_resume (usb_utr_t * ptr)
                 usb_cpu_delay_xms(1);
             } while ((ptr->ipp1->PORTSC1_b.Suspend != 0) && (ptr->ipp1->PORTSC1_b.PortEnabled_Disabled != 0));
         }
+  #endif
     }
  #else
     if ((1 == ptr->ipp->PORTSC1_b.SUSPEND) && (1 == ptr->ipp->PORTSC1_b.PTE))
@@ -2723,7 +2811,7 @@ void usb_hstd_ehci_cancel_transfer_request (st_usb_hci_tr_req_t * p_tr_req)
         return;
     }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (0 != (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info)))
  #else
     if (NULL != p_tr_req->hci_info)
@@ -2733,7 +2821,7 @@ void usb_hstd_ehci_cancel_transfer_request (st_usb_hci_tr_req_t * p_tr_req)
         {
             if (USB_HCI_DEVSPEED_HS == p_tr_req->devinfo->bit.devspeed)
             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 p_itd = (st_usb_ehci_itd_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
                 p_itd = (st_usb_ehci_itd_t *) p_tr_req->hci_info;
@@ -2747,7 +2835,7 @@ void usb_hstd_ehci_cancel_transfer_request (st_usb_hci_tr_req_t * p_tr_req)
             }
             else
             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 p_sitd = (st_usb_ehci_sitd_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
                 p_sitd = (st_usb_ehci_sitd_t *) p_tr_req->hci_info;
@@ -2759,7 +2847,7 @@ void usb_hstd_ehci_cancel_transfer_request (st_usb_hci_tr_req_t * p_tr_req)
         }
         else
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_qh = (st_usb_ehci_qh_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
 
             /* inactivate qh */
@@ -2825,11 +2913,13 @@ static uint32_t usb_hstd_ehci_hw_reset (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.RS = 0;    /* Clear Run/Stop bit. Stop HC */
+ #endif
     }
 
     timeout = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         while (0 == ptr->ipp->USBSTS_b.HCHalted) /* Wait Halted == 1 */
@@ -2848,6 +2938,7 @@ static uint32_t usb_hstd_ehci_hw_reset (usb_utr_t * ptr)
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         while (0 == ptr->ipp1->USBSTS_b.HCHalted) /* Wait Halted == 1 */
         {
             if (timeout > USB_EHCI_TIMEOUT)
@@ -2861,6 +2952,7 @@ static uint32_t usb_hstd_ehci_hw_reset (usb_utr_t * ptr)
             R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
             timeout++;
         }
+  #endif
     }
  #else
     while (0 == USB00->USBSTS_b.EHCSTS) /* Wait Halted == 1 */
@@ -2883,11 +2975,13 @@ static uint32_t usb_hstd_ehci_hw_reset (usb_utr_t * ptr)
     /* =========== */
     if (USB_IP0 == ptr->ip)
     {
-        ptr->ipp->USBCMD_b.HCRESET = 1;  /* Reset */
+        ptr->ipp->USBCMD_b.HCRESET = 1; /* Reset */
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         ptr->ipp1->USBCMD_b.HCRESET = 1; /* Reset */
+ #endif
     }
 
     timeout = 0;
@@ -2909,6 +3003,7 @@ static uint32_t usb_hstd_ehci_hw_reset (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         while (1 == ptr->ipp1->USBCMD_b.HCRESET)
         {
             if (timeout > USB_EHCI_TIMEOUT)
@@ -2922,6 +3017,7 @@ static uint32_t usb_hstd_ehci_hw_reset (usb_utr_t * ptr)
             R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
             timeout++;
         }
+ #endif
     }
 
     return USB_OK;
@@ -2949,7 +3045,11 @@ static void usb_hstd_ehci_set_port_route (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         n_ports = ptr->ipp1->HCSPARAMS_b.N_PORTS;
+ #else
+        n_ports = ptr->ipp->HCSPARAMS_b.N_PORTS;
+ #endif
     }
 
     for (n = 0; n < n_ports; n++)
@@ -2963,11 +3063,13 @@ static void usb_hstd_ehci_set_port_route (usb_utr_t * ptr)
         }
         else
         {
+ #if USB_NUM_USBIP == 2
             portsc1_save       = ptr->ipp1->PORTSC1;
             ptr->ipp1->PORTSC1 = USB_VAL_X1000 | (portsc1_save & USB_VAL_XDFD5);
+ #endif
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         if (USB_IP0 == ptr->ip)
         {
             if (1 == ptr->ipp->PORTSC1_b.OvercurrentChange)
@@ -2979,12 +3081,14 @@ static void usb_hstd_ehci_set_port_route (usb_utr_t * ptr)
         }
         else
         {
+  #if USB_NUM_USBIP == 2
             if (1 == ptr->ipp1->PORTSC1_b.OvercurrentChange)
             {
                 /* ptr->ipp1.PORTSC1.BIT.OvercurrentChange = 1; */   /* Clear Over-curent */
                 portsc1_save       = ptr->ipp1->PORTSC1;
                 ptr->ipp1->PORTSC1 = USB_VAL_X20 | (portsc1_save & USB_VAL_XFFD5);
             }
+  #endif
         }
  #else
         if (1 == ptr->ipp->PORTSC1_b.OVCC)
@@ -3012,7 +3116,7 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
     *p_hs_enable_flag = FALSE;
 
     /* Device existence confirmation */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (0 == ptr->ipp->PORTSC1_b.CurrentConnectStatus)
@@ -3022,10 +3126,12 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (0 == ptr->ipp1->PORTSC1_b.CurrentConnectStatus)
         {
             return FALSE;
         }
+  #endif
     }
  #else
     if (0 == USB00->PORTSC1_b.CCSTS)
@@ -3035,7 +3141,7 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
  #endif
 
     /* For Low-Speed Device */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (USB_EHCI_LINE_STATE_K == ptr->ipp->PORTSC1_b.LineStatus)
@@ -3045,10 +3151,12 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (USB_EHCI_LINE_STATE_K == ptr->ipp1->PORTSC1_b.LineStatus)
         {
             return TRUE;
         }
+  #endif
     }
  #else
     if (USB_EHCI_LINE_STATE_K == USB00->PORTSC1_b.LINESTS)
@@ -3064,7 +3172,7 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
     }
 
     /* Device existence confirmation */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (0 == ptr->ipp->PORTSC1_b.CurrentConnectStatus)
@@ -3074,10 +3182,12 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (0 == ptr->ipp1->PORTSC1_b.CurrentConnectStatus)
         {
             return FALSE;
         }
+  #endif
     }
  #else
     if (0 == USB00->PORTSC1_b.CCSTS)
@@ -3087,7 +3197,7 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
  #endif
 
     /* HS Device Enable confirmation */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
         if (1 == ptr->ipp->PORTSC1_b.PortEnabled_Disabled)
@@ -3097,10 +3207,12 @@ static uint32_t usb_hstd_ehci_port_enable (usb_utr_t * ptr, uint32_t * p_hs_enab
     }
     else
     {
+  #if USB_NUM_USBIP == 2
         if (1 == ptr->ipp1->PORTSC1_b.PortEnabled_Disabled)
         {
             *p_hs_enable_flag = TRUE;
         }
+  #endif
     }
  #else
     if (1 == USB00->PORTSC1_b.PTE)
@@ -3175,12 +3287,16 @@ static uint32_t usb_hstd_ehci_unlink_periodic (usb_utr_t * ptr, u_usb_ehci_flep_
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         periodic_list_addr = ptr->ipp1->PERIODICLISTBASE & USB_VAL_XF000;
+ #else
+        periodic_list_addr = ptr->ipp->PERIODICLISTBASE & USB_VAL_XF000;
+ #endif
     }
 
     if (0x00000000 != periodic_list_addr)
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         periodic_list_addr = (uint32_t) r_usb_pa_to_va((uint64_t) periodic_list_addr);
  #endif
     }
@@ -3211,7 +3327,7 @@ static uint32_t usb_hstd_ehci_unlink_periodic (usb_utr_t * ptr, u_usb_ehci_flep_
             break;
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         if ((r_usb_pa_to_va((uint64_t) (p_current_element->address & USB_VAL_XFFE0))) == (uint32_t) (uintptr_t) p_data)
  #else
         if ((p_current_element->address & USB_VAL_XFFE0) == (uint32_t) p_data)
@@ -3226,7 +3342,7 @@ static uint32_t usb_hstd_ehci_unlink_periodic (usb_utr_t * ptr, u_usb_ehci_flep_
         if ((p_current_element->address & USB_VAL_XFFE0) != (uint32_t) (uintptr_t) p_data)
         {
             /* The nest qh/itd/sitd is retrieved referring to the next link pointer.  */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_current_element =
                 (u_usb_ehci_flep_t *) (r_usb_pa_to_va((uint64_t) (p_current_element->address & USB_VAL_XFFE0)));
  #else
@@ -3371,7 +3487,7 @@ static void usb_hstd_ehci_print_async_scheduling (st_usb_ehci_qh_t * p_h_qh)
             }
 
             USB_HCI_PRINTF0("\n");
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             tmp_addr = (r_usb_pa_to_va((uint64_t) p_qh->queue_head_horizontal_link.address & USB_VAL_XFFE0));
             p_qh     = (st_usb_ehci_qh_t *) tmp_addr;
   #else
@@ -3424,7 +3540,7 @@ static void usb_hstd_ehci_print_periodec_scheduling_list (usb_utr_t * ptr)
     }
     else if (0x00000000 != periodic_list_addr)
     {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         periodic_list_addr = (r_usb_pa_to_va((uint64_t) periodic_list_addr));
   #else
         periodic_list_addr = r_usb_pa_to_va(periodic_list_addr);
@@ -3451,7 +3567,7 @@ static void usb_hstd_ehci_print_periodec_scheduling_list (usb_utr_t * ptr)
                 break;
             }
 
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             tmp_addr = (r_usb_pa_to_va((uint64_t) p_current_element->Address & USB_VAL_XFFE0));
   #else
             tmp_addr = r_usb_pa_to_va((uint32_t) p_current_element->Address & USB_VAL_XFFE0);
@@ -3489,7 +3605,7 @@ static void usb_hstd_ehci_print_periodec_scheduling_list (usb_utr_t * ptr)
                 }
             }
 
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             tmp_addr = (r_usb_pa_to_va((uint64_t) p_current_element->address & USB_VAL_XFFE0));
             p_qh     = (u_usb_ehci_flep_t *) tmp_addr;
   #else

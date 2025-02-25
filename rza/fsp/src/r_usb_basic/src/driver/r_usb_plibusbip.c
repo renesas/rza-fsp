@@ -105,7 +105,7 @@ uint16_t usb_pstd_pipe2fport (usb_utr_t * p_utr, uint16_t pipe)
     }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
     if ((0 != p_utr->p_transfer_tx) || (0 != p_utr->p_transfer_rx))
     {
         if ((USB_PIPE1 == pipe) || (USB_PIPE2 == pipe))
@@ -237,14 +237,13 @@ void usb_pstd_send_start (uint16_t pipe)
         }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-
         /* D0FIFO DMA */
         case USB_D0USE:
 
         /* D1FIFO DMA */
         case USB_D1USE:
         {
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_CFG_IP0 == pp->ip)
             {
                 ip           = USB_IP0;
@@ -495,14 +494,13 @@ void usb_pstd_receive_start (uint16_t pipe)
         }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-
         /* D0FIFO DMA */
         case USB_D0USE:
 
         /* D1FIFOB DMA */
         case USB_D1USE:
         {
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_CFG_IP0 == pp->ip)
             {
                 ip           = USB_IP0;
@@ -715,7 +713,6 @@ void usb_pstd_data_end (uint16_t pipe, uint16_t status, usb_utr_t * p_utr)
         }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-
         /* D0FIFO DMA */
         case USB_D0USE:
         {
@@ -784,7 +781,7 @@ void usb_pstd_data_end (uint16_t pipe, uint16_t status, usb_utr_t * p_utr)
         usb_cstd_pipe_msg_re_forward(USB_IP0, pipe); /* Get PIPE Transfer wait que and Message send to PCD */
  #else  /* (BSP_CFG_RTOS == 2) */
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t *) USB_NULL;
- #endif                                /* (BSP_CFG_RTOS == 2) */
+ #endif                                              /* (BSP_CFG_RTOS == 2) */
     }
 }
 
@@ -830,7 +827,7 @@ void usb_pstd_brdy_pipe_process (usb_utr_t * p_utr, uint16_t bitsts)
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
                 if ((USB_D0USE == useport) || (USB_D1USE == useport))
                 {
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
                     dma_ch = usb_cstd_dma_ref_ch_no(p_utr, useport);
 
                     maxps = g_usb_cstd_dma_fifo[p_utr->ip][dma_ch];
@@ -871,8 +868,7 @@ void usb_pstd_brdy_pipe_process (usb_utr_t * p_utr, uint16_t bitsts)
                     trans_dma_block_cnt = usb_cstd_dma_get_crtb(dma_ch);
   #endif                               /* BSP_MCU_GROUP_RZT2M */
 
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
-
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
                     /* Get D0fifo Receive Data Length */
                     g_usb_cstd_dma_size[p_utr->ip][dma_ch] = (uint32_t) (buffer & USB_DTLN);
   #endif                               /* BSP_MCU_GROUP_RZT2M */
@@ -1065,7 +1061,7 @@ uint8_t usb_pstd_set_pipe_table (uint8_t * descriptor, usb_utr_t * p_utr, uint8_
     uint8_t  pipe_no;
     uint16_t pipe_cfg;
     uint16_t pipe_maxp;
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     uint16_t pipe_buf;
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
 
@@ -1100,9 +1096,9 @@ uint8_t usb_pstd_set_pipe_table (uint8_t * descriptor, usb_utr_t * p_utr, uint8_
             {
                 pipe_cfg |= (uint16_t) (USB_CFG_CNTMD);
             }
- #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) /* defined(BSP_MCU_GROUP_RA6M3) */
+ #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB) /* defined(BSP_MCU_GROUP_RA6M3) */
             pipe_cfg |= (uint16_t) (USB_CFG_CNTMD);
- #endif                                                              /* defined(BSP_MCU_GROUP_RA6M3) */
+ #endif                                                               /* defined(BSP_MCU_GROUP_RA6M3) */
             break;
         }
 
@@ -1161,18 +1157,18 @@ uint8_t usb_pstd_set_pipe_table (uint8_t * descriptor, usb_utr_t * p_utr, uint8_
         {
             (void) pipe_buf;
         }
- #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) /*defined(BSP_MCU_GROUP_RA6M3)*/
+ #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB) /*defined(BSP_MCU_GROUP_RA6M3)*/
         pipe_buf = usb_pstd_get_pipe_buf_value(pipe_no);
         g_usb_pipe_table[p_utr->ip][pipe_no].pipe_buf = pipe_buf;
- #endif                                                              /* defined(BSP_MCU_GROUP_RA6M3) */
+ #endif                                                               /* defined(BSP_MCU_GROUP_RA6M3) */
     }
     else
     {
-        pipe_no = USB_NULL;                                          /* Error */
+        pipe_no = USB_NULL;                                           /* Error */
     }
 
     return pipe_no;
-}                                                                    /* eof usb_pstd_set_pipe_table() */
+}                                                                     /* eof usb_pstd_set_pipe_table() */
 
 /******************************************************************************
  * Function Name   : usb_pstd_clr_pipe_table
@@ -1199,9 +1195,9 @@ void usb_pstd_clr_pipe_table (uint8_t usb_ip)
             {
                 g_usb_pipe_table[usb_ip][pipe_no].pipe_buf = USB_NULL;
             }
- #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) /* defined(BSP_MCU_GROUP_RA6M3) */
+ #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB) /* defined(BSP_MCU_GROUP_RA6M3) */
             g_usb_pipe_table[usb_ip][pipe_no].pipe_buf = USB_NULL;
- #endif                                                              /* defined(BSP_MCU_GROUP_RA6M3) */
+ #endif                                                               /* defined(BSP_MCU_GROUP_RA6M3) */
             g_usb_pipe_table[usb_ip][pipe_no].pipe_maxp = USB_NULL;
             g_usb_pipe_table[usb_ip][pipe_no].pipe_peri = USB_NULL;
         }
@@ -1435,7 +1431,7 @@ uint8_t usb_pstd_get_pipe_no (uint8_t type, uint8_t dir, usb_utr_t * p_utr, uint
     return pipe_no;
 }
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
 /******************************************************************************
  * Function Name   : usb_pstd_get_pipe_buf_value

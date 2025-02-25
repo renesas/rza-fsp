@@ -53,7 +53,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     /* Register Save */
     if (USB_CFG_IP1 == usb_ip)
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         intsts0 = USB_M1->INTSTS0;
         brdysts = USB_M1->BRDYSTS;
         nrdysts = USB_M1->NRDYSTS;
@@ -97,7 +97,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTSTS0 = (uint16_t) ~USB_RESM;
  #endif
         }
@@ -115,7 +115,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
         /* Status clear */
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTSTS0 = (uint16_t) ~USB_VBINT;
  #endif
         }
@@ -133,7 +133,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
         /* SOFR Clear */
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTSTS0 = (uint16_t) ~USB_SOFR;
  #endif
         }
@@ -152,7 +152,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
         /* DVST clear */
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTSTS0 = (uint16_t) ~USB_DVST;
  #endif
         }
@@ -170,7 +170,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BRDYSTS = (uint16_t) ((~USB_BRDY0) & BRDYSTS_MASK);
  #endif
         }
@@ -186,7 +186,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BEMPSTS = (uint16_t) ((~USB_BEMP0) & BEMPSTS_MASK);
  #endif
         }
@@ -202,7 +202,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->NRDYSTS = (uint16_t) ((~USB_NRDY0) & NRDYSTS_MASK);
  #endif
         }
@@ -225,7 +225,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
         /* USB_CTRT clear */
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->INTSTS0 = (uint16_t) ~USB_CTRT;
  #endif
         }
@@ -251,7 +251,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BRDYSTS = (uint16_t) ((uint16_t) (~bsts) & BRDYSTS_MASK);
  #endif
         }
@@ -267,7 +267,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->BEMPSTS = (uint16_t) ((uint16_t) (~ests) & BEMPSTS_MASK);
  #endif
         }
@@ -283,7 +283,7 @@ void usb_pstd_interrupt_handler (uint16_t * type, uint16_t * status, uint8_t usb
     {
         if (USB_CFG_IP1 == usb_ip)
         {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
             USB_M1->NRDYSTS = (uint16_t) ((uint16_t) (~nsts) & NRDYSTS_MASK);
  #endif
         }
@@ -423,7 +423,7 @@ void usb_pstd_test_mode (usb_utr_t * p_utr)
         /* Continue */
         case USB_TEST_PACKET:
         {
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
             hw_usb_set_utst(p_utr, 0);
             hw_usb_set_utst(p_utr, (uint16_t) (g_usb_pstd_test_mode_select >> 8));
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
@@ -506,7 +506,7 @@ void usb_pstd_set_stall_pipe0 (usb_utr_t * p_utr)
 uint8_t * usb_pstd_write_fifo (uint16_t count, uint16_t pipemode, uint8_t * write_p, usb_utr_t * p_utr)
 {
     uint16_t even;
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     uint16_t odd;
     uint16_t hs_flag = 1;
  #else                                 /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
@@ -515,7 +515,7 @@ uint8_t * usb_pstd_write_fifo (uint16_t count, uint16_t pipemode, uint8_t * writ
 
     if ((USB_CFG_IP0 == p_utr->ip) || (0 == hs_flag))
     {
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
         if (0 == hs_flag)
         {
             /* WAIT_LOOP */
@@ -685,13 +685,13 @@ uint8_t * usb_pstd_read_fifo (uint16_t count, uint16_t pipemode, uint8_t * read_
  #if USB_CFG_ENDIAN == USB_CFG_BIG
     uint16_t i;
  #endif
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     uint16_t odd;
     uint16_t hs_flag = 1;
  #else                                 /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
     uint16_t hs_flag = 0;
  #endif /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     if (0 == hs_flag)
     {
         /* WAIT_LOOP */
@@ -745,7 +745,6 @@ uint8_t * usb_pstd_read_fifo (uint16_t count, uint16_t pipemode, uint8_t * read_
 
             /* Condition compilation by the difference of the endian */
   #if USB_CFG_ENDIAN == USB_CFG_LITTLE
-
             /* WAIT_LOOP */
             do
             {
@@ -824,7 +823,6 @@ uint8_t * usb_pstd_read_fifo (uint16_t count, uint16_t pipemode, uint8_t * read_
 
             /* Condition compilation by the difference of the endian */
    #if USB_CFG_ENDIAN == USB_CFG_LITTLE
-
             /* WAIT_LOOP */
             do
             {
@@ -894,7 +892,6 @@ void usb_pstd_forced_termination (uint16_t pipe, uint16_t status, usb_utr_t * p_
     }
 
  #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-
     /* Clear D0FIFO-port */
     buffer = hw_usb_read_fifosel(p_utr, USB_D0USE);
     if ((buffer & USB_CURPIPE) == pipe)

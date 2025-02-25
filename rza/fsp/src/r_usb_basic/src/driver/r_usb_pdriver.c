@@ -172,7 +172,7 @@ static void usb_pstd_interrupt (uint16_t type, uint16_t status, usb_cfg_t * p_cf
         /* VBUS */
         case USB_INT_VBINT:
         {
-  #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
             hw_usb_set_cnen(p_cfg->module_number);
   #endif                                       /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
             if (USB_ATTACH == usb_pstd_chk_vbsts(utr.ip))
@@ -444,7 +444,7 @@ static void usb_pstd_interrupt (usb_utr_t * p_mess)
         /* VBUS */
         case USB_INT_VBINT:
         {
-  #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
             hw_usb_set_cnen(p_mess->ip);
   #endif                                         /* defined(BSP_MCU_GROUP_RA6M3)  || defined(BSP_MCU_GROUP_RZT2M) */
             if (USB_ATTACH == usb_pstd_chk_vbsts(p_mess->ip))
@@ -688,7 +688,7 @@ void usb_pstd_pcd_task (void)
     }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-   #ifndef BSP_MCU_GROUP_RZT2M && !defined(BSP_MCU_GROUP_RZA3UL)
+   #ifndef BSP_MCU_GROUP_RZT2M && !defined(BSP_MCU_GROUP_RZA_USB)
     usb_cstd_dma_driver();             /* USB DMA driver */
    #endif /* BSP_MCU_GROUP_RZT2M */
   #endif /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
@@ -799,7 +799,6 @@ usb_er_t usb_pstd_set_submitutr (usb_utr_t * utrmsg)
         {
             usb_cstd_pipe_msg_clear(utrmsg, pipenum);
         }
-
  #else                                 /* BSP_CFG_RTOS == 2 */
         /* Transfer stop */
         usb_pstd_forced_termination(pipenum, (uint16_t) USB_DATA_ERR, utrmsg);
@@ -1415,7 +1414,6 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
     {
         USB_REL_BLK(1, p_tran_data);
     }
-
    #else                               /* BSP_CFG_RTOS == 1 */
     ptr->msghead = (usb_mh_t) USB_NULL;
     ptr->msginfo = USB_MSG_PCD_SUBMITUTR;
@@ -1462,7 +1460,6 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
                 err = USB_ERR_FIFO_ACCESS;
             }
         }
-
     #elif defined(USB_CFG_PCDC_USE)
         UINT tx_err;
 
@@ -1491,7 +1488,6 @@ usb_er_t usb_pstd_transfer_start (usb_utr_t * ptr)
                 err = USB_ERR_FIFO_ACCESS;
             }
         }
-
     #else
         tx_semaphore_get(&g_usb_peri_usbx_sem[pipenum], TX_WAIT_FOREVER);
     #endif                             /* defined(USB_CFG_PPRN_USE) */

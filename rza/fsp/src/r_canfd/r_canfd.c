@@ -1767,8 +1767,8 @@ static void r_canfd_mode_transition (canfd_instance_ctrl_t * p_ctrl, can_operati
     bool global_mode = (bool) (operation_mode >> 7);
     operation_mode &= 0xF;
 
-    uint32_t * rfcc_base = NULL;
-    uint32_t * cfcc_base = NULL;
+    volatile uint32_t * rfcc_base = NULL;
+    volatile uint32_t * cfcc_base = NULL;
 
     if (global_mode)
     {

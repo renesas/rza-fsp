@@ -70,7 +70,7 @@ uint16_t usb_cstd_get_buf_size (usb_utr_t * ptr, uint16_t pipe)
         /* Pipe select */
         hw_usb_write_pipesel(ptr, pipe);
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
         /* Read CNTMD */
         buffer = hw_usb_read_pipecfg(ptr);
         if (USB_CFG_CNTMDON == (buffer & USB_CNTMDFIELD))
@@ -87,7 +87,7 @@ uint16_t usb_cstd_get_buf_size (usb_utr_t * ptr, uint16_t pipe)
 
         /* Max Packet Size */
         size = (uint16_t) (buffer & USB_MXPS);
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     }
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
     }
@@ -192,9 +192,9 @@ void usb_cstd_pipe_init (usb_utr_t * ptr, uint16_t pipe)
     {
         hw_usb_write_pipebuf(ptr, g_usb_pipe_table[ip_no][pipe].pipe_buf);
     }
- #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) /* defined(BSP_MCU_GROUP_RA6M3) */
+ #elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB) /* defined(BSP_MCU_GROUP_RA6M3) */
     hw_usb_write_pipebuf(ptr, g_usb_pipe_table[ip_no][pipe].pipe_buf);
- #endif                                                              /* defined(BSP_MCU_GROUP_RA6M3) */
+ #endif                                                               /* defined(BSP_MCU_GROUP_RA6M3) */
     hw_usb_write_pipemaxp(ptr, g_usb_pipe_table[ip_no][pipe].pipe_maxp);
     hw_usb_write_pipeperi(ptr, g_usb_pipe_table[ip_no][pipe].pipe_peri);
 
@@ -289,7 +289,7 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t * ptr, uint16_t pipe_no)
     hw_usb_write_pipesel(ptr, pipe_no);
     hw_usb_write_pipecfg(ptr, 0);
 
- #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     hw_usb_write_pipebuf(ptr, 0);
  #endif                                /* defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZT2M) */
     hw_usb_write_pipemaxp(ptr, 0);
@@ -396,9 +396,7 @@ uint16_t usb_cstd_is_set_frdy (usb_utr_t * ptr, uint16_t pipe, uint16_t fifosel,
         /* Caution!!!
          * Depending on the external bus speed of CPU, you may need to wait
          * for 100ns here.
-         * For details, please look at the data sheet.   */
-
-        /***** The example of reference. *****/
+         * For details, please look at the data sheet.   *//***** The example of reference. *****/
         buffer = hw_usb_read_syscfg(ptr);
 
         if (buffer != 0)

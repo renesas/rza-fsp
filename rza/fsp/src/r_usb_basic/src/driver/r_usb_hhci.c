@@ -323,7 +323,7 @@ void usb_hstd_hci_interrupt_handler (usb_utr_t * ptr)
             }
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         else if (ptr->ipp->USBSTS_b.PortChangeDetect && ptr->ipp->USBINTR_b.PortChangeDetectEnable)
         {
             if (0 == ptr->ipp->HCRHPORTSTATUS1_b.CCS)
@@ -361,6 +361,7 @@ void usb_hstd_hci_interrupt_handler (usb_utr_t * ptr)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         ptr->ipp1 = (usb_regadr1_t) usb_hstd_get_usb_ip_adr(ptr->ip);
         if (ptr->ipp1->HCINTERRUPTSTATUS_b.RHSC && ptr->ipp1->HCINTERRUPTENABLE_b.RHSCE)
         {
@@ -370,9 +371,9 @@ void usb_hstd_hci_interrupt_handler (usb_utr_t * ptr)
             usb_hcrh_port_status1 = ptr->ipp1->HCRHPORTSTATUS1;
             if (0 == ptr->ipp1->HCRHPORTSTATUS1_b.CCS)
             {
- #ifdef RZA2_USB_OHCI_IP
+  #ifdef RZA2_USB_OHCI_IP
                 r_usb_port_clean_seq();
- #endif                                /* RZA2_USB_OHCI_IP */
+  #endif                               /* RZA2_USB_OHCI_IP */
                 /* R_USB_HstdDelayXms((uint16_t)30); */
                 usb_hub_diconnect_delay();
             }
@@ -397,6 +398,7 @@ void usb_hstd_hci_interrupt_handler (usb_utr_t * ptr)
         {
             /* None */
         }
+ #endif
     }
 
     /* Check ohci */
@@ -765,7 +767,7 @@ st_usb_hci_tr_req_t * usb_hstd_hci_alloc_transefer_request (void)
             memset(p_tr_req, 0, sizeof(st_usb_hci_tr_req_t));
 
             p_tr_req->bit.enable = TRUE;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_tr_req->setupbuf = (uint32_t *) r_usb_va_to_pa((uint64_t) &usb_hci_setup_buffer[i][0]);
  #else
             p_tr_req->setupbuf = &usb_hci_setup_buffer[i][0];
@@ -923,7 +925,7 @@ uint16_t r_usb_hstd_hci_make_transfer_request (void   * p_utr,
 
     p_tr_req->bit.epnum = epnum & 0x0000000FU;                         /* Endpoint Number */
     p_tr_req->trsize    = tranlen;                                     /* Transfer Size */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_tr_req->databuf = (uint32_t) r_usb_va_to_pa((uint64_t) tranadr); /* Transfer Data Buffer */
  #else
     p_tr_req->databuf = tranadr;                                       /* Transfer Data Buffer */
@@ -935,7 +937,7 @@ uint16_t r_usb_hstd_hci_make_transfer_request (void   * p_utr,
     {
         /* Setup Buffer */
         /* Because the data format is different, location is converted. */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_dst = (uint8_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->setupbuf));
         p_src = (uint8_t *) (r_usb_pa_to_va((uint64_t) p_setup));
  #else
@@ -1097,6 +1099,7 @@ void r_usb_hstd_hci_disconnect (usb_utr_t * ptr, uint32_t devadd)
                 }
                 else
                 {
+ #if USB_NUM_USBIP == 2
                     ptr->ipp1->HCCONTROL = ptr->ipp1->HCCONTROL | (USB_VAL_XC0 & USB_VAL_XFFCF);
 
                     usb_hstd_ohci_disconnect(ptr, 0);
@@ -1106,6 +1109,7 @@ void r_usb_hstd_hci_disconnect (usb_utr_t * ptr, uint32_t devadd)
                     usb_hstd_hci_free_dev_info(ptr, devadd);
 
                     ptr->ipp1->HCCONTROL = (ptr->ipp1->HCCONTROL & ~USB_VAL_XC0) | USB_VAL_X0080;
+ #endif
                 }
 
                 break;
@@ -1461,7 +1465,7 @@ void r_usb_hstd_hci_electrical_test (usb_utr_t * ptr, uint8_t mode)
     {
         case 0:                        /* Test SE0_NAK */
         {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_IP0 == ptr->ip)
             {
                 ptr->ipp.PORTSC1_b.PortTestControl = 3;
@@ -1483,7 +1487,7 @@ void r_usb_hstd_hci_electrical_test (usb_utr_t * ptr, uint8_t mode)
 
         case 1:                        /* Test J */
         {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_IP0 == ptr->ip)
             {
                 ptr->ipp.PORTSC1_b.PortTestControl = 1;
@@ -1505,7 +1509,7 @@ void r_usb_hstd_hci_electrical_test (usb_utr_t * ptr, uint8_t mode)
 
         case 2:                        /* Test K */
         {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_IP0 == ptr->ip)
             {
                 ptr->ipp.PORTSC1_b.PortTestControl = 2;
@@ -1527,7 +1531,7 @@ void r_usb_hstd_hci_electrical_test (usb_utr_t * ptr, uint8_t mode)
 
         case 3:                        /* Signal Quality */
         {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_IP0 == ptr->ip)
             {
                 ptr->ipp.PORTSC1_b.PortTestControl = 4;
@@ -1549,7 +1553,7 @@ void r_usb_hstd_hci_electrical_test (usb_utr_t * ptr, uint8_t mode)
 
         case 4:                        /* Suspend/Resume */
         {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_IP0 == ptr->ip)
             {
                 usb_cpu_delay_xms(15000);
@@ -1587,7 +1591,7 @@ void r_usb_hstd_hci_electrical_test (usb_utr_t * ptr, uint8_t mode)
 
         case 6:                        /* Chirp Timing */
         {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
             if (USB_IP0 == ptr->ip)
             {
                 ptr->ipp.PORTSC1.BIT.Suspend = 1;
@@ -1660,7 +1664,11 @@ void r_usb_hstd_hci_wait_time (usb_utr_t * ptr, uint32_t ms)
     }
     else
     {
+ #if USB_NUM_USBIP == 2
         prv = ptr->ipp1->HCFMNUMBER;
+ #else
+        prv = ptr->ipp->HCFMNUMBER;
+ #endif
     }
 
     while (ms)
@@ -1675,11 +1683,13 @@ void r_usb_hstd_hci_wait_time (usb_utr_t * ptr, uint32_t ms)
         }
         else
         {
+ #if USB_NUM_USBIP == 2
             if ((ptr->ipp1->HCFMNUMBER - prv) != 0)
             {
                 ms--;
                 prv = ptr->ipp1->HCFMNUMBER;
             }
+ #endif
         }
     }
 }                                      /* End of function r_usb_hstd_hci_wait_time() */

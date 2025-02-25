@@ -277,6 +277,7 @@ fsp_err_t R_USB_HMSC_StorageReadSector (uint16_t        drive_number,
     /* Get Context info */
     if (ptr.ip)
     {
+#if USB_NUM_USBIP == 2
         if (1 == R_USB10->PORTSC1_b.PortOwner)
         {
             p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H1_OHCI_INT_IRQn);
@@ -285,6 +286,7 @@ fsp_err_t R_USB_HMSC_StorageReadSector (uint16_t        drive_number,
         {
             p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H1_EHCI_INT_IRQn);
         }
+#endif                                 /* #if USB_NUM_USBIP == 2 */
     }
     else
     {
@@ -345,7 +347,7 @@ fsp_err_t R_USB_HMSC_StorageWriteSector (uint16_t              drive_number,
     usb_utr_t   ptr;
     uint16_t    err_code;
     usb_cfg_t * p_cfg = USB_NULL;
-#if    defined(BSP_MCU_GROUP_RZA3UL)
+#if    defined(BSP_MCU_GROUP_RZA_USB)
     uint8_t * temp_buf;
 #endif                                 /* defined(BSP_MCU_GROUP_RZA3UL) */
 
@@ -369,6 +371,7 @@ fsp_err_t R_USB_HMSC_StorageWriteSector (uint16_t              drive_number,
     /* Get Context info */
     if (ptr.ip)
     {
+#if USB_NUM_USBIP == 2
         if (1 == R_USB10->PORTSC1_b.PortOwner)
         {
             p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H1_OHCI_INT_IRQn);
@@ -377,6 +380,7 @@ fsp_err_t R_USB_HMSC_StorageWriteSector (uint16_t              drive_number,
         {
             p_cfg = (usb_cfg_t *) R_FSP_IsrContextGet((IRQn_Type) USB_U2H1_EHCI_INT_IRQn);
         }
+#endif
     }
     else
     {
@@ -398,7 +402,7 @@ fsp_err_t R_USB_HMSC_StorageWriteSector (uint16_t              drive_number,
 
     g_usb_hmsc_strg_process[ptr.ip] = USB_MSG_HMSC_STRG_RW_END;
 
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
     temp_buf = (uint8_t *) r_usb_pa_to_va((uint64_t) buff);
     if (buff != temp_buf)
     {

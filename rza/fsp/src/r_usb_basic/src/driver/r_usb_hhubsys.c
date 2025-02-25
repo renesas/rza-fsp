@@ -357,11 +357,13 @@ void usb_hhub_close (usb_utr_t * ptr, uint16_t hubaddr, uint16_t data2)
 
     if (USB_IP1 == ptr->ip)
     {
+  #if USB_NUM_USBIP == 2
         ptr->ipp1->USBINTR_b.PortChangeDetectEnable = 1; /* Port Change Detect Enable  */
+  #endif
     }
     else
     {
-        ptr->ipp->USBINTR_b.PortChangeDetectEnable = 1;  /* Port Change Detect Enable  */
+        ptr->ipp->USBINTR_b.PortChangeDetectEnable = 1; /* Port Change Detect Enable  */
     }
 }
 

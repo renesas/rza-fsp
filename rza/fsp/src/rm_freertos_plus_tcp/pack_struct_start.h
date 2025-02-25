@@ -1,3 +1,8 @@
+/*
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 #if defined(__GNUC__)
  #include \
     "../../../../rza/aws/Lab-Project-FreeRTOS-TCP/source/portable/Compiler/GCC/pack_struct_start.h"

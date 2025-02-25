@@ -358,6 +358,8 @@ void FreeRTOS_Tick_Handler (__attribute__((unused)) timer_callback_args_t * unus
     }
 #endif
 
+    portDISABLE_INTERRUPTS();
+
     /* Interrupts should not be enabled before this point. */
 #if (configASSERT_DEFINED == 1)
     {

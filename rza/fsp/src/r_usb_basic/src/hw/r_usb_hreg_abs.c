@@ -883,7 +883,6 @@ uint8_t * usb_hstd_read_fifo (usb_utr_t * ptr, uint16_t count, uint16_t pipemode
 
             /* Condition compilation by the difference of the little endian */
    #if USB_CFG_ENDIAN == USB_CFG_LITTLE
-
             /* WAIT_LOOP */
             do
             {
@@ -985,7 +984,6 @@ void usb_hstd_forced_termination (usb_utr_t * ptr, uint16_t pipe, uint16_t statu
     }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-
     /* Clear D0FIFO-port */
     buffer = hw_usb_read_fifosel(ptr, USB_D0USE);
     if ((buffer & USB_CURPIPE) == pipe)
@@ -1083,14 +1081,16 @@ usb_regadr_t usb_hstd_get_usb_ip_adr (uint16_t ipnum)
         USB_DEBUG_HOOK(USB_DEBUG_HOOK_STD | USB_DEBUG_HOOK_CODE1);
     }
  #else                                 /* USB_IP_EHCI_OHCI == 0 */
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ipnum)
     {
         ptr = (usb_regadr_t) R_USB00;
     }
     else
     {
+   #if !defined(BSP_MCU_GROUP_RZA3M)
         ptr = (usb_regadr_t) R_USB10;
+   #endif
     }
   #else
     FSP_PARAMETER_NOT_USED(ipnum);

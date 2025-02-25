@@ -29,7 +29,7 @@
  ******************************************************************************/
 void hw_usb_pset_dprpu (uint8_t usb_ip)
 {
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(usb_ip);
     USB_M0->SYSCFG0 |= USB_DPRPU;
  #else                                 /*  #if defined(BSP_MCU_GROUP_RZT2M)|| defined(BSP_MCU_GROUP_RZA3UL) */
@@ -58,7 +58,7 @@ void hw_usb_pset_dprpu (uint8_t usb_ip)
  ******************************************************************************/
 void hw_usb_pclear_dprpu (uint8_t usb_ip)
 {
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(usb_ip);
     USB_M0->SYSCFG0 = (uint16_t) (USB_M0->SYSCFG0 & (~USB_DPRPU));
  #else                                 /* BSP_MCU_GROUP_RZT2M == 1 */
@@ -92,7 +92,7 @@ void hw_usb_pset_wkup (uint8_t usb_ip)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->DVSTCTR0 |= USB_WKUP;
  #endif
     }
@@ -116,7 +116,7 @@ void hw_usb_pset_enb_rsme (uint8_t usb_ip)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->INTENB0 |= USB_RSME;
  #endif
     }
@@ -140,7 +140,7 @@ void hw_usb_pclear_enb_rsme (uint8_t usb_ip)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->INTENB0 = (uint16_t) (USB_M1->INTENB0 & (~USB_RSME));
  #endif
     }
@@ -164,7 +164,7 @@ void hw_usb_pclear_sts_resm (uint8_t usb_ip)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->INTSTS0 = (uint16_t) ~USB_RESM;
  #endif
     }
@@ -188,7 +188,7 @@ void hw_usb_pclear_sts_valid (uint8_t usb_ip)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->INTSTS0 = (uint16_t) ~USB_VALID;
  #endif
     }
@@ -212,7 +212,7 @@ void hw_usb_pset_ccpl (uint8_t usb_ip)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->DCPCTR |= USB_CCPL;
  #endif
     }
@@ -230,7 +230,7 @@ void hw_usb_pset_ccpl (uint8_t usb_ip)
  ******************************************************************************/
 void hw_usb_pmodule_init (uint8_t usb_ip)
 {
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(usb_ip);
     USB_M0->SYSCFG1   = (USB_CFG_BUSWAIT & USB_VAL_BWAIT3F);
     USB_M0->CFIFOSEL  = USB0_CFIFO_MBW;
@@ -299,7 +299,6 @@ void hw_usb_pmodule_init (uint8_t usb_ip)
         USB_M1->LPSTS |= USB_SUSPENDM;
 
    #if ((USB_CFG_CLKSEL == USB_CFG_12MHZ) || (USB_CFG_CLKSEL == USB_CFG_20MHZ) || (USB_CFG_CLKSEL == USB_CFG_24MHZ))
-
         /* WAIT_LOOP */
         while (USB_PLLLOCK != (USB_M1->PLLSTA & USB_PLLLOCK))
         {
@@ -341,7 +340,7 @@ void hw_usb_pmodule_init (uint8_t usb_ip)
  ******************************************************************************/
 void hw_usb_pcontrol_dprpu (uint8_t usb_ip, uint8_t state)
 {
- #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(usb_ip);
     if (USB_ON == state)
     {
@@ -405,7 +404,7 @@ void hw_usb_pcontrol_dcpctr_pid (uint8_t usb_ip, uint16_t data)
     }
     else
     {
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->DCPCTR &= (uint16_t) (~USB_PID);
         if (data == USB_SETUP_STATUS_ACK)
         {

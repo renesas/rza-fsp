@@ -97,14 +97,14 @@ void R_USB_isr (IRQn_Type const irq)
     ptr     = &g_usb_cstd_int_msg[0][g_usb_cstd_int_msg_cnt[0]];
     ptr->ip = 0;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     int_state = USB00->INT_STATUS;
  #else
     int_state = USB00->INTSTATUS;
  #endif
     if (USB_AHB_INT == (int_state & USB_AHB_INT))
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         USB00->INT_STATUS_b.AHB_INT = 1;
  #else
         USB00->INTSTATUS |= USB_AHB_INT;
@@ -131,7 +131,7 @@ void R_USB_isr (IRQn_Type const irq)
     }
     else if (USB_WAKEON_INT == (int_state & USB_WAKEON_INT))
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         USB00->INT_STATUS_b.WAKEON_INT = 1;
  #else
         USB00->INTSTATUS |= USB_WAKEON_INT;
@@ -146,6 +146,7 @@ void R_USB_isr_port1 (IRQn_Type const irq)
 {
     FSP_PARAMETER_NOT_USED(irq);
 
+ #if USB_NUM_USBIP == 2
     uint32_t    int_state;
     usb_utr_t * ptr;
 
@@ -153,49 +154,50 @@ void R_USB_isr_port1 (IRQn_Type const irq)
     ptr     = &g_usb_cstd_int_msg[1][g_usb_cstd_int_msg_cnt[1]];
     ptr->ip = 1;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
     int_state = USB10->INT_STATUS;
- #else
+  #else
     int_state = USB10->INTSTATUS;
- #endif
+  #endif
     if (USB_AHB_INT == (int_state & USB_AHB_INT))
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         USB10->INT_STATUS_b.AHB_INT = 1;
- #else
+  #else
         USB10->INTSTATUS |= USB_AHB_INT;
- #endif
+  #endif
     }
     else if (USB_USBH_INTA == (int_state & USB_USBH_INTA)) /* OHCI interrupt */
     {
- #if (BSP_CFG_RTOS == 1)
+  #if (BSP_CFG_RTOS == 1)
         _ux_hcd_ohci_interrupt_handler();
- #else
+  #else
         usb_hstd_hci_interrupt_handler(ptr);
- #endif
+  #endif
     }
     else if (USB_USBH_INTB == (int_state & USB_USBH_INTB)) /* EHCI interrupt */
     {
- #if (BSP_CFG_RTOS == 1)
+  #if (BSP_CFG_RTOS == 1)
         _ux_hcd_ehci_interrupt_handler();
- #else
+  #else
         usb_hstd_hci_interrupt_handler(ptr);
- #endif
+  #endif
     }
     else if (USB_UCOM_INT == (int_state & USB_UCOM_INT))
     {
     }
     else if (USB_WAKEON_INT == (int_state & USB_WAKEON_INT))
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         USB10->INT_STATUS_b.WAKEON_INT = 1;
- #else
+  #else
         USB10->INTSTATUS |= USB_WAKEON_INT;
- #endif
+  #endif
     }
     else
     {
     }
+ #endif                                /* #if USB_NUM_USBIP == 2 */
 }                                      /* End of function R_USB_isr() */
 
 #endif                                 /* USB_IP_EHCI_OHCI == 1 */

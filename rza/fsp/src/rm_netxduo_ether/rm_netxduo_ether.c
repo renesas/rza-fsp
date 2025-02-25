@@ -409,8 +409,7 @@ void rm_netxduo_ether (NX_IP_DRIVER * driver_req_ptr, rm_netxduo_ether_instance_
         case NX_LINK_GET_STATUS:
         {
             /* Return the link status in the supplied return pointer.  */
-            *(driver_req_ptr->nx_ip_driver_return_ptr) =
-                driver_req_ptr->nx_ip_driver_ptr->nx_ip_interface[0].nx_interface_link_up;
+            *(driver_req_ptr->nx_ip_driver_return_ptr) = interface_ptr->nx_interface_link_up;
             break;
         }
 
@@ -709,7 +708,8 @@ void rm_netxduo_ether_callback (ether_callback_args_t * p_args)
         {
             /* Notify NetX that the link is up. */
             p_netxduo_ether_instance->p_ctrl->p_interface->nx_interface_link_up = NX_TRUE;
-            _nx_ip_driver_link_status_event(p_netxduo_ether_instance->p_ctrl->p_ip, 0);
+            _nx_ip_driver_link_status_event(p_netxduo_ether_instance->p_ctrl->p_ip,
+                                            p_netxduo_ether_instance->p_ctrl->p_interface->nx_interface_index);
             break;
         }
 
@@ -717,7 +717,8 @@ void rm_netxduo_ether_callback (ether_callback_args_t * p_args)
         {
             /* Notify NetX that the link is down. */
             p_netxduo_ether_instance->p_ctrl->p_interface->nx_interface_link_up = NX_FALSE;
-            _nx_ip_driver_link_status_event(p_netxduo_ether_instance->p_ctrl->p_ip, 0);
+            _nx_ip_driver_link_status_event(p_netxduo_ether_instance->p_ctrl->p_ip,
+                                            p_netxduo_ether_instance->p_ctrl->p_interface->nx_interface_index);
             break;
         }
 

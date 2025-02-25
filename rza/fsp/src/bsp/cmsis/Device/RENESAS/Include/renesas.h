@@ -14,12 +14,12 @@
  * @{
  */
 
-/** @addtogroup RZA3UL
+/** @addtogroup RZA
  * @{
  */
 
-#ifndef RZA3UL_H
- #define RZA3UL_H
+#ifndef RZA_H
+ #define RZA_H
 
  #ifdef __cplusplus
 extern "C" {
@@ -96,15 +96,19 @@ extern "C" {
  * @{
  */
 
- #include "iodefine.h"
-
-/** @} */ /* End of group Device_Peripheral_peripherals */
-
- #ifdef BSP_OVERRIDE_REG_HEADER
-  #include BSP_OVERRIDE_REG_HEADER
+ #ifdef BSP_MCU_GROUP_RZA3UL
+  #include "R9A07G063U.h"
+ #elif defined(BSP_MCU_GROUP_RZA3M)
+  #include "R9A07G066M.h"
+ #else
+  #if __has_include("renesas_internal.h")
+   #include "renesas_internal.h"
+  #else
+   #error "Unsupported MCU"
+  #endif
  #endif
 
- #include "base_addresses.h"
+/** @} */ /* End of group Device_Peripheral_peripherals */
 
 /* =========================================  End of section using anonymous unions  ========================================= */
  #if defined(__CC_ARM)
@@ -134,8 +138,6 @@ extern "C" {
 /** @addtogroup PosMask_clusters
  * @{
  */
-
- #include "iobitmask.h"
 
 /** @} */ /* End of group PosMask_peripherals */
 

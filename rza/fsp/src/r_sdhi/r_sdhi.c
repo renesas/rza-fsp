@@ -1696,7 +1696,9 @@ static fsp_err_t r_sdhi_hw_cfg (sdhi_instance_ctrl_t * const p_ctrl)
     p_ctrl->p_reg->SD_CLK_CTRL_long.L = SDHI_PRV_SD_CLK_CTRL_DEFAULT; // Automatic clock control disabled.
     p_ctrl->p_reg->SDIO_MODE_long.L   = 0x00U;                        // Not in SDIO mode initially.
     p_ctrl->p_reg->CC_EXT_MODE_long.L = 0x00U;                        // Not in DMA mode initially.
-    p_ctrl->p_reg->SDIF_MODE_long.L   = 0x00U;                        // CRC check is valid.
+#if SDHI_CFG_EMMC_SUPPORT_ENABLE
+    p_ctrl->p_reg->SDIF_MODE_long.L = 0x00U;                          // CRC check is valid.
+#endif
 
     /* Set the clock frequency to 400 kHz or less for identification. */
     fsp_err_t err = r_sdhi_max_clock_rate_set(p_ctrl, SDHI_PRV_INIT_MAX_CLOCK_RATE_HZ);

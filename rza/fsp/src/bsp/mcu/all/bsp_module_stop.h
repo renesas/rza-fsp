@@ -95,6 +95,9 @@ FSP_HEADER
 #define BSP_MSTP_REG_FSP_IP_ISU(channel)          (R_MSTP->PERI_VIDEO)
 #define BSP_MSTP_BIT_FSP_IP_ISU(channel)          (1U << (R_MSTP_PERI_VIDEO_MPISU_Pos))
 
+#define BSP_MSTP_REG_FSP_IP_MIPI_DSI(channel)     (R_MSTP->PERI_VIDEO)
+#define BSP_MSTP_BIT_FSP_IP_MIPI_DSI(channel)     (3U << 5)
+
 #define BSP_MSTP_REG_FSP_IP_LCDC(channel)         (R_MSTP->PERI_VIDEO)
 #define BSP_MSTP_BIT_FSP_IP_LCDC(channel)         (7U << (R_MSTP_PERI_VIDEO_MPVSPD_Pos))
 
@@ -124,6 +127,9 @@ FSP_HEADER
 
 #define BSP_MSTP_REG_FSP_IP_SPI_MULTI(channel)    (R_MSTP->MCPU1)
 #define BSP_MSTP_BIT_FSP_IP_SPI_MULTI(channel)    (1U << (R_MSTP_MCPU1_MHSPI_Pos))
+
+#define BSP_MSTP_REG_FSP_IP_SRC(channel)          (R_MSTP->MCPU1)
+#define BSP_MSTP_BIT_FSP_IP_SRC(channel)          (1U << 3)
 
 #define BSP_MSTP_REG_FSP_IP_SSI(channel)          (R_MSTP->MCPU1)
 #define BSP_MSTP_BIT_FSP_IP_SSI(channel)          (1U << (R_MSTP_MCPU1_MHSSIF0_Pos + (channel)))

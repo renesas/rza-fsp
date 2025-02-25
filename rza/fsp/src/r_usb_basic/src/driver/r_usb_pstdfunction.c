@@ -44,6 +44,7 @@ static uint8_t * g_p_usbx_string_table[NUM_STRING_DESC];
 usb_descriptor_t g_usbx_descriptor;
 
 void usb_pstd_ux_descriptor_to_basic(usb_cfg_t * p_cfg);
+
  #endif                                /* #if (BSP_CFG_RTOS == 1) */
 
 /******************************************************************************
@@ -250,7 +251,7 @@ void usb_pstd_ux_descriptor_to_basic (usb_cfg_t * p_cfg)
         end_address = (start_address + length);
 
         p = start_address;
-        if (USB_NULL != p)
+        if (USB_NULL != (uintptr_t) p)
         {
             while (p < end_address)
             {
@@ -266,12 +267,12 @@ void usb_pstd_ux_descriptor_to_basic (usb_cfg_t * p_cfg)
         }
     }
 
-    if (USB_NULL != _ux_system_slave->ux_system_slave_language_id_framework)
+    if (USB_NULL != (uintptr_t) _ux_system_slave->ux_system_slave_language_id_framework)
     {
         g_p_usbx_string_table[0] = _ux_system_slave->ux_system_slave_language_id_framework;
     }
 
-    if (USB_NULL != _ux_system_slave->ux_system_slave_string_framework)
+    if (USB_NULL != (uintptr_t) _ux_system_slave->ux_system_slave_string_framework)
     {
         start_address = (uint8_t *) (_ux_system_slave->ux_system_slave_string_framework);
         length        = (uint16_t) (_ux_system_slave->ux_system_slave_string_framework_length);

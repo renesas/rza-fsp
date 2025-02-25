@@ -346,7 +346,7 @@ st_usb_ohci_iso_info_p_t usb_hstd_ohci_alloc_endpoint_iso (void)
             memset(iso_info, 0, sizeof(st_usb_ohci_iso_info_t));
             for (i = 0; i < USB_OHCI_ISO_MAX_FRAME; i++)
             {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 iso_info->transfer_info[i].buffer = (uint32_t) usb_hstd_ohci_physical_address_of(
                     &gs_usb_hstd_ohci_iso_buffer[n][i][0]);
  #else
@@ -401,7 +401,7 @@ void usb_hstd_ohci_free_transfer_descriptor (st_usb_ohci_hcd_transfer_descriptor
 
     usb_hstd_hci_lock_resouce();
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     tmp_usb_drequest    = (st_usb_ohci_request_p_t) (uintptr_t) (r_usb_pa_to_va((uint64_t) td->usb_drequest));
     tmp_hcd_list_f_link =
         (st_usb_ohci_list_entry_p_t) (uintptr_t) (r_usb_pa_to_va((uint64_t) tmp_usb_drequest->hcd_list.f_link));
@@ -429,7 +429,7 @@ void usb_hstd_ohci_free_transfer_descriptor (st_usb_ohci_hcd_transfer_descriptor
     }
 
     /* clear */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     td = (st_usb_ohci_hcd_transfer_descriptor_p_t) (r_usb_pa_to_va((uint64_t) td));
  #endif
     memset(td, 0, sizeof(st_usb_ohci_hcd_transfer_descriptor_t));
@@ -451,7 +451,7 @@ void usb_hstd_ohci_free_transfer_descriptor (st_usb_ohci_hcd_transfer_descriptor
  ***********************************************************************************************************************/
 void usb_hstd_ohci_free_endpoint (st_usb_ohci_hcd_endpoint_p_t endpoint)
 {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     st_usb_ohci_iso_info_p_t temp;
  #endif                                /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     if (NULL == endpoint)
@@ -459,7 +459,7 @@ void usb_hstd_ohci_free_endpoint (st_usb_ohci_hcd_endpoint_p_t endpoint)
         return;
     }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if ((0 != endpoint->hcd_head_p) && (endpoint->hcd_tail_p == endpoint->hcd_head_p))
  #else
     if ((NULL != endpoint->hcd_head_p) && (endpoint->hcd_tail_p == endpoint->hcd_head_p))
@@ -471,13 +471,13 @@ void usb_hstd_ohci_free_endpoint (st_usb_ohci_hcd_endpoint_p_t endpoint)
     }
 
     usb_hstd_hci_lock_resouce();
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if ((NULL != endpoint) && (0 != endpoint->iso_info))
  #else                                 /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     if ((NULL != endpoint) && (NULL != endpoint->iso_info))
  #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         temp             = (st_usb_ohci_iso_info_p_t) (uintptr_t) endpoint->iso_info;
         temp->using_flag = FALSE;
  #else
@@ -488,7 +488,7 @@ void usb_hstd_ohci_free_endpoint (st_usb_ohci_hcd_endpoint_p_t endpoint)
     if ((NULL != endpoint) && (TRUE == endpoint->using_flag))
     {
         /* memset(endpoint, 0, sizeof(st_usb_ohci_hcd_endpoint_t)); */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         memset(endpoint, 0, sizeof(st_usb_ohci_hcd_endpoint_t));
  #else
         memset(endpoint, (int) NULL, sizeof(st_usb_ohci_hcd_endpoint_t));
@@ -509,7 +509,7 @@ void usb_hstd_ohci_free_endpoint (st_usb_ohci_hcd_endpoint_p_t endpoint)
  ***********************************************************************************************************************/
 void usb_hstd_ohci_free_endpoint_descriptor (st_usb_ohci_hcd_endpoint_descriptor_p_t ed)
 {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     usb_hstd_ohci_free_endpoint((st_usb_ohci_hcd_endpoint_p_t) (r_usb_pa_to_va((uint64_t) ed->endpoint)));
  #else
     usb_hstd_ohci_free_endpoint(ed->endpoint);
@@ -518,7 +518,7 @@ void usb_hstd_ohci_free_endpoint_descriptor (st_usb_ohci_hcd_endpoint_descriptor
     usb_hstd_hci_lock_resouce();
 
     /* memset(ed, 0 , sizeof(st_usb_ohci_hcd_endpoint_descriptor_t)); */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     memset(ed, 0, sizeof(st_usb_ohci_hcd_endpoint_descriptor_t));
  #else
     memset(ed, (int) NULL, sizeof(st_usb_ohci_hcd_endpoint_descriptor_t));

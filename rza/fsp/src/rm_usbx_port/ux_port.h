@@ -210,9 +210,9 @@ typedef long SLONG;
   #define inpb(a)        *((uint8_t *) (a))
   #define inpw(a)        *((uint16_t *) (a))
   #define inpl(a)        *((uint32_t *) (a))
-  #define outpb(a, b)    *((uint8_t *) (a))  = ((uint8_t) (b))
-  #define outpw(a, b)    *((uint16_t *) (a)) = ((uint16_t) (b))
-  #define outpl(a, b)    *((uint32_t *) (a)) = ((uint32_t) (b))
+  #define outpb(a, b)    *((uint8_t *) (uintptr_t) (a))  = ((uint8_t) (b))
+  #define outpw(a, b)    *((uint16_t *) (uintptr_t) (a)) = ((uint16_t) (b))
+  #define outpl(a, b)    *((uint32_t *) (uintptr_t) (a)) = ((uint32_t) (b))
  #else
 
 /* Define simple prototypes for non-memory mapped hardware access.  */

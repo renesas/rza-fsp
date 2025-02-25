@@ -73,6 +73,15 @@ fsp_err_t R_LCDC_LayerChange(display_ctrl_t const * const        p_api_ctrl,
 fsp_err_t R_LCDC_BufferChange(display_ctrl_t const * const p_api_ctrl,
                               uint8_t * const              framebuffer,
                               display_frame_layer_t        layer);
+fsp_err_t R_LCDC_ColorCorrection(display_ctrl_t const * const       p_api_ctrl,
+                                 display_correction_t const * const p_correction);
+fsp_err_t R_LCDC_ClutUpdate(display_ctrl_t const * const     p_api_ctrl,
+                            display_clut_cfg_t const * const p_clut_cfg,
+                            display_frame_layer_t            layer);
+fsp_err_t R_LCDC_ClutEdit(display_ctrl_t const * const p_api_ctrl,
+                          display_frame_layer_t        layer,
+                          uint8_t                      index,
+                          uint32_t                     color);
 fsp_err_t R_LCDC_ColorKeySet(display_ctrl_t const * const p_api_ctrl,
                              display_colorkeying_layer_t  ck_cfg,
                              display_frame_layer_t        layer);

@@ -530,7 +530,7 @@ static uint16_t usb_hhid_cmd_submit (usb_utr_t * ptr, usb_cb_t complete)
 
     return ret;
 #else                                  /* (BSP_CFG_RTOS) */
- #if BSP_MCU_GROUP_RZT2M == 1 || BSP_MCU_GROUP_RZA3UL == 1
+ #if BSP_MCU_GROUP_RZT2M == 1 || BSP_MCU_GROUP_RZA_USB == 1
     err = usb_hstd_transfer_start(&usb_shhid_string_req[ptr->ip]);
  #else /* BSP_MCU_GROUP_RZT2M == 1 */
     err = usb_hstd_transfer_start_req(&usb_shhid_string_req[ptr->ip]);

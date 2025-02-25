@@ -39,7 +39,7 @@
 #include "NetworkBufferManagement.h"
 
 /* Renesas includes. */
-#include "r_gether.h"
+#include "r_ether_api.h"
 #include "hal_data.h"
 #include "rm_freertos_plus_tcp.h"
 

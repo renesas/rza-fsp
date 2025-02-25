@@ -1485,7 +1485,9 @@ uint8_t usb_hstd_get_pipe_no (uint16_t ip_no, uint16_t address, uint16_t usb_cla
     uint16_t pipe;
  #endif                                /* defined(USB_CFG_HVND_USE) */
  #if defined(USB_CFG_HMSC_USE)
+  #if (BSP_CFG_RTOS != 1)
     uint16_t side;
+  #endif                               /* #if (BSP_CFG_RTOS != 1) */
  #endif                                /* defined(USB_CFG_HMSC_USE) */
     switch (usb_class)
     {

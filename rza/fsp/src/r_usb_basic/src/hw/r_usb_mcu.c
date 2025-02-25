@@ -135,7 +135,7 @@ void usb_ahb_pci_bridge_init(uint8_t ip_type);
  * @retval FSP_SUCCESS           Success.
  * @retval FSP_ERR_USB_BUSY      USB is in use.
  ******************************************************************************/
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
 
 fsp_err_t usb_module_start (uint8_t ip_type)
 {
@@ -187,7 +187,7 @@ fsp_err_t usb_module_start (uint8_t ip_type)
         ;                                /* Wait 500us */
     }
   #endif /* #if defined(BSP_MCU_GROUP_RZT2M) */
-  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
     CPG.STBCR6.BYTE &= 0xFD;             /* Release module standby */
     dummy_buf        = CPG.STBCR6.BYTE;
 
@@ -198,7 +198,7 @@ fsp_err_t usb_module_start (uint8_t ip_type)
    #endif /* (BSP_CFG_BOARD == BSP_CFG_BOARD_RZA2_EVB) */
   #endif /* !defined(BSP_MCU_GROUP_RZT2M) */
 
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
     R_BSP_MODULE_START(FSP_IP_USBPHY, 0);
 
     if (USB_IP0 == ip_type)
@@ -226,6 +226,7 @@ fsp_err_t usb_module_start (uint8_t ip_type)
     }
     else
     {
+   #if !defined(BSP_MCU_GROUP_RZA3M)
         R_BSP_MODULE_START(FSP_IP_USB1, 0);
 
         USB10->COMMCTRL_b.OTG_PERI = 0;             /* Operation mode setting (0 : Host, 1 : Peri) */
@@ -246,6 +247,7 @@ fsp_err_t usb_module_start (uint8_t ip_type)
         USB10->SPD_CTRL_b.SLEEPM_ENABLE      = 0;
         USB10->SPD_CTRL_b.WKCNNT_ENABLE      = 0;
         USB10->SPD_CTRL_b.GLOBAL_SUSPENDM_P1 = 0;
+   #endif
     }
   #else                                /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     USB00->COMMCTRL_b.PERI = 0;        /* Operation mode setting (0 : Host, 1 : Peri) */
@@ -386,7 +388,7 @@ fsp_err_t usb_module_register_clear (uint8_t usb_ip)
         USB_M1->NRDYSTS     = 0;
         USB_M1->BEMPSTS     = 0;
 #else                                  /* defined(USB_CFG_OTG_USE) */
- #if !defined(BSP_MCU_GROUP_RZA3UL)
+ #if !defined(BSP_MCU_GROUP_RZA_USB)
         USB_M1->DVSTCTR0         = 0;
         USB_M1->DCPCTR           = USB_SQSET;
         USB_M1->PIPE1CTR         = 0;
@@ -434,7 +436,7 @@ fsp_err_t usb_module_register_clear (uint8_t usb_ip)
  * @retval FSP_ERR_USB_NOT_OPEN  USB module is not open.
  * @retval FSP_ERR_USB_PARAMETER USB IP type is wrong.
  ******************************************************************************/
-#if defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZA_USB)
 fsp_err_t usb_module_stop (uint8_t ip_type)
 {
     fsp_err_t result = FSP_ERR_USB_PARAMETER;
@@ -448,9 +450,10 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
  #if USB_CFG_MODE == USB_CFG_PERI
         usb_module_register_clear(ip_type);
  #endif                                /*  #if USB_CFG_MODE == USB_CFG_PERI */
-
+ #if !defined(BSP_MCU_GROUP_RZA3M)
         R_BSP_MODULE_STOP(FSP_IP_USB1, 0);
         FSP_ERROR_RETURN(1 == R_MSTP->PERI_COM_b.MHUSB21, FSP_ERR_USB_FAILED)
+ #endif
         result = FSP_SUCCESS;
     }
     else
@@ -640,8 +643,7 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
     if (USB_IP0 == ip_type)
     {
 #if (!defined(BSP_MCU_GROUP_RA4M1)) && (!defined(BSP_MCU_GROUP_RA2A1)) && \
-        (!defined(BSP_MCU_GROUP_RZT2M)) && (!defined(BSP_MCU_GROUP_RZA3UL))
-
+        (!defined(BSP_MCU_GROUP_RZT2M)) && (!defined(BSP_MCU_GROUP_RZA_USB))
         /* Deep standby USB monitor register
          * b0      SRPC0    USB0 single end control
          * b1      PRUE0    DP Pull-Up Resistor control
@@ -687,7 +689,7 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
         }
 #endif  /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
 
-#if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA3UL)
+#if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
         if (cfg->irq_r >= 0)
         {
             R_BSP_IrqCfgEnable(cfg->irq_r, cfg->ipl_r, (void *) cfg); /* USBR enable */
@@ -695,17 +697,17 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
 #endif /* BSP_MCU_GROUP_RZT2M */
         if (cfg->irq >= 0)
         {
-            R_BSP_IrqCfgEnable(cfg->irq, cfg->ipl, (void *) cfg); /* USBI enable */
+            R_BSP_IrqCfgEnable(cfg->irq, cfg->ipl, (void *) cfg);           /* USBI enable */
         }
 
-#if defined(BSP_MCU_GROUP_RZA3UL)
-        R_BSP_IrqCfgEnable(USB_VAL_124, cfg->ipl, (void *) cfg);  /* USBI enable */
+#if defined(BSP_MCU_GROUP_RZA_USB)
+        R_BSP_IrqCfgEnable(USB_U2H0_EHCI_INT_IRQn, cfg->ipl, (void *) cfg); /* USBI enable */
 #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
     }
 
     if (ip_type == USB_IP1)
     {
-#if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RA6M3) || defined(BSP_MCU_GROUP_RZA_USB)
         host_cfg = (usb_cfg_t *) cfg;
 
         /* Interrupt enable register
@@ -734,7 +736,7 @@ void usb_cpu_usbint_init (uint8_t ip_type, usb_cfg_t const * const cfg)
             R_BSP_IrqCfgEnable(cfg->hsirq, cfg->hsipl, (void *) cfg); /* USBIR enable */
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         R_BSP_IrqCfgEnable(USB_VAL_129, cfg->hsipl, (void *) cfg);    /* USBI enable */
  #endif /* #if defined(BSP_MCU_GROUP_RZA3UL) */
 #endif /* defined(BSP_MCU_GROUP_RA6M3) */
@@ -819,7 +821,6 @@ void usb_cpu_int_enable (void)
     }
 
  #if defined(BSP_MCU_GROUP_RA6M3)
-
     /* Interrupt enable register (USB1 USBIO enable)
      * b0 IEN0 Interrupt enable bit
      * b1 IEN1 Interrupt enable bit
@@ -862,7 +863,6 @@ void usb_cpu_int_disable (void)
     R_BSP_IrqDisable(host_cfg->irq);   /* USBI enable */
 
  #if defined(BSP_MCU_GROUP_RA6M3)
-
     /* Interrupt enable register (USB1 USBIO disable)
      * b0 IEN0 Interrupt enable bit
      * b1 IEN1 Interrupt enable bit
@@ -1072,16 +1072,16 @@ bool usb_check_use_usba_module (usb_utr_t * ptr)
     {
         ret_code = true;
     }
-#elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) /* defined(BSP_MCU_GROUP_RA6M3) */
+#elif defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB) /* defined(BSP_MCU_GROUP_RA6M3) */
     ret_code = true;
-#endif                                                              /* defined(BSP_MCU_GROUP_RA6M3) */
+#endif                                                               /* defined(BSP_MCU_GROUP_RA6M3) */
 
     return ret_code;
-}                                                                   /* End of function usb_check_use_usba_module */
+}                                                                    /* End of function usb_check_use_usba_module */
 
 void usbfs_interrupt_handler (IRQn_Type const irq)
 {
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(irq);
 #else                                  /* #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) */
     IRQn_Type irq = R_FSP_CurrentIrqGet();
@@ -1094,7 +1094,7 @@ void usbfs_interrupt_handler (IRQn_Type const irq)
 void usbfs_resume_handler (void)
 {
     IRQn_Type irq = (IRQn_Type) R_FSP_CurrentIrqGet();
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(irq);
 #else                                  /* defined(BSP_MCU_GROUP_RZT2M) */
     R_BSP_IrqStatusClear(irq);
@@ -1111,7 +1111,7 @@ void usbfs_resume_handler (void)
 void usbfs_d0fifo_handler (void)
 {
     IRQn_Type irq = (IRQn_Type) R_FSP_CurrentIrqGet();
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(irq);
 #else                                  /* defined(BSP_MCU_GROUP_RZT2M) */
     R_BSP_IrqStatusClear(irq);
@@ -1125,7 +1125,7 @@ void usbfs_d0fifo_handler (void)
 void usbfs_d1fifo_handler (void)
 {
     IRQn_Type irq = (IRQn_Type) R_FSP_CurrentIrqGet();
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(irq);
 #else                                  /* defined(BSP_MCU_GROUP_RZT2M) */
     R_BSP_IrqStatusClear(irq);
@@ -1137,7 +1137,7 @@ void usbfs_d1fifo_handler (void)
 
 void usbhs_interrupt_handler (IRQn_Type const irq)
 {
-#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL)
+#if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA_USB)
     FSP_PARAMETER_NOT_USED(irq);
 #else                                  /* #if defined(BSP_MCU_GROUP_RZT2M) || defined(BSP_MCU_GROUP_RZA3UL) */
     IRQn_Type irq = R_FSP_CurrentIrqGet();
@@ -1190,7 +1190,7 @@ void usbhs_d1fifo_handler (void)
  ***********************************************************************************************************************/
 void usb_ahb_pci_bridge_init (uint8_t ip_type)
 {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ip_type)
     {
         USB00->INT_ENABLE_b.WAKEON_INTEN = 1;
@@ -1206,6 +1206,7 @@ void usb_ahb_pci_bridge_init (uint8_t ip_type)
     }
     else
     {
+  #if !defined(BSP_MCU_GROUP_RZA3M)
         USB10->INT_ENABLE_b.WAKEON_INTEN = 1;
         USB10->INT_ENABLE_b.UCOM_INTEN   = 1;
         USB10->INT_ENABLE_b.USBH_INTBEN  = 1;
@@ -1216,6 +1217,7 @@ void usb_ahb_pci_bridge_init (uint8_t ip_type)
         USB10->AHB_BUS_CTR_b.PROT_MODE     = 0;
         USB10->AHB_BUS_CTR_b.ALIGN_ADDRESS = 0;
         USB10->AHB_BUS_CTR_b.MAX_BURST_LEN = 0;
+  #endif
     }
  #else
     USB00->INTENABLE_b.WAKEON_INTEN = 1;

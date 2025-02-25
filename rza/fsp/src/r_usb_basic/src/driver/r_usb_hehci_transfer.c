@@ -223,7 +223,7 @@ void usb_hstd_ehci_set_async_qh (st_usb_hci_tr_req_t * p_tr_req, st_usb_ehci_qh_
     p_qh->endpoint2.dword = endpoint2.dword;
     p_qh->endpoint1.dword = endpoint1.dword;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     if (0 == p_qh->qtd_head)
  #else
     if (NULL == p_qh->qtd_head)
@@ -236,7 +236,7 @@ void usb_hstd_ehci_set_async_qh (st_usb_hci_tr_req_t * p_tr_req, st_usb_ehci_qh_
     else
     {
         /* When Next_qTD of QH is not set */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_qh->next_qtd.address = (uint32_t) r_usb_va_to_pa((uint64_t) p_qh->qtd_head);
  #else
         p_qh->next_qtd.address = (uint32_t) p_qh->qtd_head;
@@ -271,7 +271,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
     uint16_t            status;
     uint16_t            ret;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_qh = (st_usb_ehci_qh_t *) (uintptr_t) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
     p_qh = (st_usb_ehci_qh_t *) p_tr_req->hci_info;
@@ -283,7 +283,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
     if (USB_EP_CNTRL == p_tr_req->bit.eptype)
     {
         /* SETUP is skipped, and the DATA is set */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_data_qtd = (st_usb_ehci_qtd_t *) (uintptr_t) (r_usb_pa_to_va((uint64_t) (p_qh->qtd_head)));
         p_data_qtd =
             (st_usb_ehci_qtd_t *) (uintptr_t) (r_usb_pa_to_va((uint64_t) (p_data_qtd->next_qtd.address &
@@ -295,7 +295,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
     }
     else
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_data_qtd = (st_usb_ehci_qtd_t *) (uintptr_t) (r_usb_pa_to_va((uint64_t) p_qh->qtd_head));
  #else
         p_data_qtd = (st_usb_ehci_qtd_t *) p_qh->qtd_head;
@@ -318,7 +318,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
             break;
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         if (p_data_qtd == (st_usb_ehci_qtd_t *) (uintptr_t) r_usb_pa_to_va((uint64_t) p_qh->qtd_end))
  #else
         if (p_data_qtd == p_qh->qtd_end)
@@ -329,7 +329,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
 
         if (0 == p_data_qtd->next_qtd.bit.t)
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_data_qtd =
                 (st_usb_ehci_qtd_t *) (uintptr_t) (r_usb_pa_to_va((uint64_t) p_data_qtd->next_qtd.address &
                                                                   USB_VAL_XFE0));
@@ -352,7 +352,7 @@ void usb_hstd_ehci_transfer_end_qh (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr_
     /*  Clear qTD  */
     /* =========== */
     usb_hstd_ehci_clear_qtd((st_usb_ehci_qtd_t *) (uintptr_t) p_qh->qtd_head);
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_qh->qtd_head = 0;
  #else
     p_qh->qtd_head = NULL;
@@ -401,7 +401,7 @@ void usb_hstd_ehci_transfer_end_itd (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr
     uint8_t * p_data_buf;
     uint8_t * tmp_itd_buffer;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_itd = ((st_usb_ehci_itd_t *) (uintptr_t) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info)));
  #else
     p_itd = (st_usb_ehci_itd_t *) p_tr_req->hci_info;
@@ -413,7 +413,7 @@ void usb_hstd_ehci_transfer_end_itd (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr
     if (p_tr_req->bit.direction == USB_HCI_DIRECTION_IN)
     {
         /* Set Distination Address */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_data_buf = (uint8_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->databuf));
  #else
         p_data_buf = (uint8_t *) p_tr_req->databuf;
@@ -424,7 +424,7 @@ void usb_hstd_ehci_transfer_end_itd (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_tr
             if (p_itd->transaction[i].bit.length > 0)
             {
                 /* copy IN data */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
                 tmp_itd_buffer = (uint8_t *) (r_usb_pa_to_va((uint64_t) &p_itd->tmp_buffer[i][0]));
  #else
                 tmp_itd_buffer = (uint8_t *) &p_itd->tmp_buffer[i][0];
@@ -484,7 +484,7 @@ void usb_hstd_ehci_transfer_end_sitd (usb_utr_t * ptr, st_usb_hci_tr_req_t * p_t
     st_usb_ehci_sitd_t * p_sitd;
     uint32_t             remain_size;
     uint16_t             status;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_sitd = (st_usb_ehci_sitd_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
     p_sitd = (st_usb_ehci_sitd_t *) p_tr_req->hci_info;
@@ -709,7 +709,7 @@ static void usb_hstd_ehci_make_cntrol_bulk_interrupt_request (st_usb_hci_tr_req_
     }
 
     /* QH registration */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_tr_req->hci_info = (void *) r_usb_va_to_pa((uint64_t) p_qh);
     p_qh->qtd_head     = (uint32_t) r_usb_va_to_pa((uint64_t) p_qtd_head);
     p_qh->qtd_end      = (uint32_t) r_usb_va_to_pa((uint64_t) p_qtd_end);
@@ -722,7 +722,7 @@ static void usb_hstd_ehci_make_cntrol_bulk_interrupt_request (st_usb_hci_tr_req_
  #ifdef USB_HOST_COMPLIANCE_MODE
     if (g_usb_hstd_test_packet_parameter_flag)
     {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         p_qtd_head_tmp = (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) (p_qh->qtd_head)));
         p_qtd_head_tmp->transfer_info.bit.status_active = 0;
         p_qtd_head_tmp->next_qtd.pointer->transfer_info.bit.status_active = 0;
@@ -793,7 +793,7 @@ static void usb_hstd_ehci_make_cntrol_bulk_interrupt_request (st_usb_hci_tr_req_
  #ifdef USB_HOST_COMPLIANCE_MODE
     if (g_usb_hstd_test_packet_parameter_flag)
     {
-  #if defined(BSP_MCU_GROUP_RZA3UL)
+  #if defined(BSP_MCU_GROUP_RZA_USB)
         p_qtd_head_tmp = (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) (p_qh->qtd_head)));
         p_qtd_end_tmp  = (st_usb_ehci_qtd_t *) (r_usb_pa_to_va((uint64_t) (p_qh->qtd_end)));
 
@@ -858,7 +858,7 @@ static void usb_hstd_ehci_make_isochronous_request (usb_utr_t * ptr, st_usb_hci_
             }
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_tr_req->hci_info = (void *) r_usb_va_to_pa((uint64_t) p_itd);
  #else
         p_tr_req->hci_info = p_itd;
@@ -891,10 +891,12 @@ static void usb_hstd_ehci_make_isochronous_request (usb_utr_t * ptr, st_usb_hci_
             }
             else
             {
+ #if USB_NUM_USBIP == 2
                 while ((ptr->ipp1->FRINDEX & 0x00000007) != 0x00000007)
                 {
                     ;                  /* uFrame Sync */
                 }
+ #endif
             }
 
             usb_hstd_ehci_add_periodic(p_tr_req->utr_p,
@@ -923,7 +925,7 @@ static void usb_hstd_ehci_make_isochronous_request (usb_utr_t * ptr, st_usb_hci_
             }
         }
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_tr_req->hci_info = (void *) r_usb_va_to_pa((uint64_t) p_sitd);
  #else
         p_tr_req->hci_info = p_sitd;
@@ -1000,7 +1002,7 @@ static void usb_hstd_ehci_set_qtd (st_usb_ehci_qtd_t * p_qtd,
 
     if (0 != bufferadrs)
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_qtd->buffer[0].address = (uint32_t) r_usb_va_to_pa(bufferadrs);
  #else
         p_qtd->buffer[0].address = bufferadrs;
@@ -1081,7 +1083,7 @@ static void usb_hstd_ehci_start_periodic_qh (st_usb_ehci_qh_t * p_qh)
     /* Set Transfer Request Flag */
     p_qh->info.tr_req_flag = TRUE;
 
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_qh->next_qtd.address = (uint32_t) r_usb_va_to_pa((uint64_t) p_qh->qtd_head);
  #else
     p_qh->next_qtd.address = (uint32_t) p_qh->qtd_head;
@@ -1111,7 +1113,7 @@ static void usb_hstd_ehci_init_itd (st_usb_hci_tr_req_t * p_tr_req,
     uint32_t address;
 
     pg = 0;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     tmp_bufferadrs            = (uint32_t) (r_usb_pa_to_va((uint64_t) &p_itd->tmp_buffer[0][0]));
     p_itd->buffer[pg].address = (uint32_t) r_usb_va_to_pa((uint64_t) (tmp_bufferadrs & USB_VAL_FFFFF000));
  #else
@@ -1121,7 +1123,7 @@ static void usb_hstd_ehci_init_itd (st_usb_hci_tr_req_t * p_tr_req,
 
     for (n = 0; n < 8; n++)
     {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_itd->transaction[n].bit.offset = ((uint32_t) r_usb_va_to_pa((uint64_t) tmp_bufferadrs)) & USB_VAL_FFF; /* Offset */
  #else
         p_itd->transaction[n].bit.offset = (tmp_bufferadrs & USB_VAL_FFF);                                       /* Offset */
@@ -1134,7 +1136,7 @@ static void usb_hstd_ehci_init_itd (st_usb_hci_tr_req_t * p_tr_req,
         if (address != (tmp_bufferadrs & USB_VAL_FFFFF000))
         {
             pg++;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             p_itd->buffer[pg].address = ((uint32_t) r_usb_va_to_pa((uint64_t) tmp_bufferadrs)) & USB_VAL_FFFFF000;
  #else
             p_itd->buffer[pg].address = (tmp_bufferadrs & USB_VAL_FFFFF000);
@@ -1171,7 +1173,7 @@ static void usb_hstd_ehci_start_itd (st_usb_hci_tr_req_t * p_tr_req)
     uint32_t            remain;
     uint8_t           * p_databuf;
     uint8_t           * tmp_itd_duffer;
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_itd = (st_usb_ehci_itd_t *) (r_usb_pa_to_va((uint64_t) p_tr_req->hci_info));
  #else
     p_itd = (st_usb_ehci_itd_t *) p_tr_req->hci_info;
@@ -1197,7 +1199,7 @@ static void usb_hstd_ehci_start_itd (st_usb_hci_tr_req_t * p_tr_req)
         remain -= trsize;
 
         /* Set Source Address */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
         p_databuf = (uint8_t *) (r_usb_pa_to_va((uint64_t) ((p_tr_req->databuf) + (p_tr_req->bit.mps * i))));
  #else
         p_databuf = (uint8_t *) (p_tr_req->databuf + (p_tr_req->bit.mps * i));
@@ -1206,7 +1208,7 @@ static void usb_hstd_ehci_start_itd (st_usb_hci_tr_req_t * p_tr_req)
         /* Copy OUT data */
         if (USB_HCI_DIRECTION_OUT == p_itd->info.direction)
         {
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
             tmp_itd_duffer = (uint8_t *) (r_usb_pa_to_va((uint64_t) &p_itd->tmp_buffer[p_itd->next_setup_uframe][0]));
  #else
             tmp_itd_duffer = (uint8_t *) &p_itd->tmp_buffer[p_itd->next_setup_uframe][0];
@@ -1368,7 +1370,7 @@ static void usb_hstd_ehci_set_sitd (st_usb_ehci_sitd_t * p_sitd,
     p_sitd->state.bit.ioc                     = ioc & 0x00000001U;       /* interrupt on completion */
     p_sitd->state.bit.page_select             = 0;                       /* page select */
     p_sitd->state.bit.total_bytes_to_transfer = totalsize & USB_VAL_3FF; /* total size */
- #if defined(BSP_MCU_GROUP_RZA3UL)
+ #if defined(BSP_MCU_GROUP_RZA_USB)
     p_sitd->buffer[0].address = (uint32_t) r_usb_va_to_pa((uint64_t) bufferadrs);
     p_sitd->buffer[1].address = (uint32_t) r_usb_va_to_pa((uint64_t) ((bufferadrs & USB_VAL_FFFFF000) + USB_VAL_1000));
  #else
