@@ -1,6 +1,8 @@
 var searchData=
 [
   ['mpu_20board_20support_20package',['MPU Board Support Package',['../group___b_s_p___m_c_u.html',1,'']]],
+  ['mipi_20dsi_20interface',['MIPI DSI Interface',['../group___m_i_p_i___d_s_i___a_p_i.html',1,'']]],
+  ['mipi_20display_20serial_20interface_20_28r_5fmipi_5fdsi_5fb_29',['MIPI Display Serial Interface (r_mipi_dsi_b)',['../group___m_i_p_i___d_s_i___b.html',1,'']]],
   ['memory_20managing_20unit_20_28r_5fmmu_29',['Memory Managing Unit (r_mmu)',['../group___m_m_u.html',1,'']]],
   ['memory_20managing_20unit_20interface',['Memory Managing Unit Interface',['../group___m_m_u___a_p_i.html',1,'']]],
   ['multi_2dfunction_20timer_20pulse_20unit_203_20_28r_5fmtu3_29',['Multi-Function Timer Pulse Unit 3 (r_mtu3)',['../group___m_t_u3.html',1,'']]],

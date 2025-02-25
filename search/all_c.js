@@ -9,6 +9,7 @@ var searchData=
   ['num_5fbuffers',['num_buffers',['../group___c_a_m_e_r_a___a_p_i.html#ab7f136fc159e3050c7c25ef4810853bc',1,'camera_buffer_cfg_t::num_buffers()'],['../group___c_r_u.html#a1da03dc03f1b7de9171c229d412c2a79',1,'statistics_cfg_t::num_buffers()']]],
   ['num_5fbytes',['num_bytes',['../group___c_r_c___a_p_i.html#aaed97c9ce40d9d7209348114b819bf02',1,'crc_input_t']]],
   ['num_5fdatalane',['num_datalane',['../group___c_r_u.html#ac53e7112e4267e43f51e3ebfe805f8de',1,'cru_extended_cfg_t']]],
+  ['num_5flanes',['num_lanes',['../group___m_i_p_i___d_s_i___a_p_i.html#aaebdfd4125426d26b3191dda6d3171d5',1,'mipi_dsi_cfg_t']]],
   ['num_5frx_5fdescriptors',['num_rx_descriptors',['../group___e_t_h_e_r___a_p_i.html#ae672b5a15f85774b5b136a6e50073f68',1,'ether_cfg_t']]],
   ['num_5fsectors',['num_sectors',['../group___r_m___b_l_o_c_k___m_e_d_i_a___a_p_i.html#a9c19435e9c8a2e1a32c9e0869ef10663',1,'rm_block_media_info_t']]],
   ['num_5ftx_5fdescriptors',['num_tx_descriptors',['../group___e_t_h_e_r___a_p_i.html#aae2adf978d21f78a198689c42b484974',1,'ether_cfg_t']]],

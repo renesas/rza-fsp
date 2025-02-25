@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.3.0</span>
+   &#160;<span id="projectnumber">Release v3.4.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -296,7 +296,7 @@ When using DTC, this structure must not be allocated in a temporary location. An
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
-<a id="a1ec10849374bd3afc5afb0865e8a1bab"></a>union <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#uniontransfer__info__t_8____unnamed____">transfer_info_t</a></td>
+<a id="a1a82377dc38a1a372b6ed6d9d8ab54b4"></a>union <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#uniontransfer__info__t_8____unnamed____">transfer_info_t</a></td>
 <td class="fieldname">
 __unnamed__</td>
 <td class="fielddoc">
@@ -330,17 +330,23 @@ length</td>
 <p>Length of each transfer. Range limited for <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55">TRANSFER_MODE_BLOCK</a> and <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b">TRANSFER_MODE_REPEAT</a>, see HAL driver for details. </p>
 </td></tr>
 <tr><td class="fieldtype">
-<a id="aa590a8773d55de2b55f1497672799188"></a>union <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#uniontransfer__info__t_8____unnamed____">transfer_info_t</a></td>
+<a id="a855c625a77ce95a26b63295ff80e7e4f"></a>union <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#uniontransfer__info__t_8____unnamed____">transfer_info_t</a></td>
 <td class="fieldname">
 __unnamed__</td>
 <td class="fielddoc">
 </td></tr>
 <tr><td class="fieldtype">
-<a id="ad51629691ac2ba564a7c0ba91d76e250"></a>void const  *</td>
+<a id="adf3f0e7c247be5f4643b93e268756421"></a>void const  *</td>
 <td class="fieldname">
 p_extend_info</td>
 <td class="fielddoc">
 Extension parameter for hardware specific settings. </td></tr>
+<tr><td class="fieldtype">
+<a id="a7103433f246122a73252e47addf49e5d"></a>union <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#uniontransfer__info__t_8____unnamed____">transfer_info_t</a></td>
+<td class="fieldname">
+__unnamed__</td>
+<td class="fielddoc">
+</td></tr>
 </table>
 
 </div>
@@ -747,6 +753,14 @@ Pointer to the API structure for this instance. </td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2"></a>TRANSFER_MODE_REPEAT_BLOCK&#160;</td><td class="fielddoc"><p>In addition to block mode features, repeat-block mode supports a ring buffer of blocks and offsets within a block (to split blocks into arrays of their first data, second data, etc.) </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gadfb7c2a6a73bfdf993e50505aa92992fada90d8a89f98ff82475383b14141b08d"></a>TRANSFER_MODE_NORMAL&#160;</td><td class="fielddoc"><p>In normal mode, each transfer request causes a transfer of <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga6c224e5afb174f3f6ea9eddbb9da8b12">transfer_size_t</a> from the source pointer to the destination pointer. The transfer length is decremented and the source and address pointers are updated according to <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadce62e6c2407d6ffd5a94636736f7c51">transfer_addr_mode_t</a>. After the transfer length reaches 0, transfer requests will not cause any further transfers. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b"></a>TRANSFER_MODE_REPEAT&#160;</td><td class="fielddoc"><p>Repeat mode is like normal mode, except that when the transfer length reaches 0, the pointer to the repeat area and the transfer length will be reset to their initial values. If DMAC is used, the transfer repeats only <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#a9781e58bb7cb2ee40de446936d523814">transfer_info_t::num_blocks</a> times. After the transfer repeats <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#a9781e58bb7cb2ee40de446936d523814">transfer_info_t::num_blocks</a> times, transfer requests will not cause any further transfers. If DTC is used, the transfer repeats continuously (no limit to the number of repeat transfers). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55"></a>TRANSFER_MODE_BLOCK&#160;</td><td class="fielddoc"><p>In block mode, each transfer request causes <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#aa92c5d06d07e7d13c16f9704a431c7cb">transfer_info_t::length</a> transfers of <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga6c224e5afb174f3f6ea9eddbb9da8b12">transfer_size_t</a>. After each individual transfer, the source and destination pointers are updated according to <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadce62e6c2407d6ffd5a94636736f7c51">transfer_addr_mode_t</a>. After the block transfer is complete, <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#a9781e58bb7cb2ee40de446936d523814">transfer_info_t::num_blocks</a> is decremented. After the <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#a9781e58bb7cb2ee40de446936d523814">transfer_info_t::num_blocks</a> reaches 0, transfer requests will not cause any further transfers. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2"></a>TRANSFER_MODE_REPEAT_BLOCK&#160;</td><td class="fielddoc"><p>In addition to block mode features, repeat-block mode supports a ring buffer of blocks and offsets within a block (to split blocks into arrays of their first data, second data, etc.) </p>
+</td></tr>
 </table>
 
 </div>
@@ -765,6 +779,14 @@ Pointer to the API structure for this instance. </td></tr>
 <p>Transfer size specifies the size of each individual transfer. Total transfer length = transfer_size_t * transfer_length_t </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ga6c224e5afb174f3f6ea9eddbb9da8b12accfeb24892ec24e42ccf14e4d4896c21"></a>TRANSFER_SIZE_1_BYTE&#160;</td><td class="fielddoc"><p>Each transfer transfers a 8-bit value. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga6c224e5afb174f3f6ea9eddbb9da8b12a8b6b33a085b51ea2eeed1ef119de562f"></a>TRANSFER_SIZE_2_BYTE&#160;</td><td class="fielddoc"><p>Each transfer transfers a 16-bit value. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga6c224e5afb174f3f6ea9eddbb9da8b12a18482bfa86e737cde78042be4db54412"></a>TRANSFER_SIZE_4_BYTE&#160;</td><td class="fielddoc"><p>Each transfer transfers a 32-bit value. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga6c224e5afb174f3f6ea9eddbb9da8b12a5bb02177f10ea6a06f9fdf3d8f353d6f"></a>TRANSFER_SIZE_8_BYTE&#160;</td><td class="fielddoc"><p>Each transfer transfers a 64-bit value. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga6c224e5afb174f3f6ea9eddbb9da8b12accfeb24892ec24e42ccf14e4d4896c21"></a>TRANSFER_SIZE_1_BYTE&#160;</td><td class="fielddoc"><p>Each transfer transfers a 8-bit value. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ga6c224e5afb174f3f6ea9eddbb9da8b12a8b6b33a085b51ea2eeed1ef119de562f"></a>TRANSFER_SIZE_2_BYTE&#160;</td><td class="fielddoc"><p>Each transfer transfers a 16-bit value. </p>
 </td></tr>
@@ -811,6 +833,14 @@ Pointer to the API structure for this instance. </td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gadce62e6c2407d6ffd5a94636736f7c51a56a87e1587844119831414f3d5e6d761"></a>TRANSFER_ADDR_MODE_DECREMENTED&#160;</td><td class="fielddoc"><p>Address pointer is decremented by associated <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga6c224e5afb174f3f6ea9eddbb9da8b12">transfer_size_t</a> after each transfer. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gadce62e6c2407d6ffd5a94636736f7c51abf18f9b3701e9e91f44055ee47d0ca47"></a>TRANSFER_ADDR_MODE_FIXED&#160;</td><td class="fielddoc"><p>Address pointer remains fixed after each transfer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gadce62e6c2407d6ffd5a94636736f7c51ab8b3f8ce28fb6f7a57a1b87db0d612c2"></a>TRANSFER_ADDR_MODE_OFFSET&#160;</td><td class="fielddoc"><p>Offset is added to the address pointer after each transfer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gadce62e6c2407d6ffd5a94636736f7c51a7665741e25c4cc78fd24745efbd2eaad"></a>TRANSFER_ADDR_MODE_INCREMENTED&#160;</td><td class="fielddoc"><p>Address pointer is incremented by associated <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga6c224e5afb174f3f6ea9eddbb9da8b12">transfer_size_t</a> after each transfer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gadce62e6c2407d6ffd5a94636736f7c51a56a87e1587844119831414f3d5e6d761"></a>TRANSFER_ADDR_MODE_DECREMENTED&#160;</td><td class="fielddoc"><p>Address pointer is decremented by associated <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#ga6c224e5afb174f3f6ea9eddbb9da8b12">transfer_size_t</a> after each transfer. </p>
+</td></tr>
 </table>
 
 </div>
@@ -829,6 +859,10 @@ Pointer to the API structure for this instance. </td></tr>
 <p>Repeat area options (source or destination). In <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b">TRANSFER_MODE_REPEAT</a>, the selected pointer returns to its original value after <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#aa92c5d06d07e7d13c16f9704a431c7cb">transfer_info_t::length</a> transfers. In <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55">TRANSFER_MODE_BLOCK</a> and <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2">TRANSFER_MODE_REPEAT_BLOCK</a>, the selected pointer returns to its original value after each transfer. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ga769464d2068881ccb44573c96167812ba77aeeab30b003de23742e40a57f19239"></a>TRANSFER_REPEAT_AREA_DESTINATION&#160;</td><td class="fielddoc"><p>Destination area repeated in <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b">TRANSFER_MODE_REPEAT</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55">TRANSFER_MODE_BLOCK</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2">TRANSFER_MODE_REPEAT_BLOCK</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga769464d2068881ccb44573c96167812ba2002ef7bbc49f7c9ebfac1618ba3c391"></a>TRANSFER_REPEAT_AREA_SOURCE&#160;</td><td class="fielddoc"><p>Source area repeated in <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b">TRANSFER_MODE_REPEAT</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55">TRANSFER_MODE_BLOCK</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2">TRANSFER_MODE_REPEAT_BLOCK</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga769464d2068881ccb44573c96167812ba77aeeab30b003de23742e40a57f19239"></a>TRANSFER_REPEAT_AREA_DESTINATION&#160;</td><td class="fielddoc"><p>Destination area repeated in <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b">TRANSFER_MODE_REPEAT</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55">TRANSFER_MODE_BLOCK</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2">TRANSFER_MODE_REPEAT_BLOCK</a>. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ga769464d2068881ccb44573c96167812ba2002ef7bbc49f7c9ebfac1618ba3c391"></a>TRANSFER_REPEAT_AREA_SOURCE&#160;</td><td class="fielddoc"><p>Source area repeated in <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fa607c41bfd08797c08a5ee9bd4dfb9c8b">TRANSFER_MODE_REPEAT</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992faa4f65de2d9454af406f60172ff858d55">TRANSFER_MODE_BLOCK</a> or <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#gadfb7c2a6a73bfdf993e50505aa92992fafb43c6e62b61f0dbb9a5bcd5575e79e2">TRANSFER_MODE_REPEAT_BLOCK</a>. </p>
 </td></tr>
@@ -865,6 +899,12 @@ Pointer to the API structure for this instance. </td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ga68f81dc8b9ca46fbe3a1e556c020436dab853bdecc90c476b995644c273e0ee75"></a>TRANSFER_CHAIN_MODE_END&#160;</td><td class="fielddoc"><p>Complete the entire transfer defined in this <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__info__t">transfer_info_t</a> before chaining to next transfer. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="ga68f81dc8b9ca46fbe3a1e556c020436dae974453c306b4959252905e362d75067"></a>TRANSFER_CHAIN_MODE_DISABLED&#160;</td><td class="fielddoc"><p>Chain mode not used. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga68f81dc8b9ca46fbe3a1e556c020436dadab837d29a543149d35ed2fd28d8e4e8"></a>TRANSFER_CHAIN_MODE_EACH&#160;</td><td class="fielddoc"><p>Switch to next transfer after a single transfer from this <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__info__t">transfer_info_t</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga68f81dc8b9ca46fbe3a1e556c020436dab853bdecc90c476b995644c273e0ee75"></a>TRANSFER_CHAIN_MODE_END&#160;</td><td class="fielddoc"><p>Complete the entire transfer defined in this <a class="el" href="group___t_r_a_n_s_f_e_r___a_p_i.html#structtransfer__info__t">transfer_info_t</a> before chaining to next transfer. </p>
+</td></tr>
 </table>
 
 </div>
@@ -883,6 +923,10 @@ Pointer to the API structure for this instance. </td></tr>
 <p>Interrupt options. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gad71bdadb7f486bb5d3ca6ff508dc0b08ada378ad830e44cc0c25d4fe2413e11de"></a>TRANSFER_IRQ_END&#160;</td><td class="fielddoc"><p>Interrupt occurs only after last transfer. If this transfer is chained to a subsequent transfer, the interrupt will occur only after subsequent chained transfer(s) are complete. </p><dl class="section warning"><dt>Warning</dt><dd>DTC triggers the interrupt of the activation source. Choosing TRANSFER_IRQ_END with DTC will prevent activation source interrupts until the transfer is complete. </dd></dl>
+</td></tr>
+<tr><td class="fieldname"><a id="gad71bdadb7f486bb5d3ca6ff508dc0b08a0929782b61686db69e12b3cb18175b35"></a>TRANSFER_IRQ_EACH&#160;</td><td class="fielddoc"><p>Interrupt occurs after each transfer. </p><dl class="section note"><dt>Note</dt><dd>Not available in all HAL drivers. See HAL driver for details. </dd></dl>
+</td></tr>
+<tr><td class="fieldname"><a id="gad71bdadb7f486bb5d3ca6ff508dc0b08ada378ad830e44cc0c25d4fe2413e11de"></a>TRANSFER_IRQ_END&#160;</td><td class="fielddoc"><p>Interrupt occurs only after last transfer. If this transfer is chained to a subsequent transfer, the interrupt will occur only after subsequent chained transfer(s) are complete. </p><dl class="section warning"><dt>Warning</dt><dd>DTC triggers the interrupt of the activation source. Choosing TRANSFER_IRQ_END with DTC will prevent activation source interrupts until the transfer is complete. </dd></dl>
 </td></tr>
 <tr><td class="fieldname"><a id="gad71bdadb7f486bb5d3ca6ff508dc0b08a0929782b61686db69e12b3cb18175b35"></a>TRANSFER_IRQ_EACH&#160;</td><td class="fielddoc"><p>Interrupt occurs after each transfer. </p><dl class="section note"><dt>Note</dt><dd>Not available in all HAL drivers. See HAL driver for details. </dd></dl>
 </td></tr>
@@ -921,7 +965,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.3.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.3.0</span>
+   &#160;<span id="projectnumber">Release v3.4.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -653,7 +653,7 @@ vsize</td>
 Vertical pixel size in a frame. <p>Vertical pixels in a frame. </p>
 </td></tr>
 <tr><td class="fieldtype">
-<a id="a8789df7cb3a6f24f0e4f7bda9256bf74"></a>uint32_t</td>
+<a id="a2cf569fd21677da2b3c55bd9b423feb2"></a>uint32_t</td>
 <td class="fieldname">
 hstride</td>
 <td class="fielddoc">
@@ -683,13 +683,13 @@ lines_repeat_times</td>
 <td class="fielddoc">
 Expected number of line repeating. </td></tr>
 <tr><td class="fieldtype">
-<a id="aeb8bcaee895f7ba9683d20cfc5d684bd"></a>uint32_t *</td>
+<a id="ada7180a4b59816e5ac1e5a21ae722ce8"></a>uint32_t *</td>
 <td class="fieldname">
 p_base_cb</td>
 <td class="fielddoc">
 Base address to the frame buffer for Cb plane. </td></tr>
 <tr><td class="fieldtype">
-<a id="ad7f70ba5191a99c87b3d101695a34ea7"></a>uint32_t *</td>
+<a id="a28a293af4a065639ff9fe79ea4d79164"></a>uint32_t *</td>
 <td class="fieldname">
 p_base_cr</td>
 <td class="fielddoc">
@@ -1568,6 +1568,46 @@ Pointer to the API structure for this instance. </td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da88cfaf7b1c4dd3be10f542d16e0e9421"></a>DISPLAY_IN_FORMAT_CUSTOM&#160;</td><td class="fielddoc"><p>All other options start at this value. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9daf09313fb04b4e17b051ac9de517142d3"></a>DISPLAY_IN_FORMAT_32BITS_ARGB8888&#160;</td><td class="fielddoc"><p>ARGB8888, 32 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9daee6424883228175e2a2440b797038e4d"></a>DISPLAY_IN_FORMAT_32BITS_RGB888&#160;</td><td class="fielddoc"><p>RGB888, 32 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9daa068ee020f75bba2ef522d08b508e342"></a>DISPLAY_IN_FORMAT_16BITS_RGB565&#160;</td><td class="fielddoc"><p>RGB565, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9daba072b6b87b8ad84351b252be2b5c0ac"></a>DISPLAY_IN_FORMAT_16BITS_ARGB1555&#160;</td><td class="fielddoc"><p>ARGB1555, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da46cc4b89979bfe7c3073f4351b4a94fc"></a>DISPLAY_IN_FORMAT_16BITS_ARGB4444&#160;</td><td class="fielddoc"><p>ARGB4444, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da427a63f1acd577c434dc92361ba6c240"></a>DISPLAY_IN_FORMAT_CLUT8&#160;</td><td class="fielddoc"><p>CLUT8. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9dac8cf13c92509074ffbf7060b85b4b4d3"></a>DISPLAY_IN_FORMAT_CLUT4&#160;</td><td class="fielddoc"><p>CLUT4. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9dae186bee3890108aa941a4e5db74f1f59"></a>DISPLAY_IN_FORMAT_CLUT1&#160;</td><td class="fielddoc"><p>CLUT1. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9dae91325359b2587cb511b99092b068cf7"></a>DISPLAY_IN_FORMAT_32BITS_RGBA8888&#160;</td><td class="fielddoc"><p>RGBA8888, 32 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9dab9d31565d0119fe8af6ba4c551dd74ed"></a>DISPLAY_IN_FORMAT_24BITS_BGR888&#160;</td><td class="fielddoc"><p>BGR888, 24 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da4c41449ae4469a0d1c82c5cb04c22a74"></a>DISPLAY_IN_FORMAT_24BITS_RGB888&#160;</td><td class="fielddoc"><p>RGB888, 24 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da618ebe6872c7b26f8231cbd59ea2cffd"></a>DISPLAY_IN_FORMAT_32BITS_ABGR8888&#160;</td><td class="fielddoc"><p>ABGR8888, 32 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da39ad89aab8dee3c1b07cf75389708a1b"></a>DISPLAY_IN_FORMAT_24BITS_YCBCR444_INTERLEAVED&#160;</td><td class="fielddoc"><p>YCbCr444 interleaved, 24 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9daa25dc50339ab2c177efaedf420eb7fad"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_UYVY&#160;</td><td class="fielddoc"><p>YCbCr422 interleaved type0 UYVY, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9daf21ff78d52f9ee7c28ac7be7a09f74db"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_YUY2&#160;</td><td class="fielddoc"><p>YCbCr422 interleaved type0 YUY2, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da163d9a3b38d1adca235f77990d63891f"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_YVYU&#160;</td><td class="fielddoc"><p>YCbCr422 interleaved type0 YVYU, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da167ff440049b49f0297e975d68065516"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE1&#160;</td><td class="fielddoc"><p>YCbCr420 interleaved type1, 16 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da6043373d53bf1fa8d2bb1f062f3b0ce8"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR420_INTERLEAVED&#160;</td><td class="fielddoc"><p>YCbCr420 interleaved, 12 bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9dac4a84d5cfa9f9de5b2a3de358e4f16c5"></a>DISPLAY_IN_FORMAT_16BITS_YCBCR420_PLANAR&#160;</td><td class="fielddoc"><p>YCbCr420 planar, 16bits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ga698e66952a47ad6829bb8abe3da8ab9da88cfaf7b1c4dd3be10f542d16e0e9421"></a>DISPLAY_IN_FORMAT_CUSTOM&#160;</td><td class="fielddoc"><p>All other options start at this value. </p>
+</td></tr>
 </table>
 
 </div>
@@ -1769,7 +1809,7 @@ Pointer to the API structure for this instance. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.3.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

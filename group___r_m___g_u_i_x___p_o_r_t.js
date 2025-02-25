@@ -15,5 +15,6 @@ var group___r_m___g_u_i_x___p_o_r_t =
       [ "RM_GUIX_PORT_EVENT_ERROR", "group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fa786df716bcc181803d466f748ec92329", null ],
       [ "RM_GUIX_PORT_EVENT_DISPLAY_VSYNC", "group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fadcecd94989239d5c230457cd78c57139", null ],
       [ "RM_GUIX_PORT_EVENT_UNDERFLOW", "group___r_m___g_u_i_x___p_o_r_t.html#gga405fa57e46e3313d2e01c7e218126a1fa05efaed0e8146dd8f2a957e5f52871ec", null ]
-    ] ]
+    ] ],
+    [ "rm_guix_port_hw_initialize", "group___r_m___g_u_i_x___p_o_r_t.html#ga8f58183b71096559109eff1f15331c75", null ]
 ];

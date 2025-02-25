@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.3.0</span>
+   &#160;<span id="projectnumber">Release v3.4.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -159,12 +159,19 @@ $(document).ready(function(){initNavTree('group___r_m___g_u_i_x___p_o_r_t.html',
 </div>
 <div class="header">
   <div class="summary">
+<a href="#func-members">Functions</a> &#124;
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">Azure RTOS GUIX Port (rm_guix_port)<div class="ingroups"><a class="el" href="group___r_e_n_e_s_a_s___m_o_d_u_l_e_s.html">Modules</a> &raquo; <a class="el" href="group___r_e_n_e_s_a_s___g_r_a_p_h_i_c_s___m_o_d_u_l_e_s.html">Graphics</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga8f58183b71096559109eff1f15331c75"><td class="memItemLeft" align="right" valign="top">UINT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_m___g_u_i_x___p_o_r_t.html#ga8f58183b71096559109eff1f15331c75">rm_guix_port_hw_initialize</a> (GX_DISPLAY *p_display)</td></tr>
+<tr class="separator:ga8f58183b71096559109eff1f15331c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Middleware for the Azure RTOS GUIX Port on RZ MPUs. </p>
 <h1><a class="anchor" id="rm-guix-port-overview"></a>
@@ -175,7 +182,7 @@ Overview</h1>
 <div class="caption">
 Azure RTOS GUIX Port Block Diagram</div></div>
  <dl class="section note"><dt>Note</dt><dd>For information about how to use GUIX and GUIX Studio (including example code) please consult the <a href="https://docs.microsoft.com/en-us/azure/rtos/guix/">Azure RTOS GUIX documentation</a>.</dd></dl>
-<p><a class="anchor" id="um_guix_hw_init"></a><a class="anchor" id="um_guix_deinit"></a><a class="anchor" id="um_guix_rgb565"></a><a class="anchor" id="um_guix_studio"></a><a class="anchor" id="um_guix_hw_pixelmap"></a><a class="anchor" id="um_guix_hw_circle"></a><a class="anchor" id="um_guix_hw_arc"></a><a class="anchor" id="um_guix_hw_pie"></a><a class="anchor" id="um_guix_sw_ellipse"></a><a class="anchor" id="um_guix_hw_polygon"></a><a class="anchor" id="um_guix_hw_line"></a><a class="anchor" id="um_guix_hw_pixel"></a><a class="anchor" id="um_guix_hw_block_move"></a><a class="anchor" id="um_guix_hw_glyph"></a><a class="anchor" id="um_guix_hw_pixelmap_rotate"></a><a class="anchor" id="um_guix_rgb888"></a><a class="anchor" id="um_guix_lcdc_underflow"></a><a class="anchor" id="um_guix_single_buffer"></a></p><hr/>
+<p><a class="anchor" id="um_guix_hw_init"></a><a class="anchor" id="um_guix_deinit"></a><a class="anchor" id="um_guix_rgb565"></a><a class="anchor" id="um_guix_studio"></a><a class="anchor" id="um_guix_hw_pixelmap"></a><a class="anchor" id="um_guix_hw_jpeg"></a><a class="anchor" id="um_guix_hw_circle"></a><a class="anchor" id="um_guix_hw_arc"></a><a class="anchor" id="um_guix_hw_pie"></a><a class="anchor" id="um_guix_sw_ellipse"></a><a class="anchor" id="um_guix_hw_polygon"></a><a class="anchor" id="um_guix_hw_line"></a><a class="anchor" id="um_guix_hw_pixel"></a><a class="anchor" id="um_guix_hw_block_move"></a><a class="anchor" id="um_guix_hw_glyph"></a><a class="anchor" id="um_guix_hw_pixelmap_rotate"></a><a class="anchor" id="um_guix_rgb888"></a><a class="anchor" id="um_guix_lcdc_underflow"></a><a class="anchor" id="um_guix_single_buffer"></a></p><hr/>
 <h1><a class="anchor" id="rm-guix-port-configuration"></a>
 Configuration</h1>
 <p><h2>Build Time Configurations for gx</h2>
@@ -289,7 +296,7 @@ Examples</h1>
 Basic Example</h2>
 <p>This is a basic example demonstrating how to get GUIX up and running given an existing GUIX Studio project. A template for this code is available in Developer Assistance for the GUIX Port module.</p>
 <dl class="section note"><dt>Note</dt><dd>GUIX manages the LCDC submodules internally; they do not need to be opened directly.</dd></dl>
-<table class="memberdecls">
+<div class="fragment"><div class="line"></div><div class="line">GX_WINDOW_ROOT * p_window_root;</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> guix_user_start (<span class="keywordtype">void</span>)</div><div class="line">{</div><div class="line">    <span class="comment">/* Initialize GUIX */</span></div><div class="line">    gx_system_initialize();</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Configure GUIX Studio project main display and get a pointer to the root window */</span></div><div class="line">    gx_studio_display_configure(MAIN_DISPLAY,</div><div class="line">                                <a class="code" href="group___r_m___g_u_i_x___p_o_r_t.html#ga8f58183b71096559109eff1f15331c75">rm_guix_port_hw_initialize</a>,</div><div class="line">                                MAIN_DISPLAY_LANGUAGE_ENGLISH,</div><div class="line">                                MAIN_DISPLAY_THEME,</div><div class="line">                                &amp;p_window_root);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/* Set pointer to the first buffer generated by the configuration (rm_guix_port_canvas) */</span></div><div class="line">    gx_canvas_memory_define(p_window_root-&gt;gx_window_root_canvas,</div><div class="line">                            rm_guix_port_canvas,</div><div class="line">                            p_window_root-&gt;gx_window_root_canvas-&gt;gx_canvas_memory_size);</div><div class="line"></div><div class="line">    <span class="comment">/* Create and show the root window in the GUIX Studio project */</span></div><div class="line">    gx_studio_named_widget_create(<span class="stringliteral">&quot;root_widget_name&quot;</span>, (GX_WIDGET *) p_window_root, GX_NULL);</div><div class="line">    gx_widget_show(p_window_root);</div><div class="line"></div><div class="line">    <span class="comment">/* Start GUIX */</span></div><div class="line">    gx_system_start();</div><div class="line"></div><div class="line">    <span class="comment">/* GUIX will continue to run in its own thread */</span></div><div class="line">}</div><div class="line"></div></div><!-- fragment --><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:structrm__guix__port__callback__args__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___r_m___g_u_i_x___p_o_r_t.html#structrm__guix__port__callback__args__t">rm_guix_port_callback_args_t</a></td></tr>
@@ -388,13 +395,41 @@ Error code if RM_GUIX_PORT_EVENT_ERROR. </td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga8f58183b71096559109eff1f15331c75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8f58183b71096559109eff1f15331c75">&#9670;&nbsp;</a></span>rm_guix_port_hw_initialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UINT rm_guix_port_hw_initialize </td>
+          <td>(</td>
+          <td class="paramtype">GX_DISPLAY *&#160;</td>
+          <td class="paramname"><em>p_display</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Callback function to be passed to gx_studio_display_configure in order to start hardware modules.</p>
+<p>Example: </p><div class="fragment"><div class="line"></div><div class="line">    <span class="comment">/* Configure GUIX Studio project main display and get a pointer to the root window */</span></div><div class="line">    gx_studio_display_configure(MAIN_DISPLAY,</div><div class="line">                                <a class="code" href="group___r_m___g_u_i_x___p_o_r_t.html#ga8f58183b71096559109eff1f15331c75">rm_guix_port_hw_initialize</a>,</div><div class="line">                                MAIN_DISPLAY_LANGUAGE_ENGLISH,</div><div class="line">                                MAIN_DISPLAY_THEME,</div><div class="line">                                &amp;p_window_root);</div><div class="line"></div></div><!-- fragment --> <dl class="section note"><dt>Note</dt><dd>This function should only be called by GUIX.</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">GX_SUCCESS</td><td>Device driver setup is successfully done. </td></tr>
+    <tr><td class="paramname">GX_FAILURE</td><td>Device driver setup failed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.7-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.3.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

@@ -3,6 +3,8 @@ var searchData=
   ['abort',['abort',['../group___i2_c___m_a_s_t_e_r___a_p_i.html#a0a0800aaa24f36b2eac8b315a0c5437e',1,'i2c_master_api_t']]],
   ['access_5fipl',['access_ipl',['../group___s_d_m_m_c___a_p_i.html#a06694ba68648dfbc34a1f55d00628216',1,'sdmmc_cfg_t']]],
   ['access_5firq',['access_irq',['../group___s_d_m_m_c___a_p_i.html#ab48e46ad747b038442bf0d5c8c90e46b',1,'sdmmc_cfg_t']]],
+  ['ack_5ferr_5faccumulated',['ack_err_accumulated',['../group___m_i_p_i___d_s_i___a_p_i.html#a6f3b9504cffd427fa36167032c3cf6d2',1,'mipi_dsi_status_t']]],
+  ['ack_5ferr_5flatest',['ack_err_latest',['../group___m_i_p_i___d_s_i___a_p_i.html#a6748ed804e7353995e4692814514c443',1,'mipi_dsi_status_t']]],
   ['ack_5fmode',['ack_mode',['../group___d_m_a_c.html#a955287924ce9f03af386b253441bfbfe',1,'dmac_extended_cfg_t']]],
   ['activation_5firq_5fnumber',['activation_irq_number',['../group___d_m_a_c.html#a2b097d1e88a6b522dafb3314f2c420ae',1,'dmac_extended_cfg_t']]],
   ['activation_5frequest_5fsource_5fselect',['activation_request_source_select',['../group___d_m_a_c.html#a9dc1a5d5ec0b52edb051a63f4f41b8f7',1,'dmac_extended_cfg_t']]],

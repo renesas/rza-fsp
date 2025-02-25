@@ -1,15 +1,17 @@
 var searchData=
 [
-  ['g',['g',['../group___d_i_s_p_l_a_y___a_p_i.html#a1204de3d634d238b2e55e47fcece5f6f',1,'display_brightness_t::g()'],['../group___d_i_s_p_l_a_y___a_p_i.html#a17df68c0dd89b50b244b249f6229647d',1,'display_contrast_t::g()'],['../group___d_i_s_p_l_a_y___a_p_i.html#a1bb7c07570cceff27193459a9440682b',1,'display_gamma_correction_t::g()']]],
-  ['gain',['gain',['../group___d_i_s_p_l_a_y___a_p_i.html#a5085d35033caceccf2b0e020ac39350d',1,'gamma_correction_t']]],
-  ['gb',['gb',['../group___c_r_u.html#a8746a3bb0cf44ebd6cd8c2d4c064e14d',1,'linearmatrix_cfg_t']]],
-  ['general_5fcall_5fenable',['general_call_enable',['../group___i2_c___s_l_a_v_e___a_p_i.html#a7b1c0bee47fa93f32b4466b72c30f68c',1,'i2c_slave_cfg_t']]],
-  ['gg',['gg',['../group___c_r_u.html#a6b7b6e98bd361220feac83a166651cc8',1,'linearmatrix_cfg_t']]],
-  ['global_5fconfig',['global_config',['../group___c_a_n_f_d.html#afd7545e297144152431f5b1f3628fff7',1,'canfd_global_cfg_t']]],
-  ['global_5ferr_5fipl',['global_err_ipl',['../group___c_a_n_f_d.html#a6ce35aac50e44ac4353bfd20e12639a4',1,'canfd_global_cfg_t']]],
-  ['global_5finterrupts',['global_interrupts',['../group___c_a_n_f_d.html#ac6305ab75909afd62029f3c76b235549',1,'canfd_global_cfg_t']]],
-  ['gof',['gof',['../group___c_r_u.html#aa7e3287c0c014ec144e2894d0cac1599',1,'linearmatrix_cfg_t']]],
-  ['gpioint',['gpioint',['../group___i_n_t_c___t_i_n_t.html#a8066afa114318265d9fe96031434bbd3',1,'intc_tint_extended_cfg_t']]],
-  ['gr',['gr',['../group___c_r_u.html#aea4d043abc01cde80fecf12349e12f94',1,'linearmatrix_cfg_t']]],
-  ['group_5fmask',['group_mask',['../group___a_d_c___a_p_i.html#a2e4f7b7ce1a5858b39f7a85ad16ab655',1,'adc_callback_args_t']]]
+  ['fade_5fcontrol',['fade_control',['../group___d_i_s_p_l_a_y___a_p_i.html#ae2d05372eaec2ff92a29bd5de4aa485e',1,'display_layer_t']]],
+  ['fade_5fspeed',['fade_speed',['../group___d_i_s_p_l_a_y___a_p_i.html#a2ce0f93d96358e0d0e2c045635daedf0',1,'display_layer_t']]],
+  ['fade_5fstatus',['fade_status',['../group___d_i_s_p_l_a_y___a_p_i.html#a25afab0ed85e1453eb6a3aa07c1db10a',1,'display_status_t']]],
+  ['filter_5fenable',['filter_enable',['../group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html#aa77181dcffe927e006c2ed112c1a62ad',1,'external_irq_cfg_t']]],
+  ['flags',['flags',['../group___m_i_p_i___d_s_i___a_p_i.html#a62202cbf3d27914c5532a9c7315c4e5a',1,'mipi_dsi_cmd_t']]],
+  ['flow_5fcontrol',['flow_control',['../group___e_t_h_e_r___a_p_i.html#a122143791d6fa60143a041fd0b2e49c7',1,'ether_cfg_t::flow_control()'],['../group___e_t_h_e_r___p_h_y___a_p_i.html#add4cd8ca627a9498f55650280392c7f0',1,'ether_phy_cfg_t::flow_control()'],['../group___s_c_i___u_a_r_t.html#aa97993b4804fd761a731322038ec7730',1,'sci_uart_extended_cfg_t::flow_control()'],['../group___s_c_i_f___u_a_r_t.html#aa761132ebac67c5cbbc3d6a505b97efe',1,'scif_uart_extended_cfg_t::flow_control()']]],
+  ['flow_5fcontrol_5fpin',['flow_control_pin',['../group___s_c_i___u_a_r_t.html#ac5ec261549de2cae5c3a48abe9e2ee67',1,'sci_uart_extended_cfg_t']]],
+  ['format',['format',['../group___d_i_s_p_l_a_y___a_p_i.html#a7d9bf5f521c22af23cb64d350f54273f',1,'display_input_cfg_t::format()'],['../group___d_i_s_p_l_a_y___a_p_i.html#a107a86007b109cc77be27abcc01e3d66',1,'display_output_cfg_t::format()'],['../group___i_m_a_g_e___s_c_a_l_i_n_g___a_p_i.html#af681c3c46c11c980c6f2124370013fff',1,'isu_buffer_cfg_t::format()']]],
+  ['frame',['frame',['../group___c_a_n___a_p_i.html#aa8706fd62e652e6582d3c9eb155fb610',1,'can_callback_args_t']]],
+  ['frame_5fbuf_5flen',['frame_buf_len',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#a0315721107506837b7ee02ce856b7566',1,'rai_data_collector_callback_args_t']]],
+  ['frame_5fend_5fipl',['frame_end_ipl',['../group___l_c_d_c.html#ad2c36c8c6171f2d28f86605bfe147892',1,'lcdc_extended_cfg_t']]],
+  ['frame_5fend_5firq',['frame_end_irq',['../group___l_c_d_c.html#ae1aa0e216602104452cd80ef44cddd70',1,'lcdc_extended_cfg_t']]],
+  ['frames',['frames',['../group___r_m___r_a_i___d_a_t_a___c_o_l_l_e_c_t_o_r___a_p_i.html#ade8d45bd40db5f873dc80b070128efed',1,'rai_data_collector_callback_args_t']]],
+  ['frequency',['frequency',['../group___r_m___h_s400_x___a_p_i.html#a4a9e3392df8193428e1907f2e4a315b9',1,'rm_hs400x_cfg_t']]]
 ];

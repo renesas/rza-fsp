@@ -2,6 +2,7 @@ var searchData=
 [
   ['usb_20hmsc_20block_20media_20implementation_20_28rm_5fblock_5fmedia_5fusb_29',['USB HMSC Block Media Implementation (rm_block_media_usb)',['../group___r_m___b_l_o_c_k___m_e_d_i_a___u_s_b.html',1,'']]],
   ['uart_20communication_20device_20_28rm_5fcomms_5fuart_29',['UART Communication Device (rm_comms_uart)',['../group___r_m___c_o_m_m_s___u_a_r_t.html',1,'']]],
+  ['usb_5fpcdc_20communication_20device_20_28rm_5fcomms_5fusb_5fpcdc_29',['USB_PCDC Communication Device (rm_comms_usb_pcdc)',['../group___r_m___c_o_m_m_s___u_s_b___p_c_d_c.html',1,'']]],
   ['uart_20_28r_5fsci_5fuart_29',['UART (r_sci_uart)',['../group___s_c_i___u_a_r_t.html',1,'']]],
   ['uart_20interface',['UART Interface',['../group___u_a_r_t___a_p_i.html',1,'']]],
   ['uart_5fapi_5ft',['uart_api_t',['../group___u_a_r_t___a_p_i.html#structuart__api__t',1,'']]],
@@ -36,6 +37,10 @@ var searchData=
   ['uart_5fstop_5fbits_5f1',['UART_STOP_BITS_1',['../group___u_a_r_t___a_p_i.html#gga6da57a73bbdbf830b845d4116f8341d7a44b3bfbe90aebe2b23227f5c011f41cc',1,'r_uart_api.h']]],
   ['uart_5fstop_5fbits_5f2',['UART_STOP_BITS_2',['../group___u_a_r_t___a_p_i.html#gga6da57a73bbdbf830b845d4116f8341d7a00c73c92b3d624bc86cfa63636dd99b3',1,'r_uart_api.h']]],
   ['uart_5fstop_5fbits_5ft',['uart_stop_bits_t',['../group___u_a_r_t___a_p_i.html#ga6da57a73bbdbf830b845d4116f8341d7',1,'r_uart_api.h']]],
+  ['ulps_5fstatus',['ulps_status',['../group___m_i_p_i___d_s_i___b.html#a07f3568c4b694007e490971c9d46d13d',1,'mipi_dsi_b_instance_ctrl_t']]],
+  ['ulps_5fwakeup_5fperiod',['ulps_wakeup_period',['../group___m_i_p_i___d_s_i___a_p_i.html#a05d0d2b5fc8ea533c206b9f5d4d8e44d',1,'mipi_dsi_cfg_t']]],
+  ['ulpsenter',['ulpsEnter',['../group___m_i_p_i___d_s_i___a_p_i.html#ad2046a82f236d2c6ae809b8cb2dfae40',1,'mipi_dsi_api_t']]],
+  ['ulpsexit',['ulpsExit',['../group___m_i_p_i___d_s_i___a_p_i.html#aca931b01b8d3b7bca2b21f3cea7cc6a2',1,'mipi_dsi_api_t']]],
   ['underflow_5f1_5fipl',['underflow_1_ipl',['../group___d_i_s_p_l_a_y___a_p_i.html#ae1ff17aa2c907208e3779cfbc52ec9bd',1,'display_cfg_t']]],
   ['underflow_5f1_5firq',['underflow_1_irq',['../group___d_i_s_p_l_a_y___a_p_i.html#a6d5a1539547d96032d069b293816c5b2',1,'display_cfg_t']]],
   ['underflow_5f2_5fipl',['underflow_2_ipl',['../group___d_i_s_p_l_a_y___a_p_i.html#aeddd39e77ca9f5ea13fa21ac78616a38',1,'display_cfg_t']]],

@@ -22,6 +22,7 @@ var searchData=
   ['global_5fconfig',['global_config',['../group___c_a_n_f_d.html#afd7545e297144152431f5b1f3628fff7',1,'canfd_global_cfg_t']]],
   ['global_5ferr_5fipl',['global_err_ipl',['../group___c_a_n_f_d.html#a6ce35aac50e44ac4353bfd20e12639a4',1,'canfd_global_cfg_t']]],
   ['global_5finterrupts',['global_interrupts',['../group___c_a_n_f_d.html#ac6305ab75909afd62029f3c76b235549',1,'canfd_global_cfg_t']]],
+  ['go_5flp_5fand_5fback',['go_lp_and_back',['../group___m_i_p_i___d_s_i___a_p_i.html#abe39a9db55cd2a893f06aaa97b47cdba',1,'mipi_dsi_timing_t']]],
   ['gof',['gof',['../group___c_r_u.html#aa7e3287c0c014ec144e2894d0cac1599',1,'linearmatrix_cfg_t']]],
   ['gpioint',['gpioint',['../group___i_n_t_c___t_i_n_t.html#a8066afa114318265d9fe96031434bbd3',1,'intc_tint_extended_cfg_t']]],
   ['gr',['gr',['../group___c_r_u.html#aea4d043abc01cde80fecf12349e12f94',1,'linearmatrix_cfg_t']]],

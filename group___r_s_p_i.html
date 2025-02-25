@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.3.0</span>
+   &#160;<span id="projectnumber">Release v3.4.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -199,8 +199,8 @@ Features</h2>
 </ul>
 </li>
 <li>Clock Phase (CPHA)<ul>
-<li>CPHA=0 Data Sampled on the even edge of SCLK (Master Mode Only)</li>
-<li>CPHA=1 Data Sampled on the odd edge of SCLK</li>
+<li>CPHA=0 Data is sampled at an odd edge and changes at an even edge.</li>
+<li>CPHA=1 Data changes at an odd edge and is sampled at an even edge.</li>
 </ul>
 </li>
 <li>MSB/LSB first</li>
@@ -255,7 +255,7 @@ This module can be added to the Stacks tab via New Stack &gt; Connectivity &gt; 
 <tr>
 <td>General &gt; Name</td><td>Name must be a valid C symbol</td><td>g_spi0 </td><td>Module name. </td></tr>
 <tr>
-<td>General &gt; Channel</td><td>Select between channel 0 and 2</td><td>0 </td><td>Select the RSPI channel. </td></tr>
+<td>General &gt; Channel</td><td>Value must be a non-negative integer</td><td>0 </td><td>Select the RSPI channel. </td></tr>
 <tr>
 <td>General &gt; Operating Mode</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -436,6 +436,8 @@ Clock Configuration</h2>
 </p><table class="doxtable">
 <tr>
 <th>MCU Group</th><th>Peripheral Clock </th></tr>
+<tr>
+<td>RZA3M</td><td>P0CLK</td></tr>
 <tr>
 <td>RZA3UL</td><td>P0CLK</td></tr>
 </table>
@@ -1171,7 +1173,7 @@ volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.3.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

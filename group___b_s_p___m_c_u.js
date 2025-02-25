@@ -1,5 +1,6 @@
 var group___b_s_p___m_c_u =
 [
+    [ "RZA3M", "group___b_s_p___m_p_u___r_z_a3_m.html", null ],
     [ "RZA3UL", "group___b_s_p___m_p_u___r_z_a3_u_l.html", null ],
     [ "R_BSP_MODULE_CLKON", "group___b_s_p___m_c_u.html#ga28b9a6bf8dc3256c8f49d45b70ebe4d3", null ],
     [ "R_BSP_MODULE_CLKOFF", "group___b_s_p___m_c_u.html#ga31edf1b3b9ea51c68a6a4ac56eaba1ac", null ],

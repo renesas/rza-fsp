@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.3.0</span>
+   &#160;<span id="projectnumber">Release v3.4.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -312,23 +312,9 @@ Active High</li>
 </ul>
 </td><td>Active High </td><td>Enabling baud rate modulation reduces the percent error of the actual baud rate with respect to the requested baud rate. It does this by modulating the number of cycles per clock, so some bits are slightly longer than others. </td></tr>
 <tr>
-<td>Flow Control &gt; RS485 Driver Enable Port</td><td>Refer to the RZA Configuration tool for available options.</td><td>Disabled </td><td>Specify the flow control pin port for the MPU. </td></tr>
+<td>Flow Control &gt; RS485 Driver Enable Port</td><td>MCU Specific Options</td><td></td><td>Specify the flow control pin port for the MPU. </td></tr>
 <tr>
-<td>Flow Control &gt; RS485 Driver Enable Pin</td><td><ul style="margin-top:0;margin-bottom:0;">
-<li>
-Disabled</li>
-<li>
-00</li>
-<li>
-01</li>
-<li>
-02</li>
-<li>
-03</li>
-<li>
-04</li>
-</ul>
-</td><td>Disabled </td><td>Specify the flow control pin for the MPU. </td></tr>
+<td>Flow Control &gt; RS485 Driver Enable Pin</td><td>MCU Specific Options</td><td></td><td>Specify the flow control pin for the MPU. </td></tr>
 <tr>
 <td>Flow Control &gt; RS232C Automatic Flow Control</td><td><ul style="margin-top:0;margin-bottom:0;">
 <li>
@@ -397,6 +383,8 @@ Clock Configuration</h2>
 </p><table class="doxtable">
 <tr>
 <th>MCU Group</th><th>Peripheral Clock </th></tr>
+<tr>
+<td>RZA3M</td><td>P0CLK</td></tr>
 <tr>
 <td>RZA3UL</td><td>P0CLK</td></tr>
 </table>
@@ -480,7 +468,7 @@ Enumerations</h2></td></tr>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
-<a id="ad2f6891b45ba1d05947f6f67b3f2944a"></a>struct <a class="el" href="group___s_c_i_f___u_a_r_t.html#structscif__baud__setting__t_8semr__baudrate__bits__b">scif_baud_setting_t</a></td>
+<a id="a39ab173862230394cfbcb2eb2e355911"></a>struct <a class="el" href="group___s_c_i_f___u_a_r_t.html#structscif__baud__setting__t_8semr__baudrate__bits__b">scif_baud_setting_t</a></td>
 <td class="fieldname">
 semr_baudrate_bits_b</td>
 <td class="fielddoc">
@@ -1270,7 +1258,7 @@ RS-485 settings. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.3.0 User's Manual Copyright © (2024) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

@@ -6,6 +6,7 @@ var searchData=
   ['lcdc_5fextended_5fcfg_5ft',['lcdc_extended_cfg_t',['../group___l_c_d_c.html#structlcdc__extended__cfg__t',1,'']]],
   ['lcdc_5finstance_5fctrl_5ft',['lcdc_instance_ctrl_t',['../group___l_c_d_c.html#structlcdc__instance__ctrl__t',1,'']]],
   ['length',['length',['../group___a_d_c___a_p_i.html#a3f8dd9f7ffefcbc0180fc7252c0482c9',1,'adc_info_t::length()'],['../group___t_r_a_n_s_f_e_r___a_p_i.html#aa92c5d06d07e7d13c16f9704a431c7cb',1,'transfer_info_t::length()'],['../group___d_m_a_c.html#a8ca5c28e3caac7bf113785fd382e7260',1,'dmac_next1_register_setting_t::length()']]],
+  ['line_5fcoding',['line_coding',['../group___r_m___c_o_m_m_s___u_s_b___p_c_d_c.html#a52afbc0da68d67be4c7676d53abf37da',1,'rm_comms_usb_pcdc_instance_ctrl_t']]],
   ['line_5fdescending_5fenable',['line_descending_enable',['../group___d_i_s_p_l_a_y___a_p_i.html#a6453cf8d257082bcbb7ba3e04798ac0e',1,'display_input_cfg_t']]],
   ['line_5fdetect_5fipl',['line_detect_ipl',['../group___d_i_s_p_l_a_y___a_p_i.html#ad5ecd65704e06873bbc9be0d305c9c17',1,'display_cfg_t']]],
   ['line_5fdetect_5firq',['line_detect_irq',['../group___d_i_s_p_l_a_y___a_p_i.html#a335946e69d18bab7d1d19f80f1d18906',1,'display_cfg_t']]],
@@ -16,8 +17,12 @@ var searchData=
   ['lines_5frepeat_5ftimes',['lines_repeat_times',['../group___d_i_s_p_l_a_y___a_p_i.html#a62b381257f9a385f9abcbc84c1fd036e',1,'display_input_cfg_t']]],
   ['link_5fchange',['link_change',['../group___g_e_t_h_e_r.html#aa32d59ae388d854990cd1756961e1a2e',1,'ether_instance_ctrl_t']]],
   ['link_5festablish_5fstatus',['link_establish_status',['../group___g_e_t_h_e_r.html#a253cb2dec8a42010aac623dac29f4bc4',1,'ether_instance_ctrl_t']]],
+  ['link_5fstatus',['link_status',['../group___m_i_p_i___d_s_i___a_p_i.html#af0d642a577f506a6c0a260c1077743c4',1,'mipi_dsi_status_t']]],
   ['linkpartnerabilityget',['linkPartnerAbilityGet',['../group___e_t_h_e_r___p_h_y___a_p_i.html#a0dd6047b8aa7ad85139ec4f4e6abb3fc',1,'ether_phy_api_t']]],
   ['linkprocess',['linkProcess',['../group___e_t_h_e_r___a_p_i.html#ae11e3e3521df4c3efe6e0dafecddee72',1,'ether_api_t']]],
   ['linkstatusget',['linkStatusGet',['../group___e_t_h_e_r___p_h_y___a_p_i.html#ae2dabb88baba5326509f297e44b35f92',1,'ether_phy_api_t']]],
-  ['local_5fadvertise',['local_advertise',['../group___g_e_t_h_e_r___p_h_y.html#aaa749ca05baa91975ca44896b3765e37',1,'ether_phy_instance_ctrl_t']]]
+  ['local_5fadvertise',['local_advertise',['../group___g_e_t_h_e_r___p_h_y.html#aaa749ca05baa91975ca44896b3765e37',1,'ether_phy_instance_ctrl_t']]],
+  ['long_5fpacket',['long_packet',['../group___m_i_p_i___d_s_i___a_p_i.html#gabc772ab15154feaf4078c52ed6e669c8',1,'r_mipi_dsi_api.h']]],
+  ['lp_5frx_5ftimeout',['lp_rx_timeout',['../group___m_i_p_i___d_s_i___a_p_i.html#a39ce95ef11ea6b15859781c5cfe369dc',1,'mipi_dsi_cfg_t']]],
+  ['lprw_5ftimeout',['lprw_timeout',['../group___m_i_p_i___d_s_i___a_p_i.html#a7d6bac20b3e7a62d6119890383532b25',1,'mipi_dsi_cfg_t']]]
 ];
