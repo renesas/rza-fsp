@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['d1_5fdevice_5fflex',['d1_device_flex',['../structd1__device__flex.html',1,'']]],
   ['display_5fapi_5ft',['display_api_t',['../group___d_i_s_p_l_a_y___a_p_i.html#structdisplay__api__t',1,'']]],
   ['display_5fbrightness_5ft',['display_brightness_t',['../group___d_i_s_p_l_a_y___a_p_i.html#structdisplay__brightness__t',1,'']]],
   ['display_5fcallback_5fargs_5ft',['display_callback_args_t',['../group___d_i_s_p_l_a_y___a_p_i.html#structdisplay__callback__args__t',1,'']]],

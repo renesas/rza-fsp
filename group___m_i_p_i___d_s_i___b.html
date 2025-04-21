@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.4.0</span>
+   &#160;<span id="projectnumber">Release v3.5.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -354,17 +354,17 @@ No LP during the HFP period</li>
 <tr>
 <td>Video Mode &gt; Delay Override (0 to disable)</td><td>Value must be an integer.</td><td>0 </td><td>Override FSP calculated delay value (not recommended for most users). Delay for DSI Host between first data reception from display module until DSI output begins. (Unit: 32xUI). Set to 0 to use FSP calculated value (recommended). </td></tr>
 <tr>
-<td>Interrupts &gt; dsi_seq0 Interrupt Priority</td><td>Value must be an integer between 0 and 15</td><td>12 </td><td>Set the Low-Power Sequence command operation interrupt priority. </td></tr>
+<td>Interrupts &gt; dsi_seq0 Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Set the Low-Power Sequence command operation interrupt priority. </td></tr>
 <tr>
-<td>Interrupts &gt; dsi_seq1 Interrupt Priority</td><td>Value must be an integer between 0 and 15</td><td>12 </td><td>Set the High-Speed Sequence command operation interrupt priority. </td></tr>
+<td>Interrupts &gt; dsi_seq1 Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Set the High-Speed Sequence command operation interrupt priority. </td></tr>
 <tr>
-<td>Interrupts &gt; dsi_vin1 Interrupt Priority</td><td>Value must be an integer between 0 and 15</td><td>12 </td><td>Set the Video Input interrupt priority. </td></tr>
+<td>Interrupts &gt; dsi_vin1 Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Set the Video Input interrupt priority. </td></tr>
 <tr>
-<td>Interrupts &gt; dsi_rcv Interrupt Priority</td><td>Value must be an integer between 0 and 15</td><td>12 </td><td>Set the Receive interrupt priority. </td></tr>
+<td>Interrupts &gt; dsi_rcv Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Set the Receive interrupt priority. </td></tr>
 <tr>
-<td>Interrupts &gt; dsi_ferr Interrupt Priority</td><td>Value must be an integer between 0 and 15</td><td>12 </td><td>Set the Fatal Error interrupt priority. </td></tr>
+<td>Interrupts &gt; dsi_ferr Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Set the Fatal Error interrupt priority. </td></tr>
 <tr>
-<td>Interrupts &gt; dsi_ppi Interrupt Priority</td><td>Value must be an integer between 0 and 15</td><td>12 </td><td>Set the PHY-Protocol Interface interrupt priority. </td></tr>
+<td>Interrupts &gt; dsi_ppi Interrupt Priority</td><td>Value must be an integer between 0 and 31</td><td>24 </td><td>Set the PHY-Protocol Interface interrupt priority. </td></tr>
 <tr>
 <td>Interrupts &gt; Receive Interrupt Enable</td><td>Refer to the RZA Configuration tool for available options.</td><td>module.driver.mipi_dsi.rxie.btarend,module.driver.mipi_dsi.rxie.lrxhto,module.driver.mipi_dsi.rxie.tato,module.driver.mipi_dsi.rxie.rxresp,module.driver.mipi_dsi.rxie.rxeotp_msk,module.driver.mipi_dsi.rxie.rxte,module.driver.mipi_dsi.rxie.rxack,module.driver.mipi_dsi.rxie.extedet,module.driver.mipi_dsi.rxie.mlferr,module.driver.mipi_dsi.rxie.eccerrm,module.driver.mipi_dsi.rxie.unexerr,module.driver.mipi_dsi.rxie.wcerr,module.driver.mipi_dsi.rxie.crcerr,module.driver.mipi_dsi.rxie.iberr,module.driver.mipi_dsi.rxie.rxovferr,module.driver.mipi_dsi.rxie.prtoerr,module.driver.mipi_dsi.rxie.noreserr,module.driver.mipi_dsi.rxie.rsizeerr,module.driver.mipi_dsi.rxie.eccerrs,module.driver.mipi_dsi.rxie.rxake </td><td>Enable receive interrupts. </td></tr>
 <tr>
@@ -1033,7 +1033,7 @@ p_data memory must not be updated until sequence operation is complete if byte_c
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.5.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

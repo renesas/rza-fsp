@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.4.0</span>
+   &#160;<span id="projectnumber">Release v3.5.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -384,12 +384,16 @@ Disable</li>
 </p>
 <h2><a class="anchor" id="r-sci-uart-clock-configuration"></a>
 Clock Configuration</h2>
-<table class="doxtable">
+<p>The clock for this module is derived from the following peripheral clock for each MCU group:<br />
+</p><table class="doxtable">
 <tr>
-<th></th><th>MPU Group </th><th>Peripheral Clock  </th></tr>
+<th>MCU Group</th><th>Peripheral Clock </th></tr>
 <tr>
-<td></td><td>RZ/A3UL </td><td>P0 clock </td></tr>
+<td>RZA3M</td><td>P0CLK</td></tr>
+<tr>
+<td>RZA3UL</td><td>P0CLK</td></tr>
 </table>
+</p>
 <p>The clock source for the baud-rate clock generator can be selected from the internal clock, the external clock times 8 or the external clock times 16. The external clock is supplied to the SCK pin.</p>
 <h2><a class="anchor" id="r-sci-uart-pin-configuration"></a>
 Pin Configuration</h2>
@@ -1214,7 +1218,7 @@ RS-485 settings. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.5.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

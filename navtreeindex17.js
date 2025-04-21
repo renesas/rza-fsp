@@ -1,5 +1,6 @@
 var NAVTREEINDEX17 =
 {
+"group___u_s_b___h_m_s_c___a_p_i.html#ggac5b28f1be9ca57fc904f9c93266a594daf332baaef6acba17436d5970f50cd20a":[3,2,2,8,1,6],
 "group___u_s_b___h_m_s_c___a_p_i.html#structusb__hmsc__api__t":[3,2,2,8,0],
 "group___u_s_b___p_c_d_c.html":[3,1,2,10],
 "group___u_s_b___p_c_d_c___a_p_i.html":[3,2,2,9],
@@ -111,8 +112,8 @@ var NAVTREEINDEX17 =
 "group___w_d_t___a_p_i.html#structwdt__cfg__t":[3,2,5,1,2],
 "group___w_d_t___a_p_i.html#structwdt__instance__t":[3,2,5,1,4],
 "group___w_d_t___a_p_i.html#structwdt__timeout__values__t":[3,2,5,1,1],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#build-time-configurations":[0,3,4],
 "index.html#documentation-standard":[0,2],
 "index.html#e2-studio-ide":[0,3,5],

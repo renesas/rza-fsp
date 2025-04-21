@@ -125,6 +125,7 @@ var NAVTREEINDEX4 =
 "group___d_m_a_c.html#structdmac__instance__ctrl__t":[3,1,12,0,2],
 "group___d_m_a_c.html#structdmac__link__cfg__t":[3,1,12,0,1],
 "group___d_m_a_c.html#structdmac__next1__register__setting__t":[3,1,12,0,0],
+"group___d_r_w.html":[3,1,3,1],
 "group___e_t_h_e_r___a_p_i.html":[3,2,6,0],
 "group___e_t_h_e_r___a_p_i.html#a013ed407826d291e797c6b5eb44eb5ba":[3,2,6,0,3,0],
 "group___e_t_h_e_r___a_p_i.html#a122143791d6fa60143a041fd0b2e49c7":[3,2,6,0,1,4],
@@ -225,8 +226,8 @@ var NAVTREEINDEX4 =
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5a64f1f8634b4c7b356c34780b587b4303":[3,2,6,1,4,4],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5a64f1f8634b4c7b356c34780b587b4303":[3,2,6,1,4,10],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5a66dd0b59ac902dc1ff23349dd0f0c45a":[3,2,6,1,4,11],
-"group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5ac19ab1507a515d6174f27f7af0e6de0e":[3,2,6,1,4,12],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5ac19ab1507a515d6174f27f7af0e6de0e":[3,2,6,1,4,5],
+"group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5ac19ab1507a515d6174f27f7af0e6de0e":[3,2,6,1,4,12],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5af3ca93247dd58484b187bba066282686":[3,2,6,1,4,3],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5af3ca93247dd58484b187bba066282686":[3,2,6,1,4,9],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ga52ba7820524fdf3472ec06b109d4e9a5af54eff8466eb8c190b1f5ed76a89154b":[3,2,6,1,4,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "group___e_t_h_e_r___p_h_y___a_p_i.html#ggaf227c12b47e90edc8ec5729bfccf9bfbaf909885cf5d2e9a00a3be13e8be01a02":[3,2,6,1,6,4],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#structether__phy__api__t":[3,2,6,1,1],
 "group___e_t_h_e_r___p_h_y___a_p_i.html#structether__phy__cfg__t":[3,2,6,1,0],
-"group___e_t_h_e_r___p_h_y___a_p_i.html#structether__phy__instance__t":[3,2,6,1,2],
-"group___e_x_t_e_r_n_a_l___i_r_q___a_p_i.html":[3,2,4,0]
+"group___e_t_h_e_r___p_h_y___a_p_i.html#structether__phy__instance__t":[3,2,6,1,2]
 };

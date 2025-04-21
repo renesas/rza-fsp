@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.4.0</span>
+   &#160;<span id="projectnumber">Release v3.5.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -366,11 +366,11 @@ The following build time configurations are defined in fsp_cfg/bsp/bsp_cfg.h:<br
 <br />
 NOTE: This entry is for the secure stack. </td></tr>
 <tr>
-<td>Main stack size (bytes)</td><td>Value must be an integer multiple of 8 and between 8 and 0xFFFFFFFF</td><td>0x200 </td><td>Set the size of the main program stack.<br />
+<td>Main stack size (bytes)</td><td>Value must be an integer multiple of 8 and between 8 and 0xFFFFFFFF</td><td>0x2000 </td><td>Set the size of the main program stack.<br />
 <br />
 NOTE: This entry is for the main stack. When using an RTOS, thread stacks can be configured in the properties for each thread. </td></tr>
 <tr>
-<td>Heap size (bytes)</td><td>Value must be 0 or an integer multiple of 8 between 8 and 0xFFFFFFFF.</td><td>0 </td><td>The main heap is disabled by default. Set the heap size to a positive integer divisible by 8 to enable it.<br />
+<td>Heap size (bytes)</td><td>Value must be 0 or an integer multiple of 8 between 8 and 0xFFFFFFFF.</td><td>0x2000 </td><td>The main heap is disabled by default. Set the heap size to a positive integer divisible by 8 to enable it.<br />
 <br />
 A minimum of 4K (0x1000) is recommended if standard library functions are to be used. </td></tr>
 <tr>
@@ -956,7 +956,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Which interrupts can have callbacks registered. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga72e70676360e6a4d753a8d235e6b93a2a7478d3bbfdc1220e125de34635c0f47a"></a>BSP_GRP_IRQ_UNSUPPORTED&#160;</td><td class="fielddoc"><p>NMI Group IRQ are not supported in RZ/A3UL. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga72e70676360e6a4d753a8d235e6b93a2a7478d3bbfdc1220e125de34635c0f47a"></a>BSP_GRP_IRQ_UNSUPPORTED&#160;</td><td class="fielddoc"><p>NMI Group IRQ are not supported in RZ/A Devices. </p>
 </td></tr>
 </table>
 
@@ -1358,7 +1358,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">FSP_ERR_UNSUPPORTED</td><td>NMI Group IRQ are not supported in RZ/A3UL. </td></tr>
+    <tr><td class="paramname">FSP_ERR_UNSUPPORTED</td><td>NMI Group IRQ are not supported in RZ/A Devices. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1814,7 +1814,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.5.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

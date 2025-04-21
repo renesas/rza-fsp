@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['d1_5fdevice_5fflex',['d1_device_flex',['../structd1__device__flex.html',1,'']]],
   ['data',['data',['../group___c_a_n___a_p_i.html#ad70086e98bfe0871e3f73d1f253138db',1,'can_frame_t::data()'],['../group___u_a_r_t___a_p_i.html#a828d44762a5e4d11aead4d811a1c5c70',1,'uart_callback_args_t::data()']]],
   ['data_5fbits',['data_bits',['../group___u_a_r_t___a_p_i.html#adb701292c23e393a8152e57da1cc6cb3',1,'uart_cfg_t']]],
   ['data_5fenable_5fpolarity',['data_enable_polarity',['../group___d_i_s_p_l_a_y___a_p_i.html#a4a2cb340445295e32a97964ebd4a59d6',1,'display_output_cfg_t']]],
@@ -177,6 +178,7 @@ var searchData=
   ['dmac_5ftransfer_5fsize_5ft',['dmac_transfer_size_t',['../group___d_m_a_c.html#ga31ff96cf7f6259b2ce7d7f4b61f2fd68',1,'r_dmac.h']]],
   ['drivenumberget',['driveNumberGet',['../group___u_s_b___h_m_s_c___a_p_i.html#ae2305ac56ee9fadbea08b0035f19290b',1,'usb_hmsc_api_t']]],
   ['driveractivate',['driverActivate',['../group___u_s_b___a_p_i.html#a45556d7aca23663ba36a6dc8c0391ec2',1,'usb_api_t']]],
+  ['d_2fave_202d_20port_20interface_20_28r_5fdrw_29',['D/AVE 2D Port Interface (r_drw)',['../group___d_r_w.html',1,'']]],
   ['dsi_5fferr',['dsi_ferr',['../group___m_i_p_i___d_s_i___b.html#ab3d47a9e5c5189fd6e1d792134249148',1,'mipi_dsi_b_extended_cfg_t']]],
   ['dsi_5fferrie',['dsi_ferrie',['../group___m_i_p_i___d_s_i___b.html#a0ecb2a19cd57b455214f02975e93549d',1,'mipi_dsi_b_extended_cfg_t']]],
   ['dsi_5fplie',['dsi_plie',['../group___m_i_p_i___d_s_i___b.html#a108faf446e6865227e58023d5ff129aa',1,'mipi_dsi_b_extended_cfg_t']]],

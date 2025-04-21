@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.4.0</span>
+   &#160;<span id="projectnumber">Release v3.5.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -194,7 +194,6 @@ Features</h2>
 <h3>Common Features</h3>
 <ul>
 <li>Compatibility<ul>
-<li>Send and receive Classical CAN and CAN-FD frames on the same channel</li>
 <li>Bitrate up to 1 Mbps with FD data phase speeds up to 4 Mbps</li>
 <li>Supports both ISO 11898-1</li>
 </ul>
@@ -264,19 +263,12 @@ Features</h2>
 <tr>
 <td>RX FIFOs </td><td>8 </td></tr>
 <tr>
-<td>RX Buffer RAM </td><td>4864 bytes </td></tr>
+<td>RX Buffer RAM </td><td>3584 bytes </td></tr>
 <tr>
 <td>Standards </td><td>ISO </td></tr>
 </table>
-<dl class="section note"><dt>Note</dt><dd>Each message buffer comprises 12 header bytes plus data length (8-64 bytes). The above buffer RAM values therefore correspond to the following capacities: <table class="doxtable">
-<tr>
-<th></th><th>RZ/A3UL  </th></tr>
-<tr>
-<td>Max 64-byte storage </td><td>64 messages </td></tr>
-<tr>
-<td>Max 8-byte storage </td><td>243 messages </td></tr>
-</table>
-<a class="anchor" id="um_can_api_baudrate_settings"></a><a class="anchor" id="um_can_api_callback_set"></a><a class="anchor" id="um_can_api_data_frames"></a><a class="anchor" id="um_can_api_data_length"></a><a class="anchor" id="um_can_api_error_count"></a><a class="anchor" id="um_can_api_extended_ids"></a><a class="anchor" id="um_can_api_id_masking"></a><a class="anchor" id="um_can_api_multiple_channels"></a><a class="anchor" id="um_can_api_operation_modes"></a><a class="anchor" id="um_can_api_remote_frames"></a><a class="anchor" id="um_can_api_test_mode_listen"></a><a class="anchor" id="um_can_api_tx_busy"></a><a class="anchor" id="um_can_api_type_masking"></a> <a class="anchor" id="um_canfd_afl"></a><a class="anchor" id="um_canfd_error_fd_eri"></a><a class="anchor" id="um_canfd_error_fd_payload_overflow"></a><a class="anchor" id="um_canfd_fd_brs"></a><a class="anchor" id="um_canfd_fd_dlc"></a><a class="anchor" id="um_canfd_fifo_manual_read"></a><a class="anchor" id="um_canfd_fifo_status"></a><a class="anchor" id="um_canfd_fifo_threshold"></a><a class="anchor" id="um_canfd_mb_read"></a><a class="anchor" id="um_canfd_mb_status"></a><a class="anchor" id="um_canfd_tx_mb"></a><a class="anchor" id="um_canfd_internal_bus"></a><a class="anchor" id="um_canfd_error_message_lost"></a><a class="anchor" id="um_canfd_dlc_check"></a> </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Each message buffer comprises 12 header bytes plus data length (8-64 bytes). Refer to the table above and configure the FIFO so that the RAM capacity is not exceeded.</dd></dl>
+<p><a class="anchor" id="um_can_api_baudrate_settings"></a><a class="anchor" id="um_can_api_callback_set"></a><a class="anchor" id="um_can_api_data_frames"></a><a class="anchor" id="um_can_api_data_length"></a><a class="anchor" id="um_can_api_error_count"></a><a class="anchor" id="um_can_api_extended_ids"></a><a class="anchor" id="um_can_api_id_masking"></a><a class="anchor" id="um_can_api_multiple_channels"></a><a class="anchor" id="um_can_api_operation_modes"></a><a class="anchor" id="um_can_api_remote_frames"></a><a class="anchor" id="um_can_api_test_mode_listen"></a><a class="anchor" id="um_can_api_tx_busy"></a><a class="anchor" id="um_can_api_type_masking"></a> <a class="anchor" id="um_canfd_afl"></a><a class="anchor" id="um_canfd_error_fd_eri"></a><a class="anchor" id="um_canfd_error_fd_payload_overflow"></a><a class="anchor" id="um_canfd_fd_brs"></a><a class="anchor" id="um_canfd_fd_dlc"></a><a class="anchor" id="um_canfd_fifo_manual_read"></a><a class="anchor" id="um_canfd_fifo_status"></a><a class="anchor" id="um_canfd_fifo_threshold"></a><a class="anchor" id="um_canfd_mb_read"></a><a class="anchor" id="um_canfd_mb_status"></a><a class="anchor" id="um_canfd_tx_mb"></a><a class="anchor" id="um_canfd_internal_bus"></a><a class="anchor" id="um_canfd_error_message_lost"></a><a class="anchor" id="um_canfd_dlc_check"></a> </p>
 <h1><a class="anchor" id="r-canfd-configuration"></a>
 Configuration</h1>
 <p><h2>Build Time Configurations for r_canfd</h2>
@@ -1050,6 +1042,7 @@ FD Payload Overflow</h2>
 Limitations</h2>
 <p>Developers should be aware of the following limitations when using CANFD:</p>
 <ul>
+<li>Classical CAN mode is not supported.</li>
 <li>RX Message Buffers do not have an associated interrupt. To use them in an application one of the following is recommended:<ul>
 <li>Use <a class="el" href="group___c_a_n_f_d.html#ga16ff5e9e44e32191944292aea98ab4cb">R_CANFD_InfoGet</a> to determine if any RX MBs have received data, then use <a class="el" href="group___c_a_n_f_d.html#gaa79e3baad3f67bc4a3d1741dea29a3ae">R_CANFD_Read</a> to obtain it</li>
 <li>Select an RX FIFO as an additional destination for the relevant filter rules and configure the FIFO interrupt/callback as desired</li>
@@ -1754,7 +1747,7 @@ TXMB buffer marge mode configuration. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.4.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.5.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>

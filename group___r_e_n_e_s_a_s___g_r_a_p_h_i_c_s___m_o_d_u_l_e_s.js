@@ -1,6 +1,7 @@
 var group___r_e_n_e_s_a_s___g_r_a_p_h_i_c_s___m_o_d_u_l_e_s =
 [
     [ "Camera Data Receiving Unit (r_cru)", "group___c_r_u.html", "group___c_r_u" ],
+    [ "D/AVE 2D Port Interface (r_drw)", "group___d_r_w.html", null ],
     [ "Image Scaling Unit (r_isu)", "group___i_s_u.html", "group___i_s_u" ],
     [ "LCD Controller (r_lcdc)", "group___l_c_d_c.html", "group___l_c_d_c" ],
     [ "MIPI Display Serial Interface (r_mipi_dsi_b)", "group___m_i_p_i___d_s_i___b.html", "group___m_i_p_i___d_s_i___b" ],
