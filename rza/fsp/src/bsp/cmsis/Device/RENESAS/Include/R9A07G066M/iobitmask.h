@@ -15,6 +15,7 @@
 
 #include "iobitmasks/cpg_iobitmask.h"
 #include "iobitmasks/dma_iobitmask.h"
+#include "iobitmasks/drw_iobitmask.h"
 #include "iobitmasks/eccram_iobitmask.h"
 #include "iobitmasks/gpio_iobitmask.h"
 #include "iobitmasks/gtm_iobitmask.h"

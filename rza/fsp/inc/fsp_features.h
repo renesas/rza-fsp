@@ -131,6 +131,27 @@
  * @param      ch       The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
 
+#define R_BSP_MODULE_START_FSP_IP_DRW(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
+                                                        R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Enables the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+#define R_BSP_MODULE_STOP_FSP_IP_DRW(ip, ch)           {R_BSP_MSTP_STOP(ip, ch); \
+                                                        R_BSP_MODULE_CLKOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Cancel the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
 #define R_BSP_MODULE_START_FSP_IP_ETHER(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
@@ -535,6 +556,7 @@ typedef enum e_fsp_ip
     FSP_IP_SPI_MULTI = 24,             ///< SPI Multi I/O Bus Controller
     FSP_IP_OCTA      = 25,             ///< Octa Memory Controller
     FSP_IP_MIPI_DSI  = 26,             ///< MIPI-DSI Tx module
+    FSP_IP_DRW       = 27,             ///< 2D Drawing Engine
 } fsp_ip_t;
 
 typedef void (* fsp_vector_t)(IRQn_Type const irq);

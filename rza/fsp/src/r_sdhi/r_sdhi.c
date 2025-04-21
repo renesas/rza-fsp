@@ -59,7 +59,7 @@
       SDHI_PRV_SDHI_INFO2_CARD_DTO | SDHI_PRV_SDHI_INFO2_CARD_ILW | SDHI_PRV_SDHI_INFO2_CARD_ILR |             \
       SDHI_PRV_SDHI_INFO2_CARD_BRE |                                                                           \
       SDHI_PRV_SDHI_INFO2_CARD_BWE |                                                                           \
-      SDHI_PRV_SDHI_INFO2_CARD_RSPT | SDHI_PRV_SDHI_INFO2_CARD_ILA_ERR | (1U << 11))) // In RZ/A3UL, 1 must always be written to bit 11 of SD_INFO2.
+      SDHI_PRV_SDHI_INFO2_CARD_RSPT | SDHI_PRV_SDHI_INFO2_CARD_ILA_ERR | (1U << 11))) // 1 must always be written to bit 11 of SD_INFO2.
 
 #define SDHI_PRV_SDHI_INFO1_ACCESS_MASK                    ((SDHI_PRV_SDHI_INFO1_RESPONSE_END | \
                                                              SDHI_PRV_SDHI_INFO1_ACCESS_END))
@@ -181,7 +181,7 @@
 #define SDHI_PRV_SD_INFO1_MASK_ACEND_ENABLE_BIT            (2U)
 #define SDHI_PRV_SD_INFO1_MASK_CD_ENABLE                   (0x305U)
 #define SDHI_PRV_SD_STOP_SD_SECCNT_ENABLE                  (0x100U)
-#define SDHI_PRV_SD_DMAEN_DMAEN_SET                        (0x1012U) // In RZ/A3UL, 1 must always be written to bit 4 and 12 of CC_EXT_MODE.
+#define SDHI_PRV_SD_DMAEN_DMAEN_SET                        (0x1012U) // 1 must always be written to bit 4 and 12 of CC_EXT_MODE.
 #define SDHI_PRV_SD_DMAEN_DMAEN_CLEAR                      (0x1010U) // Added setting for SDHI built-in DMAC.
 
 #define SDHI_PRV_SDHI_PRV_SD_CLK_CTRL_CLKCTRLEN_MASK       (1U << 9)

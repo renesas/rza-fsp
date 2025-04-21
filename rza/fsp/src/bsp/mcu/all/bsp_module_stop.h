@@ -77,6 +77,9 @@ FSP_HEADER
 #define BSP_MSTP_REG_FSP_IP_DMAC_S(channel)       (R_MSTP->REG1)
 #define BSP_MSTP_BIT_FSP_IP_DMAC_S(channel)       (3U << (R_MSTP_REG1_MXDMAC_S_Pos))
 
+#define BSP_MSTP_REG_FSP_IP_DRW(channel)          (R_MSTP->PERI_COM)
+#define BSP_MSTP_BIT_FSP_IP_DRW(channel)          (1U << (R_MSTP_PERI_COM_MXCOM9_Pos))
+
 #define BSP_MSTP_REG_FSP_IP_ETHER(channel)        (R_MSTP->PERI_COM)
 #define BSP_MSTP_BIT_FSP_IP_ETHER(channel)        (1U << (R_MSTP_PERI_COM_MPGIGE0_Pos + (channel)))
 

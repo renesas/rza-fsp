@@ -38,7 +38,7 @@
  * @param[in]  irq          Interrupt for which  to register a callback.
  * @param[in]  p_callback   Pointer to function to call when interrupt occurs.
  *
- * @retval     FSP_ERR_UNSUPPORTED          NMI Group IRQ are not supported in RZ/A3UL.
+ * @retval     FSP_ERR_UNSUPPORTED          NMI Group IRQ are not supported in RZ/A Devices.
  **********************************************************************************************************************/
 BSP_SECTION_FLASH_GAP fsp_err_t R_BSP_GroupIrqWrite (bsp_grp_irq_t irq, void (* p_callback)(bsp_grp_irq_t irq))
 {

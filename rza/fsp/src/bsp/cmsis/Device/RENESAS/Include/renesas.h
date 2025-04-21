@@ -145,8 +145,8 @@ extern "C" {
 }
  #endif
 
-#endif                                 /* RZA3UL_H */
+#endif                                 /* RZA_H */
 
-/** @} */ /* End of group RZA3UL */
+/** @} */ /* End of group RZA */
 
 /** @} */ /* End of group Renesas */

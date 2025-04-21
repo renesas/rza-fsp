@@ -28,6 +28,8 @@
   * Graphics
     * [Azure RTOS GUIX](https://github.com/eclipse-threadx/rtos-docs/blob/main/rtos-docs/guix/index.md)
     * [CRU Driver on r_cru](https://renesas.github.io/rza-fsp/group___c_r_u.html)
+    * [D/AVE 2D (r_drw)](https://www.tes-dst.com/technology-products/gpus/d/ave-2d/)
+    * [D/AVE 2D Port Interface (r_drw)](https://renesas.github.io/rza-fsp/group___d_r_w.html)
     * [Display Driver on r_lcdc](https://renesas.github.io/rza-fsp/group___l_c_d_c.html)
     * [ISU Driver on r_isu](https://renesas.github.io/rza-fsp/group___i_s_u.html)
   * Input

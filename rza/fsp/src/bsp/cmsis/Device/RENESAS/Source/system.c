@@ -85,6 +85,17 @@ static void bsp_init_uninitialized_vars(void);
 
 #endif
 
+/* Stacks */
+BSP_DONT_REMOVE static uint8_t g_stack[BSP_CFG_STACK_MAIN_BYTES] BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT)
+BSP_PLACE_IN_SECTION(BSP_SECTION_STACK);
+
+/* Heap */
+#if (BSP_CFG_HEAP_BYTES > 0)
+
+BSP_DONT_REMOVE static uint8_t g_heap[BSP_CFG_HEAP_BYTES] BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT) \
+    BSP_PLACE_IN_SECTION(BSP_SECTION_HEAP);
+#endif
+
 /*******************************************************************************************************************//**
  * Initialize the MCU and the runtime environment.
  **********************************************************************************************************************/

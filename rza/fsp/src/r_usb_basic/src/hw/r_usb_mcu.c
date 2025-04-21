@@ -444,17 +444,21 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
     FSP_ERROR_RETURN((USB_IP0 == ip_type) || (USB_IP1 == ip_type), FSP_ERR_USB_PARAMETER)
     if (USB_IP1 == ip_type)
     {
+ #if (2 == USB_NUM_USBIP)
         /* USB1 Ch */
         FSP_ERROR_RETURN(1 != R_MSTP->PERI_COM_b.MHUSB21, FSP_ERR_USB_NOT_OPEN)
 
- #if USB_CFG_MODE == USB_CFG_PERI
+  #if USB_CFG_MODE == USB_CFG_PERI
         usb_module_register_clear(ip_type);
- #endif                                /*  #if USB_CFG_MODE == USB_CFG_PERI */
- #if !defined(BSP_MCU_GROUP_RZA3M)
+  #endif                               /*  #if USB_CFG_MODE == USB_CFG_PERI */
+  #if !defined(BSP_MCU_GROUP_RZA3M)
         R_BSP_MODULE_STOP(FSP_IP_USB1, 0);
         FSP_ERROR_RETURN(1 == R_MSTP->PERI_COM_b.MHUSB21, FSP_ERR_USB_FAILED)
- #endif
+  #endif /* #if !defined(BSP_MCU_GROUP_RZA3M) */
         result = FSP_SUCCESS;
+ #else                                 /* #if (2 == USB_NUM_USBIP) */
+        result = FSP_ERR_USB_PARAMETER;
+ #endif /* #if (2 == USB_NUM_USBIP) */
     }
     else
     {
@@ -470,7 +474,11 @@ fsp_err_t usb_module_stop (uint8_t ip_type)
         result = FSP_SUCCESS;
     }
 
+ #if !defined(BSP_MCU_GROUP_RZA3M)
     if ((R_MSTP->PERI_COM_b.MHUSB2H == 1) && (R_MSTP->PERI_COM_b.MHUSB2F == 1) && (R_MSTP->PERI_COM_b.MHUSB21 == 1))
+ #else                                 /* #if !defined(BSP_MCU_GROUP_RZA3M) */
+    if ((R_MSTP->PERI_COM_b.MHUSB2H == 1) && (R_MSTP->PERI_COM_b.MHUSB2F == 1))
+ #endif /* #if !defined(BSP_MCU_GROUP_RZA3M) */
     {
         R_BSP_MODULE_STOP(FSP_IP_USBPHY, 0);
     }

@@ -1602,17 +1602,14 @@ static uint32_t spibsc_cmncr_set (uint8_t mask, uint8_t value, int pos)
         ionfv = SPIBSC_CMNCR_IO_HIZ;
     }
 
-    if (mask & 1 << pos)
+    if (moiionpos >= 0)
     {
-        if (moiionpos >= 0)
-        {
-            cmncr_set |= moiio << moiionpos;
-        }
+        cmncr_set |= moiio << moiionpos;
+    }
 
-        if (ionfvpos >= 0)
-        {
-            cmncr_set |= ionfv << ionfvpos;
-        }
+    if (ionfvpos >= 0)
+    {
+        cmncr_set |= ionfv << ionfvpos;
     }
 
     return cmncr_set;
@@ -1621,10 +1618,8 @@ static uint32_t spibsc_cmncr_set (uint8_t mask, uint8_t value, int pos)
 static void spibsc_set_idlelevel (spibsc_instance_ctrl_t * p_ctrl, const xspi_op_t * const op)
 {
     static const uint32_t cmncr_mask =
-        R_SPIBSC_CMNCR_IO0FV_Msk |
         R_SPIBSC_CMNCR_IO2FV_Msk |
         R_SPIBSC_CMNCR_IO3FV_Msk |
-        R_SPIBSC_CMNCR_MOIIO0_Msk |
         R_SPIBSC_CMNCR_MOIIO1_Msk |
         R_SPIBSC_CMNCR_MOIIO2_Msk |
         R_SPIBSC_CMNCR_MOIIO3_Msk;

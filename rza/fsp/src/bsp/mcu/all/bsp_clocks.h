@@ -139,6 +139,15 @@ FSP_HEADER
 #define BSP_RSTMON_REG_FSP_IP_DMAC_S(channel)       (R_CPG->CPG_RSTMON_DMAC)
 #define BSP_RSTMON_BIT_FSP_IP_DMAC_S(channel)       (1U << (R_CPG_CPG_RSTMON_DMAC_RST1_MON_Pos))
 
+#define BSP_CLKON_REG_FSP_IP_DRW(channel)           (R_CPG->CPG_CLKON_DRW)
+#define BSP_CLKON_BIT_FSP_IP_DRW(channel)           (1U << (R_CPG_CPG_CLKON_DRW_CLK0_ON_Pos))
+#define BSP_CLKMON_REG_FSP_IP_DRW(channel)          (R_CPG->CPG_CLKMON_DRW)
+#define BSP_CLKMON_BIT_FSP_IP_DRW(channel)          (1U << (R_CPG_CPG_CLKMON_DRW_CLK0_MON_Pos))
+#define BSP_RST_REG_FSP_IP_DRW(channel)             (R_CPG->CPG_RST_DRW)
+#define BSP_RST_BIT_FSP_IP_DRW(channel)             (1U << (R_CPG_CPG_RST_DRW_UNIT0_RSTB_Pos))
+#define BSP_RSTMON_REG_FSP_IP_DRW(channel)          (R_CPG->CPG_RSTMON_DRW)
+#define BSP_RSTMON_BIT_FSP_IP_DRW(channel)          (1U << (R_CPG_CPG_RSTMON_DRW_RST0_MON_Pos))
+
 #define BSP_CLKON_REG_FSP_IP_ETHER(channel)         (R_CPG->CPG_CLKON_ETH)
 #define BSP_CLKON_BIT_FSP_IP_ETHER(channel)         (1U << (R_CPG_CPG_CLKON_ETH_CLK0_ON_Pos + (channel)))
 #define BSP_CLKMON_REG_FSP_IP_ETHER(channel)        (R_CPG->CPG_CLKMON_ETH)

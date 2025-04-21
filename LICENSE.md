@@ -11,6 +11,7 @@
 | [Azure RTOS](https://github.com/eclipse-threadx)                                               | Microsoft Corporation                                                   | MIT                                                                                                                                      |
 | exFAT                                                                                          | Microsoft Corporation                                                   | Microsoft License                                                                                                                        |
 | [Trusted Firmware-A used in IPL binary](https://github.com/renesas/rza-initial-program-loader) | ARM Limited                                                             | BSD-3-Clause<sup>[1](#note1)</sup>. See [license.rst](https://github.com/renesas/rza-initial-program-loader/blob/main/docs/license.rst). |
+| TES Dave2D                                                                                     | TES Electronics Solutions GmBH                                          | [Renesas Open License v1.0](#renesas-open-license-v10)                                                                                   |
 
 <small id="note1">1: This project contains code from other projects which are provided under other licenses. For details, see [license.rst](https://github.com/renesas/rza-initial-program-loader/blob/main/docs/license.rst).</small>
 

@@ -15,6 +15,7 @@
 
 #include "iodefines/cpg_iodefine.h"
 #include "iodefines/dma_iodefine.h"
+#include "iodefines/drw_iodefine.h"
 #include "iodefines/eccram_iodefine.h"
 #include "iodefines/gpio_iodefine.h"
 #include "iodefines/gtm_iodefine.h"

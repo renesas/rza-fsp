@@ -397,18 +397,21 @@ uint32_t usb_hstd_ehci_init (usb_utr_t * ptr)
  #if defined(BSP_MCU_GROUP_RZA_USB)
     if (USB_IP0 == ptr->ip)
     {
-        ptr->ipp->USBCMD_b.AsynchronousScheduleEnable = 1;
-        ptr->ipp->USBCMD_b.PerPortChangeEventsEnable  = 1;
+        ptr->ipp->USBCMD_b.AsynchronousScheduleEnable         = 1;
+        ptr->ipp->USBCMD_b.PerPortChangeEventsEnable          = 1;
+        ptr->ipp->USBCMD_b.AsynchronousScheduleParkModeEnable = 0;
     }
     else
     {
   #if USB_NUM_USBIP == 2
-        ptr->ipp1->USBCMD_b.AsynchronousScheduleEnable = 1;
-        ptr->ipp1->USBCMD_b.PerPortChangeEventsEnable  = 1;
+        ptr->ipp1->USBCMD_b.AsynchronousScheduleEnable         = 1;
+        ptr->ipp1->USBCMD_b.PerPortChangeEventsEnable          = 1;
+        ptr->ipp1->USBCMD_b.AsynchronousScheduleParkModeEnable = 0;
   #endif
     }
  #else
-    ptr->ipp->USBCMD |= USB_VAL_ASUNSE;
+    ptr->ipp->USBCMD        |= USB_VAL_ASUNSE;
+    ptr->ipp->USBCMD_b.ASPME = 0;
  #endif
 
  #ifdef DEBUG_PRINT_ASYNC_SCHEDULING
