@@ -37,7 +37,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_scaled.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">RZ/A Flexible Software Package Documentation
-   &#160;<span id="projectnumber">Release v3.5.0</span>
+   &#160;<span id="projectnumber">Release v3.6.0</span>
    </div>
   </td>
    <td>        <br /><div id="MSearchBox" class="MSearchBoxInactive">
@@ -191,7 +191,15 @@ The following build time configurations are defined in fsp_cfg/azure/gx/gx_user.
 <tr>
 <th>Configuration</th><th>Options</th><th>Default</th><th>Description </th></tr>
 <tr>
-<td>Hardware Acceleration &gt; DRW Engine Support</td><td>Disabled</td><td>Disabled </td><td>This setting is for the future improvement. </td></tr>
+<td>Hardware Acceleration &gt; DRW Engine Support</td><td><ul style="margin-top:0;margin-bottom:0;">
+<li>
+Enabled</li>
+<li>
+Disabled</li>
+</ul>
+</td><td>Enabled </td><td>Select whether or not to use the DRW Engine for hardware acceleration. </td></tr>
+<tr>
+<td>Hardware Acceleration &gt; Max DRW Operations</td><td>Value must be a positive integer</td><td>30 </td><td>Specifies the maximum number of DRW operations before flushing the display list. Reducing this value may reduce the peak heap used by the application but may reduce performance. </td></tr>
 <tr>
 <td>Internal Thread &gt; Stack Size</td><td>Value must be greater than zero</td><td>4096 </td><td>GUIX internal thread stack size in bytes. Must be greater than zero. </td></tr>
 <tr>
@@ -429,7 +437,7 @@ Error code if RM_GUIX_PORT_EVENT_ERROR. </td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-        <li class="footer">FSP Release v3.5.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
+        <li class="footer">FSP Release v3.6.0 User's Manual Copyright © (2025) Renesas Electronics Corporation. All Rights Reserved.</li>
   </ul>
 </div>
 </body>
