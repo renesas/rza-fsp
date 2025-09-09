@@ -39,21 +39,21 @@
 #if  USB_IP_EHCI_OHCI == 1
 
 BSP_ALIGN_VARIABLE(256) st_usb_ohci_hcca_block_t gs_usb_hstd_ohci_hcca USB_BUFFER_PLACE_IN_SECTION;
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_hcd_transfer_descriptor_t gs_usb_hstd_ohci_td_memory[USB_OHCI_NUM_TD]
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_hcd_transfer_descriptor_t gs_usb_hstd_ohci_td_memory[USB_OHCI_NUM_TD]
 USB_BUFFER_PLACE_IN_SECTION;           /* 32 bit-boundary Area */
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_hcd_endpoint_descriptor_t gs_usb_hstd_ohci_ed_memory[USB_OHCI_NUM_ED]
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_hcd_endpoint_descriptor_t gs_usb_hstd_ohci_ed_memory[USB_OHCI_NUM_ED]
 USB_BUFFER_PLACE_IN_SECTION;           /* 16 bit-boundary Area */
-BSP_ALIGN_VARIABLE(16) uint8_t gs_usb_hstd_ohci_iso_buffer[USB_OHCI_ISO_MAXDEVICE][USB_OHCI_ISO_MAX_FRAME][
+BSP_ALIGN_VARIABLE(64) uint8_t gs_usb_hstd_ohci_iso_buffer[USB_OHCI_ISO_MAXDEVICE][USB_OHCI_ISO_MAX_FRAME][
     USB_OHCI_ISO_MAX_PACKET_SIZE] USB_BUFFER_PLACE_IN_SECTION;
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_request_t gs_usb_hstd_ohci_request_array[USB_OHCI_NUM_REQUEST]
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_request_t gs_usb_hstd_ohci_request_array[USB_OHCI_NUM_REQUEST]
 USB_BUFFER_PLACE_IN_SECTION;
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_hcd_device_data_t gs_usb_hstd_ohci_device_data_memory[USB_OHCI_NUM_DEVICEDATA]
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_hcd_device_data_t gs_usb_hstd_ohci_device_data_memory[USB_OHCI_NUM_DEVICEDATA]
 USB_BUFFER_PLACE_IN_SECTION;
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_hcd_endpoint_t gs_usb_hstd_ohci_endpoint_memory[USB_OHCI_NUM_ENDPOINT]
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_hcd_endpoint_t gs_usb_hstd_ohci_endpoint_memory[USB_OHCI_NUM_ENDPOINT]
 USB_BUFFER_PLACE_IN_SECTION;
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_hcd_endpoint_p_t gs_usb_hstd_ohci_enable_endpoint[USB_OHCI_MAXDEVICE][
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_hcd_endpoint_p_t gs_usb_hstd_ohci_enable_endpoint[USB_OHCI_MAXDEVICE][
     USB_OHCI_MAXENDPOINT][2] USB_BUFFER_PLACE_IN_SECTION;
-BSP_ALIGN_VARIABLE(16) st_usb_ohci_iso_info_t gs_usb_hstd_ohci_iso_endpoint[USB_OHCI_ISO_MAXDEVICE]
+BSP_ALIGN_VARIABLE(64) st_usb_ohci_iso_info_t gs_usb_hstd_ohci_iso_endpoint[USB_OHCI_ISO_MAXDEVICE]
 USB_BUFFER_PLACE_IN_SECTION;
 
 static uint32_t gs_usb_hstd_ohci_remain_dd = USB_OHCI_NUM_DEVICEDATA; /* Remaining DeviceData */

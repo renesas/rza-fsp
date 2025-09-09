@@ -28,7 +28,7 @@
  **********************************************************************************************************************/
 
 /* Select PIPE NUM */
-#define USB_MAXPIPE    (32U)
+#define USB_MAXPIPE    (16U)
 
 /* defined: Host COMPLIANCE mode, undefined: Host NORMAL mode */
 

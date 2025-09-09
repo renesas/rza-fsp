@@ -953,7 +953,10 @@ static void dsi_init_video (mipi_dsi_cfg_t const * p_cfg)
     R_MIPI_DSI->VICH1SET1R =
         ((p_cfg->video_mode_delay << R_MIPI_DSI_VICH1SET1R_DLY_Pos) & R_MIPI_DSI_VICH1SET1R_DLY_Msk);
 
-    R_MIPI_DSI->VICH1SET0R          = p_cfg->hsa_no_lp | p_cfg->hbp_no_lp | p_cfg->hfp_no_lp;
+    R_MIPI_DSI->VICH1SET0R =
+        (((uint32_t) p_cfg->hsa_no_lp << R_MIPI_DSI_VICH1SET0R_HSANOLP_Pos) & R_MIPI_DSI_VICH1SET0R_HSANOLP_Msk) |
+        (((uint32_t) p_cfg->hbp_no_lp << R_MIPI_DSI_VICH1SET0R_HBPNOLP_Pos) & R_MIPI_DSI_VICH1SET0R_HBPNOLP_Msk) |
+        (((uint32_t) p_cfg->hfp_no_lp << R_MIPI_DSI_VICH1SET0R_HFPNOLP_Pos) & R_MIPI_DSI_VICH1SET0R_HFPNOLP_Msk);
     R_MIPI_DSI->VICH1SET0R_b.VSTART = (1U << R_MIPI_DSI_VICH1SET0R_VSTART_Pos) & R_MIPI_DSI_VICH1SET0R_VSTART_Msk;
 }
 

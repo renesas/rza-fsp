@@ -119,13 +119,6 @@ extern SemaphoreHandle_t SemaphoreHandleRead;
  * Exported global variables (to be accessed by other files)
  ******************************************************************************/
 
-const uint16_t g_usb_hmsc_devicetpl[] =
-{
-    1,                                 /* Number of tpl table */
-    0,                                 /* Reserved */
-    0xFFFFU, 0xFFFFU                   /* Vendor ID, Product ID */
-};
-
 usb_pipe_table_reg_t g_usb_hmsc_pipe_table[USB_MAXSTRAGE][USB_PIPE_DIR_MAX] USB_BUFFER_PLACE_IN_SECTION;
 
 drive_management_t g_usb_hmsc_drvno_tbl[USB_MAXSTRAGE];                                      /* Drive no. management table */
@@ -2757,6 +2750,10 @@ static void usb_hmsc_detach (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
         }
     }
 
+    /* Clear pipe table. */
+    usb_hstd_clr_pipe_table(ptr->ip, addr);
+    R_USB_HstdClearPipe(addr);
+
     ipno_devaddr = addr;
     if (USB_IP1 == ptr->ip)
     {
@@ -2847,10 +2844,13 @@ void usb_hmsc_drive_complete (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
 
     ctrl.module_number  = ptr->ip;     /* Module number setting */
     ctrl.device_address = (uint8_t) addr;
+    ctrl.type           = USB_CLASS_HMSC;
     if ((void *) USB_NULL != p_cfg)
     {
         ctrl.p_context = (void *) p_cfg->p_context;
     }
+
+    g_usb_class_info[ptr->ip][addr] = USB_CLASS_INTERNAL_HMSC;
 
     usb_set_event(USB_STATUS_CONFIGURED, &ctrl); /* Set Event()  */
 } /* End of function usb_hmsc_drive_complete() */
@@ -2865,7 +2865,7 @@ void usb_hmsc_drive_complete (usb_utr_t * ptr, uint16_t addr, uint16_t data2)
  ******************************************************************************/
 static void usb_hmsc_classinit (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
 {
-    uint16_t side;
+    uint8_t side;
     FSP_PARAMETER_NOT_USED(data1);
     FSP_PARAMETER_NOT_USED(data2);
 
@@ -2875,8 +2875,13 @@ static void usb_hmsc_classinit (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
 
     for (side = 0; side < USB_MAXSTRAGE; side++)
     {
-        usb_hmsc_strg_drive_close(ptr, side);
+        if (USB_NOUSE == g_usb_hmsc_drvno_tbl[side].use_flag)
+        {
+            break;
+        }
     }
+
+    usb_hmsc_strg_drive_close(ptr, side);
 }
 
 /******************************************************************************
@@ -2892,38 +2897,26 @@ static void usb_hmsc_classinit (usb_utr_t * ptr, uint16_t data1, uint16_t data2)
 void usb_hmsc_registration (usb_utr_t * ptr)
 {
     usb_hcdreg_t driver;
- #if USB_CFG_HUB == USB_CFG_ENABLE
-    uint8_t i;
- #endif                                                    /* USB_CFG_HUB == USB_CFG_ENABLE */
 
     /* Driver registration */
-    driver.ifclass = (uint16_t) USB_IFCLS_MAS;             /* Use Interface class for MSC. */
+    driver.ifclass = (uint16_t) USB_IFCLS_MAS;    /* Use Interface class for MSC. */
  #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
     driver.p_tpl = (uint16_t *) USB_CFG_TPL_TABLE;
  #else /* #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
-    driver.p_tpl = (uint16_t *) &g_usb_hmsc_devicetpl;     /* Target peripheral list. */
+    driver.p_tpl = (uint16_t *) &g_usb_devicetpl; /* Target peripheral list. */
  #endif /* #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE */
-    driver.classinit  = &usb_hmsc_classinit;               /* Driver init. */
-    driver.classcheck = &usb_hmsc_class_check;             /* Driver check. */
-    driver.devconfig  = &usb_hmsc_configured;              /* Callback when device is configured. */
-    driver.devdetach  = &usb_hmsc_detach;                  /* Callback when device is detached. */
-    driver.devsuspend = &usb_hstd_dummy_function;          /* Callback when device is suspended. */
-    driver.devresume  = &usb_hstd_dummy_function;          /* Callback when device is resumed. */
+    driver.classinit  = &usb_hmsc_classinit;      /* Driver init. */
+    driver.classcheck = &usb_hmsc_class_check;    /* Driver check. */
+    driver.devconfig  = &usb_hmsc_configured;     /* Callback when device is configured. */
+    driver.devdetach  = &usb_hmsc_detach;         /* Callback when device is detached. */
+    driver.devsuspend = &usb_hstd_dummy_function; /* Callback when device is suspended. */
+    driver.devresume  = &usb_hstd_dummy_function; /* Callback when device is resumed. */
 
  #if USB_CFG_HUB == USB_CFG_ENABLE
     /* WAIT_LOOP */
-    for (i = 0; i < USB_MAXSTRAGE; i++)                    /* Loop support HID device count */
-    {
-        usb_hstd_driver_registration(ptr, &driver);        /* Host MSC class driver registration. */
-    }
-
-  #if (BSP_CFG_RTOS == 0)
-    usb_cstd_set_task_pri(USB_HUB_TSK, USB_PRI_3);         /* Hub Task Priority set */
-  #endif /* BSP_CFG_RTOS == 0 */
-
-    usb_hhub_registration(ptr, (usb_hcdreg_t *) USB_NULL); /* Hub registration. */
+    usb_hstd_driver_registration(ptr, &driver);   /* Host MSC class driver registration. */
  #else  /* USB_CFG_HUB == USB_CFG_ENABLE */
-    usb_hstd_driver_registration(ptr, &driver);            /* Host MSC class driver registration. */
+    usb_hstd_driver_registration(ptr, &driver);   /* Host MSC class driver registration. */
  #endif /* USB_CFG_HUB == USB_CFG_ENABLE */
 }
 

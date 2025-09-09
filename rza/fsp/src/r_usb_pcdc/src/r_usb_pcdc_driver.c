@@ -57,15 +57,34 @@ void usb_pcdc_read_complete (usb_utr_t * mess, uint16_t data1, uint16_t data2)
     if (USB_TRUE == g_usb_peri_connected)
     {
         /* Set Receive data length */
+ #if (USB_CFG_DMA == USB_CFG_DISABLE)
         ctrl.data_size = mess->read_req_len - mess->tranlen;
-        ctrl.pipe      = (uint8_t) mess->keyword; /* Pipe number setting */
-        if (USB_CFG_PCDC_BULK_OUT == ctrl.pipe)
+ #else
+        if (mess->ip == 0)
         {
-            ctrl.type = USB_CLASS_PCDC;           /* CDC Data class  */
+            ctrl.data_size = R_USB01->D1FIFOCTR_b.DTLN;
         }
         else
         {
-            ctrl.type = USB_CLASS_PCDC2;          /* CDC Data class  */
+            /* Written after responding to IP1 */
+            ctrl.data_size = R_USB01->D1FIFOCTR_b.DTLN;
+        }
+ #endif                                      /* #if (USB_CFG_DMA == USB_CFG_DISABLE) */
+
+        ctrl.pipe = (uint8_t) mess->keyword; /* Pipe number setting */
+ #if (USB_CFG_DMA == USB_CFG_ENABLE)
+        memcpy((void *) (uintptr_t) g_data_buf_addr[mess->ip][ctrl.pipe],
+               (void *) (uintptr_t) mess->p_tranadr,
+               ctrl.data_size);
+ #endif
+
+        if (USB_CFG_PCDC_BULK_OUT == ctrl.pipe)
+        {
+            ctrl.type = USB_CLASS_PCDC;  /* CDC Data class  */
+        }
+        else
+        {
+            ctrl.type = USB_CLASS_PCDC2; /* CDC Data class  */
         }
 
         switch (mess->status)

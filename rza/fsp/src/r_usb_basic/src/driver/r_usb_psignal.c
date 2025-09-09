@@ -24,6 +24,12 @@
  #include "../../../../../microsoft/azure-rtos/usbx/common/core/inc/ux_device_stack.h"
 #endif                                 /* #if (BSP_CFG_RTOS == 1) */
 
+#if USB_CFG_DMA == USB_CFG_ENABLE
+ #include "r_usb_dmaca_rz_if.h"
+ #include "r_usb_dmaca_rz_target.h"
+ #include "r_usb_dmac.h"
+#endif                                 /* #if USB_CFG_DMA == USB_CFG_ENABLE */
+
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
 /******************************************************************************
@@ -171,6 +177,11 @@ void usb_pstd_detach_process (usb_utr_t * p_utr)
  #endif                                /* #if (BSP_CFG_RTOS == 1) */
         }
     }
+
+ #if USB_CFG_DMA == USB_CFG_ENABLE
+    USB_DMACA_CHCTRL_0 |= USB_DMACA_CHSTAT_CLEAR_EN;
+    USB_DMACA_CHCTRL_1 |= USB_DMACA_CHSTAT_CLEAR_EN;
+ #endif                                /* #if USB_CFG_DMA == USB_CFG_ENABLE */
 
     /* Callback */
     if (NULL != g_usb_pstd_driver.devdetach)

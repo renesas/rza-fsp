@@ -109,6 +109,9 @@
 /* Channel Configuration Register .b21:DAD bit mask*/
  #define USB_DMACA_CHCFG_DAD_MASK        (0x1 << 21)
 
+/* Channel Configuration Register .b22:TM bit mask*/
+ #define USB_DMACA_CHCFG_TM_MASK         (0x1 << 22)
+
 /* Channel Configuration Register .b23:WONLY bit mask*/
  #define USB_DMACA_CONFIG_WONLY_MASK     (0x1 << 23)
 
@@ -157,6 +160,9 @@ typedef enum e_usb_dmaca_int_detect_select
 {
     USB_DMACA_INT_DETECT_LEVEL = (0x1 << 1)
 } usb_dmaca_int_detect_select_t;
+
+/* CHSTAT Register clear (CHCTRL Register b01:CLREN)  */
+ #define USB_DMACA_CHSTAT_CLEAR_EN         (0x1 << 1)
 
 /* CHSTAT Register b01:RQST clear (CHCTRL Register b04:CLRRQ)  */
  #define USB_DMACA_CHSTAT_RQST_CLEAR       (0x1 << 4)

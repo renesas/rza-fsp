@@ -5,38 +5,29 @@
 */
 
 /**********************************************************************************************************************
- * File Name    : board.h
+ * File Name    : board_init.h
  * Version      : 1.00
- * Description  : board header
+ * Description  : board_init header
  *********************************************************************************************************************/
 
 /******************************************************************************************************************//**
- * @ingroup BOARDS
- * @defgroup BOARD_RZA3M_EK_NOR BSP for EK-RZ/A3M
- * @brief BSP for the RZA3M-REF-NOR Board
+ * @addtogroup BOARD_RZA3M_EK_NAND
+ * @brief Board specific code for the RZA3M-REF-NAND Board
  *
- * The RZA3M_EVK is a reference board for the Renesas R9A07G066M04GBG microcontroller in a LFBGA244 package.
+ * This include file is specific to the RZA3M-REF-NAND board.
  *
  * @{
  *********************************************************************************************************************/
 
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BOARD_INIT_H
+#define BOARD_INIT_H
 
-/**********************************************************************************************************************
- * Includes   <System Includes> , "Project Includes"
- *********************************************************************************************************************/
-
-/* BSP Board Specific Includes. */
-#include "board_init.h"
-#include "board_leds.h"
+/** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
 
 /**********************************************************************************************************************
  * Macro definitions
  *********************************************************************************************************************/
-#define BOARD_RZA3M_EK_NOR
-
-#define BOARD_TYPE_RZA3M_EK_NOR
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -49,7 +40,11 @@
 /**********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
+void bsp_init(void * p_args);
 
-/** @} (end defgroup BOARD_RZA3M_EK_NOR) */
+/** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+FSP_FOOTER
 
-#endif                                 /* BOARD_H */
+#endif                                 /* BOARD_INIT_H */
+
+/** @} (end addtogroup BOARD_RZA3M_EK_NAND) */

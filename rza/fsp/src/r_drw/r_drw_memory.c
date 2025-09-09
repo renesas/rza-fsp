@@ -17,8 +17,19 @@
 #include "r_drw_base.h"
 #include "r_drw_cfg.h"
 
+#if (BSP_CFG_RTOS == 1)                // AzureRTOS
+ #include "tx_api.h"
+#endif
+
 #if (BSP_CFG_RTOS == 2)                // FreeRTOS
  #include "FreeRTOS.h"
+#endif
+
+/***********************************************************************************************************************
+ * Macro definitions
+ **********************************************************************************************************************/
+#ifndef DRW_MEMORY_POOL_SIZE
+ #define DRW_MEMORY_POOL_SIZE    0x3000
 #endif
 
 /***********************************************************************************************************************
@@ -60,6 +71,25 @@ void * d1_allocmem (d1_uint_t size)
 
     /* Use user-defined malloc */
     return d1_malloc((size_t) size);
+#elif (BSP_CFG_RTOS == 1)              // AzureRTOS
+    static ULONG        drw_memory_area[DRW_MEMORY_POOL_SIZE];
+    static TX_BYTE_POOL memory_pool;
+    static UCHAR        pool_initialized = 0;
+    if (!pool_initialized)
+    {
+        if (tx_byte_pool_create(&memory_pool, "DRW Memory Pool", drw_memory_area, DRW_MEMORY_POOL_SIZE) == TX_SUCCESS)
+        {
+            pool_initialized = 1;
+        }
+    }
+
+    VOID * memptr = NULL;
+    if (tx_byte_allocate(&memory_pool, &memptr, size, TX_NO_WAIT) == TX_SUCCESS)
+    {
+        return memptr;
+    }
+
+    return NULL;
 #elif (BSP_CFG_RTOS == 2)              // FreeRTOS
  #if configSUPPORT_DYNAMIC_ALLOCATION
 
@@ -88,6 +118,11 @@ void d1_freemem (void * ptr)
 
     /* Use user-defined free */
     d1_free(ptr);
+#elif (BSP_CFG_RTOS == 1)              // AzureRTOS
+    if (ptr != NULL)
+    {
+        tx_byte_release(ptr);
+    }
 #elif (BSP_CFG_RTOS == 2)              // FreeRTOS
  #if configSUPPORT_DYNAMIC_ALLOCATION
 

@@ -12,6 +12,7 @@
 #include "../r_usb_basic/src/driver/inc/r_usb_typedef.h"
 #include "../r_usb_basic/src/driver/inc/r_usb_extern.h"
 #include "../r_usb_basic/src/hw/inc/r_usb_reg_access.h"
+#include "../r_usb_basic/src/hw/inc/r_usb_bitdefine.h"
 
 #include "r_usb_hhid_api.h"
 #include "r_usb_hhid.h"
@@ -90,6 +91,7 @@ fsp_err_t R_USB_HHID_MaxPacketSizeGet (usb_ctrl_t * const p_api_ctrl,
     usb_utr_t  utr;
     uint16_t   pipe = 0;
     uint16_t   pipe_bit_map;
+    uint16_t   pipe_count;
 #if defined(BSP_MCU_GROUP_RZA_USB)
     uint8_t epnum;
 #endif                                 /* #if defined(BSP_MCU_GROUP_RZA3UL) */
@@ -138,7 +140,32 @@ fsp_err_t R_USB_HHID_MaxPacketSizeGet (usb_ctrl_t * const p_api_ctrl,
     err = R_USB_UsedPipesGet(p_ctrl, &pipe_bit_map, device_address);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, FSP_ERR_USB_FAILED);
 
-    FSP_ERROR_RETURN(!(0 == ((1 << pipe) & pipe_bit_map)), FSP_ERR_USB_FAILED);
+    if (10 > pipe)
+    {
+        FSP_ERROR_RETURN(!(0 == ((1 << pipe) & pipe_bit_map)), FSP_ERR_USB_FAILED);
+    }
+    else
+    {
+        /* This part extracts the processing within R_USB_UsedPipesGet. */
+        /* Processing for pipe numbers 10 and above. */
+        for (pipe_count = USB_MIN_PIPE_NO; pipe_count < (USB_MAXPIPE + 1); pipe_count++)
+        {
+            if (USB_TRUE == g_usb_pipe_table[p_ctrl->module_number][pipe_count].use_flag)
+            {
+                if ((((uint16_t) p_ctrl->device_address) << USB_DEVADDRBIT) ==
+                    (uint16_t) (g_usb_pipe_table[p_ctrl->module_number][pipe_count].pipe_maxp & USB_DEVSEL))
+                {
+                    pipe_bit_map = pipe_count;
+                    if (pipe == pipe_count)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        FSP_ERROR_RETURN(pipe == pipe_bit_map, FSP_ERR_USB_FAILED);
+    }
 
     utr.ip      = p_ctrl->module_number;
     utr.ipp     = usb_hstd_get_usb_ip_adr(utr.ip);

@@ -688,9 +688,9 @@ void usb_pstd_pcd_task (void)
     }
 
   #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
-   #ifndef BSP_MCU_GROUP_RZT2M && !defined(BSP_MCU_GROUP_RZA_USB)
+   #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB)
     usb_cstd_dma_driver();             /* USB DMA driver */
-   #endif /* BSP_MCU_GROUP_RZT2M */
+   #endif /* #if !defined (BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZA_USB) */
   #endif /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
  #endif /*(BSP_CFG_RTOS == 0)*/
 

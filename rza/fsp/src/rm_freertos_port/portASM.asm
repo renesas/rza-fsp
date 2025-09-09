@@ -25,6 +25,7 @@
  * https://github.com/FreeRTOS
  *
  */
+#include "bsp_asm_cfg.h"
 
 	.text
 
@@ -383,6 +384,27 @@ FreeRTOS_FIQ_Handler:
 	STP		X16, X17, [SP, #-0x10]!
 	STP		X18, X19, [SP, #-0x10]!
 	STP		X29, X30, [SP, #-0x10]!
+#if __FPU_USED || BSP_CFG_FPU_REGISTERS_SAVING
+	MRS		x0, FPCR
+	MRS		x1, FPSR
+	STP		x0, x1, [SP, #-0x10]!
+	STP		q30, q31, [SP, #-0x20]!
+	STP		q28, q29, [SP, #-0x20]!
+	STP		q26, q27, [SP, #-0x20]!
+	STP		q24, q25, [SP, #-0x20]!
+	STP		q22, q23, [SP, #-0x20]!
+	STP		q20, q21, [SP, #-0x20]!
+	STP		q18, q19, [SP, #-0x20]!
+	STP		q16, q17, [SP, #-0x20]!
+	STP		q14, q15, [SP, #-0x20]!
+	STP		q12, q13, [SP, #-0x20]!
+	STP		q10, q11, [SP, #-0x20]!
+	STP		q8, q9, [SP, #-0x20]!
+	STP		q6, q7, [SP, #-0x20]!
+	STP		q4, q5, [SP, #-0x20]!
+	STP		q2, q3, [SP, #-0x20]!
+	STP		q0, q1, [SP, #-0x20]!
+#endif
 
 	/* Save the SPSR and ELR. */
 #if defined( GUEST )
@@ -441,6 +463,27 @@ FreeRTOS_FIQ_Handler:
 	DSB		SY
 	ISB		SY
 
+#if __FPU_USED || BSP_CFG_FPU_REGISTERS_SAVING
+	LDP		q0, q1, [sp], #0x20
+	LDP		q2, q3, [sp], #0x20
+	LDP		q4, q5, [sp], #0x20
+	LDP		q6, q7, [sp], #0x20
+	LDP		q8, q9, [sp], #0x20
+	LDP		q10, q11, [sp], #0x20
+	LDP		q12, q13, [sp], #0x20
+	LDP		q14, q15, [sp], #0x20
+	LDP		q16, q17, [sp], #0x20
+	LDP		q18, q19, [sp], #0x20
+	LDP		q20, q21, [sp], #0x20
+	LDP		q22, q23, [sp], #0x20
+	LDP		q24, q25, [sp], #0x20
+	LDP		q26, q27, [sp], #0x20
+	LDP		q28, q29, [sp], #0x20
+	LDP		q30, q31, [sp], #0x20
+	LDP		x0, x1, [sp], #0x10
+	MSR		FPCR, x0
+	MSR		FPSR, x1
+#endif
 	LDP		X29, X30, [SP], #0x10
 	LDP		X18, X19, [SP], #0x10
 	LDP		X16, X17, [SP], #0x10
@@ -471,6 +514,27 @@ Exit_IRQ_No_Context_Switch:
 	DSB		SY
 	ISB		SY
 
+#if __FPU_USED || BSP_CFG_FPU_REGISTERS_SAVING
+	LDP		q0, q1, [sp], #0x20
+	LDP		q2, q3, [sp], #0x20
+	LDP		q4, q5, [sp], #0x20
+	LDP		q6, q7, [sp], #0x20
+	LDP		q8, q9, [sp], #0x20
+	LDP		q10, q11, [sp], #0x20
+	LDP		q12, q13, [sp], #0x20
+	LDP		q14, q15, [sp], #0x20
+	LDP		q16, q17, [sp], #0x20
+	LDP		q18, q19, [sp], #0x20
+	LDP		q20, q21, [sp], #0x20
+	LDP		q22, q23, [sp], #0x20
+	LDP		q24, q25, [sp], #0x20
+	LDP		q26, q27, [sp], #0x20
+	LDP		q28, q29, [sp], #0x20
+	LDP		q30, q31, [sp], #0x20
+	LDP		x0, x1, [sp], #0x10
+	MSR		FPCR, x0
+	MSR		FPSR, x1
+#endif
 	LDP		X29, X30, [SP], #0x10
 	LDP		X18, X19, [SP], #0x10
 	LDP		X16, X17, [SP], #0x10

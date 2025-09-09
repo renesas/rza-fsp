@@ -102,13 +102,11 @@ usb_er_t usb_cstd_snd_msg (uint8_t id, usb_msg_t * mess)
 {
     usb_er_t status;
   #if  USB_IP_EHCI_OHCI == 0
-
     /* USB interrupt disable */
     usb_cpu_int_disable();
   #endif                               /* USB_IP_EHCI_OHCI == 0 */
     status = usb_cstd_isnd_msg(id, mess);
   #if USB_IP_EHCI_OHCI == 0
-
     /* USB interrupt enable */
     usb_cpu_int_enable();
   #endif                               /* USB_IP_EHCI_OHCI == 0 */
@@ -234,7 +232,8 @@ usb_er_t usb_cstd_rel_blk (uint8_t id, usb_utr_t * blk)
             if ((&usb_scheduler_block[usb_s_rblk_c]) == blk)
             {
                 /* Release fixed-size memory block */
-                usb_scheduler_blk_flg[usb_s_rblk_c] = USB_FLGCLR;
+                usb_scheduler_block[usb_s_rblk_c].status = 0;
+                usb_scheduler_blk_flg[usb_s_rblk_c]      = USB_FLGCLR;
 
                 return FSP_SUCCESS;
             }

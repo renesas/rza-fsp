@@ -8,8 +8,13 @@
  * Includes
  **********************************************************************************************************************/
 #include "rm_guix_port.h"
+#include "rm_guix_port_cfg.h"
 
 #include "r_lcdc.h"
+
+#if GX_RENESAS_DAVE2D_DRAW
+ #include "dave_driver.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -44,6 +49,15 @@ static fsp_err_t rm_guix_port_display_open(rm_guix_port_instance_ctrl_t * const 
 static void rm_guix_port_canvas_clear(GX_DISPLAY * p_display, rm_guix_port_instance_ctrl_t * const p_ctrl);
 
 void _rm_guix_port_display_callback(display_callback_args_t * p_args);
+
+#if GX_RENESAS_DAVE2D_DRAW
+static d2_s32 rm_guix_port_d2_open_format_get(GX_DISPLAY * p_display);
+
+static fsp_err_t rm_guix_port_d2_open(GX_DISPLAY * p_display, rm_guix_port_instance_ctrl_t * const p_ctrl);
+
+static fsp_err_t rm_guix_port_d2_close(rm_guix_port_instance_ctrl_t * const p_ctrl);
+
+#endif
 
 /* GUIX common callback functions setup function */
 extern UINT _gx_rz_display_driver_setup(GX_DISPLAY * display);
@@ -193,6 +207,12 @@ fsp_err_t rm_guix_port_hw_deinitialize ()
         tx_thread_sleep(1);
     }
 
+#if GX_RENESAS_DAVE2D_DRAW
+
+    /** Stop DRW Engine */
+    rm_guix_port_d2_close(&_g_guix_port_ctrl);
+#endif
+
     /** Delete semaphores */
     tx_semaphore_delete(&gx_renesas_display_semaphore);
 
@@ -301,6 +321,13 @@ static fsp_err_t rm_guix_port_driver_setup (GX_DISPLAY * p_display, rm_guix_port
     /** Setups GUIX draw functions */
     _gx_rz_display_driver_setup(p_display);
 
+#if GX_RENESAS_DAVE2D_DRAW
+
+    /** Setups D/AVE 2D */
+    error = rm_guix_port_d2_open(p_display, p_ctrl);
+    FSP_ERROR_RETURN(error == FSP_SUCCESS, error);
+#endif
+
     /** Clear canvas with zero */
     rm_guix_port_canvas_clear(p_display, p_ctrl);
 
@@ -361,6 +388,137 @@ static void rm_guix_port_canvas_clear (GX_DISPLAY * p_display, rm_guix_port_inst
         ++put;
     }
 }                                      /* End of function rm_guix_port_canvas_clear() */
+
+#if GX_RENESAS_DAVE2D_DRAW
+
+/*******************************************************************************************************************//**
+ * @brief  rm_guix_port_d2_open sub-routine to select a D/AVE 2D color format corresponding to the GUIX color format.
+ * This function is called by rm_guix_port_d2_open().
+ * @param[in]    p_display     Pointer to a GUIX display control block
+ * @retval  format             d2_mode_rgb565, d2_mode_argb4444, d2_mode_rgb888, d2_mode_argb8888 or d2_mode_clut.
+ * @retval  FSP_ERR_D2D_ERROR_INIT      The D/AVE 2D returns error at the initialization.
+ * @retval  FSP_ERR_D2D_ERROR_RENDERING The D/AVE 2D returns error at opening a display list buffer.
+ * @retval  FSP_ERR_INVALID_ARGUMENT    Specified display parameter is invalid.
+ * @note This function is only allowed to be called by rm_guix_port_driver_setup().
+ * @note Parameter check is not required since it is done in rm_guix_port_hw_initialize().
+ **********************************************************************************************************************/
+static d2_s32 rm_guix_port_d2_open_format_get (GX_DISPLAY * p_display)
+{
+    d2_s32 format = d2_mode_rgb565;
+
+    /** Gets output color format of D/AVE 2D interface */
+    switch ((INT) p_display->gx_display_color_format)
+    {
+        case GX_COLOR_FORMAT_565RGB:   ///< RGB565, 16 bits
+        {
+            /* Initial value applied */
+            break;
+        }
+
+        case GX_COLOR_FORMAT_4444ARGB: ///< ARGB4444, 16 bits
+        {
+            format = d2_mode_argb4444;
+            break;
+        }
+
+        case GX_COLOR_FORMAT_24XRGB:   ///< RGB888, 24 bits, unpacked
+        {
+            format = d2_mode_rgb888;
+            break;
+        }
+
+        case GX_COLOR_FORMAT_32ARGB:   ///< ARGB8888, 32 bits
+        {
+            format = d2_mode_argb8888;
+            break;
+        }
+
+        default:                       /* Apply 8-bit CLUT format for 8-bit Palette. */
+        {
+            format = d2_mode_clut;
+            break;
+        }
+    }
+
+    return format;
+}
+
+/*******************************************************************************************************************//**
+ * @brief  GUIX Port for FSP,D/AVE 2D(2D Drawing Engine) open function
+ * This function calls following D/AVE 2D functions:
+ * - d2_opendevice()           Creates a new device handle of the D/AVE 2D driver
+ * - d2_inithw()               Initializes 2D Drawing Engine hardware
+ * - d2_startframe()           Mark the begin of a scene
+ * - d2_framebuffer()          Specifies the rendering target
+ * This function is called by rm_guix_port_driver_setup().
+ * @param[in]    p_display     Pointer to a GUIX display control block
+ * @param[in]    p_ctrl        Pointer to a RM_GUIX_PORT control block
+ * @retval  FSP_SUCCESS             The D/AVE 2D driver is successfully opened.
+ * @retval  FSP_ERR_D2D_ERROR_INIT      The D/AVE 2D returns error at the initialization.
+ * @retval  FSP_ERR_D2D_ERROR_RENDERING The D/AVE 2D returns error at opening a display list buffer.
+ * @retval  FSP_ERR_INVALID_ARGUMENT    Specified display parameter is invalid.
+ * @note This function is only allowed to be called by rm_guix_port_driver_setup().
+ * @note Parameter checks are not required since they are done in rm_guix_port_hw_initialize().
+ **********************************************************************************************************************/
+static fsp_err_t rm_guix_port_d2_open (GX_DISPLAY * p_display, rm_guix_port_instance_ctrl_t * const p_ctrl)
+{
+    d2_s32 d2_err;
+
+    /** Creates a device handle */
+ #if !RM_GUIX_PORT_CFG_DRW_BURST_WRITE_ENABLED
+
+    /* Disable the cache of the Dave2D so it doesn't do burst writes. */
+    p_display->gx_display_accelerator = d2_opendevice(d2_df_no_fbcache);
+ #else
+
+    /* Enable the cache of the Dave2D so it perform burst writes. */
+    p_display->gx_display_accelerator = d2_opendevice(0U);
+ #endif
+
+    /** Initializes 2D Drawing Engine hardware */
+    d2_err = d2_inithw(p_display->gx_display_accelerator, 0);
+    FSP_ERROR_RETURN(D2_OK == d2_err, FSP_ERR_D2D_ERROR_INIT);
+
+    /** Opens a display list buffer for drawing commands */
+    d2_err = d2_startframe(p_display->gx_display_accelerator);
+    FSP_ERROR_RETURN(D2_OK == d2_err, FSP_ERR_D2D_ERROR_RENDERING);
+
+    /** Gets output color format of D/AVE 2D interface */
+    d2_s32 format = rm_guix_port_d2_open_format_get(p_display);
+
+    /** Defines the framebuffer memory area and layout */
+    d2_err = d2_framebuffer(p_display->gx_display_accelerator,
+                            p_ctrl->p_framebuffer_write,
+                            (d2_s32) p_display->gx_display_width,
+                            (d2_u32) p_display->gx_display_width,
+                            (d2_u32) p_display->gx_display_height,
+                            format);
+    FSP_ERROR_RETURN(D2_OK == d2_err, FSP_ERR_INVALID_ARGUMENT);
+
+    return FSP_SUCCESS;
+}                                      /* End of function rm_guix_port_d2_open() */
+
+/*******************************************************************************************************************//**
+ * @brief  GUIX Port for FSP, D/AVE 2D(2D Drawing Engine) close function
+ * This function calls D/AVE 2D function d2_closedevice() to destroy a device handle.
+ * This function is called by rm_guix_port_hw_deinitialize().
+ * @param[in]    p_ctrl        Pointer to a RM_GUIX_PORT control block
+ * @retval  FSP_SUCCESS              The D/AVE 2D driver is successfully closed.
+ * @retval  FSP_ERR_D2D_ERROR_DEINIT  D/AVE 2D has an error in the initialization.
+ * @note This function is only allowed to be called by rm_guix_port_hw_deinitialize().
+ **********************************************************************************************************************/
+static fsp_err_t rm_guix_port_d2_close (rm_guix_port_instance_ctrl_t * const p_ctrl)
+{
+    d2_s32 d2_err;
+
+    /** Destroy a device handle */
+    d2_err = d2_closedevice(p_ctrl->p_display->gx_display_accelerator);
+    FSP_ERROR_RETURN(D2_OK == d2_err, FSP_ERR_D2D_ERROR_DEINIT);
+
+    return FSP_SUCCESS;
+}                                      /* End of function rm_guix_port_d2_close() */
+
+#endif
 
 /*******************************************************************************************************************//**
  * @brief  GUIX Port for FSP, get screen rotation angle.

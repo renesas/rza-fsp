@@ -414,7 +414,6 @@ usb_er_t R_USB_HstdMgrOpen (usb_utr_t * ptr)
 
     /* HUB Open */
  #if USB_CFG_HUB == USB_CFG_ENABLE
-    usb_hhub_registration(ptr, USB_NULL);
   #if (BSP_CFG_RTOS == 1)
     R_USB_CstdSetTaskPri(USB_HUB_TSK, USB_PRI_3);
   #else

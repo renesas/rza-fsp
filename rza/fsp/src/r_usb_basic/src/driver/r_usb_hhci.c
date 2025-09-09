@@ -269,6 +269,7 @@ void usb_hstd_hci_task (void)
         }
     }
 
+    USB_REL_BLK(USB_HCI_MPL, p_mess);
  #if (BSP_CFG_RTOS == 0) || (BSP_CFG_RTOS == 1)
     if (result == USB_HCI_BAREMETAL_RCV_ERROR)
     {

@@ -38,6 +38,7 @@ typedef struct
             uint32_t                    : 19;
         } RESET_b;
     };
+
     __IM uint8_t RESERVED[20];
     union
     {
@@ -55,6 +56,7 @@ typedef struct
             uint32_t                    : 3;
         } UCLKCTL_b;
     };
+
     union
     {
         __IOM uint32_t UDIRPD;
@@ -66,6 +68,7 @@ typedef struct
             uint32_t                  : 27;
         } UDIRPD_b;
     };
+
     union
     {
         __IOM uint32_t CON_CTRL;
@@ -77,6 +80,7 @@ typedef struct
             uint32_t                   : 27;
         } CON_CTRL_b;
     };
+
     __IM uint8_t RESERVED1[224];
     union
     {
@@ -104,6 +108,7 @@ typedef struct
             uint32_t                : 24;
         } HCREVISION_b;
     };
+
     union
     {
         __IOM uint32_t HCCONTROL;
@@ -120,6 +125,7 @@ typedef struct
             uint32_t            : 22;
         } HCCONTROL_b;
     };
+
     union
     {
         __IOM uint32_t HCCOMMANDSTATUS;
@@ -133,6 +139,7 @@ typedef struct
             uint32_t           : 14;
         } HCCOMMANDSTATUS_b;
     };
+
     union
     {
         __IOM uint32_t HCINTERRUPTSTATUS;
@@ -148,6 +155,7 @@ typedef struct
             uint32_t            : 25;
         } HCINTERRUPTSTATUS_b;
     };
+
     union
     {
         __IOM uint32_t HCINTERRUPTENABLE;
@@ -165,6 +173,7 @@ typedef struct
             __IOM uint32_t MIE   : 1;
         } HCINTERRUPTENABLE_b;
     };
+
     union
     {
         __IOM uint32_t HCINTERRUPTDISABLE;
@@ -182,6 +191,7 @@ typedef struct
             __IOM uint32_t MID   : 1;
         } HCINTERRUPTDISABLE_b;
     };
+
     union
     {
         __IOM uint32_t HCHCCA;
@@ -191,6 +201,7 @@ typedef struct
             __IOM uint32_t HcHCCA : 24;
         } HCHCCA_b;
     };
+
     union
     {
         __IM uint32_t HCPERIODCURRENTED;
@@ -200,6 +211,7 @@ typedef struct
             __IM uint32_t PECD : 28;
         } HCPERIODCURRENTED_b;
     };
+
     union
     {
         __IOM uint32_t HCCONTROLHEADED;
@@ -209,6 +221,7 @@ typedef struct
             __IOM uint32_t CHED : 28;
         } HCCONTROLHEADED_b;
     };
+
     union
     {
         __IOM uint32_t HCCONTROLCURRENTED;
@@ -218,6 +231,7 @@ typedef struct
             __IOM uint32_t CCED : 28;
         } HCCONTROLCURRENTED_b;
     };
+
     union
     {
         __IOM uint32_t HCBULKHEADED;
@@ -227,6 +241,7 @@ typedef struct
             __IOM uint32_t BHED : 28;
         } HCBULKHEADED_b;
     };
+
     union
     {
         __IOM uint32_t HCBULKCURRENTED;
@@ -236,6 +251,7 @@ typedef struct
             __IOM uint32_t BCED : 28;
         } HCBULKCURRENTED_b;
     };
+
     union
     {
         __IM uint32_t HCDONEHEAD;
@@ -245,6 +261,7 @@ typedef struct
             __IM uint32_t DH : 28;
         } HCDONEHEAD_b;
     };
+
     union
     {
         __IOM uint32_t HCFMINTERVAL;
@@ -256,6 +273,7 @@ typedef struct
             __IOM uint32_t FIT   : 1;
         } HCFMINTERVAL_b;
     };
+
     union
     {
         __IM uint32_t HCFMREMAINING;
@@ -266,6 +284,7 @@ typedef struct
             __IM uint32_t FRT : 1;
         } HCFMREMAINING_b;
     };
+
     union
     {
         __IM uint32_t HCFMNUMBER;
@@ -275,6 +294,7 @@ typedef struct
             uint32_t         : 16;
         } HCFMNUMBER_b;
     };
+
     union
     {
         __IOM uint32_t HCPERIODICSTART;
@@ -284,6 +304,7 @@ typedef struct
             uint32_t          : 18;
         } HCPERIODICSTART_b;
     };
+
     union
     {
         __IOM uint32_t HCLSTHRESHOLD;
@@ -293,6 +314,7 @@ typedef struct
             uint32_t           : 20;
         } HCLSTHRESHOLD_b;
     };
+
     union
     {
         __IOM uint32_t HCRHDESCRIPTORA;
@@ -308,6 +330,7 @@ typedef struct
             __IOM uint32_t POTPGT : 8;
         } HCRHDESCRIPTORA_b;
     };
+
     union
     {
         __IOM uint32_t HCRHDESCRIPTORB;
@@ -320,6 +343,7 @@ typedef struct
             uint32_t            : 14;
         } HCRHDESCRIPTORB_b;
     };
+
     union
     {
         __IOM uint32_t HCRHSTATUS;
@@ -335,6 +359,7 @@ typedef struct
             __IOM uint32_t CRWE : 1;
         } HCRHSTATUS_b;
     };
+
     union
     {
         __IOM uint32_t HCRHPORTSTATUS1;
@@ -357,6 +382,7 @@ typedef struct
             uint32_t            : 11;
         } HCRHPORTSTATUS1_b;
     };
+
     __IM uint8_t RESERVED[168];
     union
     {
@@ -368,6 +394,7 @@ typedef struct
             __IM uint32_t InterfaceVersionNumber    : 16;
         } CAPL_VERSION_b;
     };
+
     union
     {
         __IM uint32_t HCSPARAMS;
@@ -385,6 +412,7 @@ typedef struct
             uint32_t                       : 8;
         } HCSPARAMS_b;
     };
+
     union
     {
         __IM uint32_t HCCPARAMS;
@@ -403,6 +431,7 @@ typedef struct
             uint32_t                                         : 12;
         } HCCPARAMS_b;
     };
+
     union
     {
         __IM uint32_t HCSP_PORTROUTE;
@@ -411,6 +440,7 @@ typedef struct
             __IM uint32_t CompanionPortRoute : 32;
         } HCSP_PORTROUTE_b;
     };
+
     __IM uint8_t RESERVED1[16];
     union
     {
@@ -434,6 +464,7 @@ typedef struct
             uint32_t                                          : 4;
         } USBCMD_b;
     };
+
     union
     {
         __IOM uint32_t USBSTS;
@@ -454,6 +485,7 @@ typedef struct
             uint32_t                                  : 15;
         } USBSTS_b;
     };
+
     union
     {
         __IOM uint32_t USBINTR;
@@ -470,6 +502,7 @@ typedef struct
             uint32_t                                     : 15;
         } USBINTR_b;
     };
+
     union
     {
         __IOM uint32_t FRINDEX;
@@ -479,6 +512,7 @@ typedef struct
             uint32_t                  : 18;
         } FRINDEX_b;
     };
+
     union
     {
         __IM uint32_t CTRLDSSEGMENT;
@@ -487,6 +521,7 @@ typedef struct
             __IM uint32_t CTRLDSSEGMENT : 32;
         } CTRLDSSEGMENT_b;
     };
+
     union
     {
         __IOM uint32_t PERIODICLISTBASE;
@@ -496,6 +531,7 @@ typedef struct
             __IOM uint32_t BaseAddress : 20;
         } PERIODICLISTBASE_b;
     };
+
     union
     {
         __IOM uint32_t ASYNCLISTADDR;
@@ -505,6 +541,7 @@ typedef struct
             __IOM uint32_t LPL : 27;
         } ASYNCLISTADDR_b;
     };
+
     __IM uint8_t RESERVED2[36];
     union
     {
@@ -515,6 +552,7 @@ typedef struct
             uint32_t          : 31;
         } CONFIGFLAG_b;
     };
+
     union
     {
         __IOM uint32_t PORTSC1;
@@ -542,6 +580,7 @@ typedef struct
             __IOM uint32_t DeviceAddress            : 7;
         } PORTSC1_b;
     };
+
     __IM uint8_t RESERVED3[152];
     union
     {
@@ -556,6 +595,7 @@ typedef struct
             uint32_t                    : 27;
         } INT_ENABLE_b;
     };
+
     union
     {
         __IOM uint32_t INT_STATUS;
@@ -569,6 +609,7 @@ typedef struct
             uint32_t                  : 27;
         } INT_STATUS_b;
     };
+
     union
     {
         __IOM uint32_t AHB_BUS_CTR;
@@ -584,6 +625,7 @@ typedef struct
             uint32_t                     : 16;
         } AHB_BUS_CTR_b;
     };
+
     union
     {
         __IOM uint32_t USBCTR;
@@ -595,6 +637,7 @@ typedef struct
             uint32_t                : 29;
         } USBCTR_b;
     };
+
     __IM uint8_t RESERVED4[244];
     union
     {
@@ -608,6 +651,7 @@ typedef struct
             __IOM uint32_t NONUSE_CLK_MSK : 1;
         } REGEN_CG_CTRL_b;
     };
+
     union
     {
         __IOM uint32_t SPD_CTRL;
@@ -621,6 +665,7 @@ typedef struct
             __IOM uint32_t SUSPENDM_ENABLE    : 1;
         } SPD_CTRL_b;
     };
+
     union
     {
         __IOM uint32_t SPD_RSM_TIMSET;
@@ -630,6 +675,7 @@ typedef struct
             __IOM uint32_t TIMER_CONNECT : 16;
         } SPD_RSM_TIMSET_b;
     };
+
     union
     {
         __IOM uint32_t OC_SLP_TIMSET;
@@ -640,6 +686,7 @@ typedef struct
             uint32_t                   : 3;
         } OC_SLP_TIMSET_b;
     };
+
     union
     {
         __IOM uint32_t SBRN_FLADJ_PW;
@@ -650,6 +697,7 @@ typedef struct
             __IOM uint32_t PORTWAKECAP : 16;
         } SBRN_FLADJ_PW_b;
     };
+
     __IM uint8_t RESERVED5[8];
     union
     {
@@ -664,6 +712,7 @@ typedef struct
             uint32_t                            : 24;
         } PORT_LPM_CTRL1_b;
     };
+
     __IM uint8_t RESERVED6[1244];
     union
     {
@@ -674,6 +723,7 @@ typedef struct
             __IOM uint32_t OTG_PERI : 1;
         } COMMCTRL_b;
     };
+
     union
     {
         __IOM uint32_t OBINTSTA;
@@ -691,6 +741,7 @@ typedef struct
             uint32_t                      : 14;
         } OBINTSTA_b;
     };
+
     union
     {
         __IOM uint32_t OBINTEN;
@@ -708,6 +759,7 @@ typedef struct
             uint32_t                     : 14;
         } OBINTEN_b;
     };
+
     union
     {
         __IOM uint32_t VBCTRL;
@@ -719,6 +771,7 @@ typedef struct
             uint32_t             : 27;
         } VBCTRL_b;
     };
+
     union
     {
         __IOM uint32_t LINECTRL1;
@@ -740,6 +793,7 @@ typedef struct
             uint32_t                : 6;
         } LINECTRL1_b;
     };
+
     __IM uint8_t RESERVED7[12];
     union
     {
@@ -777,6 +831,7 @@ typedef struct
             uint16_t             : 7;
         } SYSCFG0_b;
     };
+
     union
     {
         __IOM uint16_t SYSCFG1;
@@ -786,6 +841,7 @@ typedef struct
             uint16_t             : 10;
         } SYSCFG1_b;
     };
+
     union
     {
         __IM uint16_t SYSSTS0;
@@ -795,6 +851,7 @@ typedef struct
             uint16_t           : 14;
         } SYSSTS0_b;
     };
+
     __IM uint8_t RESERVED[2];
     union
     {
@@ -807,6 +864,7 @@ typedef struct
             uint16_t            : 7;
         } DVSTCTR0_b;
     };
+
     __IM uint8_t RESERVED1[2];
     union
     {
@@ -817,6 +875,7 @@ typedef struct
             uint16_t            : 12;
         } TESTMODE_b;
     };
+
     __IM uint8_t RESERVED2[6];
     union
     {
@@ -838,6 +897,7 @@ typedef struct
             __IOM uint32_t FIFOPORT : 32;
         } CFIFO_b;
     };
+
     __IM uint8_t RESERVED3[8];
     union
     {
@@ -856,6 +916,7 @@ typedef struct
             __IOM uint16_t RCNT    : 1;
         } CFIFOSEL_b;
     };
+
     union
     {
         __IOM uint16_t CFIFOCTR;
@@ -868,6 +929,7 @@ typedef struct
             __IOM uint16_t BVAL : 1;
         } CFIFOCTR_b;
     };
+
     __IM uint8_t RESERVED4[4];
     union
     {
@@ -883,6 +945,7 @@ typedef struct
             __IOM uint16_t RCNT    : 1;
         } D0FIFOSEL_b;
     };
+
     union
     {
         __IOM uint16_t D0FIFOCTR;
@@ -895,6 +958,7 @@ typedef struct
             __IOM uint16_t BVAL : 1;
         } D0FIFOCTR_b;
     };
+
     union
     {
         __IOM uint16_t D1FIFOSEL;
@@ -909,6 +973,7 @@ typedef struct
             __IOM uint16_t RCNT    : 1;
         } D1FIFOSEL_b;
     };
+
     union
     {
         __IOM uint16_t D1FIFOCTR;
@@ -921,6 +986,7 @@ typedef struct
             __IOM uint16_t BVAL : 1;
         } D1FIFOCTR_b;
     };
+
     union
     {
         __IOM uint16_t INTENB0;
@@ -937,6 +1003,7 @@ typedef struct
             __IOM uint16_t VBSE  : 1;
         } INTENB0_b;
     };
+
     __IM uint8_t RESERVED5[4];
     union
     {
@@ -947,6 +1014,7 @@ typedef struct
             uint16_t                 : 6;
         } BRDYENB_b;
     };
+
     union
     {
         __IOM uint16_t NRDYENB;
@@ -956,6 +1024,7 @@ typedef struct
             uint16_t                 : 6;
         } NRDYENB_b;
     };
+
     union
     {
         __IOM uint16_t BEMPENB;
@@ -965,6 +1034,7 @@ typedef struct
             uint16_t                 : 6;
         } BEMPENB_b;
     };
+
     union
     {
         __IOM uint16_t SOFCFG;
@@ -977,6 +1047,7 @@ typedef struct
             uint16_t             : 9;
         } SOFCFG_b;
     };
+
     __IM uint8_t RESERVED6[2];
     union
     {
@@ -997,6 +1068,7 @@ typedef struct
             __IOM uint16_t VBINT : 1;
         } INTSTS0_b;
     };
+
     __IM uint8_t RESERVED7[4];
     union
     {
@@ -1007,6 +1079,7 @@ typedef struct
             uint16_t                : 6;
         } BRDYSTS_b;
     };
+
     union
     {
         __IOM uint16_t NRDYSTS;
@@ -1016,6 +1089,7 @@ typedef struct
             uint16_t                : 6;
         } NRDYSTS_b;
     };
+
     union
     {
         __IOM uint16_t BEMPSTS;
@@ -1025,6 +1099,7 @@ typedef struct
             uint16_t                : 6;
         } BEMPSTS_b;
     };
+
     union
     {
         __IOM uint16_t FRMNUM;
@@ -1036,6 +1111,7 @@ typedef struct
             __IOM uint16_t OVRN : 1;
         } FRMNUM_b;
     };
+
     union
     {
         __IM uint16_t UFRMNUM;
@@ -1045,6 +1121,7 @@ typedef struct
             uint16_t            : 13;
         } UFRMNUM_b;
     };
+
     union
     {
         __IM uint16_t USBADDR;
@@ -1054,6 +1131,7 @@ typedef struct
             uint16_t              : 9;
         } USBADDR_b;
     };
+
     __IM uint8_t RESERVED8[2];
     union
     {
@@ -1064,6 +1142,7 @@ typedef struct
             __IM uint16_t bRequest      : 8;
         } USBREQ_b;
     };
+
     union
     {
         __IM uint16_t USBVAL;
@@ -1072,6 +1151,7 @@ typedef struct
             __IM uint16_t wValue : 16;
         } USBVAL_b;
     };
+
     union
     {
         __IM uint16_t USBINDX;
@@ -1080,6 +1160,7 @@ typedef struct
             __IM uint16_t wIndex : 16;
         } USBINDX_b;
     };
+
     union
     {
         __IM uint16_t USBLENG;
@@ -1088,6 +1169,7 @@ typedef struct
             __IM uint16_t wLength : 16;
         } USBLENG_b;
     };
+
     union
     {
         __IOM uint16_t DCPCFG;
@@ -1099,6 +1181,7 @@ typedef struct
             uint16_t              : 7;
         } DCPCFG_b;
     };
+
     union
     {
         __IOM uint16_t DCPMAXP;
@@ -1108,6 +1191,7 @@ typedef struct
             uint16_t            : 9;
         } DCPMAXP_b;
     };
+
     union
     {
         __IOM uint16_t DCPCTR;
@@ -1124,6 +1208,7 @@ typedef struct
             __IM uint16_t BSTS   : 1;
         } DCPCTR_b;
     };
+
     __IM uint8_t RESERVED9[2];
     union
     {
@@ -1134,6 +1219,7 @@ typedef struct
             uint16_t               : 12;
         } PIPESEL_b;
     };
+
     __IM uint8_t RESERVED10[2];
     union
     {
@@ -1151,6 +1237,7 @@ typedef struct
             __IOM uint16_t TYPE   : 2;
         } PIPECFG_b;
     };
+
     union
     {
         __IOM uint16_t PIPEBUF;
@@ -1162,6 +1249,7 @@ typedef struct
             uint16_t               : 1;
         } PIPEBUF_b;
     };
+
     union
     {
         __IOM uint16_t PIPEMAXP;
@@ -1171,6 +1259,7 @@ typedef struct
             uint16_t            : 5;
         } PIPEMAXP_b;
     };
+
     union
     {
         __IOM uint16_t PIPEPERI;
@@ -1182,6 +1271,7 @@ typedef struct
             uint16_t            : 3;
         } PIPEPERI_b;
     };
+
     union
     {
         __IOM uint16_t PIPE1CTR;
@@ -1200,6 +1290,7 @@ typedef struct
             __IM uint16_t BSTS    : 1;
         } PIPE1CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE2CTR;
@@ -1218,6 +1309,7 @@ typedef struct
             __IM uint16_t BSTS    : 1;
         } PIPE2CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE3CTR;
@@ -1236,6 +1328,7 @@ typedef struct
             __IM uint16_t BSTS    : 1;
         } PIPE3CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE4CTR;
@@ -1254,6 +1347,7 @@ typedef struct
             __IM uint16_t BSTS    : 1;
         } PIPE4CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE5CTR;
@@ -1272,6 +1366,7 @@ typedef struct
             __IM uint16_t BSTS    : 1;
         } PIPE5CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE6CTR;
@@ -1288,6 +1383,7 @@ typedef struct
             __IM uint16_t BSTS   : 1;
         } PIPE6CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE7CTR;
@@ -1304,6 +1400,7 @@ typedef struct
             __IM uint16_t BSTS   : 1;
         } PIPE7CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE8CTR;
@@ -1320,6 +1417,7 @@ typedef struct
             __IM uint16_t BSTS   : 1;
         } PIPE8CTR_b;
     };
+
     union
     {
         __IOM uint16_t PIPE9CTR;
@@ -1336,6 +1434,7 @@ typedef struct
             __IM uint16_t BSTS   : 1;
         } PIPE9CTR_b;
     };
+
     __IM uint8_t RESERVED11[14];
     union
     {
@@ -1348,6 +1447,7 @@ typedef struct
             uint16_t             : 6;
         } PIPE1TRE_b;
     };
+
     union
     {
         __IOM uint16_t PIPE1TRN;
@@ -1356,6 +1456,7 @@ typedef struct
             __IOM uint16_t TRNCNT : 16;
         } PIPE1TRN_b;
     };
+
     union
     {
         __IOM uint16_t PIPE2TRE;
@@ -1367,6 +1468,7 @@ typedef struct
             uint16_t             : 6;
         } PIPE2TRE_b;
     };
+
     union
     {
         __IOM uint16_t PIPE2TRN;
@@ -1375,6 +1477,7 @@ typedef struct
             __IOM uint16_t TRNCNT : 16;
         } PIPE2TRN_b;
     };
+
     union
     {
         __IOM uint16_t PIPE3TRE;
@@ -1386,6 +1489,7 @@ typedef struct
             uint16_t             : 6;
         } PIPE3TRE_b;
     };
+
     union
     {
         __IOM uint16_t PIPE3TRN;
@@ -1394,6 +1498,7 @@ typedef struct
             __IOM uint16_t TRNCNT : 16;
         } PIPE3TRN_b;
     };
+
     union
     {
         __IOM uint16_t PIPE4TRE;
@@ -1405,6 +1510,7 @@ typedef struct
             uint16_t             : 6;
         } PIPE4TRE_b;
     };
+
     union
     {
         __IOM uint16_t PIPE4TRN;
@@ -1413,6 +1519,7 @@ typedef struct
             __IOM uint16_t TRNCNT : 16;
         } PIPE4TRN_b;
     };
+
     union
     {
         __IOM uint16_t PIPE5TRE;
@@ -1424,6 +1531,7 @@ typedef struct
             uint16_t             : 6;
         } PIPE5TRE_b;
     };
+
     union
     {
         __IOM uint16_t PIPE5TRN;
@@ -1432,6 +1540,7 @@ typedef struct
             __IOM uint16_t TRNCNT : 16;
         } PIPE5TRN_b;
     };
+
     __IM uint8_t  RESERVED12[44];
     __IM uint16_t DEVADD0;
     __IM uint16_t DEVADD1;
@@ -1455,6 +1564,7 @@ typedef struct
             uint16_t             : 8;
         } LPCTRL_b;
     };
+
     union
     {
         __IOM uint16_t LPSTS;
@@ -1465,6 +1575,7 @@ typedef struct
             uint16_t             : 1;
         } LPSTS_b;
     };
+
     union
     {
         __IM uint16_t PHYFUNCTR;
@@ -1475,6 +1586,7 @@ typedef struct
             uint16_t             : 1;
         } PHYFUNCTR_b;
     };
+
     __IM uint8_t RESERVED14[4];
     union
     {
@@ -1487,6 +1599,7 @@ typedef struct
             uint16_t              : 5;
         } PHYOTGCTR_b;
     };
+
     __IM uint8_t RESERVED15[56];
     union
     {
@@ -1503,6 +1616,7 @@ typedef struct
             uint16_t                : 1;
         } PL1CTRL1_b;
     };
+
     union
     {
         __IOM uint16_t PL1CTRL2;
@@ -1514,6 +1628,7 @@ typedef struct
             uint16_t               : 3;
         } PL1CTRL2_b;
     };
+
     __IM uint8_t RESERVED16[696];
     union
     {
@@ -1523,6 +1638,7 @@ typedef struct
             __IOM uint32_t SA_WD : 32;
         } N0SA_0_b;
     };
+
     union
     {
         __IOM uint32_t N0DA_0;
@@ -1531,6 +1647,7 @@ typedef struct
             __IOM uint32_t DA : 32;
         } N0DA_0_b;
     };
+
     union
     {
         __IOM uint32_t N0TB_0;
@@ -1539,6 +1656,7 @@ typedef struct
             __IOM uint32_t TB : 32;
         } N0TB_0_b;
     };
+
     union
     {
         __IOM uint32_t N1SA_0;
@@ -1547,6 +1665,7 @@ typedef struct
             __IOM uint32_t SA_WD : 32;
         } N1SA_0_b;
     };
+
     union
     {
         __IOM uint32_t N1DA_0;
@@ -1555,6 +1674,7 @@ typedef struct
             __IOM uint32_t DA : 32;
         } N1DA_0_b;
     };
+
     union
     {
         __IOM uint32_t N1TB_0;
@@ -1563,6 +1683,7 @@ typedef struct
             __IOM uint32_t TB : 32;
         } N1TB_0_b;
     };
+
     union
     {
         __IM uint32_t CRSA_0;
@@ -1571,6 +1692,7 @@ typedef struct
             __IM uint32_t CRSA : 32;
         } CRSA_0_b;
     };
+
     union
     {
         __IM uint32_t CRDA_0;
@@ -1579,6 +1701,7 @@ typedef struct
             __IM uint32_t CRDA : 32;
         } CRDA_0_b;
     };
+
     union
     {
         __IM uint32_t CRTB_0;
@@ -1587,6 +1710,7 @@ typedef struct
             __IM uint32_t CRTB : 32;
         } CRTB_0_b;
     };
+
     union
     {
         __IM uint32_t CHSTAT_0;
@@ -1612,6 +1736,7 @@ typedef struct
             __IM uint32_t DNUM   : 8;
         } CHSTAT_0_b;
     };
+
     union
     {
         __IOM uint32_t CHCTRL_0;
@@ -1639,6 +1764,7 @@ typedef struct
             uint32_t                 : 12;
         } CHCTRL_0_b;
     };
+
     union
     {
         __IOM uint32_t CHCFG_0;
@@ -1665,6 +1791,7 @@ typedef struct
             __IOM uint32_t DMS   : 1;
         } CHCFG_0_b;
     };
+
     union
     {
         __IOM uint32_t CHITVL_0;
@@ -1674,6 +1801,7 @@ typedef struct
             uint32_t            : 16;
         } CHITVL_0_b;
     };
+
     union
     {
         __IOM uint32_t CHEXT_0;
@@ -1685,6 +1813,7 @@ typedef struct
             uint32_t           : 20;
         } CHEXT_0_b;
     };
+
     union
     {
         __IOM uint32_t NXLA_0;
@@ -1693,6 +1822,7 @@ typedef struct
             __IOM uint32_t NXLA : 32;
         } NXLA_0_b;
     };
+
     union
     {
         __IM uint32_t CRLA_0;
@@ -1701,6 +1831,7 @@ typedef struct
             __IM uint32_t CRLA : 32;
         } CRLA_0_b;
     };
+
     union
     {
         __IOM uint32_t N0SA_1;
@@ -1709,6 +1840,7 @@ typedef struct
             __IOM uint32_t SA_WD : 32;
         } N0SA_1_b;
     };
+
     union
     {
         __IOM uint32_t N0DA_1;
@@ -1717,6 +1849,7 @@ typedef struct
             __IOM uint32_t DA : 32;
         } N0DA_1_b;
     };
+
     union
     {
         __IOM uint32_t N0TB_1;
@@ -1725,6 +1858,7 @@ typedef struct
             __IOM uint32_t TB : 32;
         } N0TB_1_b;
     };
+
     union
     {
         __IOM uint32_t N1SA_1;
@@ -1733,6 +1867,7 @@ typedef struct
             __IOM uint32_t SA_WD : 32;
         } N1SA_1_b;
     };
+
     union
     {
         __IOM uint32_t N1DA_1;
@@ -1741,6 +1876,7 @@ typedef struct
             __IOM uint32_t DA : 32;
         } N1DA_1_b;
     };
+
     union
     {
         __IOM uint32_t N1TB_1;
@@ -1749,6 +1885,7 @@ typedef struct
             __IOM uint32_t TB : 32;
         } N1TB_1_b;
     };
+
     union
     {
         __IM uint32_t CRSA_1;
@@ -1757,6 +1894,7 @@ typedef struct
             __IM uint32_t CRSA : 32;
         } CRSA_1_b;
     };
+
     union
     {
         __IM uint32_t CRDA_1;
@@ -1765,6 +1903,7 @@ typedef struct
             __IM uint32_t CRDA : 32;
         } CRDA_1_b;
     };
+
     union
     {
         __IM uint32_t CRTB_1;
@@ -1773,6 +1912,7 @@ typedef struct
             __IM uint32_t CRTB : 32;
         } CRTB_1_b;
     };
+
     union
     {
         __IM uint32_t CHSTAT_1;
@@ -1798,6 +1938,7 @@ typedef struct
             __IM uint32_t DNUM   : 8;
         } CHSTAT_1_b;
     };
+
     union
     {
         __IOM uint32_t CHCTRL_1;
@@ -1825,6 +1966,7 @@ typedef struct
             uint32_t                 : 12;
         } CHCTRL_1_b;
     };
+
     union
     {
         __IOM uint32_t CHCFG_1;
@@ -1851,6 +1993,7 @@ typedef struct
             __IOM uint32_t DMS   : 1;
         } CHCFG_1_b;
     };
+
     union
     {
         __IOM uint32_t CHITVL_1;
@@ -1860,6 +2003,7 @@ typedef struct
             uint32_t            : 16;
         } CHITVL_1_b;
     };
+
     union
     {
         __IOM uint32_t CHEXT_1;
@@ -1871,6 +2015,7 @@ typedef struct
             uint32_t           : 20;
         } CHEXT_1_b;
     };
+
     union
     {
         __IOM uint32_t NXLA_1;
@@ -1879,6 +2024,7 @@ typedef struct
             __IOM uint32_t NXLA : 32;
         } NXLA_1_b;
     };
+
     union
     {
         __IM uint32_t CRLA_1;
@@ -1887,6 +2033,7 @@ typedef struct
             __IM uint32_t CRLA : 32;
         } CRLA_1_b;
     };
+
     __IM uint8_t RESERVED17[384];
     union
     {
@@ -1896,6 +2043,7 @@ typedef struct
             __IOM uint32_t SCNT : 32;
         } SCNT_0_b;
     };
+
     union
     {
         __IOM uint32_t SSKP_0;
@@ -1904,6 +2052,7 @@ typedef struct
             __IOM uint32_t SSKP : 32;
         } SSKP_0_b;
     };
+
     union
     {
         __IOM uint32_t DCNT_0;
@@ -1912,6 +2061,7 @@ typedef struct
             __IOM uint32_t DCNT : 32;
         } DCNT_0_b;
     };
+
     union
     {
         __IOM uint32_t DSKP_0;
@@ -1920,6 +2070,7 @@ typedef struct
             __IOM uint32_t DSKP : 32;
         } DSKP_0_b;
     };
+
     __IM uint8_t RESERVED18[16];
     union
     {
@@ -1929,6 +2080,7 @@ typedef struct
             __IOM uint32_t SCNT : 32;
         } SCNT_1_b;
     };
+
     union
     {
         __IOM uint32_t SSKP_1;
@@ -1937,6 +2089,7 @@ typedef struct
             __IOM uint32_t SSKP : 32;
         } SSKP_1_b;
     };
+
     union
     {
         __IOM uint32_t DCNT_1;
@@ -1945,6 +2098,7 @@ typedef struct
             __IOM uint32_t DCNT : 32;
         } DCNT_1_b;
     };
+
     union
     {
         __IOM uint32_t DSKP_1;
@@ -1953,6 +2107,7 @@ typedef struct
             __IOM uint32_t DSKP : 32;
         } DSKP_1_b;
     };
+
     __IM uint8_t RESERVED19[208];
     union
     {
@@ -1968,6 +2123,7 @@ typedef struct
             uint32_t             : 4;
         } DCTRL_b;
     };
+
     union
     {
         __IOM uint32_t DSCITVL;
@@ -1978,6 +2134,7 @@ typedef struct
             uint32_t             : 16;
         } DSCITVL_b;
     };
+
     __IM uint8_t RESERVED20[8];
     union
     {
@@ -1989,6 +2146,7 @@ typedef struct
             uint32_t           : 30;
         } DST_EN_b;
     };
+
     union
     {
         __IOM uint32_t DST_ER;
@@ -1999,6 +2157,7 @@ typedef struct
             uint32_t           : 30;
         } DST_ER_b;
     };
+
     union
     {
         __IOM uint32_t DST_END;
@@ -2009,6 +2168,7 @@ typedef struct
             uint32_t            : 30;
         } DST_END_b;
     };
+
     union
     {
         __IM uint32_t DST_TC;
@@ -2019,6 +2179,7 @@ typedef struct
             uint32_t          : 30;
         } DST_TC_b;
     };
+
     union
     {
         __IM uint32_t DST_SUS;

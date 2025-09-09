@@ -324,7 +324,7 @@ void usb_hhub_close (usb_utr_t * ptr, uint16_t hubaddr, uint16_t data2)
             usb_hhub_selective_detach(ptr, devaddr);
 
             /* WAIT_LOOP */
-            for (md = 0; md < g_usb_hstd_device_num[ptr->ip]; md++)
+            for (md = 0; md <= g_usb_hstd_device_num[ptr->ip]; md++)
             {
                 driver = &g_usb_hstd_device_drv[ptr->ip][md];
                 if (devaddr == driver->devaddr)
@@ -354,6 +354,10 @@ void usb_hhub_close (usb_utr_t * ptr, uint16_t hubaddr, uint16_t data2)
     g_usb_shhub_remote[ptr->ip][hubaddr]    = 0;
     usb_hstd_clr_pipe_table(ptr->ip, hubaddr);
     R_USB_HstdClearPipe(hubaddr);
+    if (0 != g_usb_hstd_device_num[ptr->ip])
+    {
+        g_usb_hstd_device_num[ptr->ip] = 0;
+    }
 
     if (USB_IP1 == ptr->ip)
     {
@@ -378,21 +382,14 @@ void usb_hhub_close (usb_utr_t * ptr, uint16_t hubaddr, uint16_t data2)
  *               : usb_hcdreg_t *callback   : Pointer ot usb_hcdreg_t structure.
  * Return value    : none
  ******************************************************************************/
-void usb_hhub_registration (usb_utr_t * ptr, usb_hcdreg_t * callback)
+void usb_hhub_registration (usb_utr_t * ptr)
 {
     usb_hcdreg_t driver;
 
     /* Driver registration */
-    if (NULL == callback)
-    {
-        /* Target peripheral list */
-        driver.p_tpl = (uint16_t *) &g_usb_hhub_tpl[0];
-    }
-    else
-    {
-        /* Target peripheral list */
-        driver.p_tpl = callback->p_tpl;
-    }
+
+    /* Target peripheral list */
+    driver.p_tpl = &g_usb_devicetpl[0];
 
     driver.ifclass    = (uint16_t) USB_IFCLS_HUB;   /* Interface Class */
     driver.classinit  = &usb_hhub_initial;          /* Driver init */

@@ -27,6 +27,8 @@
 
 #define USB_OHCI_MAXDEVICE                     (USB_HCI_DEVICE_NUM)            /* The maximum number of OHCI Device */
 
+#define USB_OHCI_DEVICE_ENDPOINT_MAX           (4)                             /* Max number of endpoints device have */
+
 #define USB_OHCI_MAXENDPOINT                   (16U)                           /* The maximum number of OHCI Endpoint No. */
 
 #define USB_OHCI_NUM_DEVICEDATA                (1U)                            /* The maximum number of Dvice Data */

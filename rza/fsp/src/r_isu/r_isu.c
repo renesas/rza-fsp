@@ -235,11 +235,6 @@ fsp_err_t R_ISU_Open (isu_ctrl_t * const p_api_ctrl, isu_cfg_t const * const p_c
     isu_instance_ctrl_t * p_ctrl        = (isu_instance_ctrl_t *) p_api_ctrl;
     isu_runtime_cfg_t   * p_cfg_runtime = (isu_runtime_cfg_t *) p_cfg;
 
-    p_ctrl->p_cfg       = p_cfg;
-    p_ctrl->p_context   = p_cfg->p_context;
-    p_ctrl->p_callback  = p_cfg->p_callback;
-    r_isu_blk.p_context = p_ctrl;
-
 #if  (ISU_CFG_PARAM_CHECKING_ENABLE)
 
     /* Check parameters */
@@ -251,6 +246,11 @@ fsp_err_t R_ISU_Open (isu_ctrl_t * const p_api_ctrl, isu_cfg_t const * const p_c
         return err;
     }
 #endif
+
+    p_ctrl->p_cfg       = p_cfg;
+    p_ctrl->p_context   = p_cfg->p_context;
+    p_ctrl->p_callback  = p_cfg->p_callback;
+    r_isu_blk.p_context = p_ctrl;
 
     /* ISU clock start */
     R_BSP_MODULE_START(FSP_IP_ISU, 0);

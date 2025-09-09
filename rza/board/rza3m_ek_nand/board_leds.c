@@ -5,51 +5,60 @@
 */
 
 /**********************************************************************************************************************
- * File Name    : board.h
+ * File Name    : board_leds.c
  * Version      : 1.00
- * Description  : board header
+ * Description  : board_leds source code
  *********************************************************************************************************************/
 
 /******************************************************************************************************************//**
- * @ingroup BOARDS
- * @defgroup BOARD_RZA3M_EK_NOR BSP for EK-RZ/A3M
- * @brief BSP for the RZA3M-REF-NOR Board
- *
- * The RZA3M_EVK is a reference board for the Renesas R9A07G066M04GBG microcontroller in a LFBGA244 package.
+ * @addtogroup BOARD_RZA3M_EK_NAND_LEDS
  *
  * @{
  *********************************************************************************************************************/
 
-#ifndef BOARD_H
-#define BOARD_H
-
 /**********************************************************************************************************************
- * Includes   <System Includes> , "Project Includes"
+ * Includes
  *********************************************************************************************************************/
+#include "bsp_api.h"
 
-/* BSP Board Specific Includes. */
-#include "board_init.h"
-#include "board_leds.h"
+#if defined(BOARD_RZA3M_EK_NAND)
 
 /**********************************************************************************************************************
  * Macro definitions
  *********************************************************************************************************************/
-#define BOARD_RZA3M_EK_NOR
-
-#define BOARD_TYPE_RZA3M_EK_NOR
 
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
 
 /**********************************************************************************************************************
- * Exported global variables
+ * Private global variables and functions
  *********************************************************************************************************************/
+
+/** Array of on-board LEDs. */
+static const uint16_t g_bsp_prv_leds[] =
+{
+    (uint16_t) BSP_IO_PORT_10_PIN_01,  ///< LED1 : Blue
+    (uint16_t) BSP_IO_PORT_20_PIN_03,  ///< LED2 : Green
+    (uint16_t) BSP_IO_PORT_20_PIN_04,  ///< LED3 : Red
+};
 
 /**********************************************************************************************************************
- * Exported global functions (to be accessed by other files)
+ * Exported global variables (to be accessed by other files)
  *********************************************************************************************************************/
 
-/** @} (end defgroup BOARD_RZA3M_EK_NOR) */
+/** Structure with LED information for this board. */
 
-#endif                                 /* BOARD_H */
+const bsp_leds_t g_bsp_leds =
+{
+    .led_count = (uint16_t) ((sizeof(g_bsp_prv_leds)) / (sizeof(g_bsp_prv_leds[0]))),
+    .p_leds    = &g_bsp_prv_leds[0]
+};
+
+/**********************************************************************************************************************
+ * Exported global variables (to be accessed by other files)
+ *********************************************************************************************************************/
+
+#endif                                 /* BOARD_RZA3M_EK_NAND */
+
+/** @} (end addtogroup BOARD_RZA3M_EK_NAND_LEDS) */

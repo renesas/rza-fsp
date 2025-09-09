@@ -242,11 +242,6 @@ fsp_err_t R_CRU_Open (cru_ctrl_t * const p_api_ctrl, cru_cfg_t const * const p_c
     fsp_err_t             err    = FSP_SUCCESS;
     cru_instance_ctrl_t * p_ctrl = (cru_instance_ctrl_t *) p_api_ctrl;
 
-    p_ctrl->p_cfg       = p_cfg;
-    p_ctrl->p_context   = p_cfg->p_context;
-    p_ctrl->p_callback  = p_cfg->p_callback;
-    r_cru_blk.p_context = p_ctrl;
-
 #if  (CRU_CFG_PARAM_CHECKING_ENABLE)
 
     /* Check parameters */
@@ -258,6 +253,11 @@ fsp_err_t R_CRU_Open (cru_ctrl_t * const p_api_ctrl, cru_cfg_t const * const p_c
         return err;
     }
 #endif
+
+    p_ctrl->p_cfg       = p_cfg;
+    p_ctrl->p_context   = p_cfg->p_context;
+    p_ctrl->p_callback  = p_cfg->p_callback;
+    r_cru_blk.p_context = p_ctrl;
 
     R_BSP_MODULE_START(FSP_IP_CRU, 0);
 

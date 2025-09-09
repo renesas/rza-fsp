@@ -54,7 +54,6 @@
 /******************************************************************************
  * Macro definitions
  ******************************************************************************/
-#define USB_VAL_1024    1024U
 
 /******************************************************************************
  * Private global variables and functions
@@ -279,14 +278,26 @@ uint8_t g_usb_pcdc_serialstate_table[USB_PCDC_SETUP_TBL_BSIZE] =
 
 #endif /* defined(USB_CFG_PCDC_USE) */
 
-usb_pipe_table_t g_usb_pipe_table[USB_NUM_USBIP][USB_MAXPIPE_NUM + 1];
+usb_pipe_table_t g_usb_pipe_table[USB_NUM_USBIP][USB_MAXPIPE + 1];
+uint32_t         g_usb_class_info[USB_NUM_USBIP][USB_MAXDEVADDR + 2];
 uint16_t         g_usb_cstd_bemp_skip[USB_NUM_USBIP][USB_MAX_PIPE_NO + 1U];
 
 #if USB_IP_EHCI_OHCI == 1
-uint8_t  g_data_read_buf[USB_NUM_USBIP][USB_VAL_1024]  USB_BUFFER_PLACE_IN_SECTION;
+uint8_t  g_data_read_buf[USB_NUM_USBIP][USB_VAL_1024 + 4]  USB_BUFFER_PLACE_IN_SECTION;
 uint32_t g_data_buf_addr[USB_NUM_USBIP][USB_MAXDEVADDR + 1];
 uint8_t  g_data_read_flag;
-#endif
+uint8_t  g_data_write_buf[USB_NUM_USBIP][USB_MAXDEVADDR * USB_OHCI_DEVICE_ENDPOINT_MAX + 1][USB_VAL_1024 +
+                                                                                            4]
+USB_BUFFER_PLACE_IN_SECTION;
+#else                                  /* #if USB_IP_EHCI_OHCI == 1 */
+ #if (USB_CFG_DMA == USB_CFG_ENABLE)
+uint8_t  g_data_read_buf[USB_NUM_USBIP][USB_VAL_1024 + 4] USB_BUFFER_PLACE_IN_SECTION;
+uint32_t g_data_buf_addr[USB_NUM_USBIP][USB_MAXDEVADDR * USB_OHCI_DEVICE_ENDPOINT_MAX + 1];
+uint8_t  g_data_write_buf[USB_NUM_USBIP][USB_MAXDEVADDR * USB_OHCI_DEVICE_ENDPOINT_MAX + 1][USB_VAL_1024 +
+                                                                                            4]
+USB_BUFFER_PLACE_IN_SECTION;
+ #endif                                /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
+#endif                                 /* #if USB_IP_EHCI_OHCI == 1 */
 
 /******************************************************************************
  * Renesas Abstracted common data I/O functions
@@ -521,7 +532,7 @@ usb_er_t usb_data_read (usb_instance_ctrl_t * p_ctrl, uint8_t * buf, uint32_t si
     pipe  = (uint8_t) R_USB_HstdGetPipeID(p_ctrl->device_address, epnum);
 #endif                                 /* USB_IP_EHCI_OHCI == 1 */
 
-    if (USB_CLASS_INTERNAL_PVND < (usb_class_internal_t) (p_ctrl->type))
+    if (USB_CLASS_INTERNAL_PVND < (usb_class_internal_t) (p_ctrl->type & USB_VALUE_7FH))
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
         p_tran_data = &g_usb_hdata[p_ctrl->module_number][pipe];
@@ -566,18 +577,24 @@ usb_er_t usb_data_read (usb_instance_ctrl_t * p_ctrl, uint8_t * buf, uint32_t si
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
  #if (BSP_CFG_RTOS != 0)
         p_tran_data = &tran_data;
- #else                                                                        /* #if (BSP_CFG_RTOS == 2) */
+ #else                                                                       /* #if (BSP_CFG_RTOS == 2) */
         p_tran_data = &g_usb_pdata[pipe];
  #endif /* #if (BSP_CFG_RTOS == 2) */
 
-        p_tran_data->read_req_len = size;                                     /* Save Read Request Length */
+        p_tran_data->read_req_len = size;                                    /* Save Read Request Length */
 
-        p_tran_data->ip        = p_ctrl->module_number;                       /* USB Module Number */
-        p_tran_data->keyword   = pipe;                                        /* Pipe No */
-        p_tran_data->p_tranadr = buf;                                         /* Data address */
-        p_tran_data->tranlen   = size;                                        /* Data Size */
-        p_tran_data->complete  = (usb_cb_t) g_usb_callback[p_ctrl->type * 2]; /* Callback function */
+        p_tran_data->ip      = p_ctrl->module_number;                        /* USB Module Number */
+        p_tran_data->keyword = pipe;                                         /* Pipe No */
+ #if (USB_CFG_DMA == USB_CFG_DISABLE)
+        p_tran_data->p_tranadr = buf;                                        /* Data address */
+ #else /* #if (USB_CFG_DMA == USB_CFG_DISABLE) */
+        p_tran_data->p_tranadr = g_data_read_buf[p_ctrl->module_number];     /* Data address */
+ #endif /* #if (USB_CFG_DMA == USB_CFG_DISABLE) */
+        p_tran_data->tranlen  = size;                                        /* Data Size */
+        p_tran_data->complete = (usb_cb_t) g_usb_callback[p_ctrl->type * 2]; /* Callback function */
  #if (USB_CFG_DMA == USB_CFG_ENABLE)
+        g_data_buf_addr[p_tran_data->ip][pipe] = (uint32_t) (uintptr_t) buf;
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZT2L) && !defined(BSP_MCU_GROUP_RZA_USB)
         if (0 != p_ctrl->p_transfer_tx)
         {
             p_tran_data->p_transfer_tx = p_ctrl->p_transfer_tx;
@@ -595,13 +612,15 @@ usb_er_t usb_data_read (usb_instance_ctrl_t * p_ctrl, uint8_t * buf, uint32_t si
         {
             p_tran_data->p_transfer_rx = 0;
         }
- #endif
+  #endif                               /* #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZT2L) */
+ #endif                                /*  #if (USB_CFG_DMA == USB_CFG_ENABLE) */
+
         err = usb_pstd_transfer_start(p_tran_data);
 #endif                                 /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
     }
 
     return err;
-} /* End of function usb_data_read() */
+}                                      /* End of function usb_data_read() */
 
 /******************************************************************************
  * Function Name   : usb_data_write
@@ -679,8 +698,13 @@ usb_er_t usb_data_write (usb_instance_ctrl_t * p_ctrl, uint8_t const * const buf
  #if defined(USB_CFG_PCDC_USE)
         if (USB_CFG_PCDC_INT_IN != pipe)
         {
-            p_tran_data->p_tranadr = buf;  /* Data address */
-            p_tran_data->tranlen   = size; /* Data Size */
+  #if (USB_CFG_DMA == USB_CFG_DISABLE)
+            p_tran_data->p_tranadr = buf;                                                             /* Data address */
+  #else
+            memcpy(g_data_write_buf[p_ctrl->module_number][p_ctrl->device_address], buf, size);
+            p_tran_data->p_tranadr = g_data_write_buf[p_ctrl->module_number][p_ctrl->device_address]; /* Data address */
+  #endif
+            p_tran_data->tranlen = size;                                                              /* Data Size */
         }
         else
         {
@@ -697,6 +721,7 @@ usb_er_t usb_data_write (usb_instance_ctrl_t * p_ctrl, uint8_t const * const buf
         p_tran_data->keyword  = pipe;                                              /* Pipe No */
         p_tran_data->complete = (usb_cb_t) g_usb_callback[(p_ctrl->type * 2) + 1]; /* Callback function */
  #if (USB_CFG_DMA == USB_CFG_ENABLE)
+  #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZT2L) && !defined(BSP_MCU_GROUP_RZA_USB)
         if (0 != p_ctrl->p_transfer_tx)
         {
             p_tran_data->p_transfer_tx = p_ctrl->p_transfer_tx;
@@ -714,13 +739,14 @@ usb_er_t usb_data_write (usb_instance_ctrl_t * p_ctrl, uint8_t const * const buf
         {
             p_tran_data->p_transfer_rx = 0;
         }
- #endif
+  #endif                               /* #if !defined(BSP_MCU_GROUP_RZT2M) && !defined(BSP_MCU_GROUP_RZT2L) && !defined(BSP_MCU_GROUP_RZA3UL) */
+ #endif                                /* #if (USB_CFG_DMA == USB_CFG_ENABLE) */
         err = usb_pstd_transfer_start(p_tran_data);
 #endif                                 /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
     }
 
     return err;
-} /* End of function usb_data_write() */
+}                                      /* End of function usb_data_write() */
 
 #if (USB_UT_MODE == 0)
 

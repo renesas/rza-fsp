@@ -167,7 +167,7 @@
 #define USB_SEQ_10             ((uint16_t) 0x000a)
 
 /* USB HUB PIPE No. */
-#define USB_HUB_PIPE           (9U)
+#define USB_HUB_PIPE           (1U)
 
 #define USB_HUB_P1             ((uint16_t) 0x0001)
 #define USB_HUB_P2             ((uint16_t) 0x0002)
@@ -620,7 +620,7 @@
 #define USB_NOPORT                             (0xFFFFU) /* Not connect */
 
 /* Condition compilation by the difference of IP */
-#define USB_MAXDEVADDR                         (3U)
+#define USB_MAXDEVADDR                         (5U)
 
 #define USB_DEVICE_0                           (0x0000U) /* Device address 0 */
 #define USB_DEVICE_1                           (0x1000U) /* Device address 1 */

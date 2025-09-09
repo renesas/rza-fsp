@@ -39,10 +39,10 @@
 
 BSP_ALIGN_VARIABLE(4096) static uint32_t gs_usb_hstd_ehci_periodic_frame_list[USB_EHCI_PFL_SIZE]
 USB_BUFFER_PLACE_IN_SECTION;                                                                                           /* 4KByte alignment */
-BSP_ALIGN_VARIABLE(32) static st_usb_ehci_qh_t gs_usb_hstd_ehci_qh[USB_EHCI_NUM_QH] USB_BUFFER_PLACE_IN_SECTION;       /* 32Byte alignment */
-BSP_ALIGN_VARIABLE(32) static st_usb_ehci_qtd_t gs_usb_hstd_ehci_qtd[USB_EHCI_NUM_QTD] USB_BUFFER_PLACE_IN_SECTION;    /* 32Byte alignment */
-BSP_ALIGN_VARIABLE(32) static st_usb_ehci_itd_t gs_usb_hstd_ehci_itd[USB_EHCI_NUM_ITD] USB_BUFFER_PLACE_IN_SECTION;    /* 32Byte alignment */
-BSP_ALIGN_VARIABLE(32) static st_usb_ehci_sitd_t gs_usb_hstd_ehci_sitd[USB_EHCI_NUM_SITD] USB_BUFFER_PLACE_IN_SECTION; /* 32Byte alignment */
+BSP_ALIGN_VARIABLE(64) static st_usb_ehci_qh_t gs_usb_hstd_ehci_qh[USB_EHCI_NUM_QH] USB_BUFFER_PLACE_IN_SECTION;       /* 32Byte alignment */
+BSP_ALIGN_VARIABLE(64) static st_usb_ehci_qtd_t gs_usb_hstd_ehci_qtd[USB_EHCI_NUM_QTD] USB_BUFFER_PLACE_IN_SECTION;    /* 32Byte alignment */
+BSP_ALIGN_VARIABLE(64) static st_usb_ehci_itd_t gs_usb_hstd_ehci_itd[USB_EHCI_NUM_ITD] USB_BUFFER_PLACE_IN_SECTION;    /* 32Byte alignment */
+BSP_ALIGN_VARIABLE(64) static st_usb_ehci_sitd_t gs_usb_hstd_ehci_sitd[USB_EHCI_NUM_SITD] USB_BUFFER_PLACE_IN_SECTION; /* 32Byte alignment */
 
 static st_usb_ehci_qtd_t * gsp_usb_hstd_ehci_qtd_top;
 

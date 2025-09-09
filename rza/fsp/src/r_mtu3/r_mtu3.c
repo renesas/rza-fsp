@@ -460,8 +460,6 @@ fsp_err_t R_MTU3_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
 {
     mtu3_instance_ctrl_t * p_instance_ctrl = (mtu3_instance_ctrl_t *) p_ctrl;
 
-    /** mask_bit MTU3 0-8bit*/
-    p_instance_ctrl->channel_mask = (1U << p_cfg->channel);
 #if MTU3_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_extend);
@@ -469,9 +467,11 @@ fsp_err_t R_MTU3_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
     FSP_ERROR_RETURN(p_cfg->mode != TIMER_MODE_ONE_SHOT, FSP_ERR_INVALID_MODE);
     FSP_ERROR_RETURN(p_cfg->mode <= TIMER_MODE_PWM, FSP_ERR_INVALID_MODE);
     FSP_ERROR_RETURN(MTU3_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
-    FSP_ERROR_RETURN((p_instance_ctrl->channel_mask & BSP_FEATURE_MTU3_VALID_CHANNEL_MASK),
-                     FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN(((1U << p_cfg->channel) & BSP_FEATURE_MTU3_VALID_CHANNEL_MASK), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 #endif
+
+    /** mask_bit MTU3 0-8bit*/
+    p_instance_ctrl->channel_mask = (1U << p_cfg->channel);
 
     /* Initialize control structure based on configurations. */
     mtu3_common_open(p_instance_ctrl, p_cfg);

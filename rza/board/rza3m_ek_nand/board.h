@@ -12,8 +12,8 @@
 
 /******************************************************************************************************************//**
  * @ingroup BOARDS
- * @defgroup BOARD_RZA3M_EK_NOR BSP for EK-RZ/A3M
- * @brief BSP for the RZA3M-REF-NOR Board
+ * @defgroup BOARD_RZA3M_EK_NAND BSP for EK-RZ/A3M
+ * @brief BSP for the RZA3M-REF-NAND Board
  *
  * The RZA3M_EVK is a reference board for the Renesas R9A07G066M04GBG microcontroller in a LFBGA244 package.
  *
@@ -34,9 +34,9 @@
 /**********************************************************************************************************************
  * Macro definitions
  *********************************************************************************************************************/
-#define BOARD_RZA3M_EK_NOR
+#define BOARD_RZA3M_EK_NAND
 
-#define BOARD_TYPE_RZA3M_EK_NOR
+#define BOARD_TYPE_RZA3M_EK_NAND
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -50,6 +50,6 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
-/** @} (end defgroup BOARD_RZA3M_EK_NOR) */
+/** @} (end defgroup BOARD_RZA3M_EK_NAND) */
 
 #endif                                 /* BOARD_H */

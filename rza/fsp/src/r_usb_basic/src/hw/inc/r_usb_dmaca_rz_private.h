@@ -56,7 +56,7 @@
 /*******************************************************************************
  * Exported global variables and functions (to be accessed by other files)
  *******************************************************************************/
-extern void * p_DMACI_Handlers[];
+extern void * p_USB_DMACI_Handlers[];
 
 bool               r_usb_dmaca_channel_valid_check(uint8_t channel);
 void               r_usb_dmaca_module_enable(void);

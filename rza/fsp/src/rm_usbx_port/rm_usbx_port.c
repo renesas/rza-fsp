@@ -298,17 +298,11 @@ uint32_t usb_peri_usbx_uninitialize (uint32_t dcd_io)
     UX_SLAVE_DCD * dcd;
 
   #if defined(BSP_MCU_GROUP_RZA3UL) || defined(BSP_MCU_GROUP_RZA3M)
-    if ((dcd_io != USB_IP0) && (dcd_io != USB_IP1))
-  #else                                /* #if defined(BSP_MCU_GROUP_RZA3UL) || defined(BSP_MCU_GROUP_RZA3M) */
-   #if defined(R_USB_HS0_BASE)
-    if ((dcd_io != R_USB_HS0_BASE) && (dcd_io != R_USB_FS0_BASE))
-   #else
-    if (dcd_io != R_USB_FS0_BASE)
-   #endif
-  #endif                               /* #if defined(BSP_MCU_GROUP_RZA3UL) || defined(BSP_MCU_GROUP_RZA3M) */
+    if (dcd_io != R_USB01_BASE)
     {
         return (uint32_t) FSP_ERR_USB_FAILED;
     }
+  #endif                               /* #if defined(BSP_MCU_GROUP_RZA3UL) || defined(BSP_MCU_GROUP_RZA3M) */
 
     dcd = &_ux_system_slave->ux_system_slave_dcd;
 
@@ -1505,7 +1499,7 @@ void usb_host_usbx_registration (usb_utr_t * p_utr)
     #if (BSP_CFG_RTOS == 0)
     usb_cstd_set_task_pri(USB_HUB_TSK, USB_PRI_3);   /* Hub Task Priority set */
     #endif  /* (BSP_CFG_RTOS == 0) */
-    usb_hhub_registration(p_utr, USB_NULL);          /* Hub registration. */
+    usb_hhub_registration(p_utr);                    /* Hub registration. */
    #else                                             /* USB_CFG_HUB == USB_CFG_ENABLE */
     #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
     for (i = 0; i < USB_MAX_CONNECT_DEVICE_NUM; i++) /* Loop support CDC device count */

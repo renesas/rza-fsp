@@ -115,7 +115,6 @@ uint16_t usb_cstd_get_pid (usb_utr_t * ptr, uint16_t pipe)
     }
 
 #if USB_IP_EHCI_OHCI == 0
-
     /* PIPE control reg read */
     buf = hw_usb_read_pipectr(ptr, pipe);
 #else
@@ -190,7 +189,6 @@ uint16_t usb_cstd_get_pipe_dir (usb_utr_t * ptr, uint16_t pipe)
     }
 
 #if USB_IP_EHCI_OHCI == 0
-
     /* Pipe select */
     hw_usb_write_pipesel(ptr, pipe);
 
@@ -226,7 +224,6 @@ uint16_t usb_cstd_get_pipe_type (usb_utr_t * ptr, uint16_t pipe)
     }
 
  #if USB_IP_EHCI_OHCI == 0
-
     /* Pipe select */
     hw_usb_write_pipesel(ptr, pipe);
 
@@ -283,7 +280,6 @@ void usb_cstd_set_buf (usb_utr_t * ptr, uint16_t pipe)
     }
 
 #if USB_IP_EHCI_OHCI == 0
-
     /* PIPE control reg set */
     hw_usb_set_pid(ptr, pipe, USB_PID_BUF);
 #else
@@ -424,7 +420,6 @@ static void usb_call_callback (usb_instance_ctrl_t * p_ctrl)
     *p_args = *p_ctrl;
 
   #if BSP_TZ_SECURE_BUILD
-
     /* g_usb_apl_callback can point to a secure function or a non-secure function. */
     if (!cmse_is_nsfptr(g_usb_apl_callback[p_ctrl->module_number]))
     {
@@ -438,7 +433,6 @@ static void usb_call_callback (usb_instance_ctrl_t * p_ctrl)
 
         p_callback(p_args);
     }
-
   #else                                /* BSP_TZ_SECURE_BUILD */
     /* If the project is not Trustzone Secure, then it will never need to change security state in order to call the callback. */
 
@@ -509,7 +503,8 @@ void usb_set_event (usb_status_t event, usb_instance_ctrl_t * p_ctrl)
             if (USB_MODE_HOST == g_usb_usbmode[p_ctrl->module_number])
             {
   #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-                (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count], (usb_hdl_t) p_ctrl->p_data,
+                (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count],
+                                                             (usb_hdl_t) p_ctrl->p_data,
                                                              USB_OFF);
   #endif                               /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
             }
@@ -519,13 +514,15 @@ void usb_set_event (usb_status_t event, usb_instance_ctrl_t * p_ctrl)
                 if (0 == p_ctrl->setup.request_length)
                 {
                     /* Processing for USB request has the no data stage */
-                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count], (usb_hdl_t) USB_NULL,
+                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count],
+                                                                 (usb_hdl_t) USB_NULL,
                                                                  USB_OFF);
                 }
                 else
                 {
                     /* Processing for USB request has the data state */
-                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count], (usb_hdl_t) p_ctrl->p_data,
+                    (*g_usb_apl_callback[p_ctrl->module_number])(&g_usb_cstd_event[count],
+                                                                 (usb_hdl_t) p_ctrl->p_data,
                                                                  USB_OFF);
                 }
   #endif                               /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
@@ -671,9 +668,9 @@ void usb_cstd_usb_task (void)
             usb_class_task();
         }
     }
+
     /* WAIT_LOOP */
     while (USB_FALSE != g_drive_search_lock);
-
   #else                                          /* defined(USB_CFG_HMSC_USE) */
     usb_cstd_scheduler();                        /* Scheduler */
 
@@ -765,7 +762,6 @@ uint16_t usb_cstd_remote_wakeup (usb_utr_t * p_utr)
     }
     else
     {
-
         /* ret_code = FSP_ERR_USB_FAILED; */
         return USB_ERROR;
     }
